@@ -4,7 +4,7 @@
 
 <script>
 import Principal from '@/views/Layout/Principal.vue';
-
+//hola
 export default {
   name: 'App',
 
