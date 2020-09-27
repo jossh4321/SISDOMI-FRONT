@@ -92,6 +92,7 @@
 </template>
 
 <script>
+//hola
   export default {
     name: 'HelloWorld',
 
