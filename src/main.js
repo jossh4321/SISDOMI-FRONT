@@ -13,11 +13,15 @@ import VueAxios from 'vue-axios';
 
 import PerfectScrollbar from 'vue2-perfect-scrollbar';
 import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css';
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 
+Vue.use(VueSweetalert2);
 Vue.use(PerfectScrollbar);
 Vue.use(VueAxios, axios)
 Vue.use(Vuelidate)
+Vue.use(require('vue-moment'));
 
 Vue.config.productionTip = false
 

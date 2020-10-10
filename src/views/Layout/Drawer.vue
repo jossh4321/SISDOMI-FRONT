@@ -134,6 +134,14 @@ export default {
           icon: "tune",
           items: [{ name: "alerts", title: "Alerts", href: "/general/alerts" }],
         },
+        { header: "Admin" },
+        {
+          title: "Gestion de Usuarios",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionUsuarios",
+          href: "/dashboard/usuarios"
+        },
       ],
       scrollSettings: {
         maxScrollbarLength: 160,
