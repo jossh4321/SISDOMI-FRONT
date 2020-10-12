@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Usuarios from '../views/Users/GestionarUsuarios.vue'
+import PlanIntervencion from '../views/PlanIntervencion/GestionarPlanIntervencion.vue'
+import Talleres from '../views/Talleres/GestionarTalleres.vue'
 import Test from '../views/Users/Test.vue'
 Vue.use(VueRouter)
 
@@ -19,10 +21,18 @@ const routes = [{
             path: 'usuarios',
             name: 'GestionarUsuarios',
             component: Usuarios
-        },, {
+        }, {
             path: 'test',
             name: 'Test',
             component: Test
+        }, {
+            path: 'planIntervencion',
+            name: 'GestionarPlanIntervencion',
+            component: PlanIntervencion
+        }, {
+            path: 'talleres',
+            name: 'GestionarTalleres',
+            component: Talleres
         }
     ],
         component: () =>
