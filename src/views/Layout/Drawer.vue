@@ -142,6 +142,20 @@ export default {
           name: "GestionUsuarios",
           href: "/dashboard/usuarios"
         },
+        {
+          title: "Gestionar Plan de Intervención",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionPlanIntervencion",
+          href: "/dashboard/planIntervencion"
+        },
+        {
+          title: "Gestionar Talleres",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionTalleres",
+          href: "/dashboard/talleres"
+        }
       ],
       scrollSettings: {
         maxScrollbarLength: 160,
