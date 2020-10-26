@@ -21,7 +21,11 @@
               hide-details
             ></v-text-field>
             <v-spacer></v-spacer>
-            <v-dialog v-model="dialogoregistro" max-width="880px">
+            <!--Dialogo de Registro-->
+            <v-dialog 
+              persistent
+              v-model="dialogoregistro" 
+              max-width="880px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
@@ -34,18 +38,21 @@
                   <span>Usuario</span>
                 </v-btn>
               </template>
-                <RegistrarUsuario></RegistrarUsuario>
+                <RegistrarUsuario @close-dialog-save="closeDialogRegistrar()"></RegistrarUsuario>
             </v-dialog>
+            <!---->
           </v-toolbar>
         </template>
-
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
-            <v-btn color="warning" dark @click="editItem(item)">
-              <v-icon left> mdi-pencil </v-icon>
-              <span>Actualizar</span>
-            </v-btn>
-
+                <v-btn
+                  color="warning"
+                  dark
+                  @click="abrirDialogoActualizar(item.id)"
+                >
+                <v-icon left>mdi-briefcase-edit</v-icon>
+                  <span>Actualizar</span>
+                </v-btn>
             <v-btn
               v-if="item.estado == 'activo'"
               color="success"
@@ -63,75 +70,118 @@
           </v-row>
         </template>
       </v-data-table>
+      <!--Dialogo de Actualizacion-->
+      <v-dialog persistent
+                v-model="dialogoactualizacion" 
+                max-width="880px">
+        <ActualizarUsuario :usuario="usuario" @close-dialog-update="closeDialogActualizar()">
+        </ActualizarUsuario>
+      </v-dialog>
+      <!----->
+      <!--Dialogo de Detalle-->
+      
+      <!----->
+        <v-btn @click="testing()">TEST</v-btn>
     </v-card>
   </div>
 </template>
 <script>
-
-import RegistrarUsuario from '@/components/usuarios/ResgistrarUsuario.vue'
+import axios from 'axios';
+import RegistrarUsuario from '@/components/usuarios/RegistrarUsuario.vue'
+import ActualizarUsuario from '@/components/usuarios/ActualizarUsuario.vue'
+import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarUsuario",
   components: {
-    RegistrarUsuario
+    RegistrarUsuario,ActualizarUsuario
   },
   data() {
     return {
       search: "",
+      //obj usado para almacenar datos de usuario en la actualizacion y consulta
+      usuario:{},
+      //lsita de cabeceras de la data table
       headers: [
         {
           text: "Nombre de Usuario",
           align: "start",
           sortable: false,
-          value: "nombre",
+          value: "nombreusuario",
         },
-        { text: "area", value: "area" },
+        { text: "Tipo Doc.", value:"datos.tipodocumento"},
+        { text: "Nro. Doc", value: "datos.numerodocumento" },
         { text: "rol", value: "rol" },
         { text: "estado", value: "estado" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-      usuarios: [
-        {
-          nombre: "josue1234",
-          area: "psicologica",
-          rol: "director",
-          estado: "activo",
-        },
-        {
-          nombre: "piero1234",
-          area: "educativa",
-          rol: "director",
-          estado: "activo",
-        },
-        {
-          nombre: "anderley1234",
-          area: "social",
-          rol: "director",
-          estado: "activo",
-        },
-        {
-          nombre: "sebas1234",
-          area: "medica",
-          rol: "director",
-          estado: "activo",
-        },
-        {
-          nombre: "paredes1234",
-          area: "nutricional",
-          rol: "director",
-          estado: "inactivo",
-        },
-      ],
       dialogoregistro: false,
+      dialogoactualizacion: false
     };
   },
+  created(){
+      this.setUsuarios([{
+        id:"123",
+        nombreusuario:"josuec4321",
+        rol:"ABC",
+        estado:"activo",
+        datos:{
+          nombre: "Josue Elias",
+          apellido: "Colombo Duran",
+          fechanacimiento: "2020-10-08",
+          tipodocumento: "DNI",
+          numerodocumento: "12345678",
+          direccion: "Av Jose C. del torre, 163 Urb. Los ficus - Sta. Anita",
+          email: "josuec4321@gmail.com",
+          imagen:""
+          }
+        }]);
+  },
   methods: {
+    ...mapMutations(["setUsuarios"]),
+    closeDialogRegistrar(){
+      this.dialogoregistro = false;
+    },
+    closeDialogActualizar(){
+      this.dialogoactualizacion = false;
+    },
     editItem(item) {
       console.log(item);
     },
     deleteItem(item) {
       console.log(item);
+    },testing(){
+       /*axios.get("/usuario/all").then( x=> {
+          console.log(x);
+       }).catch(err => console.log("Something was wrong: "+err));*/
+       this.setUsuarios([1,2,3,4,5,6,7,8,9,10]);
+       console.log(this.usuarios);
     },
-  },
+    //llamando al API para obtener los datos de un usuario especifico
+    abrirDialogoActualizar(idusuario){
+        this.usuario = this.loadUsuarioModificacion();
+        this.dialogoactualizacion = !this.dialogoactualizacion;
+    },
+    loadUsuarioModificacion(){
+       return {
+         id:"123",
+        nombreusuario:"josuec4321",
+        rol:"ABC",
+        estado:"activo",
+        datos:{
+          nombre: "Josue Elias",
+          apellido: "Colombo Duran",
+          fechanacimiento: "2020-10-08",
+          tipodocumento: "DNI",
+          numerodocumento: "12345678",
+          direccion: "Av Jose C. del torre, 163 Urb. Los ficus - Sta. Anita",
+          email: "josuec4321@gmail.com",
+          imagen:""
+          }
+        }
+    }
+  },computed:{
+    ...mapState(["usuarios"])
+  }
 };
 </script>
 <style scoped>

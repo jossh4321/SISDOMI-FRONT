@@ -5,7 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        drawer: true
+        drawer: true,
+        usuarios: []
     },
     mutations: {
         toggleDrawer(state) {
@@ -13,6 +14,16 @@ export default new Vuex.Store({
         },
         drawer(state, val) {
             state.drawer = val;
+        },
+        setUsuarios(state,value){
+            state.usuarios = value;
+        },
+        addUsuario(state,value){
+            state.usuarios.push(value);
+        },
+        replaceUsuario(state,  value){
+            var index = state.usuarios.findIndex( x => x.id == value.id);
+            state.usuarios.splice(index,1,value);
         }
     },
     actions: {},

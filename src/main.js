@@ -23,6 +23,8 @@ Vue.use(VueAxios, axios)
 Vue.use(Vuelidate)
 Vue.use(require('vue-moment'));
 
+
+axios.defaults.baseURL="http://localhost:64258/api"
 Vue.config.productionTip = false
 
 new Vue({
