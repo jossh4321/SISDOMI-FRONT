@@ -135,28 +135,60 @@
         <div  class="container-user">
       <form>
         <v-text-field
-          v-model="usuario.nombreusuario"
+          v-model="usuario.usuario"
           label="Ingrese el nombre de Usuario"
           outlined
-          @input="$v.usuario.nombreusuario.$touch()"
-          @blur="$v.usuario.nombreusuario.$touch()"
+          @input="$v.usuario.usuario.$touch()"
+          @blur="$v.usuario.usuario.$touch()"
           :error-messages="errorNombreUsuario"
           class="inputTextField"
           color="#009900"
         ></v-text-field>
-        <v-select
-          :items="roles"
-          item-text="nombre"
-          item-value="id"
-          label="Ingrese el Rol de Usuario"
-          dense
-          outlined
-          v-model="usuario.rol"
-          @input="$v.usuario.rol.$touch()"
-          @blur="$v.usuario.rol.$touch()"
-          :error-messages="errorRol"
-          color="#009900"
-        ></v-select>
+
+
+
+        <v-autocomplete
+              v-model="usuario.rol"
+              :items="listaroles"
+              filled
+              chips
+              dense
+              outlined
+              color="#009900"
+              label="Seleccione un Rol del Sistema"
+              item-text="nombre"
+              item-value="id"
+              @input="$v.usuario.rol.$touch()"
+              @blur="$v.usuario.rol.$touch()"
+              :error-messages="errorRol"
+            >
+              <template v-slot:selection="data">
+                <v-chip
+                  v-bind="data.attrs"
+                  :input-value="data.selected"
+                  style="margin-top:5px"
+                >
+                  <v-avatar left color="#b3b3ff"  size="24">
+                    <span style="font-size:12px">RT</span>
+                  </v-avatar>
+                  {{ data.item.nombre }}
+                </v-chip>
+              </template>
+              <template v-slot:item="data">
+                <template>
+                  <v-list-item-avatar>
+                        <v-avatar left color="#b3b3ff"  size="24">
+                        <span style="font-size:12px">RT</span>
+                      </v-avatar>
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title>Rol: {{data.item.nombre}}</v-list-item-title>
+                    <v-list-item-subtitle>Area: {{data.item.area}}</v-list-item-subtitle>
+                    <v-list-item-subtitle>descripcion: {{data.item.descripcion}}</v-list-item-subtitle>
+                  </v-list-item-content>
+                </template>
+              </template>
+            </v-autocomplete>
         <v-select
         v-model="usuario.estado"
           :items="['activo', 'inactivo']"
@@ -208,18 +240,12 @@ import {mapMutations, mapState} from "vuex";
 import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
 export default {
+  props:["listaroles"],
    components: {
     vueDropzone: vue2Dropzone,
   },
   data() {
     return {
-      roles:[
-        {id:"ABC",nombre:'Direccion'},
-        {id:"DEF",nombre:'Educativa'},
-        {id:"GHI",nombre:'Piscologica'},
-        {id:"JKL",nombre:'Social'},
-        {id:"MNÑ",nombre:'Medica'},
-        {id:"OPQ",nombre:'Nutricion'}],
       datemenu: false,
       step:1,
       dropzoneOptions: {
@@ -233,8 +259,8 @@ export default {
          dictDefaultMessage: "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui"
       },//utilizado en los formularios como un prop
        usuario: {
-         id:"123",
-        nombreusuario:"",
+        id:"",
+        usuario:"",
         rol:"",
         estado:"",
         datos:{
@@ -247,8 +273,9 @@ export default {
           email: "",
           imagen:""
         }
-      },
+      }
     };
+  },created(){
   },
   methods:{
     ...mapMutations(["setUsuarios","addUsuario"]),
@@ -259,23 +286,30 @@ export default {
         this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
       } else {
         console.log('no hay errores');
+        await axios.post("/usuario",this.usuario)
+          .then(res => {
+            this.usuario = res.data;
+            this.addUsuario(this.usuario);
+            this.cerrarDialogo();
+          }).catch(err => console.log(err));
         await this.mensaje('success','listo','Usuario registrado Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
-        this.addUsuario(this.usuario);
-        this.usuario = this.limpiarUsuario();
-        this.resetUsuarioValidationState();
-        this.cerrarDialogo();
+        
       }
     },
     resetUsuarioValidationState(){
-        this.$v.usuario.datos.imagen.$model = "";
+        this.$refs.myVueDropzone.removeAllFiles();
         this.$v.usuario.$reset();
     },
     cerrarDialogo(){
+      this.usuario = this.limpiarUsuario();
+      this.step = 1;
+      this.resetUsuarioValidationState();
       this.$emit("close-dialog-save");
     },
     afterSuccess(file,response){
-       this.usuario.datos.imagen = file.dataURL;
-       this.$v.usuario.datos.imagen.$model = file.dataURL;
+       this.usuario.datos.imagen = file.dataURL.split(",")[1];
+       this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
+       //console.log(file.dataURL.split(",")[1]);
     },afterRemoved(file, error, xhr){
       this.usuario.datos.imagen = "";
        this.$v.usuario.datos.imagen.$model = "";
@@ -289,7 +323,7 @@ export default {
       });
     },limpiarUsuario(){
       return {
-        nombreusuario:"",
+        usuario:"",
         rol:"",
         estado:"",
         datos:{
@@ -312,9 +346,9 @@ export default {
       },
      errorNombreUsuario () {
       const errors = []
-      if (!this.$v.usuario.nombreusuario.$dirty) return errors
-          !this.$v.usuario.nombreusuario.required && errors.push('Debe ingresar un Nombre de Usuario Obligatoriamente')
-          !this.$v.usuario.nombreusuario.minLength && errors.push('El Nombre de Usuario debe poseer al menos 4 caracteres')
+      if (!this.$v.usuario.usuario.$dirty) return errors
+          !this.$v.usuario.usuario.required && errors.push('Debe ingresar un Nombre de Usuario Obligatoriamente')
+          !this.$v.usuario.usuario.minLength && errors.push('El Nombre de Usuario debe poseer al menos 4 caracteres')
 
       return errors
     },
@@ -388,7 +422,7 @@ export default {
   validations() {
     return {
         usuario: {
-          nombreusuario:{
+          usuario:{
             required,
             minLength: minLength(4)
           },rol:{
