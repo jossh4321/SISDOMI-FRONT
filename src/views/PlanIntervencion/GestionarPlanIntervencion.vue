@@ -72,7 +72,7 @@ export default {
           text: "Nombre Plan Intervención",
           align: "start",
           sortable: false,
-          value: "nombre",
+          value: "nombre"
         },
         { text: "Usuaria", value: "usuaria" },
         { text: "Fecha registro", value: "fechaRegistro" },
