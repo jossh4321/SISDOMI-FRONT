@@ -5,6 +5,7 @@ import Usuarios from '../views/Users/GestionarUsuarios.vue'
 import PlanIntervencion from '../views/PlanIntervencion/GestionarPlanIntervencion.vue'
 import Talleres from '../views/Talleres/GestionarTalleres.vue'
 import Test from '../views/Users/Test.vue'
+import Test1 from '../views/Users/TEST1.vue'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -25,6 +26,10 @@ const routes = [{
             path: 'test',
             name: 'Test',
             component: Test
+        },{
+            path: 'test1',
+            name: 'Test1',
+            component: Test1
         }, {
             path: 'planIntervencion',
             name: 'GestionarPlanIntervencion',

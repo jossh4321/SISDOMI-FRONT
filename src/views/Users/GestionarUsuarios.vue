@@ -99,7 +99,7 @@
           </ConsultarUsuario>
       </v-dialog>
       <!----->
-        <v-btn @click="testing()">TEST</v-btn>
+        <v-btn @click="testing2()">TEST</v-btn>
     </v-card>
   </div>
 </template>
@@ -146,6 +146,12 @@ export default {
   },
   methods: {
     ...mapMutations(["setUsuarios","replaceUsuario"]),
+    testing2(){
+        axios.get("/usuario/saludos")
+        .then(x => {
+          console.log(x.data);
+        }).catch(err => console.log(err));
+    },
     closeDialogRegistrar(){
       this.dialogoregistro = false;
     },
