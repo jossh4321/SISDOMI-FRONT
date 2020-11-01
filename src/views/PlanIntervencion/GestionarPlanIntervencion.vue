@@ -91,7 +91,7 @@ export default {
         },
         {
           nombre: "PlanI_Edu_Marlyn_1",
-          usuaria: "Marlyn Albido Candela",
+          usuaria: "Marlyn Candela Peña",
           fechaRegistro: "20/10/2019"
         }
       ],

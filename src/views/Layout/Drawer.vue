@@ -11,7 +11,7 @@
     <v-toolbar color="primary darken-1" dark>
       <img src="../../assets/static/m.png" height="36" alt="CARDOMI" />
       <v-toolbar-title class="ml-0 pl-3">
-        <span class="hidden-sm-and-down">SISDOMI</span>
+        <span class="hidden-sm-and-down">SISCAR</span>
       </v-toolbar-title>
     </v-toolbar>
     <perfect-scrollbar class="drawer-menu--scroll" :options="scrollSettings">
@@ -155,6 +155,13 @@ export default {
           icon: "dashboard",
           name: "GestionTalleres",
           href: "/dashboard/talleres"
+        },
+        {
+          title: "Gestionar Informe",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionInforme",
+          href: "/dashboard/informes"
         }
       ],
       scrollSettings: {
