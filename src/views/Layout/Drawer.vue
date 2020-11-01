@@ -143,6 +143,13 @@ export default {
           href: "/dashboard/usuarios"
         },
         {
+          title: "Gestion de Residentes",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarResidentes",
+          href: "/dashboard/residentes"
+        },
+        {
           title: "Gestionar Plan de Intervención",
           group: "admin",
           icon: "dashboard",

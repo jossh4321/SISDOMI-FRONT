@@ -7,6 +7,7 @@ import Talleres from '../views/Talleres/GestionarTalleres.vue'
 import Test from '../views/Users/Test.vue'
 import Test1 from '../views/Users/TEST1.vue'
 import GestionarInforme from '../views/Informe/GestionarInforme.vue'
+import GestionarResidentes from '../views/Residentes/GestionarResidentes.vue'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -43,6 +44,10 @@ const routes = [{
             path: 'informes',
             name: 'GestionarInforme',
             component: GestionarInforme
+        },{
+            path:'residentes',
+            name:'GestionarResidentes',
+            component: GestionarResidentes
         }],
         component: () =>
             import ( /* webpackChunkName: "about" */ '../views/Layout/Principal.vue')
