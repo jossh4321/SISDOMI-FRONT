@@ -46,28 +46,42 @@
               <span>Actualizar</span>
             </v-btn>
 
-            <v-btn color="info" dark @click="detailItem(item)">
+            <v-btn color="info" 
+             dark
+             @click="abrirDialogoDetalle(item.id)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Visualizar</span>
             </v-btn>
           </v-row>
         </template>
       </v-data-table>
+      <!----->
+      <!--Dialogo de Detalle-->
+      <v-dialog persistent
+                v-model="dialogodetalle" 
+                max-width="880px">
+          <ConsultarResidente :residente="residente" @close-dialog-detail="closeDialogDetalle()">
+          </ConsultarResidente>
+      </v-dialog>
     </v-card>
   </div>
 </template>
 <script>
 import axios from 'axios';
 import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
+import  ConsultarResidente  from '@/components/residentes/DetalleResidente.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarResidentes",
   components: {
-     RegistrarPlanIntervencion
+     RegistrarPlanIntervencion,
+     ConsultarResidente
   },
   data() {
     return {
       search: "",
+      residente:{},
+
       headers: [
         {
           text: "Nombre ",
@@ -105,6 +119,7 @@ export default {
         }
       ],*/
       dialogoregistro: false,
+      dialogodetalle:false,
     };
   },
   async created(){
@@ -117,6 +132,27 @@ export default {
     },
     detailItem(item) {
       console.log(item);
+    },
+    closeDialogDetalle(){
+      this.dialogodetalle = false;
+      },
+    ///abrir dialogo de detalle
+    async abrirDialogoDetalle(idresidente){
+        this.residente = await this.loadResidenteDetalle(idresidente);
+        this.dialogodetalle = !this.dialogodetalle;
+        },
+
+     async loadResidenteDetalle(idresidente){
+      var user = {};
+      await axios.get("/residente/id?id="+idresidente)
+      .then(res => {
+         user = res.data;
+         user.datos.fechanacimiento = res.data.datos
+                  .fechanacimiento.split("T")[0];
+      })
+      .catch(err => console.log(err));
+      console.log(user);
+      return user;
     },
      ///////////////////Consumo de  apis
      async obtenerResidentes(){
