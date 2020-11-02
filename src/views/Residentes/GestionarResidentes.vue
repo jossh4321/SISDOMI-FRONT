@@ -4,7 +4,7 @@
       <v-card-title> Gestionar Residentes </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="planesI"
+        :items="residentes"
         :search="search"
         class="elevation-1"
       >
@@ -31,7 +31,7 @@
                   v-on="on"
                 >
                 <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar nuevo Plan</span>
+                  <span>Registrar nuevo Residente</span>
                 </v-btn>
               </template>
                 <RegistrarPlanIntervencion></RegistrarPlanIntervencion>
@@ -57,8 +57,9 @@
   </div>
 </template>
 <script>
-
+import axios from 'axios';
 import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
+import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarResidentes",
   components: {
@@ -69,43 +70,68 @@ export default {
       search: "",
       headers: [
         {
-          text: "Nombre Plan Intervención",
+          text: "Nombre ",
           align: "start",
           sortable: false,
           value: "nombre",
         },
-        { text: "Usuaria", value: "usuaria" },
-        { text: "Fecha registro", value: "fechaRegistro" },
+        { text: "Apellido", value: "apellido" },
+        { text: "Tipo de documento", value: "tipodocumento" },
+        { text: "N°documento", value: "numerodocumento" },
+        { text:"Fecha de Ingreso",value:"fechaingreso"},
         { text: "Actions", value: "actions", sortable: false },
       ],
-      planesI: [
+      /*planesI: [
         {
-          nombre: "PlanI_Edu_Xiomara_1",
-          usuaria: "Xiomara Paredes Guerra",
-          fechaRegistro: "15/09/2019"
+          nombre: "Manuel stafno",
+          apellido: "Paredes Guerra",
+          tipdocumento: "Dni",
+          numdocumento:"72498627",
+          fechingreso:"28/05/2019"
         },
         {
           nombre: "PlanI_Psico_Xiomara_1",
-          usuaria: "Xiomara Paredes Guerra",
-          fechaRegistro: "16/09/2019"
+          apellido: "Xiomara Paredes Guerra",
+          tipdocumento: "Dni",
+          numdocumento:"72498627",
+          fechingreso:"28/05/2019"
         },
         {
           nombre: "PlanI_Edu_Marlyn_1",
-          usuaria: "Marlyn Candela Peña",
-          fechaRegistro: "20/10/2019"
+          apellido: "Marlyn Candela Peña",
+          tipdocumento: "Dni",
+          numdocumento:"72498627",
+          fechingreso:"28/05/2019"
         }
-      ],
+      ],*/
       dialogoregistro: false,
     };
   },
+  async created(){
+    this.obtenerResidentes()
+  },
   methods: {
+    ...mapMutations(["setResidentes"]),
     editItem(item) {
       console.log(item);
     },
     detailItem(item) {
       console.log(item);
     },
+     ///////////////////Consumo de  apis
+     async obtenerResidentes(){
+           await axios.get("/residente/all")
+            .then(res => {
+                    this.setResidentes(res.data);
+            }).catch(err => console.log(err));
+
+            
+    }
   },
+  computed:{
+ ...mapState(["residentes"])
+  
+  }
 };
 </script>
 <style scoped>
