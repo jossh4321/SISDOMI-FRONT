@@ -19,12 +19,11 @@ const routes = [{
             path: 'usuarios',
             name: 'GestionarUsuarios',
             component: Usuarios
-        },, {
+        }, , {
             path: 'test',
             name: 'Test',
             component: Test
-        }
-    ],
+        }],
         component: () =>
             import ( /* webpackChunkName: "about" */ '../views/Layout/Principal.vue')
     },
