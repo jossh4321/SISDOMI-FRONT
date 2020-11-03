@@ -38,8 +38,8 @@
                   <span>Registrar Informe</span>
                 </v-btn>
               </template>
-                <RegistrarInformeEducativo                  
-                 @close-dialog-save="closeDialogRegistrar()"></RegistrarInformeEducativo> 
+                <RegistrarInforme                  
+                 @close-dialog-save="closeDialogRegistrar()"></RegistrarInforme> 
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -52,13 +52,14 @@
 </template>
 
 <script>
+
 import axios from 'axios';
-import RegistrarInformeEducativo from '@/components/informes/RegistrarInformeEducativo.vue'
+import RegistrarInforme from '@/components/informes/RegistrarInforme.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarInforme",
   components: {
-    RegistrarInformeEducativo
+    RegistrarInforme
   },
   data() {
     return {
@@ -69,24 +70,35 @@ export default {
           text: "Código del Informe",
           align: "start",
           sortable: false,
-          value: "usuario",
+          value: "codigodocumento",
         },
-        { text: "Nombre del residente", value:""},
-        { text: "Fecha de creación", value: "" },
-        { text: "Tipo de Informe", value: "" },        
+        { text: "Nombre del residente", value:"datosresidente.apellido"},
+        { text: "Fecha de creación", value: "fechacreacion" },
+        { text: "Tipo de Informe", value: "tipo" },        
         { text: "Acciones", value: "actions", sortable: false },
       ],
        dialogoregistro: false
     };
   },
-  async created(){
-    
+  async created(){    
+      this.obtenerInformes();
   },
   methods: {
+     ...mapMutations(["setInformes"]),    
       closeDialogRegistrar(){
       this.dialogoregistro = false;
+    },
+    async obtenerInformes(){
+           await axios.get("/informe/all")
+            .then(res => { 
+                    this.setInformes(res.data);    
+                    console.log(res.data);                  
+            }).catch(err => console.log(err));
     }
-    }
+  },
+  computed:{
+    ...mapState(["informes"])
+  }
 };
 </script>
 <style scoped>
