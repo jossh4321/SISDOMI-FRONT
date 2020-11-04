@@ -90,7 +90,7 @@
         </ActualizarUsuario>
 
       </v-dialog>
-      <!----->
+      <!-----><!--Hola -->
       <!--Dialogo de Detalle-->
       <v-dialog persistent
                 v-model="dialogodetalle" 
