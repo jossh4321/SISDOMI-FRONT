@@ -126,13 +126,12 @@
               <span>Cerrar</span>
             </v-btn>
           </v-col>
-        </v-row>
-        
+        </v-row>        
       </form>
     </div>
       </v-stepper-content>
       <v-stepper-content step="2">
-        <div  class="container-user">
+        <div class="container-user">
       <form>
         <v-text-field
           v-model="usuario.usuario"
