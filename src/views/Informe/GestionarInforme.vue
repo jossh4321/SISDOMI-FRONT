@@ -38,8 +38,8 @@
                   <span>Registrar Informe</span>
                 </v-btn>
               </template>
-                <RegistrarInforme                  
-                 @close-dialog-save="closeDialogRegistrar()"></RegistrarInforme> 
+                <RegistrarInformeEducativoInicial                  
+                 @close-dialog-save="closeDialogRegistrar()"></RegistrarInformeEducativoInicial> 
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -55,11 +55,13 @@
 
 import axios from 'axios';
 import RegistrarInforme from '@/components/informes/RegistrarInforme.vue'
+import RegistrarInformeEducativoInicial from '@/components/informes/RegistrarInformeEducativoInicial.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarInforme",
   components: {
-    RegistrarInforme
+    RegistrarInforme,
+    RegistrarInformeEducativoInicial
   },
   data() {
     return {
