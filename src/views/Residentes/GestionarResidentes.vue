@@ -34,12 +34,12 @@
                   <span>Registrar nuevo Residente</span>
                 </v-btn>
               </template>
-                <RegistrarPlanIntervencion></RegistrarPlanIntervencion>
+                
             </v-dialog>
           </v-toolbar>
         </template>
 
-        <template v-slot:[`item.actions`]="{ item }">
+        <template v-slot:[`item.actions`]="{ item }"><!--Abrir dialogo detalle -->
           <v-row align="center" justify="space-around">
             <v-btn color="warning" dark @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
@@ -68,14 +68,15 @@
 </template>
 <script>
 import axios from 'axios';
-import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
+
+import  ModificarResidente  from '@/components/residentes/ActualizarResidente.vue'
 import  ConsultarResidente  from '@/components/residentes/DetalleResidente.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarResidentes",
   components: {
-     RegistrarPlanIntervencion,
-     ConsultarResidente
+     ConsultarResidente,
+     ModificarResidente
   },
   data() {
     return {
