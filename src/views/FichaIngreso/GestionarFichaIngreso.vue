@@ -4,7 +4,7 @@
       <v-card-title> Gestionar Ficha Ingreso </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="fechaIngreso"    
+        :items="documento"    
         :search="search"
         class="elevation-1"
       >
@@ -34,7 +34,9 @@
                   <span>Registrar Ficha Ingreso</span>
                 </v-btn>
               </template>
-                <RegistrarPlanIntervencion></RegistrarPlanIntervencion>
+                
+                <RegistrarFichaIngreso
+                @close-dialog-save="closeDialogRegistrar()"></RegistrarFichaIngreso> 
             </v-dialog>
           </v-toolbar>
         </template>
@@ -63,16 +65,16 @@
 </template>
 <script>
 import axios from 'axios';
-import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
+//import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
 import RegistrarFichaIngreso from '@/components/fichaIngreso/RegistrarFichaIngreso.vue'
-import ConsultarFichaIngreso  from '@/components/fichaIngreso/ConsultarFichaIngreso.vue'
+import ConsultarFichaIngresoEducativa  from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarFicha",
   components: {
-     RegistrarPlanIntervencion,
+    // RegistrarPlanIntervencion,
      RegistrarFichaIngreso,
-     ConsultarFichaIngreso,
+     ConsultarFichaIngresoEducativa,
       
   },
   data() {
@@ -93,17 +95,18 @@ export default {
       ],
       dialogoconsultar:false,
       dialogoregistro: false,
-  
+      
     };
   },
       async created(){
       this.obtenerfichasIngresos();
+       this.obtenerResidentes()
      
   },
 
   methods: {
-    ...mapMutations(["setFichaIngresos"]),
-    
+ 
+    ...mapMutations(["setDocumento"]),
  editItem(item) {
       console.log(item);
     },
@@ -115,18 +118,19 @@ export default {
 
        this.dialogoconsultar = false;
     },
-    
-    async abrirDialogoActualizar(idfichaIngreso){
-        this.fichaIngreso = await this.loadFichaIngresoConsultar(idfichaIngreso);
-        this.dialogoconsultar = !this.dialogoconsultar;
-    },
-   async loadFichaIngresoConsultar(idfichaIngreso){
+
+     async abrirDialogoConsultar(idresidente){
+        this.residente = await this.loadResidenteDetalle(idresidente);
+        this.dialogodetalle = !this.dialogodetalle;
+        },
+
+     async loadResidenteDetalle(idresidente){
       var user = {};
-      await axios.get("/documento/id?id="+idfichaIngreso)
+      await axios.get("/residente/id?id="+idresidente)
       .then(res => {
          user = res.data;
-        user.datos.fichaIngreso = res.data.datos
-                  .fichaIngreso.split("T")[0];
+         user.datos.fechanacimiento = res.data.datos
+                  .fechanacimiento.split("T")[0];
       })
       .catch(err => console.log(err));
       console.log(user);
@@ -145,7 +149,7 @@ export default {
 
   },computed:{
     ...mapState(["documento"]),
-    ...mapState(["residentes"])
+    
   }
 
 };
