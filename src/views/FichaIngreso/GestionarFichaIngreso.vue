@@ -100,14 +100,14 @@ export default {
   },
       async created(){
       this.obtenerfichasIngresos();
-       this.obtenerResidentes()
+      this.obtenerResidentes()
      
   },
 
   methods: {
  
     ...mapMutations(["setDocumento"]),
- editItem(item) {
+       editItem(item) {
       console.log(item);
     },
     detailItem(item) {
@@ -115,10 +115,8 @@ export default {
     },
 
     closeDialogConsultar(){
-
        this.dialogoconsultar = false;
     },
-
      async abrirDialogoConsultar(idresidente){
         this.residente = await this.loadResidenteDetalle(idresidente);
         this.dialogodetalle = !this.dialogodetalle;
