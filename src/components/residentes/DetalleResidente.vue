@@ -116,7 +116,7 @@
        > </v-textarea>
   
         <v-textarea
-        label="No se que campo es"
+        label="Diagnostico Psicologico"
         v-model="residente.motivoingreso"
         disabled:true
        > </v-textarea>
