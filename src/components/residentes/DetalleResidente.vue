@@ -219,14 +219,18 @@ data(){
     datemenu: false,
       step:1,
      telefono: "9498494944",
+   
      
   }
 },
  methods:{
     cerrarDialogo(){
-      this.$emit("close-dialog-detail");
-      
-    }
+      this.$emit("close-dialog-detail");  
+    },
+   
+  },
+  computed:{
+    
   }
 }
 </script>
