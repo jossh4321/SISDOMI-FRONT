@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Usuarios from '../views/Users/GestionarUsuarios.vue'
 import PlanIntervencion from '../views/PlanIntervencion/GestionarPlanIntervencion.vue'
 import Talleres from '../views/Talleres/GestionarTalleres.vue'
+import GestionarFichaIngreso from '../views/FichaIngreso/GestionarFichaIngreso.vue'
 import Test from '../views/Users/Test.vue'
 import Test1 from '../views/Users/TEST1.vue'
 import GestionarInforme from '../views/Informe/GestionarInforme.vue'
@@ -44,6 +45,10 @@ const routes = [{
             path: 'talleres',
             name: 'GestionarTalleres',
             component: Talleres
+        },{
+            path: 'fichaIngreso',
+            name: 'GestionarFichaIngreso',
+            component: GestionarFichaIngreso
         }, {
             path: 'informes',
             name: 'GestionarInforme',

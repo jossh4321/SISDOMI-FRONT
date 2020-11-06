@@ -1,16 +1,16 @@
 <template>
   <div>
     <v-card class="card">
-      <v-card-title> Gestionar Residentes </v-card-title>
+      <v-card-title> Gestionar Ficha Ingreso </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="residentes"
+        :items="documento"    
         :search="search"
         class="elevation-1"
       >
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>Residentes SISDOMI</v-toolbar-title>
+            <v-toolbar-title>Fichas de Ingreso SISDOMI</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-text-field
@@ -31,64 +31,56 @@
                   v-on="on"
                 >
                 <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar nuevo Residente</span>
+                  <span>Registrar Ficha Ingreso</span>
                 </v-btn>
               </template>
-                <!--AQUI VA ELCOMPONENTE -->
+                
+                <RegistrarFichaIngreso
+                @close-dialog-save="closeDialogRegistrar()"></RegistrarFichaIngreso> 
             </v-dialog>
           </v-toolbar>
         </template>
-<<<<<<< HEAD
         <template v-slot:[`item.actions`]="{ item }">
-=======
-
-        <template v-slot:[`item.actions`]="{ item }"><!--Abrir dialogo detalle -->
->>>>>>> 777a6425c25642ebd17111790fe4a8b80c8935af
           <v-row align="center" justify="space-around">
-            <!--BOTONES-->
-            <v-btn color="warning" 
-            dark 
-            @click="editItem(item)">
+            <v-btn color="warning" dark @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
-              <span>Actualizar</span>
+              <span>Modificar Ficha</span>
             </v-btn>
-            <v-btn color="info" 
-             dark
-             @click="abrirDialogoDetalle(item.id)">
+            <v-btn color="info" dark @click="abrirDialogoActualizar(item.id)">
               <v-icon left> mdi-pencil </v-icon>
-              <span>Visualizar</span>
+              <span>Ver Ficha</span>
             </v-btn>
           </v-row>
         </template>
       </v-data-table>
-      <!----->
-      <!--Dialogo de Detalle-->
+
       <v-dialog persistent
-                v-model="dialogodetalle" 
-                max-width="880px">
-          <ConsultarResidente :residente="residente" @close-dialog-detail="closeDialogDetalle()">
-          </ConsultarResidente>
+          v-model="dialogoconsultar" 
+          max-width="880px">
+        <ConsultarFichaIngreso :fichaIngreso="fichaIngreso" @close-dialog-detail="closeDialogDetalle()">
+        </ConsultarFichaIngreso>
       </v-dialog>
     </v-card>
   </div>
 </template>
 <script>
 import axios from 'axios';
-
-import  ModificarResidente  from '@/components/residentes/ActualizarResidente.vue'
-import  ConsultarResidente  from '@/components/residentes/DetalleResidente.vue'
+//import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
+import RegistrarFichaIngreso from '@/components/fichaIngreso/RegistrarFichaIngreso.vue'
+import ConsultarFichaIngresoEducativa  from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
-  name: "GestionarResidentes",
+  name: "GestionarFicha",
   components: {
-     ConsultarResidente,
-     ModificarResidente
+    // RegistrarPlanIntervencion,
+     RegistrarFichaIngreso,
+     ConsultarFichaIngresoEducativa,
+      
   },
   data() {
     return {
       search: "",
       residente:{},
-
       headers: [
         {
           text: "Nombre ",
@@ -97,54 +89,35 @@ export default {
           value: "nombre",
         },
         { text: "Apellido", value: "apellido" },
-        { text: "Tipo de documento", value: "tipodocumento" },
         { text: "N°documento", value: "numerodocumento" },
         { text:"Fecha de Ingreso",value:"fechaingreso"},
         { text: "Actions", value: "actions", sortable: false },
       ],
-      /*planesI: [
-        {
-          nombre: "Manuel stafno",
-          apellido: "Paredes Guerra",
-          tipdocumento: "Dni",
-          numdocumento:"72498627",
-          fechingreso:"28/05/2019"
-        },
-        {
-          nombre: "PlanI_Psico_Xiomara_1",
-          apellido: "Xiomara Paredes Guerra",
-          tipdocumento: "Dni",
-          numdocumento:"72498627",
-          fechingreso:"28/05/2019"
-        },
-        {
-          nombre: "PlanI_Edu_Marlyn_1",
-          apellido: "Marlyn Candela Peña",
-          tipdocumento: "Dni",
-          numdocumento:"72498627",
-          fechingreso:"28/05/2019"
-        }
-      ],*/
+      dialogoconsultar:false,
       dialogoregistro: false,
-      dialogodetalle:false,
+      
     };
   },
-  async created(){
-    this.obtenerResidentes()
+      async created(){
+      this.obtenerfichasIngresos();
+      this.obtenerResidentes()
+     
   },
+
   methods: {
-    ...mapMutations(["setResidentes"]),
-    editItem(item) {
+ 
+    ...mapMutations(["setDocumento"]),
+       editItem(item) {
       console.log(item);
     },
     detailItem(item) {
       console.log(item);
     },
-    closeDialogDetalle(){
-      this.dialogodetalle = false;
-      },
-    ///abrir dialogo de detalle
-    async abrirDialogoDetalle(idresidente){
+
+    closeDialogConsultar(){
+       this.dialogoconsultar = false;
+    },
+     async abrirDialogoConsultar(idresidente){
         this.residente = await this.loadResidenteDetalle(idresidente);
         this.dialogodetalle = !this.dialogodetalle;
         },
@@ -154,27 +127,29 @@ export default {
       await axios.get("/residente/id?id="+idresidente)
       .then(res => {
          user = res.data;
-         user.datos.fechaNacimiento = res.data.datos
-                  .fechaNacimiento.split("T")[0];
+         user.datos.fechanacimiento = res.data.datos
+                  .fechanacimiento.split("T")[0];
       })
       .catch(err => console.log(err));
       console.log(user);
       return user;
     },
-     ///////////////////Consumo de  apis
-     async obtenerResidentes(){
-           await axios.get("/residente/all")
+     //llamando al API para obtener los datos de ficha Educativa especifico
+       async obtenerfichasIngresos(){
+           await axios.get("/fichaingresoeducativa/all")
             .then(res => {
-                    this.setResidentes(res.data);
+                    this.setFichaIngresos(fie.data);
             }).catch(err => console.log(err));
 
             
     }
-  },
-  computed:{
- ...mapState(["residentes"])
-  
+
+
+  },computed:{
+    ...mapState(["documento"]),
+    
   }
+
 };
 </script>
 <style scoped>
