@@ -33,17 +33,24 @@
      <v-stepper-content step="1"><!--CONTIENE LOS STEPPERS 1 -->
         <div class="container-user">
       <form>
-        <v-text-field
 
+        <v-text-field
            v-model="residente.nombre"
-          label="Nombres:"
+          label="Nombres"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-text-field
           v-model="residente.apellido"
-          label="Apellidos:"
+          label="Apellidos"
+          outlined
+          readonly
+          color="#009900"
+        ></v-text-field>
+        <v-text-field
+           v-model="residente.sexo"
+          label="Sexo"
           outlined
           readonly
           color="#009900"
@@ -58,7 +65,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
-              v-model="residente.fechanacimiento"
+              v-model="residente.fechaNacimiento"
               label="Fecha de Nacimiento"
               prepend-icon="mdi-calendar"
               readonly
@@ -68,7 +75,7 @@
             ></v-text-field>
           </template>
           <v-date-picker
-            v-model="residente.fechanacimiento"
+            v-model="residente.fechaNacimiento"
             @input="menu2 = false"
             locale="es-es"
           ></v-date-picker>
@@ -80,15 +87,30 @@
           outlined
           readonly
           color="#009900"
-           v-model="residente.tipodocumento"
+           v-model="residente.tipoDocumento"
         ></v-select>
         <v-text-field
-          v-model="residente.numerodocumento"
+          v-model="residente.numeroDocumento"
           label="Ingrese el Numero de Documento"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
+        <v-text-field
+           v-model="residente.lugarNacimiento"
+          label="Lugar de Nacimiento"
+          outlined
+          readonly
+          color="#009900"
+        ></v-text-field>
+        <v-text-field
+           v-model="telefono"
+          label="Numeros"
+          outlined
+          readonly
+          color="#009900"
+        ></v-text-field>
+        
         <v-row>
           <v-col>
             <v-btn block @click="step = 2" color="success">
@@ -111,17 +133,16 @@
       <form>
         <v-textarea
         label="Motivo de Ingreso"
-        v-model="residente.motivoingreso"
+        v-model="residente.motivoIngreso"
         disabled:true
        > </v-textarea>
   
         <v-textarea
         label="Diagnostico Psicologico"
-        v-model="residente.motivoingreso"
+        v-model="residente.motivoIngreso"
         disabled:true
        > </v-textarea>
         
-       
      
         <v-row> <!-- termina le texto -->
           <v-col>
@@ -196,12 +217,15 @@ data(){
   return{
     
     datemenu: false,
-      step:1
+      step:1,
+     telefono: "9498494944",
+     
   }
 },
  methods:{
     cerrarDialogo(){
       this.$emit("close-dialog-detail");
+      
     }
   }
 }

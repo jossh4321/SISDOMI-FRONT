@@ -34,14 +34,17 @@
                   <span>Registrar nuevo Residente</span>
                 </v-btn>
               </template>
-                
+                <!--AQUI VA ELCOMPONENTE -->
             </v-dialog>
           </v-toolbar>
         </template>
 
         <template v-slot:[`item.actions`]="{ item }"><!--Abrir dialogo detalle -->
           <v-row align="center" justify="space-around">
-            <v-btn color="warning" dark @click="editItem(item)">
+            <!--BOTONES-->
+            <v-btn color="warning" 
+            dark 
+            @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
@@ -148,8 +151,8 @@ export default {
       await axios.get("/residente/id?id="+idresidente)
       .then(res => {
          user = res.data;
-         user.datos.fechanacimiento = res.data.datos
-                  .fechanacimiento.split("T")[0];
+         user.datos.fechaNacimiento = res.data.datos
+                  .fechaNacimiento.split("T")[0];
       })
       .catch(err => console.log(err));
       console.log(user);
