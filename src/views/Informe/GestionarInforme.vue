@@ -38,8 +38,10 @@
                   <span>Registrar Informe</span>
                 </v-btn>
               </template>
-                <RegistrarInformeEducativoInicial                  
-                 @close-dialog-save="closeDialogRegistrar()"></RegistrarInformeEducativoInicial> 
+                <RegistrarInformeEducativoInicial   
+                 :listaresidentes="listaresidentes"               
+                 @close-dialog-save="closeDialogRegistrar()"                                  
+                 ></RegistrarInformeEducativoInicial> 
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -79,11 +81,13 @@ export default {
         { text: "Tipo de Informe", value: "tipo" },        
         { text: "Acciones", value: "actions", sortable: false },
       ],
-       dialogoregistro: false
+       dialogoregistro: false,
+       listaresidentes:[]
     };
   },
   async created(){    
       this.obtenerInformes();
+      this.obtenerResidentes();
   },
   methods: {
      ...mapMutations(["setInformes"]),    
@@ -96,7 +100,12 @@ export default {
                     this.setInformes(res.data);    
                     console.log(res.data);                  
             }).catch(err => console.log(err));
-    }
+    },async obtenerResidentes(){
+          await axios.get("/residente/all")
+                  .then( x => {
+                            this.listaresidentes = x.data;
+                            console.log(this.listaresidentes);
+                  }).catch(err => console.log(err));}
   },
   computed:{
     ...mapState(["informes"])

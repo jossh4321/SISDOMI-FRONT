@@ -33,7 +33,10 @@ export default new Vuex.Store({
         },
         setInformes(state, value) {
             state.informes = value;
-        }
+        },
+        addInforme(state, value) {
+            state.informes.push(value);
+        },
     },
     actions: {},
     modules: {}
