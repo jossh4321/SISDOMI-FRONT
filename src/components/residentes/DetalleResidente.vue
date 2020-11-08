@@ -33,21 +33,29 @@
      <v-stepper-content step="1"><!--CONTIENE LOS STEPPERS 1 -->
         <div class="container-user">
       <form>
-        <v-text-field
 
+        <v-text-field
            v-model="residente.nombre"
-          label="Nombres:"
+          label="Nombres"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-text-field
           v-model="residente.apellido"
-          label="Apellidos:"
+          label="Apellidos"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
+        <v-text-field
+           v-model="residente.sexo"
+          label="Sexo"
+          outlined
+          readonly
+          color="#009900"
+        ></v-text-field>
+
         <v-menu
           v-model="datemenu"
           :close-on-content-click="false"
@@ -58,7 +66,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
-              v-model="residente.fechanacimiento"
+              v-model="residente.fechaNacimiento"
               label="Fecha de Nacimiento"
               prepend-icon="mdi-calendar"
               readonly
@@ -68,7 +76,7 @@
             ></v-text-field>
           </template>
           <v-date-picker
-            v-model="residente.fechanacimiento"
+            v-model="residente.fechaNacimiento"
             @input="menu2 = false"
             locale="es-es"
           ></v-date-picker>
@@ -80,15 +88,43 @@
           outlined
           readonly
           color="#009900"
-           v-model="residente.tipodocumento"
+           v-model="residente.tipoDocumento"
         ></v-select>
         <v-text-field
-          v-model="residente.numerodocumento"
+          v-model="residente.numeroDocumento"
           label="Ingrese el Numero de Documento"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
+        <v-text-field
+           v-model="residente.lugarNacimiento"
+           
+          label="Lugar de Nacimiento"
+          outlined
+          readonly
+          color="#009900"
+        ></v-text-field>
+<!--NUMEROS TELEFONO -->
+        <div  v-for="(item ,index) in residente.telefonosReferencia" :key="index">
+            <v-text-field
+          v-model="item.referentefamiliar"
+          label="Referente Familiar"
+          outlined
+          readonly
+          color="#009900"
+      >
+        </v-text-field>
+            <v-text-field
+          v-model="item.numero"
+          label="Numero"
+          outlined
+          readonly
+          color="#009900"
+      >
+        </v-text-field>
+        </div>
+        <!--FIN -->
         <v-row>
           <v-col>
             <v-btn block @click="step = 2" color="success">
@@ -109,65 +145,22 @@
       <v-stepper-content step="2"><!--CONTIENE LOS STEPPERS 2 -->
         <div class="container-user">
       <form>
-        <v-text-field
-
-           v-model="residente.nombre"
-          label="Nombres:"
-          outlined
-          readonly
-          color="#009900"
-        ></v-text-field>
-        <v-text-field
-          v-model="residente.apellido"
-          label="Apellidos:"
-          outlined
-          readonly
-          color="#009900"
-        ></v-text-field>
-        <v-menu
-          v-model="datemenu"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              v-model="residente.fechanacimiento"
-              label="Fecha de Nacimiento"
-              prepend-icon="mdi-calendar"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-              color="#009900"
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            v-model="residente.fechanacimiento"
-            @input="menu2 = false"
-            locale="es-es"
-          ></v-date-picker>
-        </v-menu>
-        <v-select
-          :items="['DNI', 'Pasaporte', 'Carnet Extranjeria','dni']"
-          label="Tipo de Documento"
-          dense
-          outlined
-          readonly
-          color="#009900"
-           v-model="residente.tipodocumento"
-        ></v-select>
-        <v-text-field
-          v-model="residente.numerodocumento"
-          label="Ingrese el Numero de Documento"
-          outlined
-          readonly
-          color="#009900"
-        ></v-text-field>
-        <v-row>
+        <v-textarea
+        label="Motivo de Ingreso"
+        v-model="residente.motivoIngreso"
+        disabled:true
+       > </v-textarea>
+  
+        <v-textarea
+        label="Diagnostico Psicologico"
+        v-model="residente.motivoIngreso"
+        disabled:true
+       > </v-textarea>
+        
+     
+        <v-row> <!-- termina le texto -->
           <v-col>
-            <v-btn block @click="step = 2" color="success">
+            <v-btn block @click="step = 3" color="success">
               <v-icon left>mdi-page-next-outline</v-icon>
               <span>Continuar</span>
             </v-btn>
@@ -188,62 +181,29 @@
         <v-text-field
 
            v-model="residente.nombre"
-          label="Nombres:"
+          label="Modalidad:"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-text-field
           v-model="residente.apellido"
-          label="Apellidos:"
+          label="Nivel:"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
-        <v-menu
-          v-model="datemenu"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              v-model="residente.fechanacimiento"
-              label="Fecha de Nacimiento"
-              prepend-icon="mdi-calendar"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-              color="#009900"
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            v-model="residente.fechanacimiento"
-            @input="menu2 = false"
-            locale="es-es"
-          ></v-date-picker>
-        </v-menu>
-        <v-select
-          :items="['DNI', 'Pasaporte', 'Carnet Extranjeria','dni']"
-          label="Tipo de Documento"
-          dense
-          outlined
-          readonly
-          color="#009900"
-           v-model="residente.tipodocumento"
-        ></v-select>
         <v-text-field
-          v-model="residente.numerodocumento"
-          label="Ingrese el Numero de Documento"
+          v-model="residente.apellido"
+          label="Grado:"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
+        
         <v-row>
           <v-col>
-            <v-btn block @click="step = 2" color="success">
+            <v-btn block @click="step = 1" color="success">
               <v-icon left>mdi-page-next-outline</v-icon>
               <span>Continuar</span>
             </v-btn>
@@ -264,6 +224,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
 name:'DetalleResidente',
  props:["residente"],
@@ -271,13 +232,20 @@ data(){
   return{
     
     datemenu: false,
-      step:1
+      step:1,
+     
+   
+     
   }
 },
  methods:{
     cerrarDialogo(){
-      this.$emit("close-dialog-detail");
-    }
+      this.$emit("close-dialog-detail");  
+    },
+   
+  },
+  computed:{
+    
   }
 }
 </script>
