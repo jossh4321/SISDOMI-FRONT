@@ -34,17 +34,26 @@
                   <span>Registrar nuevo Residente</span>
                 </v-btn>
               </template>
-                
+                <!--AQUI VA ELCOMPONENTE -->
             </v-dialog>
           </v-toolbar>
         </template>
+<<<<<<< HEAD
 
       
 
 
         <template v-slot:[`item.actions`]="{ item }"><!--Abrir dialogo detalle -->
+=======
+
+        <template v-slot:[`item.actions`]="{ item }"><!--Abrir dialogo detalle -->
+
+>>>>>>> f299431216b856e16cfccd13f375c826752abc66
           <v-row align="center" justify="space-around">
-            <v-btn color="warning" dark @click="editItem(item)">
+            <!--BOTONES-->
+            <v-btn color="warning" 
+            dark 
+            @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
@@ -93,9 +102,9 @@ export default {
           value: "nombre",
         },
         { text: "Apellido", value: "apellido" },
-        { text: "Tipo de documento", value: "tipodocumento" },
-        { text: "N°documento", value: "numerodocumento" },
-        { text:"Fecha de Ingreso",value:"fechaingreso"},
+        { text: "Tipo de documento", value: "tipoDocumento" },
+        { text: "N°documento", value: "numeroDocumento" },
+        { text:"Fecha de Ingreso",value:"fechaIngreso"},
         { text: "Actions", value: "actions", sortable: false },
       ],
       /*planesI: [
@@ -150,8 +159,9 @@ export default {
       await axios.get("/residente/id?id="+idresidente)
       .then(res => {
          user = res.data;
-         user.datos.fechanacimiento = res.data.datos
-                  .fechanacimiento.split("T")[0];
+         user.datos.fechaNacimiento = res.data.datos
+                  .fechaNacimiento.split("T")[0];
+         
       })
       .catch(err => console.log(err));
       console.log(user);
