@@ -146,7 +146,7 @@ export default {
 
 
   },computed:{
-    ...mapState(["documento"]),
+    ...mapState(["documentos"]),
     
   }
 

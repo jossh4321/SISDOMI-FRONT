@@ -38,12 +38,11 @@
             </v-dialog>
           </v-toolbar>
         </template>
-<<<<<<< HEAD
-        <template v-slot:[`item.actions`]="{ item }">
-=======
+
+      
+
 
         <template v-slot:[`item.actions`]="{ item }"><!--Abrir dialogo detalle -->
->>>>>>> 777a6425c25642ebd17111790fe4a8b80c8935af
           <v-row align="center" justify="space-around">
             <v-btn color="warning" dark @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
