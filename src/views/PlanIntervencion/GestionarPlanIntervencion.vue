@@ -41,10 +41,15 @@
 
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
+             <v-dialog v-model="Actualizarplan" max-width="880px">
+               <ActualizarPlanIntervencion :planIntervencion="planIntervencion" @close-dialog-detail="closeDialogActualizar()">
+          </ActualizarPlanIntervencion></v-dialog> 
             <v-btn color="warning" dark @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
+            
+
                  <v-dialog v-model="Visualizarplan" max-width="880px">
                 
                     <v-btn color="info" @click="abrirDialogoDetalle(item.id)">
@@ -63,6 +68,7 @@
           <VisualizarPlanIntervencion :plan="plan" @close-dialog-detail="closeDialogDetalle()">
           </VisualizarPlanIntervencion>
       </v-dialog>
+      
     </v-card>
   </div>
 </template>
@@ -70,13 +76,15 @@
 import axios from 'axios';
 import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
 import VisualizarPlanIntervencion from '@/components/planIntervencion/VisualizarPlanIntervencion.vue'
+import ActualizarPlanIntervencion from '@/components/planIntervencion/ActualizarPlanIntervencion.vue'
 import {mapMutations, mapState} from "vuex";
 
 export default {
   name: "GestionarPlanI",
   components: {
      RegistrarPlanIntervencion,
-     VisualizarPlanIntervencion
+     VisualizarPlanIntervencion,
+     ActualizarPlanIntervencion
   },
   data() {
     return {
@@ -114,7 +122,8 @@ export default {
       ],
       dialogodetalle: false,
       dialogoregistro: false,
-      Visualizarplan:false
+      Visualizarplan:false,
+      Actualizarplan: false
     };
   },
 
