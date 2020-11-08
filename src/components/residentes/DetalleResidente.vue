@@ -106,56 +106,42 @@
           color="#009900"
         ></v-text-field>
 <!--NUMEROS TELEFONO -->
-        <div  v-for="(item ,index) in residente.telefonosReferencia" :key="index">
-            <v-text-field
-          v-model="item.referentefamiliar"
-          label="Referente Familiar"
-          outlined
-          readonly
-          color="#009900"
-      >
-        </v-text-field>
-            <v-text-field
-          v-model="item.numero"
-          label="Numero"
-          outlined
-          readonly
-          color="#009900"
-      >
-
-        </v-text-field>
-        </div>
+        
 <!-- -->
         <v-item-group multiple>
-          <v-subheader>Numeros</v-subheader>
+          
           <v-item
             v-for="(item ,index) in residente.telefonosReferencia" :key="index"
-            
           >
           <div>
-            <v-chip>
-           <v-row  class="align-content-lg
-" >
-              <v-col>
-          <v-chip
-              active-class="purple--text"
-              color="red"
-            >
-             {{ item.referentefamiliar}}
-            </v-chip>
-           </v-col>
-           <v-col>
-            <v-chip
-              active-class="purple--text"
-              color="blue"
-              
-            >
-             {{ item.numero}}
-            </v-chip>
-            </v-col>
-            </v-row>
-            </v-chip>
+           <v-card  color="#F0F0F0" >
+              <v-row>
+                <v-col > 
+                  <v-card
+                    active-class="purple--text"
+                    color="#FADC05"
+                    height="30"
+                  >
+                  <span style="font-size:18px">
+                  {{ item.referentefamiliar}}
+                  </span>
+                  </v-card>
+                </v-col>
+                <v-col>
+                  <v-card
+                    active-class="purple--text"
+                    color="#8ACBFE"
+                    height="30"
+                  >
+                  <span style="font-size:18px">
+                  {{ item.numero}}
+                  </span>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-card>
             
+            <hr>
             </div>
           </v-item>
         </v-item-group>

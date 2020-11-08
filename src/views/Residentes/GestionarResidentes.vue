@@ -150,8 +150,9 @@ export default {
       var user = {};
       await axios.get("/residente/id?id="+idresidente)
       .then(res => {
+        console.log(res)
          user = res.data;
-         user.datos.fechaNacimiento = res.data.datos
+         user.fechaNacimiento = res.data
                   .fechaNacimiento.split("T")[0];
          
       })
