@@ -93,7 +93,7 @@ export default {
         { text: "Fecha registro", value: "fechaRegistro" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-     /* planesI: [
+      planesI: [
         {
           nombre: "PlanI_Edu_Xiomara_1",
           usuaria: "Xiomara Paredes Guerra",
@@ -111,7 +111,7 @@ export default {
           fechaRegistro: "20/10/2019",
 
         }
-      ],*/
+      ],
       dialogodetalle: false,
       dialogoregistro: false,
       Visualizarplan:false
