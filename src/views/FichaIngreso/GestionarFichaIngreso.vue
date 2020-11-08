@@ -16,12 +16,12 @@
             <v-text-field
               v-model="search"
               append-icon="mdi-magnify"
-              label="Search"
+              label="Buscar"
               single-line
               hide-details
             ></v-text-field>
             <v-spacer></v-spacer>
-            <v-dialog v-model="dialogoregistro" max-width="880px">
+            <v-dialog v-model="dialogoNuevaFichaIngreso" max-width="360px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
@@ -31,12 +31,15 @@
                   v-on="on"
                 >
                 <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar Ficha Ingreso</span>
+                  <span>Nueva Ficha de Ingreso</span>
                 </v-btn>
               </template>
-                
+                <SeleccionarFichaIngreso
+                @close-dialog-initial="closeDialogNuevaFichaIngreso()"></SeleccionarFichaIngreso> 
+                <!--
                 <RegistrarFichaIngreso
                 @close-dialog-save="closeDialogRegistrar()"></RegistrarFichaIngreso> 
+                -->
             </v-dialog>
           </v-toolbar>
         </template>
@@ -67,6 +70,7 @@
 import axios from 'axios';
 //import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
 import RegistrarFichaIngreso from '@/components/fichaIngreso/RegistrarFichaIngreso.vue'
+import SeleccionarFichaIngreso from '@/components/fichaIngreso/SeleccionarFichaIngreso.vue'
 import ConsultarFichaIngresoEducativa  from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
@@ -74,6 +78,7 @@ export default {
   components: {
     // RegistrarPlanIntervencion,
      RegistrarFichaIngreso,
+     SeleccionarFichaIngreso,
      ConsultarFichaIngresoEducativa,
       
   },
@@ -95,7 +100,7 @@ export default {
       ],
       dialogoconsultar:false,
       dialogoregistro: false,
-      
+      dialogoNuevaFichaIngreso: false
     };
   },
       async created(){
@@ -116,6 +121,9 @@ export default {
 
     closeDialogConsultar(){
        this.dialogoconsultar = false;
+    },
+    closeDialogNuevaFichaIngreso(){
+       this.dialogoNuevaFichaIngreso = false;
     },
      async abrirDialogoConsultar(idresidente){
         this.residente = await this.loadResidenteDetalle(idresidente);
