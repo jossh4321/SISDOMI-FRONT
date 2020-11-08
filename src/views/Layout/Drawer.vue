@@ -169,7 +169,13 @@ export default {
           icon: "dashboard",
           name: "GestionInforme",
           href: "/dashboard/informes"
-        }
+        },{
+          title: "Gestion Ficha Ingreso",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarFichaIngreso",
+          href: "/dashboard/fichaIngreso"
+        },
       ],
       scrollSettings: {
         maxScrollbarLength: 160,

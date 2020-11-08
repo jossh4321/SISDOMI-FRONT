@@ -34,18 +34,21 @@
                   <span>Registrar nuevo Residente</span>
                 </v-btn>
               </template>
-                <RegistrarPlanIntervencion></RegistrarPlanIntervencion>
+                <!--AQUI VA ELCOMPONENTE -->
             </v-dialog>
           </v-toolbar>
         </template>
 
-        <template v-slot:[`item.actions`]="{ item }">
+        <template v-slot:[`item.actions`]="{ item }"><!--Abrir dialogo detalle -->
+
           <v-row align="center" justify="space-around">
-            <v-btn color="warning" dark @click="editItem(item)">
+            <!--BOTONES-->
+            <v-btn color="warning" 
+            dark 
+            @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
-
             <v-btn color="info" 
              dark
              @click="abrirDialogoDetalle(item.id)">
@@ -68,14 +71,15 @@
 </template>
 <script>
 import axios from 'axios';
-import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
+
+import  ModificarResidente  from '@/components/residentes/ActualizarResidente.vue'
 import  ConsultarResidente  from '@/components/residentes/DetalleResidente.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarResidentes",
   components: {
-     RegistrarPlanIntervencion,
-     ConsultarResidente
+     ConsultarResidente,
+     ModificarResidente
   },
   data() {
     return {
@@ -90,9 +94,9 @@ export default {
           value: "nombre",
         },
         { text: "Apellido", value: "apellido" },
-        { text: "Tipo de documento", value: "tipodocumento" },
-        { text: "N°documento", value: "numerodocumento" },
-        { text:"Fecha de Ingreso",value:"fechaingreso"},
+        { text: "Tipo de documento", value: "tipoDocumento" },
+        { text: "N°documento", value: "numeroDocumento" },
+        { text:"Fecha de Ingreso",value:"fechaIngreso"},
         { text: "Actions", value: "actions", sortable: false },
       ],
       /*planesI: [
@@ -147,8 +151,9 @@ export default {
       await axios.get("/residente/id?id="+idresidente)
       .then(res => {
          user = res.data;
-         user.datos.fechanacimiento = res.data.datos
-                  .fechanacimiento.split("T")[0];
+         user.datos.fechaNacimiento = res.data.datos
+                  .fechaNacimiento.split("T")[0];
+         
       })
       .catch(err => console.log(err));
       console.log(user);

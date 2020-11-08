@@ -1,8 +1,8 @@
 <template>
   <v-card >
-    <v-card-title class="justify-center">Detalle de Residente</v-card-title>
-    <v-stepper  v-model="step">
-      <v-stepper-header>
+    <v-card-title class="justify-center">Consultar Ficha Educativa</v-card-title>
+    <v-stepper v-model="step">
+    <v-stepper-header>
       <v-stepper-step
         editable
         step="1"
@@ -16,34 +16,24 @@
         editable
         step="2"
       >
-        Area Psicologica
-      </v-stepper-step>
-
-      <v-divider></v-divider>
-
-      <v-stepper-step
-        editable
-        step="3"
-      >
-        Area Educativa
+        Ficha Educativa
       </v-stepper-step>
     </v-stepper-header>
-    
-       <v-stepper-items><!--CONTIENE LOS STEPPERS CREADOS ARRIBA EN ESTE CASO SON TRES-->
-     <v-stepper-content step="1"><!--CONTIENE LOS STEPPERS 1 -->
+
+    <v-stepper-items>
+      <v-stepper-content step="1">
         <div class="container-user">
       <form>
         <v-text-field
-
            v-model="residente.nombre"
-          label="Nombres:"
+          label="Ingrese los Nombres"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-text-field
           v-model="residente.apellido"
-          label="Apellidos:"
+          label="Ingrese los Apellidos"
           outlined
           readonly
           color="#009900"
@@ -74,8 +64,8 @@
           ></v-date-picker>
         </v-menu>
         <v-select
-          :items="['DNI', 'Pasaporte', 'Carnet Extranjeria','dni']"
-          label="Tipo de Documento"
+          :items="['DNI', 'Pasaporte', 'Carnet Extranjeria']"
+          label="Ingrese el Tipo de Documento"
           dense
           outlined
           readonly
@@ -89,6 +79,7 @@
           readonly
           color="#009900"
         ></v-text-field>
+
         <v-row>
           <v-col>
             <v-btn block @click="step = 2" color="success">
@@ -105,75 +96,66 @@
         </v-row>
       </form>
     </div>
-      </v-stepper-content> 
-      <v-stepper-content step="2"><!--CONTIENE LOS STEPPERS 2 -->
-        <div class="container-user">
-      <form>
-        <v-textarea
-        label="Motivo de Ingreso"
-        v-model="residente.motivoingreso"
-        disabled:true
-       > </v-textarea>
-  
-        <v-textarea
-        label="Diagnostico Psicologico"
-        v-model="residente.motivoingreso"
-        disabled:true
-       > </v-textarea>
-        
-       
-     
-        <v-row> <!-- termina le texto -->
-          <v-col>
-            <v-btn block @click="step = 3" color="success">
-              <v-icon left>mdi-page-next-outline</v-icon>
-              <span>Continuar</span>
-            </v-btn>
-          </v-col>
-          <v-col>
-             <v-btn block @click="cerrarDialogo()" color="primary">
-              <v-icon left>mdi-close-outline</v-icon>
-              <span>Cerrar</span>
-            </v-btn>
-          </v-col>
-        </v-row>
-      </form>
-    </div>
-      </v-stepper-content> 
-      <v-stepper-content step="3"><!--CONTIENE LOS STEPPERS 3 -->
-        <div class="container-user">
+      </v-stepper-content>
+      <v-stepper-content step="2">
+        <div  class="container-user">
       <form>
         <v-text-field
+          v-model="documentoeducativo.nombre"
+          label="Nombre del colegio"
+          outlined
+          readonly
+          class="inputTextField"
+          color="#009900"
 
-           v-model="residente.nombre"
-          label="Modalidad:"
+        ></v-text-field>
+             <v-text-field
+          v-model="documentoeducativo.nivel"
+          label="Nivel"
           outlined
           readonly
+          class="inputTextField"
           color="#009900"
         ></v-text-field>
         <v-text-field
-          v-model="residente.apellido"
-          label="Nivel:"
+          v-model="documentoeducativo.nombre"
+          label="Grado"
+          outlined
+          readonly
+          class="inputTextField"
+          color="#009900"
+
+        ></v-text-field>
+
+        <v-select
+        v-model="documentoeducativo.estado"
+          :items="['presencial', 'virtual']"
+          label="Modalidad"
+          dense
           outlined
           readonly
           color="#009900"
-        ></v-text-field>
-        <v-text-field
-          v-model="residente.apellido"
-          label="Grado:"
-          outlined
-          readonly
-          color="#009900"
-        ></v-text-field>
-        
+        ></v-select>
+          <v-card style="margin:5px; padding:5px;border:1px solid #b3b3b3;">
+            <v-row>
+              <v-col >
+                <v-card-subtitle>Imagen del Perfil de {{usuario.datos.nombre}}</v-card-subtitle>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col
+              >
+                <v-img style="display:block"
+                      height="170"
+                    width="170"
+                      :src="usuario.datos.imagen"
+                    ></v-img>
+              </v-col>
+            </v-row>
+          </v-card>
+          <v-divider class="divider-custom"></v-divider>
         <v-row>
-          <v-col>
-            <v-btn block @click="step = 1" color="success">
-              <v-icon left>mdi-page-next-outline</v-icon>
-              <span>Continuar</span>
-            </v-btn>
-          </v-col>
-          <v-col>
+        <v-col>
              <v-btn block @click="cerrarDialogo()" color="primary">
               <v-icon left>mdi-close-outline</v-icon>
               <span>Cerrar</span>
@@ -181,17 +163,17 @@
           </v-col>
         </v-row>
       </form>
-    </div>
-      </v-stepper-content> 
+        </div>
+      </v-stepper-content>
     </v-stepper-items>
-    </v-stepper>   
+    </v-stepper>
   </v-card>
 </template>
-
 <script>
+
 export default {
-name:'DetalleResidente',
- props:["residente"],
+name:'ConsultarFichaIngreso',
+ props:["Documento"],
 data(){
   return{
     
