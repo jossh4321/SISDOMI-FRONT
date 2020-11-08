@@ -29,6 +29,10 @@ const routes = [{
             name: 'Test',
             component: Test
         }, {
+            path: 'test',
+            name: 'Test',
+            component: Test
+        }, {
             path: 'test1',
             name: 'Test1',
             component: Test1
@@ -44,9 +48,9 @@ const routes = [{
             path: 'informes',
             name: 'GestionarInforme',
             component: GestionarInforme
-        },{
-            path:'residentes',
-            name:'GestionarResidentes',
+        }, {
+            path: 'residentes',
+            name: 'GestionarResidentes',
             component: GestionarResidentes
         }],
         component: () =>
