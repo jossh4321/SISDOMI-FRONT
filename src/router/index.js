@@ -28,11 +28,7 @@ const routes = [{
             path: 'test',
             name: 'Test',
             component: Test
-        }, {
-            path: 'test',
-            name: 'Test',
-            component: Test
-        }, {
+        },  {
             path: 'test1',
             name: 'Test1',
             component: Test1
