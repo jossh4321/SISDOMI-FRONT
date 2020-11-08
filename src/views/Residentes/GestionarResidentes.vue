@@ -94,9 +94,9 @@ export default {
           value: "nombre",
         },
         { text: "Apellido", value: "apellido" },
-        { text: "Tipo de documento", value: "tipodocumento" },
-        { text: "N°documento", value: "numerodocumento" },
-        { text:"Fecha de Ingreso",value:"fechaingreso"},
+        { text: "Tipo de documento", value: "tipoDocumento" },
+        { text: "N°documento", value: "numeroDocumento" },
+        { text:"Fecha de Ingreso",value:"fechaIngreso"},
         { text: "Actions", value: "actions", sortable: false },
       ],
       /*planesI: [
@@ -153,6 +153,7 @@ export default {
          user = res.data;
          user.datos.fechaNacimiento = res.data.datos
                   .fechaNacimiento.split("T")[0];
+         
       })
       .catch(err => console.log(err));
       console.log(user);

@@ -55,6 +55,7 @@
           readonly
           color="#009900"
         ></v-text-field>
+
         <v-menu
           v-model="datemenu"
           :close-on-content-click="false"
@@ -98,19 +99,32 @@
         ></v-text-field>
         <v-text-field
            v-model="residente.lugarNacimiento"
+           
           label="Lugar de Nacimiento"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
-        <v-text-field
-           v-model="telefono"
-          label="Numeros"
+<!--NUMEROS TELEFONO -->
+        <div  v-for="(item ,index) in residente.telefonosReferencia" :key="index">
+            <v-text-field
+          v-model="item.referentefamiliar"
+          label="Referente Familiar"
           outlined
           readonly
           color="#009900"
-        ></v-text-field>
-        
+      >
+        </v-text-field>
+            <v-text-field
+          v-model="item.numero"
+          label="Numero"
+          outlined
+          readonly
+          color="#009900"
+      >
+        </v-text-field>
+        </div>
+        <!--FIN -->
         <v-row>
           <v-col>
             <v-btn block @click="step = 2" color="success">
@@ -210,6 +224,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
 name:'DetalleResidente',
  props:["residente"],
@@ -218,7 +233,7 @@ data(){
     
     datemenu: false,
       step:1,
-     telefono: "9498494944",
+     
    
      
   }
