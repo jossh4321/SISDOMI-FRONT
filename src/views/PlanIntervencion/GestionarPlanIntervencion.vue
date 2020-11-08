@@ -45,28 +45,43 @@
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
-
-            <v-btn color="info" dark @click="detailItem(item)">
-              <v-icon left> mdi-pencil </v-icon>
-              <span>Visualizar</span>
-            </v-btn>
+                 <v-dialog v-model="Visualizarplan" max-width="880px">
+                
+                    <v-btn color="info" @click="abrirDialogoDetalle(item.id)">
+                      <v-icon left> mdi-pencil </v-icon>
+                       <span>Visualizar</span>
+                         </v-btn>  
+                  </v-dialog> 
           </v-row>
         </template>
       </v-data-table>
+       <!----->
+      <!--Dialogo de Detalle-->
+      <v-dialog persistent
+                v-model="dialogodetalle" 
+                max-width="880px">
+          <VisualizarPlanIntervencion :plan="plan" @close-dialog-detail="closeDialogDetalle()">
+          </VisualizarPlanIntervencion>
+      </v-dialog>
     </v-card>
   </div>
 </template>
 <script>
-
+import axios from 'axios';
 import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
+import VisualizarPlanIntervencion from '@/components/planIntervencion/VisualizarPlanIntervencion.vue'
+import {mapMutations, mapState} from "vuex";
+
 export default {
   name: "GestionarPlanI",
   components: {
-     RegistrarPlanIntervencion
+     RegistrarPlanIntervencion,
+     VisualizarPlanIntervencion
   },
   data() {
     return {
       search: "",
+      plan:{},
       headers: [
         {
           text: "Nombre Plan Intervención",
@@ -78,34 +93,74 @@ export default {
         { text: "Fecha registro", value: "fechaRegistro" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-      planesI: [
+     /* planesI: [
         {
           nombre: "PlanI_Edu_Xiomara_1",
           usuaria: "Xiomara Paredes Guerra",
-          fechaRegistro: "15/09/2019"
+          fechaRegistro: "15/09/2019",
         },
         {
           nombre: "PlanI_Psico_Xiomara_1",
           usuaria: "Xiomara Paredes Guerra",
-          fechaRegistro: "16/09/2019"
+          fechaRegistro: "16/09/2019",
+
         },
         {
           nombre: "PlanI_Edu_Marlyn_1",
           usuaria: "Marlyn Candela Peña",
-          fechaRegistro: "20/10/2019"
+          fechaRegistro: "20/10/2019",
+
         }
-      ],
+      ],*/
+      dialogodetalle: false,
       dialogoregistro: false,
+      Visualizarplan:false
     };
   },
+
+   async created(){
+    this.obtenerPlanInterve()
+  },
   methods: {
+     ...mapMutations(["setPlanInterve"]),
     editItem(item) {
-      console.log(item);
+console.log(item);
     },
     detailItem(item) {
-      console.log(item);
+  console.log(item.id);
     },
+    /////////////////////////////////////
+  closeDialogDetalle(){
+      this.dialogodetalle = false;
+      },
+    ///abrir dialogo de detalle
+    async abrirDialogoDetalle(idPlanI){
+        this.plan = await this.loadResidenteDetalle(idPlanI);
+        this.dialogodetalle = !this.dialogodetalle;
+        },
+          async loadResidenteDetalle(idPlanI){
+      var Mydata = {};
+      await axios.get("/planintervencionsocial/id?id="+idPlanI)
+      .then(res => {
+         Mydata = res.data;
+         Mydata.datos.fechanacimiento = res.data.datos
+                  .fechanacimiento.split("T")[0];
+      })
+      .catch(err => console.log(err));
+      console.log(Mydata);
+      return Mydata;
+    },
+  ///////////////////////////////////////////////////
+    async obtenerPlanInterve(){
+           await axios.get("/PlanIntervencionSocial/all")
+            .then(res => {
+                    this.setPlanInterve(res.data);
+            }).catch(err => console.log(err));           
+    }
   },
+   computed:{
+ ...mapState(["planesI"])
+  }
 };
 </script>
 <style scoped>
