@@ -122,8 +122,43 @@
           readonly
           color="#009900"
       >
+
         </v-text-field>
         </div>
+<!-- -->
+        <v-item-group multiple>
+          <v-subheader>Numeros</v-subheader>
+          <v-item
+            v-for="(item ,index) in residente.telefonosReferencia" :key="index"
+            
+          >
+          <div>
+            <v-chip>
+           <v-row  class="align-content-lg
+" >
+              <v-col>
+          <v-chip
+              active-class="purple--text"
+              color="red"
+            >
+             {{ item.referentefamiliar}}
+            </v-chip>
+           </v-col>
+           <v-col>
+            <v-chip
+              active-class="purple--text"
+              color="blue"
+              
+            >
+             {{ item.numero}}
+            </v-chip>
+            </v-col>
+            </v-row>
+            </v-chip>
+            
+            </div>
+          </v-item>
+        </v-item-group>
         <!--FIN -->
         <v-row>
           <v-col>
