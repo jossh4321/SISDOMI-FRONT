@@ -1,134 +1,220 @@
 <template>
-    <v-card>
-    <v-card-title class="justify-center">Visualizar Plan de intervención</v-card-title>
+  <v-card>
+    <v-card-title class="justify-center"
+      >Registrar Plan de Intervención</v-card-title
+    >
 
     <v-stepper v-model="step">
-    <v-stepper-header>
-      <v-stepper-step
-        editable
-        step="1"
-      >
-        Datos Generales
-      </v-stepper-step>
+      <v-stepper-header>
+        <v-stepper-step editable step="1"> Datos Generales </v-stepper-step>
 
-      <v-divider></v-divider>
+        <v-divider></v-divider>
 
-      <v-stepper-step
-        editable
-        step="2"
-      >
-        Aspectos de intervención
-      </v-stepper-step>
-    </v-stepper-header>
+        <v-stepper-step editable step="2">
+          Aspectos de intervención
+        </v-stepper-step>
+      </v-stepper-header>
 
-    <v-stepper-items>
-      <v-stepper-content step="1">
-        <div class="container-planI">
-      <form>
-        <v-text-field
-          v-model="planI.nombreplan"
-          label="Ingrese el nombre del plan"
-          outlined
-          color="#009900"
-        ></v-text-field>
+      <v-stepper-items>
+        <v-stepper-content step="1">
+          <div class="container-planI">
+            <form>
+              <v-text-field
+                v-model="planI.nombreplan"
+                label="Ingrese el nombre del plan"
+                outlined
+                color="#009900"
+              ></v-text-field>
 
-        <v-text-field
-          v-model="planI.nombreusuaria"
-          label="Ingrese el nombre-dni de la usuaria"
-          outlined
-          color="#009900"
-        ></v-text-field>
+              <v-text-field
+                v-model="planI.nombreusuaria"
+                label="Ingrese el nombre-dni de la usuaria"
+                outlined
+                color="#009900"
+              ></v-text-field>
 
-        <v-text-field
-          v-model="planI.objetivogeneral"
-          label="Ingrese el objetivo general"
-          outlined
-          color="#009900"
-        ></v-text-field>
+              <v-text-field
+                v-model="planI.objetivogeneral"
+                label="Ingrese el objetivo general"
+                outlined
+                color="#009900"
+              ></v-text-field>
 
-        <v-textarea
-          v-model="planI.objetivoespecifico"
-          label="Ingrese los objetivos específicos"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-        ></v-textarea>
+              <v-container grid-list-md text-xs-center>
+                <v-layout row wrap>
+                  <v-flex xs10>
+                    <v-text-field
+                      v-model="objetivoespecificoAux"
+                      label="Ingrese los objetivos específicos"
+                      outlined
+                      color="#009900"
+                      shaped
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs2>
+                    <v-btn @click="addObjEspecifico">Añadir</v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-container>
 
-        <v-btn block @click="step = 2" color="primary">
-          <v-icon left>mdi-page-next-outline</v-icon>
-          <span>Continuar</span>
-        </v-btn>
-      </form>
-    </div>
-      </v-stepper-content>
-      <v-stepper-content step="2">
-        <div  class="container-user">
-      <form>
-        <br />
-        <v-textarea
-          v-model="planI.casos_problemas"
-          label="Casos/Problemas"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-        ></v-textarea>
+              <v-list flat>
+                <v-list-item
+                  v-for="(item, i) in planI.objetivoespecifico"
+                  :key="i"
+                >
+                  <v-list-item-icon>
+                    <v-icon
+                      @click="deleteItemObjEspecificios(i)"
+                      left
+                      color="red"
+                      >mdi-minus-circle</v-icon
+                    >
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title v-text="item"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
 
-        <v-textarea
-         v-model="planI.actividades_estrategias"
-          label="Actividades/estrategias"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-        ></v-textarea>
+              <v-btn block @click="step = 2" color="primary">
+                <v-icon left>mdi-page-next-outline</v-icon>
+                <span>Continuar</span>
+              </v-btn>
+            </form>
+          </div>
+        </v-stepper-content>
+        <v-stepper-content step="2">
+          <div class="container-user">
+            <form>
+              <br />
 
-        <v-textarea
-          v-model="planI.indicadores"
-          label="Indicadores"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-        ></v-textarea>
+              <v-container grid-list-md text-xs-center>
+                <v-layout row wrap>
+                  <v-flex xs10>
+                    <v-text-field
+                      v-model="casoAux"
+                      label="Casos/Problemas"
+                      outlined
+                      color="#009900"
+                      shaped
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs2>
+                    <v-btn @click="addCaso">Añadir</v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-container>
 
-        <v-textarea
-         v-model="planI.meta"
-          label="Meta"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-        ></v-textarea>
+              <v-list flat>
+                <v-list-item
+                  v-for="(item, i) in planI.casos_problemas"
+                  :key="i"
+                >
+                  <v-list-item-icon>
+                    <v-icon @click="deleteItemCasos(i)" left color="red"
+                      >mdi-minus-circle</v-icon
+                    >
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title v-text="item"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
 
-        <div>
-          <vue-dropzone ref="myVueDropzone"
-            @vdropzone-success="afterSuccess"
-            @vdropzone-removed-file="afterRemoved"
-            id="dropzone" :options="dropzoneOptions" >
-          </vue-dropzone>
-        </div>
-        <v-divider class="divider-custom"></v-divider>
+              <v-container grid-list-md text-xs-center>
+                <v-layout row wrap>
+                  <v-flex xs10>
+                    <v-text-field
+                      v-model="actividadAux"
+                      label="Actividades/estrategias"
+                      auto-grow
+                      outlined
+                      rows="2"
+                      row-height="25"
+                      color="#009900"
+                      shaped
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs2>
+                    <v-btn @click="addActividad">Añadir</v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-container>
 
-        <v-btn block color="accent">
-          <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
-          <span >Modificar Plan</span>
-        </v-btn>
-      </form>
-        </div>
-      </v-stepper-content>
-    </v-stepper-items>
+              <v-list flat>
+                <v-list-item
+                  v-for="(item, i) in planI.actividades_estrategias"
+                  :key="i"
+                >
+                  <v-list-item-icon>
+                    <v-icon @click="deleteItemActividades(i)" left color="red"
+                      >mdi-minus-circle</v-icon
+                    >
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title v-text="item"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+
+              <v-container grid-list-md text-xs-center>
+                <v-layout row wrap>
+                  <v-flex xs10>
+                    <v-text-field
+                      v-model="indicadorAux"
+                      label="Indicadores"
+                      outlined
+                      color="#009900"
+                      shaped
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs2>
+                    <v-btn @click="addIndicador">Añadir</v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+
+              <v-list flat>
+                <v-list-item v-for="(item, i) in planI.indicadores" :key="i">
+                  <v-list-item-icon>
+                    <v-icon @click="deleteItemIndicadores(i)" left color="red"
+                      >mdi-minus-circle</v-icon
+                    >
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title v-text="item"></v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+
+              <v-textarea
+                v-model="planI.meta"
+                label="Meta"
+                outlined
+                color="#009900"
+                shaped
+              ></v-textarea>
+
+              <div>
+                <vue-dropzone
+                  ref="myVueDropzone"
+                  @vdropzone-success="afterSuccess"
+                  @vdropzone-removed-file="afterRemoved"
+                  id="dropzone"
+                  :options="dropzoneOptions"
+                >
+                </vue-dropzone>
+              </div>
+              <v-divider class="divider-custom"></v-divider>
+
+              <v-btn block color="accent">
+                <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
+                <span>Registrar Plan</span>
+              </v-btn>
+            </form>
+          </div>
+        </v-stepper-content>
+      </v-stepper-items>
     </v-stepper>
   </v-card>
 </template>
@@ -136,56 +222,90 @@
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 export default {
-   components: {
-     vueDropzone: vue2Dropzone,
+  components: {
+    vueDropzone: vue2Dropzone,
   },
   data() {
-      return {
+    return {
       planI: {
-        nombreusuaria:"Xiomara Paredes Guerra",
-        nombreplan:"PlanI_Edu_Xiomara_1",
-        objetivogeneral:"Realizar un adecuado plan de intervención",
-        objetivoespecifico:"Responde a Plan de seguimiento",
-        casos_problemas:"1. Reinserción escolar.\n 2. No quiere participar en nivelación de matemática.\n 3. Retraso escolar.\n 4. Bajo rendimiento.\n 5. Problema de aprendizaje.",
-        actividades_estrategias:"1. Solicitar constancia de vacante.\n 2. Entrevista personal.",
-        indicadores:"1. Matricula en la I.E.\n 2.Participa en la nivelación escolar.",
-        meta:"Lograr nivelación en el grado correspondiente del área de matemática.",
+        nombreusuaria: "",
+        nombreplan: "",
+        objetivogeneral: "",
+        objetivoespecifico: [],
+        casos_problemas: [],
+        actividades_estrategias: [],
+        indicadores: [],
+        meta: "",
+        firma: null,
       },
       datemenu: false,
-      step:1,
+      step: 1,
       dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
         maxFilesize: 3.0,
-        maxFiles:1,
-        acceptedFiles:".jpg",
+        maxFiles: 1,
+        acceptedFiles: ".jpg",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
-         dictDefaultMessage: "Seleccione la firma del responsable o Arrastrela Aqui"
+        dictDefaultMessage:
+          "Seleccione la firma del responsable o Arrastrela Aqui",
       },
+      objetivoespecificoAux: "",
+      casoAux: "",
+      actividadAux: "",
+      indicadorAux: "",
     };
-  },methods:{
-    afterSuccess(file,response){
-       this.usuario.datos.imagen = file.dataURL;
-       this.$v.usuario.datos.imagen.$model = file.dataURL;
-    },afterRemoved(file, error, xhr){
-      this.usuario.datos.imagen = "";
-       this.$v.usuario.datos.imagen.$model = "";
-    }
-    ,mensaje(icono,titulo,texto,footer){
+  },
+  methods: {
+    afterSuccess(file, response) {
+      this.planI.firma = file.dataURL;
+      console.log(this.planI);
+      //this.$v.planI.firma.$model = file.dataURL;
+    },
+    afterRemoved(file, error, xhr) {
+      this.planI.firma.imagen = "";
+      //this.$v.planI.firma.$model = "";
+    },
+    mensaje(icono, titulo, texto, footer) {
       this.$swal({
         icon: icono,
         title: titulo,
         text: texto,
-        footer:footer
+        footer: footer,
       });
-    }
+    },
+    deleteItemObjEspecificios(index) {
+      this.planI.objetivoespecifico.splice(index, 1);
+    },
+    deleteItemCasos(index) {
+      this.planI.casos_problemas.splice(index, 1);
+    },
+    deleteItemActividades(index) {
+      this.planI.actividades_estrategias.splice(index, 1);
+    },
+    deleteItemIndicadores(index) {
+      this.planI.indicadores.splice(index, 1);
+    },
+    addObjEspecifico() {
+      this.planI.objetivoespecifico.push(this.objetivoespecificoAux);
+      this.objetivoespecificoAux = ""
+    },
+    addCaso() {
+      this.planI.casos_problemas.push(this.casoAux);
+      this.casoAux = ""
+    },
+    addActividad() {
+      this.planI.actividades_estrategias.push(this.actividadAux);
+      this.actividadAux = ""
+    },
+    addIndicador() {
+      this.planI.indicadores.push(this.indicadorAux);
+      this.indicadorAux = ""
+    },
   },
-  computed:{
-
-  }
-
-}
+  computed: {},
+};
 </script>
 <style  scoped>
 .container-planI {
@@ -208,12 +328,12 @@ export default {
 .subtitle {
   color: #314b5f;
 }
-.divider-custom{
-  margin-top:7px;
-  margin-bottom:7px
+.divider-custom {
+  margin-top: 7px;
+  margin-bottom: 7px;
 }
 
-.inputTextField{
+.inputTextField {
   border-color: green;
 }
 </style>
