@@ -41,8 +41,8 @@
 
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
-             <v-dialog v-model="Actualizarplan" max-width="880px">
-               <ActualizarPlanIntervencion :planIntervencion="planIntervencion" @close-dialog-detail="closeDialogActualizar()">
+             <v-dialog v-model="dialogoactualizacion" max-width="880px">
+               <ActualizarPlanIntervencion v-if="dialogoactualizacion" :planIntervencion="planIntervencion" @close-dialog-detail="closeDialogActualizar()">
           </ActualizarPlanIntervencion></v-dialog> 
             <v-btn color="warning" dark @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
@@ -90,6 +90,7 @@ export default {
     return {
       search: "",
       plan:{},
+      planIntervencion: [],
       headers: [
         {
           text: "Nombre Plan Intervención",
@@ -123,7 +124,7 @@ export default {
       dialogodetalle: false,
       dialogoregistro: false,
       Visualizarplan:false,
-      Actualizarplan: false
+      dialogoactualizacion: false
     };
   },
 
@@ -133,6 +134,7 @@ export default {
   methods: {
      ...mapMutations(["setPlanInterve"]),
     editItem(item) {
+this.dialogoactualizacion=!this.dialogoactualizacion;
 console.log(item);
     },
     detailItem(item) {
@@ -167,9 +169,9 @@ console.log(item);
             }).catch(err => console.log(err));           
     }
   },
-   computed:{
+  /* computed:{
  ...mapState(["planesI"])
-  }
+  }*/
 };
 </script>
 <style scoped>
