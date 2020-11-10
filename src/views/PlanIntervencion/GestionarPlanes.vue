@@ -115,7 +115,7 @@
     </v-dialog>
 
     <v-dialog v-model="dialogPlanRegister" persistent max-width="880">
-      <component :is="selectedPlan.value"></component>
+      <component :is="selectedPlan.value" @close-dialog="closeDialog"></component>
     </v-dialog>
   </v-card>
 </template>
@@ -190,6 +190,9 @@ export default {
       this.dialogRegister = false;
       this.dialogPlanRegister = true;
     },
+    closeDialog() {
+      this.dialogPlanRegister = false;
+    },
   },
   computed: {},
   created() {
@@ -204,7 +207,7 @@ export default {
       });
   },
   components: {
-    RegistrarPlanIntervencion
+    RegistrarPlanIntervencion,
   },
 };
 </script>

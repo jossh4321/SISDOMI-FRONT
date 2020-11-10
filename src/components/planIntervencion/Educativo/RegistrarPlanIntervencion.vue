@@ -26,12 +26,14 @@
                 color="#009900"
               ></v-text-field>
 
-              <v-text-field
+              <v-autocomplete
+                dense
+                filled
+                rounded
                 v-model="planI.nombreusuaria"
-                label="Ingrese el nombre-dni de la usuaria"
-                outlined
-                color="#009900"
-              ></v-text-field>
+                :items="listResidentes"
+              >
+              </v-autocomplete>
 
               <v-text-field
                 v-model="planI.objetivogeneral"
@@ -75,11 +77,16 @@
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
-
-              <v-btn block @click="step = 2" color="primary">
-                <v-icon left>mdi-page-next-outline</v-icon>
-                <span>Continuar</span>
-              </v-btn>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closeDialog">
+                  Cerrar
+                </v-btn>
+                <v-btn block @click="step = 2" color="primary">
+                  <v-icon left>mdi-page-next-outline</v-icon>
+                  <span>Continuar</span>
+                </v-btn>
+              </v-card-actions>
             </form>
           </div>
         </v-stepper-content>
@@ -206,11 +213,16 @@
                 </vue-dropzone>
               </div>
               <v-divider class="divider-custom"></v-divider>
-
-              <v-btn block color="accent">
-                <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
-                <span>Registrar Plan</span>
-              </v-btn>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closeDialog">
+                  Cerrar
+                </v-btn>
+                <v-btn block color="accent">
+                  <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
+                  <span>Registrar Plan</span>
+                </v-btn>
+              </v-card-actions>
             </form>
           </div>
         </v-stepper-content>
@@ -255,6 +267,7 @@ export default {
       casoAux: "",
       actividadAux: "",
       indicadorAux: "",
+      listResidentes: ["pollo", "choclo", "tamalito"],
     };
   },
   methods: {
@@ -289,19 +302,22 @@ export default {
     },
     addObjEspecifico() {
       this.planI.objetivoespecifico.push(this.objetivoespecificoAux);
-      this.objetivoespecificoAux = ""
+      this.objetivoespecificoAux = "";
     },
     addCaso() {
       this.planI.casos_problemas.push(this.casoAux);
-      this.casoAux = ""
+      this.casoAux = "";
     },
     addActividad() {
       this.planI.actividades_estrategias.push(this.actividadAux);
-      this.actividadAux = ""
+      this.actividadAux = "";
     },
     addIndicador() {
       this.planI.indicadores.push(this.indicadorAux);
-      this.indicadorAux = ""
+      this.indicadorAux = "";
+    },
+    closeDialog() {
+      this.$emit("close-dialog");
     },
   },
   computed: {},
