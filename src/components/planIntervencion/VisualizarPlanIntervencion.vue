@@ -109,8 +109,8 @@
         ></v-textarea>
 
         <v-textarea
-         v-model="planI.meta"
-          label="Meta"
+         v-model="plan.nombre"
+          label = "Meta"
           auto-grow
           outlined
           rows="2"
@@ -131,10 +131,10 @@
           </vue-dropzone>
         </div>
         <v-divider class="divider-custom"></v-divider>
-        <v-btn block color="accent">  
-          <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
-          <span >Volver</span>
-        </v-btn>
+            <v-btn block @click="cerrarDialogo()" color="primary">
+              <v-icon left>mdi-close-outline</v-icon>
+              <span>Cerrar</span>
+            </v-btn>
       </form>
         </div>
       </v-stepper-content>
@@ -147,15 +147,16 @@ import vue2Dropzone from "vue2-dropzone";
 
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 export default {
+  props:["plan"],
    components: {
-     vueDropzone: vue2Dropzone,
-  
+     vueDropzone: vue2Dropzone
   },
   data() {
       return {
+       
       planI: {
         
-      /*  nombreusuaria:"Xiomara Paredes Guerra",
+        /*nombreusuaria:"Xiomara Paredes Guerra",
         nombreplan:"PlanI_Edu_Xiomara_1",
         objetivogeneral:"Realizar un adecuado plan de intervención",
         objetivoespecifico:"Responde a Plan de seguimiento",
@@ -163,6 +164,7 @@ export default {
         actividades_estrategias:"1. Solicitar constancia de vacante.\n 2. Entrevista personal.",
         indicadores:"1. Matricula en la I.E.\n 2.Participa en la nivelación escolar.",
         meta:"Lograr nivelación en el grado correspondiente del área de matemática.",*/
+   
       },
       datemenu: false,
       step:1,
@@ -178,7 +180,11 @@ export default {
       },
     };
   },methods:{
-    afterSuccess(file,response){
+   cerrarDialogo(){
+      this.$emit("close-dialog-detail");
+    },
+   
+   afterSuccess(file,response){
        this.usuario.datos.imagen = file.dataURL;
        this.$v.usuario.datos.imagen.$model = file.dataURL;
     },afterRemoved(file, error, xhr){
