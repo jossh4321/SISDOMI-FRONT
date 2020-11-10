@@ -30,11 +30,13 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                <v-icon left>mdi-account-multiple-plus-outline</v-icon>
+                  <v-icon left>mdi-account-multiple-plus-outline</v-icon>
                   <span>Registrar nuevo Plan</span>
                 </v-btn>
               </template>
-                <RegistrarPlanIntervencion></RegistrarPlanIntervencion>
+              <RegistrarPlanIntervencion
+                @close-dialog="closeDialog"
+              ></RegistrarPlanIntervencion>
             </v-dialog>
           </v-toolbar>
         </template>
@@ -48,60 +50,56 @@
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
-            
-
-                 <v-dialog v-model="Visualizarplan" max-width="880px">
-                
-                    <v-btn color="info" @click="abrirDialogoDetalle(item.id)">
-                      <v-icon left> mdi-pencil </v-icon>
-                       <span>Visualizar</span>
-                         </v-btn>  
-                  </v-dialog> 
+            <v-dialog v-model="Visualizarplan" max-width="880px">
+              <v-btn color="info" @click="abrirDialogoDetalle(item.id)">
+                <v-icon left> mdi-pencil </v-icon>
+                <span>Visualizar</span>
+              </v-btn>
+            </v-dialog>
           </v-row>
         </template>
       </v-data-table>
-       <!----->
+      <!----->
       <!--Dialogo de Detalle-->
-      <v-dialog persistent
-                v-model="dialogodetalle" 
-                max-width="880px">
-          <VisualizarPlanIntervencion :plan="plan" @close-dialog-detail="closeDialogDetalle()">
-          </VisualizarPlanIntervencion>
+      <v-dialog persistent v-model="dialogodetalle" max-width="880px">
+        <VisualizarPlanIntervencion
+          :plan="plan"
+          @close-dialog-detail="closeDialogDetalle()"
+        >
+        </VisualizarPlanIntervencion>
       </v-dialog>
       
     </v-card>
   </div>
 </template>
 <script>
-import axios from 'axios';
-import RegistrarPlanIntervencion from '@/components/planIntervencion/Educativo/RegistrarPlanIntervencion.vue'
-import VisualizarPlanIntervencion from '@/components/planIntervencion/Educativo/VisualizarPlanIntervencion.vue'
-import {mapMutations, mapState} from "vuex";
+import axios from "axios";
+import RegistrarPlanIntervencion from "@/components/planIntervencion/Educativo/RegistrarPlanIntervencion.vue";
+import VisualizarPlanIntervencion from "@/components/planIntervencion/Educativo/VisualizarPlanIntervencion.vue";
+import { mapMutations, mapState } from "vuex";
 
 export default {
   name: "GestionarPlanI",
   components: {
-     RegistrarPlanIntervencion,
-     VisualizarPlanIntervencion,
-     ActualizarPlanIntervencion
+    RegistrarPlanIntervencion,
+    VisualizarPlanIntervencion,
   },
   data() {
     return {
       search: "",
-      plan:{},
-      planIntervencion: [],
+      plan: {},
       headers: [
         {
           text: "Nombre Plan Intervención",
           align: "start",
           sortable: false,
-          value: "nombre"
+          value: "nombre",
         },
         { text: "Usuaria", value: "usuaria" },
         { text: "Fecha registro", value: "fechaRegistro" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-      planesI: [
+       planesI: [
         {
           nombre: "PlanI_Edu_Xiomara_1",
           usuaria: "Xiomara Paredes Guerra",
@@ -122,55 +120,60 @@ export default {
       ],
       dialogodetalle: false,
       dialogoregistro: false,
-      Visualizarplan:false,
-      dialogoactualizacion: false
+      Visualizarplan: false,
     };
   },
 
-   async created(){
-    this.obtenerPlanInterve()
+  async created() {
+    this.obtenerPlanInterve();
   },
   methods: {
-     ...mapMutations(["setPlanInterve"]),
+    ...mapMutations(["setPlanInterve"]),
     editItem(item) {
-this.dialogoactualizacion=!this.dialogoactualizacion;
-console.log(item);
+      console.log(item);
     },
     detailItem(item) {
-  console.log(item.id);
+      console.log(item.id);
     },
     /////////////////////////////////////
-  closeDialogDetalle(){
+    closeDialogDetalle() {
       this.dialogodetalle = false;
-      },
+    },
     ///abrir dialogo de detalle
-    async abrirDialogoDetalle(idPlanI){
-        this.plan = await this.loadResidenteDetalle(idPlanI);
-        this.dialogodetalle = !this.dialogodetalle;
-        },
-          async loadResidenteDetalle(idPlanI){
+    async abrirDialogoDetalle(idPlanI) {
+      this.plan = await this.loadResidenteDetalle(idPlanI);
+      this.dialogodetalle = !this.dialogodetalle;
+    },
+    async loadResidenteDetalle(idPlanI) {
       var Mydata = {};
-      await axios.get("/planintervencionsocial/id?id="+idPlanI)
-      .then(res => {
-         Mydata = res.data;
-         Mydata.datos.fechanacimiento = res.data.datos
-                  .fechanacimiento.split("T")[0];
-      })
-      .catch(err => console.log(err));
+      await axios
+        .get("/planintervencionsocial/id?id=" + idPlanI)
+        .then((res) => {
+          Mydata = res.data;
+          Mydata.datos.fechanacimiento = res.data.datos.fechanacimiento.split(
+            "T"
+          )[0];
+        })
+        .catch((err) => console.log(err));
       console.log(Mydata);
       return Mydata;
     },
-  ///////////////////////////////////////////////////
-    async obtenerPlanInterve(){
-           await axios.get("/PlanIntervencionSocial/all")
-            .then(res => {
-                    this.setPlanInterve(res.data);
-            }).catch(err => console.log(err));           
-    }
+    ///////////////////////////////////////////////////
+    async obtenerPlanInterve() {
+      await axios
+        .get("/PlanIntervencionSocial/all")
+        .then((res) => {
+          this.setPlanInterve(res.data);
+        })
+        .catch((err) => console.log(err));
+    },
+    closeDialog() {
+      this.dialogoregistro = false;
+    },
   },
-  /* computed:{
- ...mapState(["planesI"])
-  }*/
+  computed: {
+    ...mapState(["planesI"]),
+  },
 };
 </script>
 <style scoped>
