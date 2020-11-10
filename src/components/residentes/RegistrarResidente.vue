@@ -301,7 +301,7 @@
       <v-dialog
         v-model="dialog1"
         persistent
-        max-width="600px"
+        max-width="850px"
       >
         <template v-slot:activator="{ on }">
           <v-btn
@@ -329,7 +329,7 @@
 
                   <v-text-field
                     v-model="progreso.estado"
-                    label="Ingrese el Referente Familiar"
+                    label="Ingrese el Estado"
                      color="#009900"
                   ></v-text-field>
                 
