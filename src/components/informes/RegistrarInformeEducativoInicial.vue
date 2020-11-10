@@ -1,4 +1,5 @@
 <template>
+<v-dialog v-model="show">
     <v-card >
       <v-card-title class="justify-center">Registro de Informe Educativo Inicial</v-card-title>
       <v-stepper v-model="step">
@@ -127,7 +128,7 @@
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-btn block @click="show=false" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
                       </v-btn>
@@ -147,7 +148,7 @@
                   </v-btn>
                 </v-col>
                 <v-col>
-                  <v-btn block @click="cerrarDialogo()" color="primary">
+                  <v-btn block @click="show=false" color="primary">
                     <v-icon left>mdi-close-outline</v-icon>
                     <span>Cerrar</span>
                   </v-btn>
@@ -159,6 +160,7 @@
       </v-stepper-items>
       </v-stepper>        
     </v-card>
+  </v-dialog>
 </template>
 <script> 
 
@@ -170,7 +172,7 @@ import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
 
 export default {
-    props:["listaresidentes"],
+    props:["listaresidentes","visible"],
     ...mapMutations(["addInforme"]),
     data() {
         return {
@@ -206,6 +208,18 @@ export default {
         text: texto,
         footer:footer
       });
+    },
+    computed: {
+    show: {
+      get () {
+        return this.visible
+      },
+      set (value) {
+        if (!value) {
+          this.$emit('close')
+        }
+      }
     }
+  }
 }
 </script>
