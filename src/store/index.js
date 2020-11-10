@@ -31,9 +31,16 @@ export default new Vuex.Store({
         setResidentes(state, value) {
             state.residentes = value;
         },
+        addResidente(state,value){
+           state.residentes.push(value);
+        },
+        ///INFORMES
         setInformes(state, value) {
             state.informes = value;
-        }
+        },
+        addInforme(state, value) {
+            state.informes.push(value);
+        },
     },
     actions: {},
     modules: {}

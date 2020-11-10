@@ -40,7 +40,7 @@
               </template>
                 <RegistrarUsuario
                   :listaroles="listaroles"
-                 @close-dialog-save="closeDialogRegistrar()"></RegistrarUsuario>
+                  @close-dialog-save="closeDialogRegistrar()"></RegistrarUsuario>
             </v-dialog>
             <!---->
           </v-toolbar>

@@ -74,9 +74,8 @@
 </template>
 <script>
 import axios from 'axios';
-import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
-import VisualizarPlanIntervencion from '@/components/planIntervencion/VisualizarPlanIntervencion.vue'
-import ActualizarPlanIntervencion from '@/components/planIntervencion/ActualizarPlanIntervencion.vue'
+import RegistrarPlanIntervencion from '@/components/planIntervencion/Educativo/RegistrarPlanIntervencion.vue'
+import VisualizarPlanIntervencion from '@/components/planIntervencion/Educativo/VisualizarPlanIntervencion.vue'
 import {mapMutations, mapState} from "vuex";
 
 export default {

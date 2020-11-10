@@ -3,13 +3,13 @@
         <v-card-title class="justify-center">Seleccione el tipo de informe que desea registrar</v-card-title>               
          <div  class="container-user">
              <v-card-text>            
-            <v-combobox              
-                :items="items"
+            <v-select
                 v-model="items.value"
-                label="Selector de Formularios de Informes"            
+                :items="items"
+                label="Selector de Formularios de Informes"
                 outlined
-                dense                
-            ></v-combobox>            
+                dense
+            ></v-select>            
             <v-row>
                 <v-col>
                     <v-btn block @click="cerrarDialogo()" color="primary">
@@ -17,22 +17,33 @@
                     <span>Cerrar</span>
                     </v-btn>
                 </v-col>
-                <v-col>
-                    <v-btn block color="success">
-                    <v-icon left>done</v-icon>
-                    <span >Continuar</span>
-                    </v-btn>                    
-                </v-col>
+                <template>
+                    <v-col>
+                        <v-btn block @click="abrirDialogo()" color="success">
+                        <v-icon left>done</v-icon>
+                        <span >Continuar</span>
+                        </v-btn>
+                        <RegistrarInformeEducativoInicial :listaresidentes="listaresidentes" :visible="showRegistrarInformeEI"  @close="showRegistrarInformeEI=false"/>
+                        <RegistrarInformeEducativoEvolutivo :visible="showRegistrarInformeEE" @close="showRegistrarInformeEE=false"/>                     
+                    </v-col>
+                </template>
             </v-row>
             </v-card-text>                       
          </div>
     </v-card>
 </template>
 <script> 
-
+import axios from 'axios';
+import RegistrarInformeEducativoInicial from '@/components/informes/RegistrarInformeEducativoInicial.vue'
+import RegistrarInformeEducativoEvolutivo from '@/components/informes/RegistroInformeEducativoEvolutivo.vue'
+import {mapMutations, mapState} from "vuex";
 export default {
+    components: {
+        RegistrarInformeEducativoInicial,
+        RegistrarInformeEducativoEvolutivo
+    },
     data () {
-      return {               
+      return {                
         items: [
             { value: '1', text: 'Informe Educativo Inicial'},
             { value: '2', text: 'Informe Educativo Evolutivo'},
@@ -44,11 +55,36 @@ export default {
             { value: '8', text: 'Informe Psicológico Evolutivo'},
             { value: '9', text: 'Informe Psicológico Final'}
         ],
+        listaresidentes:[],
+        showRegistrarInformeEI: false,
+        showRegistrarInformeEE: false
       }
     },
+    async created(){    
+      this.obtenerResidentes();
+    },
      methods:{
-         cerrarDialogo(){            
+        cerrarDialogo(){            
             this.$emit("close-dialog-save");
+        },
+        abrirDialogo(){
+            console.log(this.items.value);
+            if(this.items.value === "1"){
+                this.showRegistrarInformeEI = true;
+            }else if(this.items.value ==="2"){
+                this.showRegistrarInformeEE = true;
+            } 
+            else{
+                console.log("no encontre ni pincho");
+            }
+            this.$emit("close-dialog-save");
+        },
+        async obtenerResidentes(){
+          await axios.get("/residente/all")
+                  .then( x => {
+                            this.listaresidentes = x.data;
+                            console.log(this.listaresidentes);
+                  }).catch(err => console.log(err));
         }
      }
 }

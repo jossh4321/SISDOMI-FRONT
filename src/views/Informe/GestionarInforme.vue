@@ -38,8 +38,9 @@
                   <span>Registrar Informe</span>
                 </v-btn>
               </template>
-                <RegistrarInformeEducativoInicial                  
-                 @close-dialog-save="closeDialogRegistrar()"></RegistrarInformeEducativoInicial> 
+                <RegistrarInforme                
+                 @close-dialog-save="closeDialogRegistrar()"                                  
+                 ></RegistrarInforme> 
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -55,13 +56,11 @@
 
 import axios from 'axios';
 import RegistrarInforme from '@/components/informes/RegistrarInforme.vue'
-import RegistrarInformeEducativoInicial from '@/components/informes/RegistrarInformeEducativoInicial.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarInforme",
   components: {
-    RegistrarInforme,
-    RegistrarInformeEducativoInicial
+    RegistrarInforme
   },
   data() {
     return {
@@ -74,12 +73,13 @@ export default {
           sortable: false,
           value: "codigodocumento",
         },
-        { text: "Nombre del residente", value:"datosresidente.apellido"},
+        { text: "Nombre del residente", value:"nombrecompleto"},
         { text: "Fecha de creación", value: "fechacreacion" },
         { text: "Tipo de Informe", value: "tipo" },        
         { text: "Acciones", value: "actions", sortable: false },
       ],
-       dialogoregistro: false
+       dialogoregistro: false,
+       listaresidentes:[]
     };
   },
   async created(){    

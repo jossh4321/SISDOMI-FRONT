@@ -21,7 +21,11 @@
               hide-details
             ></v-text-field>
             <v-spacer></v-spacer>
-            <v-dialog v-model="dialogoregistro" max-width="880px">
+            <!--Dialogo de Registro-->
+            <v-dialog
+              persistent
+              v-model="dialogoregistro" 
+              max-width="880px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
@@ -34,7 +38,8 @@
                   <span>Registrar nuevo Residente</span>
                 </v-btn>
               </template>
-                <!--AQUI VA ELCOMPONENTE -->
+                <RegistrarResidente
+                @close-dialog-save="closeDialogRegistrar()"></RegistrarResidente>
             </v-dialog>
           </v-toolbar>
         </template>
@@ -74,12 +79,14 @@ import axios from 'axios';
 
 import  ModificarResidente  from '@/components/residentes/ActualizarResidente.vue'
 import  ConsultarResidente  from '@/components/residentes/DetalleResidente.vue'
+import  RegistrarResidente  from '@/components/residentes/RegistrarResidente.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarResidentes",
   components: {
      ConsultarResidente,
-     ModificarResidente
+     ModificarResidente,
+     RegistrarResidente
   },
   data() {
     return {
@@ -123,6 +130,7 @@ export default {
         }
       ],*/
       dialogoregistro: false,
+      dialogoactualizacion: false,
       dialogodetalle:false,
     };
   },
@@ -140,6 +148,9 @@ export default {
     closeDialogDetalle(){
       this.dialogodetalle = false;
       },
+       closeDialogRegistrar(){
+      this.dialogoregistro = false;
+    },
     ///abrir dialogo de detalle
     async abrirDialogoDetalle(idresidente){
         this.residente = await this.loadResidenteDetalle(idresidente);
