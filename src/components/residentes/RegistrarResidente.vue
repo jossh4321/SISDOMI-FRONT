@@ -146,7 +146,7 @@
                      color="#009900"
                 ></v-text-field>
          <!-- --> <v-menu   
-          v-model="datemenu"
+          v-model="datemenu1"
           :close-on-content-click="false"
           :nudge-right="40"
           transition="scale-transition"
@@ -229,6 +229,7 @@ export default {
   data(){
     return{
       datemenu: false,
+      datemenu1:false,
        step:1
        
    ,
