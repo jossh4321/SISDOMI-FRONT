@@ -543,7 +543,7 @@ export default {
     }
     }
   },
-  created:{
+  created(){
     
 
   },
@@ -610,6 +610,7 @@ export default {
 },////GUARDAR PROGRESO DEL modal ///
       guardarProgreso(){
   let progreso={ fase:this.progreso.fase,fechaingreso:this.progreso.fechaingreso,fechafinalizacion:this.progreso.fechafinalizacion,estado:this.progreso.estado}//creamos variables 
+   console.log(this.residente)
 
   this.residente.progreso.push(progreso); //añadimos al arreglo principal
   ///LIMPIAMOS LOS CAMPOS//
