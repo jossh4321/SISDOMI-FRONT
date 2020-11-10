@@ -107,7 +107,7 @@
         ></v-text-field>
 <!--NUMEROS TELEFONO -->
         
-<!-- -->
+<!-- Opcion 1 -->
         <v-item-group multiple>
           
           <v-item
@@ -145,7 +145,75 @@
             </div>
           </v-item>
         </v-item-group>
-        <!--FIN -->
+<!--FIN -->
+
+<!-- Opcion 2 -->
+      <v-card style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA">
+          <v-row align="center">
+            <v-col>
+              <v-card-title style="font-size:22px;padding: 0px 10px;" >Referentes Familiares</v-card-title>
+            </v-col>
+            <v-col align="right">
+              <v-btn style="margin-right:10px;"
+                    dark
+                    color="green"
+                    >Agregar
+                    </v-btn>
+            </v-col>
+          </v-row>
+          <v-card 
+            tile
+            elevation="0"
+            color="#FAFAFA" 
+            style="margin-top:5px" 
+            height="60"
+            v-for="(item ,index) in residente.telefonosReferencia" :key="index"
+          >
+
+            <v-row style="margin-left:10px;heigh:100%" align="center">
+              <v-col :cols="5">
+                <article>
+                    <img style="margin-right:5px;width:6% " src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg" alt="imagen usuario">
+                    <span style="font-size:18px" > {{ item.referentefamiliar}}</span>
+                </article>
+                  
+              </v-col>
+              <v-col :cols="3">
+                <article>
+                    <img style="margin-right:10px;width:8%" src="https://www.flaticon.es/svg/static/icons/svg/633/633544.svg" alt="imagen telefono">
+                    <span style="font-size:18px">{{ item.numero}}</span>
+                </article>
+              </v-col>
+              <v-col :cols="4" align="right"> 
+                <div style="margin-right:20px">
+                    <v-btn style="margin-right:10px"
+                    fab
+                    x-small
+                    dark
+                    color="#126BB5"
+                    >
+                      <v-icon dark>
+                        mdi-pencil
+                      </v-icon>
+                    </v-btn>
+                    <v-btn 
+                    fab
+                    x-small
+                    dark
+                    color="red"
+                    >
+                      <v-icon dark>
+                        mdi-minus
+                      </v-icon>
+                    </v-btn>
+                </div>
+              </v-col>
+            </v-row>       
+          </v-card>
+      </v-card>
+
+
+<!--FIN -->
         <v-row>
           <v-col>
             <v-btn block @click="step = 2" color="success">
@@ -272,6 +340,11 @@ data(){
 </script>
 
 
-<style>
-
+<style scoped>
+div.btn__content {
+  padding: 0;
+}
+div.card__actions .btn {
+  min-width: 0;
+}
 </style>
