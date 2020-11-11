@@ -79,8 +79,8 @@
               <v-text-field
                 v-model="planI.contenido.objetivoGeneral"
                 label="Ingrese el objetivo general"
-                @input="$v.planI.objetivoGeneral.$touch()"
-                @blur="$v.planI.objetivoGeneral.$touch()"
+                @input="$v.planI.contenido.objetivoGeneral.$touch()"
+                @blur="$v.planI.contenido.objetivoGeneral.$touch()"
                 :error-messages="errorGeneral"
                 outlined
                 color="#009900"
@@ -92,8 +92,7 @@
                     <v-text-field
                       v-model="objetivoespecificoAux"
                       label="Ingrese los objetivos específicos"
-                      @input="$v.planI.objetivoEspecificos.$touch()"
-                      @blur="$v.planI.objetivoEspecificos.$touch()"
+                      @blur="$v.planI.contenido.objetivoEspecificos.$touch()"
                       :error-messages="errorEspecificos"
                       outlined
                       color="#009900"
@@ -147,8 +146,7 @@
                     <v-text-field
                       v-model="aspectoAux"
                       label="Aspectos de Intervención"
-                      @input="$v.planI.aspectosIntervencion.$touch()"
-                      @blur="$v.planI.aspectosIntervencion.$touch()"
+                      @blur="$v.planI.contenido.aspectosIntervencion.$touch()"
                       :error-messages="errorAspectos"
                       outlined
                       color="#009900"
@@ -182,8 +180,7 @@
                     <v-text-field
                       v-model="actividadAux"
                       label="Actividades/Estrategias"
-                      @input="$v.planI.estrategias.$touch()"
-                      @blur="$v.planI.estrategias.$touch()"
+                      @blur="$v.planI.contenido.estrategias.$touch()"
                       :error-messages="errorEstrategias"
                       outlined
                       color="#009900"
@@ -217,8 +214,7 @@
                     <v-text-field
                       v-model="indicadorAux"
                       label="Indicadores"
-                      @input="$v.planI.indicadores.$touch()"
-                      @blur="$v.planI.indicadores.$touch()"
+                      @blur="$v.planI.contenido.indicadores.$touch()"
                       :error-messages="errorIndicadores"
                       outlined
                       color="#009900"
@@ -251,9 +247,8 @@
                   <v-flex xs10>
                     <v-text-field
                       v-model="metaAux"
-                      label="Meta"
-                      @input="$v.planI.metas.$touch()"
-                      @blur="$v.planI.metas.$touch()"
+                      label="Metas"
+                      @blur="$v.planI.contenido.metas.$touch()"
                       :error-messages="errorMetas"
                       outlined
                       color="#009900"
@@ -290,6 +285,11 @@
                   :options="dropzoneOptions"
                 >
                 </vue-dropzone>
+                <v-card v-if="errorImagen" color="red">
+                  <v-card-text class="text-center" style="color: white">
+                    Debe subir una firma obligatoriamente
+                  </v-card-text>
+                </v-card>
               </div>
               <v-divider class="divider-custom"></v-divider>
               <v-card-actions>
@@ -391,11 +391,11 @@ export default {
     },
     afterSuccess(file, response) {
       this.firmaAux = file.dataURL;
-      //this.$v.planI.firma.$model = file.dataURL;
+      this.$v.planI.firmaAux.$model = file.dataURL;
     },
     afterRemoved(file, error, xhr) {
       this.planI.firma.imagen = "";
-      //this.$v.planI.firma.$model = "";
+      this.$v.planI.firmaAux.$model = "";
     },
     mensaje(icono, titulo, texto, footer) {
       this.$swal({
@@ -596,6 +596,12 @@ export default {
         errors.push("Debe ingresar al menos una meta obligatoriamente");
       return errors;
     },
+    errorImagen() {
+      return this.$v.firmaAux.required == false &&
+        this.$v.firmaAux.$dirty == true
+        ? true
+        : false;
+    },
   },
   async created() {
     this.obtenerResidentes();
@@ -644,6 +650,9 @@ export default {
             urlfirma: ""
           }, */
         },
+      },
+      firmaAux: {
+        required,
       },
     };
   },
