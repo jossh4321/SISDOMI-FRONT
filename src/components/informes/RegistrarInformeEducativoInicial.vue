@@ -1,5 +1,5 @@
 <template>
-<v-dialog v-model="show">
+<v-dialog v-model="show" max-width="50%">
     <v-card >
       <v-card-title class="justify-center">Registro de Informe Educativo Inicial</v-card-title>
       <v-stepper v-model="step">
@@ -24,6 +24,7 @@
             <form>
                 <v-autocomplete              
                   :items="listaresidentes"
+                  v-model="informe.idresidente"
                   filled
                   chips
                   dense
@@ -51,7 +52,7 @@
                       <v-avatar left color="#b3b3ff"  size="24">
                         <span style="font-size:12px">UC</span>
                       </v-avatar>
-                    </v-list-item-avatar>
+                    </v-list-item-avatar> 
                     <v-list-item-content>
                       <v-list-item-title>Nombre completo: {{ data.item.nombre }} {{data.item.apellido}} </v-list-item-title>
                       <v-list-item-subtitle>Nro. Documento: {{data.item.numerodocumento}}</v-list-item-subtitle>                    
@@ -59,12 +60,44 @@
                     </template>
                   </template>
                 </v-autocomplete> 
-
-                <v-text-field
-                  label="Educador Responsable"
-                  outlined
+                <v-autocomplete              
+                  :items="listaeducadores"
+                  filled
+                  chips
+                  dense
+                  outlined  
+                  v-model="informe.creadordocumento"        
                   color="#009900"
-                ></v-text-field>
+                  label="Educador responsable"
+                  item-text="usuario"
+                  item-value="rol"                            
+                >
+                  <template v-slot:selection="data">
+                    <v-chip
+                      v-bind="data.attrs"
+                      :input-value="data.selected"
+                      style="margin-top:5px"
+                    >
+                      <v-avatar left color="#b3b3ff"  size="24">
+                        <span style="font-size:12px">RT</span>
+                      </v-avatar>
+                        {{ data.item.datos.nombre }}
+                    </v-chip>
+                  </template>
+                  <template v-slot:item="data">
+                    <template>
+                    <v-list-item-avatar>
+                      <v-avatar left color="#b3b3ff"  size="24">
+                        <span style="font-size:12px">UC</span>
+                      </v-avatar>
+                    </v-list-item-avatar> 
+                    <v-list-item-content>
+                      <v-list-item-title>Nombre completo: {{ data.item.datos.nombre }} {{data.item.datos.apellido}} </v-list-item-title>
+                      <v-list-item-subtitle>Nro. Documento: {{data.item.datos.numerodocumento}}</v-list-item-subtitle>                    
+                    </v-list-item-content>
+                    </template>
+                  </template>
+                </v-autocomplete> 
 
                 <v-textarea
                   label="Lugar de Evaluación"
@@ -172,12 +205,36 @@ import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
 
 export default {
-    props:["listaresidentes","visible"],
+    props:["listaresidentes","listaeducadores","visible"],
     ...mapMutations(["addInforme"]),
     data() {
         return {
         datemenu: false,
-        step: 1
+        step: 1,
+        informe: {
+            id: "",
+            tipo: "",
+            historialcontenido: [],
+            creadordocumento: "",
+            fechacreacion: "",
+            area: "",
+            fase: "",
+            idresidente: "",
+            estado: "",
+            contenido: {
+            situacionacademica: "",
+            analisisacademico: "",
+            conclusiones: [],
+            anexos: [],
+            firmas: [{
+              urlfirma: "",
+              nombre: "",
+              cargo: ""
+            }],
+            idresidente: "",
+            codigodocumento: ""
+            }
+        }
         }
     },
     methods:{
