@@ -34,18 +34,18 @@
                   <span>Registrar nuevo Plan</span>
                 </v-btn>
               </template>
-              <RegistrarPlanIntervencion
+           <!--   <RegistrarPlanIntervencion
                 @close-dialog="closeDialog"
-              ></RegistrarPlanIntervencion>
+              ></RegistrarPlanIntervencion>-->
             </v-dialog>
           </v-toolbar>
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
-             <v-dialog v-model="dialogoactualizacion" max-width="880px">
+             <!--<v-dialog v-model="dialogoactualizacion" max-width="880px">
                <ActualizarPlanIntervencion v-if="dialogoactualizacion" :planIntervencion="planIntervencion" @close-dialog-detail="closeDialogActualizar()">
-          </ActualizarPlanIntervencion></v-dialog> 
+          </ActualizarPlanIntervencion></v-dialog> -->
             <v-btn color="warning" dark @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
