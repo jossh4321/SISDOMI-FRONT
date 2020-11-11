@@ -23,8 +23,12 @@
                         <v-icon left>done</v-icon>
                         <span >Continuar</span>
                         </v-btn>
-                        <RegistrarInformeEducativoInicial :listaresidentes="listaresidentes" :visible="showRegistrarInformeEI"  @close="showRegistrarInformeEI=false"/>
                         <RegistrarInformeEducativoEvolutivo v-if="showRegistrarInformeEE" :listaresidentes="listaresidentes" :visible="showRegistrarInformeEE" :titulo="titulo" @close="showRegistrarInformeEE=false"/>                     
+                        <RegistrarInformeEducativoInicial 
+                            :listaresidentes="listaresidentes"
+                            :listaeducadores="listaeducadores"                             
+                            :visible="showRegistrarInformeEI"  
+                            @close="showRegistrarInformeEI=false"/>                  
                     </v-col>
                 </template>
             </v-row>
@@ -57,12 +61,14 @@ export default {
         ],
         listaresidentes:[],
         titulo:"Titulo por defecto",
+        listaeducadores:[],
         showRegistrarInformeEI: false,
         showRegistrarInformeEE: false
       }
     },
     async created(){    
       this.obtenerResidentes();
+      this.obtenerEducadores();
     },
      methods:{
         cerrarDialogo(){            
@@ -90,6 +96,13 @@ export default {
                             this.listaresidentes = x.data;
                             console.log(this.listaresidentes);
                   }).catch(err => console.log(err));
+        },
+        async obtenerEducadores(){
+          await axios.get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
+            .then(res => {
+                    this.listaeducadores = res.data;
+                    console.log(this.listaeducadores);
+            }).catch(err => console.log(err));
         }
      }
 }
