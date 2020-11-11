@@ -251,7 +251,7 @@ export default {
         casos_problemas: [],
         actividades_estrategias: [],
         indicadores: [],
-        meta: "",
+        meta: [],
         firma: null,
       },
       datemenu: false,
