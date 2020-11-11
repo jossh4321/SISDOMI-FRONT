@@ -20,8 +20,11 @@
           <div class="container-planI">
             <form>
               <v-text-field
-                v-model="planI.nombreplan"
+                v-model="planI.contenido.titulo"
                 label="Ingrese el nombre del plan"
+                @input="$v.planI.contenido.titulo.$touch()"
+                @blur="$v.planI.contenido.titulo.$touch()"
+                :error-messages="errorTitulo"
                 outlined
                 color="#009900"
               ></v-text-field>
@@ -29,6 +32,9 @@
               <v-text-field
                 v-model="planI.contenido.car"
                 label="Ingrese el nombre del CAR"
+                @input="$v.planI.contenido.car.$touch()"
+                @blur="$v.planI.contenido.car.$touch()"
+                :error-messages="errorCar"
                 outlined
                 color="#009900"
               ></v-text-field>
@@ -37,6 +43,9 @@
                 filled
                 label="Residente"
                 outlined
+                @input="$v.planI.idresidente.$touch()"
+                @blur="$v.planI.idresidente.$touch()"
+                :error-messages="errorResidente"
                 v-model="planI.idresidente"
                 :items="listResidentes"
                 item-text="residente"
@@ -49,6 +58,9 @@
                 type="number"
                 v-model.number="planI.contenido.edad"
                 label="Ingrese la edad del residente"
+                @input="$v.planI.contenido.edad.$touch()"
+                @blur="$v.planI.contenido.edad.$touch()"
+                :error-messages="errorEdad"
                 outlined
                 color="#009900"
               ></v-text-field>
@@ -57,13 +69,9 @@
                 type="number"
                 v-model.number="planI.contenido.trimestre"
                 label="Ingrese el trimestre"
-                outlined
-                color="#009900"
-              ></v-text-field>
-
-              <v-text-field
-                v-model="planI.contenido.car"
-                label="Ingrese el nombre del CAR"
+                @input="$v.planI.contenido.trimestre.$touch()"
+                @blur="$v.planI.contenido.trimestre.$touch()"
+                :error-messages="errorTrimestre"
                 outlined
                 color="#009900"
               ></v-text-field>
@@ -71,6 +79,9 @@
               <v-text-field
                 v-model="planI.contenido.objetivoGeneral"
                 label="Ingrese el objetivo general"
+                @input="$v.planI.objetivoGeneral.$touch()"
+                @blur="$v.planI.objetivoGeneral.$touch()"
+                :error-messages="errorGeneral"
                 outlined
                 color="#009900"
               ></v-text-field>
@@ -81,6 +92,9 @@
                     <v-text-field
                       v-model="objetivoespecificoAux"
                       label="Ingrese los objetivos específicos"
+                      @input="$v.planI.objetivoEspecificos.$touch()"
+                      @blur="$v.planI.objetivoEspecificos.$touch()"
+                      :error-messages="errorEspecificos"
                       outlined
                       color="#009900"
                     ></v-text-field>
@@ -131,25 +145,28 @@
                 <v-layout row wrap>
                   <v-flex xs10>
                     <v-text-field
-                      v-model="casoAux"
-                      label="Casos/Problemas"
+                      v-model="aspectoAux"
+                      label="Aspectos de Intervención"
+                      @input="$v.planI.aspectosIntervencion.$touch()"
+                      @blur="$v.planI.aspectosIntervencion.$touch()"
+                      :error-messages="errorAspectos"
                       outlined
                       color="#009900"
                     ></v-text-field>
                   </v-flex>
                   <v-flex xs2>
-                    <v-btn @click="addCaso">Añadir</v-btn>
+                    <v-btn @click="addAspecto">Añadir</v-btn>
                   </v-flex>
                 </v-layout>
               </v-container>
 
               <v-list flat>
                 <v-list-item
-                  v-for="(item, i) in planI.contenido.casos_problemas"
+                  v-for="(item, i) in planI.contenido.aspectosIntervencion"
                   :key="i"
                 >
                   <v-list-item-icon>
-                    <v-icon @click="deleteItemCasos(i)" left color="red"
+                    <v-icon @click="deleteItemAspectos(i)" left color="red"
                       >mdi-minus-circle</v-icon
                     >
                   </v-list-item-icon>
@@ -165,10 +182,10 @@
                     <v-text-field
                       v-model="actividadAux"
                       label="Actividades/Estrategias"
-                      auto-grow
+                      @input="$v.planI.estrategias.$touch()"
+                      @blur="$v.planI.estrategias.$touch()"
+                      :error-messages="errorEstrategias"
                       outlined
-                      rows="2"
-                      row-height="25"
                       color="#009900"
                     ></v-text-field>
                   </v-flex>
@@ -200,6 +217,9 @@
                     <v-text-field
                       v-model="indicadorAux"
                       label="Indicadores"
+                      @input="$v.planI.indicadores.$touch()"
+                      @blur="$v.planI.indicadores.$touch()"
+                      :error-messages="errorIndicadores"
                       outlined
                       color="#009900"
                     ></v-text-field>
@@ -232,6 +252,9 @@
                     <v-text-field
                       v-model="metaAux"
                       label="Meta"
+                      @input="$v.planI.metas.$touch()"
+                      @blur="$v.planI.metas.$touch()"
+                      :error-messages="errorMetas"
                       outlined
                       color="#009900"
                     ></v-text-field>
@@ -274,7 +297,7 @@
                 <v-btn color="blue darken-1" text @click="closeDialog">
                   Cerrar
                 </v-btn>
-                <v-btn block color="accent">
+                <v-btn block color="accent" @click="registrarPlan">
                   <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
                   <span>Registrar Plan</span>
                 </v-btn>
@@ -291,7 +314,7 @@ import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import { required, minLength } from "vuelidate/lib/validators";
+import { required, minLength, between } from "vuelidate/lib/validators";
 
 export default {
   components: {
@@ -303,7 +326,6 @@ export default {
         id: "",
         tipo: "PlanIntervencionIndividual",
         idresidente: "",
-        nombreplan: "",
         fase: "",
         estado: "creado",
         creadordocumento: "Piero Erickson Lavado Cervantes",
@@ -313,7 +335,7 @@ export default {
           trimestre: 1,
           objetivoGeneral: "",
           objetivoEspecificos: [],
-          casos_problemas: [],
+          aspectosIntervencion: [],
           estrategias: [],
           indicadores: [],
           metas: [],
@@ -338,7 +360,7 @@ export default {
           "Seleccione la firma del responsable o Arrastrela Aqui",
       },
       objetivoespecificoAux: "",
-      casoAux: "",
+      aspectoAux: "",
       actividadAux: "",
       indicadorAux: "",
       metaAux: "",
@@ -348,6 +370,25 @@ export default {
   },
   methods: {
     ...mapMutations(["setResidentes"]),
+    async registrarPlan() {
+      console.log(this.planI);
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        console.log("hay errores");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
+        console.log("no hay errores");
+      }
+    },
+    resetPlanIValidationState() {
+      this.$refs.myVueDropzone.removeAllFiles();
+      this.$v.planI.$reset();
+    },
     afterSuccess(file, response) {
       this.firmaAux = file.dataURL;
       //this.$v.planI.firma.$model = file.dataURL;
@@ -367,8 +408,8 @@ export default {
     deleteItemObjEspecificios(index) {
       this.planI.contenido.objetivoEspecificos.splice(index, 1);
     },
-    deleteItemCasos(index) {
-      this.planI.contenido.casos_problemas.splice(index, 1);
+    deleteItemAspectos(index) {
+      this.planI.contenido.aspectosIntervencion.splice(index, 1);
     },
     deleteItemActividades(index) {
       this.planI.contenido.estrategias.splice(index, 1);
@@ -383,9 +424,9 @@ export default {
       this.planI.contenido.objetivoEspecificos.push(this.objetivoespecificoAux);
       this.objetivoespecificoAux = "";
     },
-    addCaso() {
-      this.planI.contenido.casos_problemas.push(this.casoAux);
-      this.casoAux = "";
+    addAspecto() {
+      this.planI.contenido.aspectosIntervencion.push(this.aspectoAux);
+      this.aspectoAux = "";
     },
     addActividad() {
       this.planI.contenido.estrategias.push(this.actividadAux);
@@ -406,7 +447,42 @@ export default {
       let usuariacar = this.residentes.find(
         (x) => x.id === this.planI.idresidente
       );
-      this.planI.fase = usuariacar.progreso[usuariacar.progreso.length-1].nombre;
+      this.planI.fase =
+        usuariacar.progreso[usuariacar.progreso.length - 1].nombre;
+    },
+    async mensaje(icono, titulo, texto, footer) {
+      await this.$swal({
+        icon: icono,
+        title: titulo,
+        text: texto,
+        footer: footer,
+      });
+    },
+    limpiarPlanI() {
+      return {
+        id: "",
+        tipo: "PlanIntervencionIndividual",
+        idresidente: "",
+        fase: "",
+        estado: "creado",
+        creadordocumento: "Piero Erickson Lavado Cervantes",
+        contenido: {
+          car: "",
+          edad: 0,
+          trimestre: 1,
+          objetivoGeneral: "",
+          objetivoEspecificos: [],
+          aspectosIntervencion: [],
+          estrategias: [],
+          indicadores: [],
+          metas: [],
+          firma: {
+            urlfirma: "",
+            nombre: "Piero Erickson Lavado Cervantes",
+            cargo: "Educador",
+          },
+        },
+      };
     },
     async obtenerResidentes() {
       await axios
@@ -426,6 +502,100 @@ export default {
   },
   computed: {
     ...mapState(["residentes"]),
+    verifyColor() {
+      return "red";
+    },
+    errorTitulo() {
+      const errors = [];
+      if (!this.$v.planI.contenido.titulo.$dirty) return errors;
+      !this.$v.planI.contenido.titulo.required &&
+        errors.push("Debe ingresar un nombre de plan obligatoriamente");
+      !this.$v.planI.contenido.titulo.minLength &&
+        errors.push("El nombre de plan debe poseer al menos 4 caracteres");
+      return errors;
+    },
+    errorResidente() {
+      const errors = [];
+      if (!this.$v.planI.idresidente.$dirty) return errors;
+      !this.$v.planI.idresidente.required &&
+        errors.push("Debe ingresar un residente obligatoriamente");
+      !this.$v.planI.idresidente != "" &&
+        errors.push("Debe seleccionar el residente inicialmente");
+      return errors;
+    },
+    errorCar() {
+      const errors = [];
+      if (!this.$v.planI.contenido.car.$dirty) return errors;
+      !this.$v.planI.contenido.car.required &&
+        errors.push("Debe ingresar un CAR obligatoriamente");
+      return errors;
+    },
+    errorEdad() {
+      const errors = [];
+      if (!this.$v.planI.contenido.edad.$dirty) return errors;
+      !this.$v.planI.contenido.edad.required &&
+        errors.push("Debe ingresar la edad del residente obligatoriamente");
+      !this.$v.planI.contenido.edad.between &&
+        errors.push(
+          "La edad del residente debe estar comprendido desde 12 hasta 23 años"
+        );
+      return errors;
+    },
+    errorTrimestre() {
+      const errors = [];
+      if (!this.$v.planI.contenido.trimestre.$dirty) return errors;
+      !this.$v.planI.contenido.trimestre.required &&
+        errors.push("Debe ingresar el trimestre obligatoriamente");
+      !this.$v.planI.contenido.trimestre.between &&
+        errors.push("el trimestre debe estar comprendido desde 1 hasta 4");
+      return errors;
+    },
+    errorGeneral() {
+      const errors = [];
+      if (!this.$v.planI.contenido.objetivoGeneral.$dirty) return errors;
+      !this.$v.planI.contenido.objetivoGeneral.required &&
+        errors.push("Debe ingresar un objetivo general obligatoriamente");
+      return errors;
+    },
+    errorEspecificos() {
+      const errors = [];
+      if (!this.$v.planI.contenido.objetivoEspecificos.$dirty) return errors;
+      !this.$v.planI.contenido.objetivoEspecificos.required &&
+        errors.push(
+          "Debe ingresar al menos un objetivo específico obligatoriamente"
+        );
+      return errors;
+    },
+    errorAspectos() {
+      const errors = [];
+      if (!this.$v.planI.contenido.aspectosIntervencion.$dirty) return errors;
+      !this.$v.planI.contenido.aspectosIntervencion.required &&
+        errors.push(
+          "Debe ingresar al menos un aspecto de intervención obligatoriamente"
+        );
+      return errors;
+    },
+    errorEstrategias() {
+      const errors = [];
+      if (!this.$v.planI.contenido.estrategias.$dirty) return errors;
+      !this.$v.planI.contenido.estrategias.required &&
+        errors.push("Debe ingresar al menos una estrategia obligatoriamente");
+      return errors;
+    },
+    errorIndicadores() {
+      const errors = [];
+      if (!this.$v.planI.contenido.indicadores.$dirty) return errors;
+      !this.$v.planI.contenido.indicadores.required &&
+        errors.push("Debe ingresar al menos un indicador obligatoriamente");
+      return errors;
+    },
+    errorMetas() {
+      const errors = [];
+      if (!this.$v.planI.contenido.metas.$dirty) return errors;
+      !this.$v.planI.contenido.metas.required &&
+        errors.push("Debe ingresar al menos una meta obligatoriamente");
+      return errors;
+    },
   },
   async created() {
     this.obtenerResidentes();
@@ -434,9 +604,6 @@ export default {
     return {
       planI: {
         idresidente: {
-          required,
-        },
-        nombreplan: {
           required,
         },
         contenido: {
@@ -457,7 +624,7 @@ export default {
           objetivoEspecificos: {
             required,
           },
-          casos_problemas: {
+          aspectosIntervencion: {
             required,
           },
           estrategias: {
@@ -468,6 +635,10 @@ export default {
           },
           metas: {
             required,
+          },
+          titulo: {
+            required,
+            minLength: minLength(4),
           },
           /*  firma: {
             urlfirma: ""
