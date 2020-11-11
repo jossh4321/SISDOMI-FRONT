@@ -74,6 +74,7 @@
 import axios from "axios";
 import RegistrarPlanIntervencion from "@/components/planIntervencion/Educativo/RegistrarPlanIntervencion.vue";
 import VisualizarPlanIntervencion from "@/components/planIntervencion/Educativo/VisualizarPlanIntervencion.vue";
+import ActualizarPlanIntervencion from "@/components/planIntervencion/Educativo/ActualizarPlanIntervencion.vue";
 import { mapMutations, mapState } from "vuex";
 
 export default {
@@ -81,6 +82,7 @@ export default {
   components: {
     RegistrarPlanIntervencion,
     VisualizarPlanIntervencion,
+    ActualizarPlanIntervencion
   },
   data() {
     return {
@@ -121,6 +123,7 @@ export default {
       dialogodetalle: false,
       dialogoregistro: false,
       Visualizarplan: false,
+      dialogoactualizacion: false
     };
   },
 
