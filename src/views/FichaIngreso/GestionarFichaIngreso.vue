@@ -34,8 +34,7 @@
                   <span>Nueva Ficha de Ingreso</span>
                 </v-btn>
               </template>
-                <SeleccionarFichaIngreso
-                @close-dialog-initial="closeDialogNuevaFichaIngreso()"></SeleccionarFichaIngreso> 
+                <SeleccionarFichaIngreso @close-dialog-initial="closeDialogNuevaFichaIngreso()"/> 
                 <!--
                 <RegistrarFichaIngreso
                 @close-dialog-save="closeDialogRegistrar()"></RegistrarFichaIngreso> 
@@ -60,8 +59,7 @@
       <v-dialog persistent
           v-model="dialogoconsultar" 
           max-width="880px">
-        <ConsultarFichaIngreso :fichaIngreso="fichaIngreso" @close-dialog-detail="closeDialogDetalle()">
-        </ConsultarFichaIngreso>
+        <ConsultarFichaIngreso :fichaIngreso="fichaIngreso" @close-dialog-detail="closeDialogDetalle()"/>
       </v-dialog>
     </v-card>
   </div>
@@ -69,7 +67,7 @@
 <script>
 import axios from 'axios';
 //import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
-import RegistrarFichaIngreso from '@/components/fichaIngreso/RegistrarFichaIngreso.vue'
+//import RegistrarFichaIngreso from '@/components/fichaIngreso/RegistrarFichaIngreso.vue'
 import SeleccionarFichaIngreso from '@/components/fichaIngreso/SeleccionarFichaIngreso.vue'
 import ConsultarFichaIngresoEducativa  from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
 import {mapMutations, mapState} from "vuex";
@@ -77,7 +75,7 @@ export default {
   name: "GestionarFicha",
   components: {
     // RegistrarPlanIntervencion,
-     RegistrarFichaIngreso,
+    // RegistrarFichaIngreso,
      SeleccionarFichaIngreso,
      ConsultarFichaIngresoEducativa,
       
@@ -122,13 +120,15 @@ export default {
     closeDialogConsultar(){
        this.dialogoconsultar = false;
     },
+
     closeDialogNuevaFichaIngreso(){
        this.dialogoNuevaFichaIngreso = false;
     },
-     async abrirDialogoConsultar(idresidente){
+
+    async abrirDialogoConsultar(idresidente){
         this.residente = await this.loadResidenteDetalle(idresidente);
         this.dialogodetalle = !this.dialogodetalle;
-        },
+    },
 
      async loadResidenteDetalle(idresidente){
       var user = {};
@@ -154,7 +154,7 @@ export default {
 
 
   },computed:{
-    ...mapState(["documento"]),
+    ...mapState(["setFichaIngreso"]),
     
   }
 

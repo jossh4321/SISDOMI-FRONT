@@ -123,6 +123,7 @@
 <script>
 import axios from "axios";
 import RegistrarPlanIntervencion from "@/components/planIntervencion/Educativo/RegistrarPlanIntervencion.vue";
+import RegistrarPlanIntervencionPsicologico from '@/components/planIntervencion/Psicologico/RegistrarPlanIntervencionPsicologico.vue';
 
 export default {
   name: "app-gestion-planes",
@@ -136,7 +137,7 @@ export default {
         },
         {
           text: "Psicológica",
-          value: "RegistrarPlanIntervencionPsicologica",
+          value: "RegistrarPlanIntervencionPsicologico",
         },
         {
           text: "Social",
@@ -192,7 +193,7 @@ export default {
     },
     closeDialog() {
       this.dialogPlanRegister = false;
-    },
+    }
   },
   computed: {},
   created() {
@@ -208,6 +209,7 @@ export default {
   },
   components: {
     RegistrarPlanIntervencion,
+    RegistrarPlanIntervencionPsicologico
   },
 };
 </script>

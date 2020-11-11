@@ -320,6 +320,7 @@ export default {
       this.$emit("close-dialog-save");
     },
     afterSuccess(file, response) {
+      console.log(file);
       this.usuario.datos.imagen = file.dataURL.split(",")[1];
       this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
       //console.log(file.dataURL.split(",")[1]);
