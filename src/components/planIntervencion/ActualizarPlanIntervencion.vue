@@ -17,7 +17,7 @@
         editable
         step="2"
       >
-        Aspectos de intervención
+        Actualizacion de Datos
       </v-stepper-step>
     </v-stepper-header>
 
@@ -74,67 +74,62 @@
         <br />
         <v-textarea
           v-model="planI.casos_problemas"
-          label="Casos/Problemas"
+          label="Ingrese nuevo nombre de Plan"
           auto-grow
           outlined
           rows="2"
           row-height="25"
           color="#009900"
           shaped
-          disabled
+          editable          
         ></v-textarea>
 
         <v-textarea
          v-model="planI.actividades_estrategias"
-          label="Actividades/estrategias"
+          label="Ingrese nuevo nombre-dni de Usuario"
           auto-grow
           outlined
           rows="2"
           row-height="25"
           color="#009900"
           shaped
-          disabled
         ></v-textarea>
 
         <v-textarea
           v-model="planI.indicadores"
-          label="Indicadores"
+          label="Ingrese nuevo objetivo general"
           auto-grow
           outlined
           rows="2"
           row-height="25"
           color="#009900"
           shaped
-          disabled
         ></v-textarea>
 
         <v-textarea
-         v-model="plan.nombre"
-          label = "Meta"
+         v-model="planI.meta"
+          label="Ingrese nuevos objetivos especificos"
           auto-grow
           outlined
           rows="2"
           row-height="25"
           color="#009900"
           shaped
-          disabled
         ></v-textarea>
 
         <div>
           <vue-dropzone ref="myVueDropzone"
-            
             @vdropzone-success="afterSuccess"
             @vdropzone-removed-file="afterRemoved"
-            id="dropzone" :options="dropzoneOptions" 
-            
-            >
+            id="dropzone" :options="dropzoneOptions" >
           </vue-dropzone>
         </div>
         <v-divider class="divider-custom"></v-divider>
-            <v-btn block @click="cerrarDialogo()" color="primary">
-              <v-icon left>mdi-close-outline</v-icon>
-              <span>Cerrar</span>
-            </v-btn>
+
+        <v-btn block color="accent">
+          <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
+          <span >Actualizar Plan</span>
+        </v-btn>
       </form>
         </div>
       </v-stepper-content>
@@ -144,27 +139,22 @@
 </template>
 <script>
 import vue2Dropzone from "vue2-dropzone";
-
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 export default {
-  props:["plan"],
    components: {
-     vueDropzone: vue2Dropzone
+     vueDropzone: vue2Dropzone,
   },
   data() {
       return {
-       
       planI: {
-        
-        /*nombreusuaria:"Xiomara Paredes Guerra",
+        nombreusuaria:"Xiomara Paredes Guerra",
         nombreplan:"PlanI_Edu_Xiomara_1",
         objetivogeneral:"Realizar un adecuado plan de intervención",
         objetivoespecifico:"Responde a Plan de seguimiento",
-        casos_problemas:"1. Reinserción escolar.\n 2. No quiere participar en nivelación de matemática.\n 3. Retraso escolar.\n 4. Bajo rendimiento.\n 5. Problema de aprendizaje.",
-        actividades_estrategias:"1. Solicitar constancia de vacante.\n 2. Entrevista personal.",
-        indicadores:"1. Matricula en la I.E.\n 2.Participa en la nivelación escolar.",
-        meta:"Lograr nivelación en el grado correspondiente del área de matemática.",*/
-   
+        casos_problemas:" ",
+        actividades_estrategias:" ",
+        indicadores:" ",
+        meta:" ",
       },
       datemenu: false,
       step:1,
@@ -180,11 +170,7 @@ export default {
       },
     };
   },methods:{
-   cerrarDialogo(){
-      this.$emit("close-dialog-detail");
-    },
-   
-   afterSuccess(file,response){
+    afterSuccess(file,response){
        this.usuario.datos.imagen = file.dataURL;
        this.$v.usuario.datos.imagen.$model = file.dataURL;
     },afterRemoved(file, error, xhr){
@@ -210,6 +196,7 @@ export default {
 .container-planI {
   margin: 15px;
 }
+
 
 .dropzone-custom-content {
   position: absolute;
