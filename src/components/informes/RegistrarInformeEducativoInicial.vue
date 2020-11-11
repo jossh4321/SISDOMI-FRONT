@@ -58,8 +58,9 @@
                       <v-list-item-subtitle>Nro. Documento: {{data.item.numerodocumento}}</v-list-item-subtitle>                    
                     </v-list-item-content>
                     </template>
-                  </template>
+                  </template>                               
                 </v-autocomplete> 
+
                 <v-autocomplete              
                   :items="listaeducadores"
                   filled
@@ -74,27 +75,27 @@
                 >
                   <template v-slot:selection="data">
                     <v-chip
-                      v-bind="data.attrs"
-                      :input-value="data.selected"
-                      style="margin-top:5px"
+                    v-bind="data.attrs"
+                    :input-value="data.selected"
+                    style="margin-top:5px"
                     >
                       <v-avatar left color="#b3b3ff"  size="24">
                         <span style="font-size:12px">RT</span>
                       </v-avatar>
-                        {{ data.item.datos.nombre }}
+                      {{ data.item.datos.nombre }}
                     </v-chip>
                   </template>
                   <template v-slot:item="data">
                     <template>
-                    <v-list-item-avatar>
-                      <v-avatar left color="#b3b3ff"  size="24">
-                        <span style="font-size:12px">UC</span>
-                      </v-avatar>
-                    </v-list-item-avatar> 
-                    <v-list-item-content>
-                      <v-list-item-title>Nombre completo: {{ data.item.datos.nombre }} {{data.item.datos.apellido}} </v-list-item-title>
-                      <v-list-item-subtitle>Nro. Documento: {{data.item.datos.numerodocumento}}</v-list-item-subtitle>                    
-                    </v-list-item-content>
+                      <v-list-item-avatar>
+                        <v-avatar left color="#b3b3ff"  size="24">
+                          <span style="font-size:12px">UC</span>
+                        </v-avatar>
+                      </v-list-item-avatar> 
+                      <v-list-item-content>
+                        <v-list-item-title>Nombre completo: {{ data.item.datos.nombre }} {{data.item.datos.apellido}} </v-list-item-title>
+                        <v-list-item-subtitle>Nro. Documento: {{data.item.datos.numerodocumento}}</v-list-item-subtitle>                    
+                      </v-list-item-content>
                     </template>
                   </template>
                 </v-autocomplete> 
@@ -118,24 +119,27 @@
                   min-width="290px"
                 >
                   <template v-slot:activator="{ on, attrs }">
-                    <v-text-field        
+                    <v-text-field
+                      v-model="informe.fechacreacion"
                       label="Fecha de Evaluación"
                       prepend-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
-                      v-on="on"                            
+                      v-on="on"                    
                       color="#009900"
                     ></v-text-field>
                   </template>
-
-                  <v-date-picker            
+                  <v-date-picker
+                    v-model="informe.fechacreacion"
                     @input="menu2 = false"
                     locale="es-es"
                   ></v-date-picker>
                 </v-menu>
+  
 
                 <v-textarea        
                   label="Situación Académica"
+                  v-model="informe.contenido.situacionacademica"
                   auto-grow
                   outlined
                   rows="2"
@@ -146,6 +150,7 @@
 
                 <v-textarea        
                   label="Análisis Académico y de comportamiento"
+                  v-model="informe.contenido.analisisacademico"
                   auto-grow
                   outlined
                   rows="2"
@@ -243,18 +248,19 @@ export default {
             this.$emit("close-dialog-save");
         }, 
         async registrarInforme(){
+          console.log(this.informe);
          // this.$v.$touch();
           // if (this.$v.$invalid) {
           //   console.log('hay errores');
           //   this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
           // } else {
           //   console.log('no hay errores');
-            await axios.post("/informe/informeei",this.informe)
-              .then(res => {
-                  this.informe = res.data;
-                  this.addInforme(this.informe);
-                  this.cerrarDialogo();
-              }).catch(err => console.log(err));
+            // await axios.post("/informe/informeei",this.informe)
+            //   .then(res => {
+            //       this.informe = res.data;
+            //       this.addInforme(this.informe);
+            //       this.cerrarDialogo();
+            //   }).catch(err => console.log(err));
           //  await this.mensaje('success','listo','Usuario registrado Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");            
           //}
       }
