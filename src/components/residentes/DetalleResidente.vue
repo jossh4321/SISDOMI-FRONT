@@ -26,7 +26,7 @@
           ><!--CONTIENE LOS STEPPERS 1 -->
           <div class="container-user">
             <form>
-              <v-text-field
+              <v-text-field style="margin-top:5px"
                 v-model="residente.nombre"
                 label="Nombres"
                 outlined
@@ -174,7 +174,7 @@
                 style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
               >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
-                  >Lista de Progreso de Residente</v-card-title
+                  >Lista de Progresos de Residente</v-card-title
                 >
                 <!-- Cabecera -->
                 <v-card
@@ -184,29 +184,27 @@
                 height="30"
                 >
                   <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col :cols="2">
+                    <v-col cols="2">
                       <article>
-                        <span style="font-size:18px">
-                          Fase</span
-                        >
+                        <span style="font-size:16px">Fase</span>
                       </article>
                     </v-col>
-                    <v-col :cols="3">
+                    <v-col cols="3">
                       <article>
-                        <span style="font-size:18px">Fecha Ingreso</span>
+                        <span style="font-size:16px">Fecha Ingreso</span>
                       </article>
                     </v-col>
-                    <v-col :cols="3">
+                    <v-col cols="3">
                       <article>
-                        <span style="font-size:18px">Fecha Finalizacion</span>
+                        <span style="font-size:16px">Fecha Finalizacion</span>
                       </article>
                     </v-col>
                     <v-col>
-                      <article :cols="2">
-                        <span style="font-size:18px">Estado</span>
+                      <article cols="2">
+                        <span style="font-size:16px">Estado</span>
                       </article>
                     </v-col>
-                    <v-col align="right" :cols="2">
+                    <v-col align="right">
                     </v-col>
                   </v-row>
                 </v-card>
@@ -217,31 +215,31 @@
                   color="#FAFAFA"
                   style="margin-top:5px"
                   height="60"
-                  v-for="(item, index) in residente.telefonosReferencia"
+                  v-for="(item, index) in residente.progreso"
                   :key="index"
                 >
                   <v-row style="margin-left:10px;heigh:100%;" align="center">
                     <v-col :cols="2">
                       <article>
-                        <span style="font-size:18px">Fase</span>
+                        <span style="font-size:16px">Nº{{item.fase}} - {{item.nombre}}</span>
                       </article>
                     </v-col>
                     <v-col :cols="3">
                       <article>
-                        <span style="font-size:18px">Fecha IN</span>
+                        <span style="font-size:16px">{{moment(item.fechaingreso).format('L')}}</span>
                       </article>
                     </v-col>
                     <v-col :cols="3">
                       <article>
-                        <span style="font-size:18px">Fecha FIN</span>
+                        <span style="font-size:16px">{{item.fechafinalizacion!=="" ? (moment(item.fechafinalizacion).format('L')): "No finalizado"}}</span>
                       </article>
                     </v-col>
                     <v-col :cols="2">
                       <article>
-                        <span style="font-size:18px">Estado</span>
+                        <span style="font-size:16px">{{item.estado}}</span>
                       </article>
                     </v-col>
-                    <v-col align="right" :cols="2">
+                    <v-col align="right">
                       <div style="margin-right:20px">
                         <v-btn
                           style="margin-right:10px"
@@ -371,6 +369,7 @@
 </template>
 
 <script>
+const m = moment();
 import moment from "moment";
 export default {
   name: "DetalleResidente",
@@ -382,6 +381,9 @@ export default {
     };
   },
   methods: {
+    moment: function () {
+    return moment();
+    },
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
     },

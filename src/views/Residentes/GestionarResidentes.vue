@@ -22,10 +22,7 @@
             ></v-text-field>
             <v-spacer></v-spacer>
             <!--Dialogo de Registro-->
-            <v-dialog
-              persistent
-              v-model="dialogoregistro" 
-              max-width="880px">
+            <v-dialog persistent v-model="dialogoregistro" max-width="880px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
@@ -34,29 +31,27 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                <v-icon left>mdi-account-multiple-plus-outline</v-icon>
+                  <v-icon left>mdi-account-multiple-plus-outline</v-icon>
                   <span>Registrar nuevo Residente</span>
                 </v-btn>
               </template>
-                <RegistrarResidente
-                @close-dialog-save="closeDialogRegistrar()"></RegistrarResidente>
+              <RegistrarResidente
+                @close-dialog-save="closeDialogRegistrar()"
+              ></RegistrarResidente>
             </v-dialog>
           </v-toolbar>
         </template>
 
-        <template v-slot:[`item.actions`]="{ item }"><!--Abrir dialogo detalle -->
+        <template v-slot:[`item.actions`]="{ item }"
+          ><!--Abrir dialogo detalle -->
 
           <v-row align="center" justify="space-around">
             <!--BOTONES-->
-            <v-btn color="warning" 
-            dark 
-            @click="editItem(item)">
+            <v-btn color="warning" dark @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
-            <v-btn color="info" 
-             dark
-             @click="abrirDialogoDetalle(item.id)">
+            <v-btn color="info" dark @click="abrirDialogoDetalle(item.id)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Visualizar</span>
             </v-btn>
@@ -65,33 +60,34 @@
       </v-data-table>
       <!----->
       <!--Dialogo de Detalle-->
-      <v-dialog persistent
-                v-model="dialogodetalle" 
-                max-width="880px">
-          <ConsultarResidente :residente="residente" @close-dialog-detail="closeDialogDetalle()">
-          </ConsultarResidente>
+      <v-dialog persistent v-model="dialogodetalle" max-width="880px">
+        <ConsultarResidente
+          :residente="residente"
+          @close-dialog-detail="closeDialogDetalle()"
+        >
+        </ConsultarResidente>
       </v-dialog>
     </v-card>
   </div>
 </template>
 <script>
-import axios from 'axios';
+import axios from "axios";
 
-import  ModificarResidente  from '@/components/residentes/ActualizarResidente.vue'
-import  ConsultarResidente  from '@/components/residentes/DetalleResidente.vue'
-import  RegistrarResidente  from '@/components/residentes/RegistrarResidente.vue'
-import {mapMutations, mapState} from "vuex";
+import ModificarResidente from "@/components/residentes/ActualizarResidente.vue";
+import ConsultarResidente from "@/components/residentes/DetalleResidente.vue";
+import RegistrarResidente from "@/components/residentes/RegistrarResidente.vue";
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarResidentes",
   components: {
-     ConsultarResidente,
-     ModificarResidente,
-     RegistrarResidente
+    ConsultarResidente,
+    ModificarResidente,
+    RegistrarResidente,
   },
   data() {
     return {
       search: "",
-      residente:{},
+      residente: {},
 
       headers: [
         {
@@ -103,7 +99,7 @@ export default {
         { text: "Apellido", value: "apellido" },
         { text: "Tipo de documento", value: "tipoDocumento" },
         { text: "N°documento", value: "numeroDocumento" },
-        { text:"Fecha de Ingreso",value:"fechaIngreso"},
+        { text: "Fecha de Ingreso", value: "fechaIngreso" },
         { text: "Actions", value: "actions", sortable: false },
       ],
       /*planesI: [
@@ -131,11 +127,11 @@ export default {
       ],*/
       dialogoregistro: false,
       dialogoactualizacion: false,
-      dialogodetalle:false,
+      dialogodetalle: false,
     };
   },
-  async created(){
-    this.obtenerResidentes()
+  async created() {
+    this.obtenerResidentes();
   },
   methods: {
     ...mapMutations(["setResidentes"]),
@@ -145,46 +141,44 @@ export default {
     detailItem(item) {
       console.log(item);
     },
-    closeDialogDetalle(){
+    closeDialogDetalle() {
       this.dialogodetalle = false;
-      },
-       closeDialogRegistrar(){
+    },
+    closeDialogRegistrar() {
       this.dialogoregistro = false;
     },
     ///abrir dialogo de detalle
-    async abrirDialogoDetalle(idresidente){
-        this.residente = await this.loadResidenteDetalle(idresidente);
-        this.dialogodetalle = !this.dialogodetalle;
-        },
+    async abrirDialogoDetalle(idresidente) {
+      this.residente = await this.loadResidenteDetalle(idresidente);
+      this.dialogodetalle = !this.dialogodetalle;
+    },
 
-     async loadResidenteDetalle(idresidente){
+    async loadResidenteDetalle(idresidente) {
       var user = {};
-      await axios.get("/residente/id?id="+idresidente)
-      .then(res => {
-        console.log(res)
-         user = res.data;
-         user.fechaNacimiento = res.data
-                  .fechaNacimiento.split("T")[0];
-         
-      })
-      .catch(err => console.log(err));
+      await axios
+        .get("/residente/id?id=" + idresidente)
+        .then((res) => {
+          console.log(res);
+          user = res.data;
+          user.fechaNacimiento = res.data.fechaNacimiento.split("T")[0];
+        })
+        .catch((err) => console.log(err));
       console.log(user);
       return user;
     },
-     ///////////////////Consumo de  apis
-     async obtenerResidentes(){
-           await axios.get("/residente/all")
-            .then(res => {
-                    this.setResidentes(res.data);
-            }).catch(err => console.log(err));
-
-            
-    }
+    ///////////////////Consumo de  apis
+    async obtenerResidentes() {
+      await axios
+        .get("/residente/all")
+        .then((res) => {
+          this.setResidentes(res.data);
+        })
+        .catch((err) => console.log(err));
+    },
   },
-  computed:{
- ...mapState(["residentes"])
-  
-  }
+  computed: {
+    ...mapState(["residentes"]),
+  },
 };
 </script>
 <style scoped>
