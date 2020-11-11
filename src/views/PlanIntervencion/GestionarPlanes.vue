@@ -115,7 +115,7 @@
     </v-dialog>
 
     <v-dialog v-model="dialogPlanRegister" persistent max-width="880">
-      <component :is="selectedPlan.value"></component>
+      <component :is="selectedPlan.value" @close-dialog="closeDialog"></component>
     </v-dialog>
   </v-card>
 </template>
@@ -123,6 +123,7 @@
 <script>
 import axios from "axios";
 import RegistrarPlanIntervencion from "@/components/planIntervencion/Educativo/RegistrarPlanIntervencion.vue";
+import RegistrarPlanIntervencionPsicologico from '@/components/planIntervencion/Psicologico/RegistrarPlanIntervencionPsicologico.vue';
 
 export default {
   name: "app-gestion-planes",
@@ -136,7 +137,7 @@ export default {
         },
         {
           text: "Psicológica",
-          value: "RegistrarPlanIntervencionPsicologica",
+          value: "RegistrarPlanIntervencionPsicologico",
         },
         {
           text: "Social",
@@ -190,6 +191,9 @@ export default {
       this.dialogRegister = false;
       this.dialogPlanRegister = true;
     },
+    closeDialog() {
+      this.dialogPlanRegister = false;
+    }
   },
   computed: {},
   created() {
@@ -204,7 +208,8 @@ export default {
       });
   },
   components: {
-    RegistrarPlanIntervencion
+    RegistrarPlanIntervencion,
+    RegistrarPlanIntervencionPsicologico
   },
 };
 </script>

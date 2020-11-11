@@ -139,42 +139,74 @@
                           </v-col>
                           <!--Mostrar Cuadro -->
 
-                          <div class="container">
-                            <v-row>
+                          <!--AQUI COMIENZA-->
+                          <v-card
+                            style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                          >
+                            <v-row align="center">
                               <v-col>
-                                <h2 class="text-center">Lista de usuarios</h2>
-                                <table class="table text-center">
-                                  <thead>
-                                    <tr>
-                                      <th><h3>Nombre</h3></th>
-                                      <th><h3>Telefono</h3></th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr
-                                      v-for="(item,
-                                      index) in residente.telefonosReferencia"
-                                      :key="index"
-                                    >
-                                      <!-- Recorremos nuestro array -->
-
-                                      <td v-text="item.numero"></td>
-                                      <!--En la primera columna mostramos el nombre-->
-                                      <td v-text="item.referentefamiliar"></td>
-                                      <!--En la segunda mostramos el apellido-->
-                                      <button
-                                        class="primary"
-                                        @click="eliminarTelefono(item.index)"
-                                      >
-                                        Eliminar
-                                      </button>
-                                    </tr>
-                                  </tbody>
-                                </table>
+                                <v-card-title
+                                  style="font-size:22px;padding: 0px 10px;"
+                                  >Referentes Familiares</v-card-title
+                                >
                               </v-col>
                             </v-row>
-                          </div>
-
+                            <v-card
+                              tile
+                              elevation="0"
+                              color="#FAFAFA"
+                              style="margin-top:5px"
+                              height="60"
+                              v-for="(item,
+                              index) in residente.telefonosReferencia"
+                              :key="index"
+                            >
+                              <v-row
+                                style="margin-left:10px;heigh:100%"
+                                align="center"
+                              >
+                                <v-col :cols="5">
+                                  <article>
+                                    <img
+                                      style="margin-right:5px;width:6% "
+                                      src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
+                                      alt="imagen usuario"
+                                    />
+                                    <span style="font-size:18px">
+                                      {{ item.referentefamiliar }}</span
+                                    >
+                                  </article>
+                                </v-col>
+                                <v-col :cols="3">
+                                  <article>
+                                    <img
+                                      style="margin-right:10px;width:8%"
+                                      src="https://www.flaticon.es/svg/static/icons/svg/633/633544.svg"
+                                      alt="imagen telefono"
+                                    />
+                                    <span style="font-size:18px">{{
+                                      item.numero
+                                    }}</span>
+                                  </article>
+                                </v-col>
+                                <v-col :cols="4" align="right">
+                                  <div style="margin-right:20px">
+                                    <v-btn
+                                      fab
+                                      x-small
+                                      dark
+                                      color="red"
+                                      @click="eliminarTelefono(item.index)"
+                                    >
+                                      <v-icon dark>
+                                        mdi-minus
+                                      </v-icon>
+                                    </v-btn>
+                                  </div>
+                                </v-col>
+                              </v-row>
+                            </v-card>
+                          </v-card>
                           <!-- -->
                         </v-row>
                       </v-container>
@@ -354,8 +386,9 @@
                               añadir
                             </v-btn>
                           </v-col>
-                          <!--Mostrar Cuadro -->
+                          <!--En esta parte se muestra Mostrar Cuadro -->
 
+                          <!--fin-->
                           <div class="container">
                             <v-row>
                               <v-col>
