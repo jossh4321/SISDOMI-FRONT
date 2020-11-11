@@ -228,6 +228,22 @@
                     </v-row>
                   </v-card>
                 </v-card>
+                <div>
+                  <vue-dropzone
+                      ref="myVueDropzone"
+                      @vdropzone-success="afterSuccess"
+                      @vdropzone-removed-file="afterRemoved"
+                      id="dropzone"
+                      :options="dropzoneOptions"
+                    >
+                  </vue-dropzone>
+                </div>
+               <!-- <v-card v-if="errorImagen" color="red">
+                <v-card-text class="text-center" style="color: white"
+                  >Debe Subir una imagen del usuario
+                  Obligatoriamente</v-card-text
+                >
+              </v-card>  -->
                 <v-row>
                   <v-col>
                     <v-btn block @click="registrarInforme" color="success">
@@ -261,11 +277,25 @@ import moment from "moment";
 
 export default {
   props: ["listaresidentes", "listaeducadores", "visible"],
+  components: {
+    vueDropzone: vue2Dropzone,
+  },
   ...mapMutations(["addInforme"]),
   data() {
     return {
       datemenu: false,
       step: 1,
+      dropzoneOptions: {
+      url: "https://httpbin.org/post",
+      thumbnailWidth: 250,
+      maxFilesize: 10.0,
+      maxFiles: 10,
+      acceptedFiles: ".pdf",
+      headers: { "My-Awesome-Header": "header value" },
+      addRemoveLinks: true,
+      dictDefaultMessage:
+        "Seleccione un archivo de su dispositivo o arrástrela aquí",
+    }, //utilizado en los formularios como un prop
       conclusion: "",
       conclusiones: [],
       informe: {
@@ -301,7 +331,8 @@ export default {
   },
   methods: {
     cerrarDialogo() {
-      this.step = 1;
+      this.informe = this.limpiarInforme();
+      this.step = 1;      
       this.$emit("close-dialog-save");
     },
     async registrarInforme() {
@@ -321,6 +352,14 @@ export default {
       //  await this.mensaje('success','listo','Usuario registrado Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
       //}
     },
+    async mensaje(icono, titulo, texto, footer) {
+      await this.$swal({
+        icon: icono,
+        title: titulo,
+        text: texto,
+        footer: footer,
+      });
+    },
     agregarConclusion() {
       let conclusiones = this.conclusion;      
       this.informe.contenido.conclusiones.push(conclusiones); 
@@ -330,15 +369,48 @@ export default {
     eliminarConclusion(conclusion){
      // this.informe.contenido.conclusiones.splice(conclusion, 1);     
       this.conclusiones.splice(conclusion, 1);     
+    },    
+    afterSuccess(file, response) {      
+      console.log(file);
+      console.log(file.dataURL);
+      //this.informe.contenido.anexos = file.dataURL.split(",")[1];
+      //this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
+      //console.log(file.dataURL.split(",")[1]);
+    },
+    afterRemoved(file, error, xhr) {
+      this.informe.contenido.anexos = "";
+      this.$v.usuario.datos.imagen.$model = "";
+    },
+    limpiarInforme(){
+       return { 
+          informe: {
+            id: "",
+            tipo: "",
+            historialcontenido: [],
+            creadordocumento: "",
+            fechacreacion: "",
+            area: "",
+            fase: "",
+            idresidente: "",
+            estado: "",
+            contenido: {
+              situacionacademica: "",
+              analisisacademico: "",
+              conclusiones: [],
+              anexos: [],
+              firmas: [
+                {
+                  urlfirma: "",
+                  nombre: "",
+                  cargo: "",
+                },
+              ],
+              idresidente: "",
+              codigodocumento: "",
+            }
+          }
+       }
     }
-  },
-  async mensaje(icono, titulo, texto, footer) {
-    await this.$swal({
-      icon: icono,
-      title: titulo,
-      text: texto,
-      footer: footer,
-    });
   },
   computed: {
     show: {
