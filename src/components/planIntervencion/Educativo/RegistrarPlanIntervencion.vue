@@ -322,9 +322,16 @@ export default {
   },
   data() {
     return {
+      planIntervencionIndividual: {
+        planintervencionindividual: {},
+        idresidente: "",
+      },
       planI: {
         id: "",
         tipo: "PlanIntervencionIndividual",
+        historialcontenido: [],
+        fechacreacion: new Date(),
+        area: "",
         idresidente: "",
         fase: "",
         estado: "creado",
@@ -339,11 +346,12 @@ export default {
           estrategias: [],
           indicadores: [],
           metas: [],
-          firma: {
+          firmas: [{
             urlfirma: "",
             nombre: "Piero Erickson Lavado Cervantes",
             cargo: "Educador",
-          },
+          }],
+          codigoDocumento: "",
         },
       },
       datemenu: false,
@@ -374,7 +382,7 @@ export default {
       console.log(this.planI);
       this.$v.$touch();
       if (this.$v.$invalid) {
-        console.log("hay errores");
+        console.log("Hay errores");
         this.mensaje(
           "error",
           "..Oops",
@@ -382,20 +390,47 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        console.log("no hay errores");
+        console.log("No hay errores");
+        this.planIntervencionIndividual.planIntervencionIndividual = this.planI;
+        this.planIntervencionIndividual.idresidente = this.planI.idresidente;
+        console.log(this.planI);
+        console.log(this.planIntervencionIndividual);
+
+        await axios
+          .post("/planintervencionsocial", this.planIntervencionIndividual)
+          .then((res) => {
+            this.planI = res.data;
+            if (this.planI.id !== "") {
+              this.resetPlanIValidationState();
+              this.limpiarPlanI();
+              this.mensaje(
+                "success",
+                "Listo",
+                "Plan registrado Satisfactoriamente",
+                "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+              );
+              this.closeDialog();
+            }
+          })
+          .catch((err) => console.log(err));
       }
     },
     resetPlanIValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
       this.$v.planI.$reset();
+      this.$v.firmaAux.$reset();
     },
     afterSuccess(file, response) {
       this.firmaAux = file.dataURL;
-      this.$v.planI.firmaAux.$model = file.dataURL;
+      this.$v.firmaAux.$model = file.dataURL;
+      this.planI.contenido.firmas[0].urlfirma = file.dataURL.split(",")[1];
+      //this.$v.planI.contenido.firmas.urlfirma.$model = file.dataURL.split(",")[1];
     },
     afterRemoved(file, error, xhr) {
-      this.planI.firma.imagen = "";
-      this.$v.planI.firmaAux.$model = "";
+      this.firmaAux = "";
+      this.$v.firmaAux.$model = "";
+      this.planI.contenido.firmas[0].urlfirma = "";
+      //this.$v.planI.contenido.firmas.urlfirma.$model = "";
     },
     mensaje(icono, titulo, texto, footer) {
       this.$swal({

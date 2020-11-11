@@ -47,7 +47,7 @@
                 :error-messages="errorTipoSexo"
                 color="#009900"
               ></v-select>
-              <!--  Fecha nacimiento-->
+              <!--  Fecha nacimeinto-->
               <v-menu
                 v-model="datemenu"
                 :close-on-content-click="false"
@@ -191,17 +191,6 @@
                                 </v-col>
                                 <v-col :cols="4" align="right">
                                   <div style="margin-right:20px">
-                                    <!--  <v-btn style="margin-right:10px"
-                    fab
-                    x-small
-                    dark
-                    color="#126BB5"
-                    
-                    >
-                      <v-icon dark>
-                        mdi-pencil      
-                      </v-icon>
-                    </v-btn> -->
                                     <v-btn
                                       fab
                                       x-small
