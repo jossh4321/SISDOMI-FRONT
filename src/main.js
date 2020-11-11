@@ -1,3 +1,5 @@
+// jshint esversion:6
+
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -19,13 +21,13 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 
 Vue.use(VueSweetalert2);
 Vue.use(PerfectScrollbar);
-Vue.use(VueAxios, axios)
-Vue.use(Vuelidate)
+Vue.use(VueAxios, axios);
+Vue.use(Vuelidate);
 Vue.use(require('vue-moment'));
 
 
-axios.defaults.baseURL="http://localhost:64258/api"
-Vue.config.productionTip = false
+axios.defaults.baseURL = "http://localhost:64258/api";
+Vue.config.productionTip = false;
 
 new Vue({
     router,

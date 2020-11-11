@@ -38,10 +38,9 @@
                   <span>Registrar Informe</span>
                 </v-btn>
               </template>
-                <RegistrarInformeEducativoInicial   
-                 :listaresidentes="listaresidentes"               
+                <RegistrarInforme                
                  @close-dialog-save="closeDialogRegistrar()"                                  
-                 ></RegistrarInformeEducativoInicial> 
+                 ></RegistrarInforme> 
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -57,13 +56,11 @@
 
 import axios from 'axios';
 import RegistrarInforme from '@/components/informes/RegistrarInforme.vue'
-import RegistrarInformeEducativoInicial from '@/components/informes/RegistrarInformeEducativoInicial.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarInforme",
   components: {
-    RegistrarInforme,
-    RegistrarInformeEducativoInicial
+    RegistrarInforme
   },
   data() {
     return {
@@ -76,7 +73,7 @@ export default {
           sortable: false,
           value: "codigodocumento",
         },
-        { text: "Nombre del residente", value:"datosresidente.apellido"},
+        { text: "Nombre del residente", value:"nombrecompleto"},
         { text: "Fecha de creación", value: "fechacreacion" },
         { text: "Tipo de Informe", value: "tipo" },        
         { text: "Acciones", value: "actions", sortable: false },
@@ -87,7 +84,6 @@ export default {
   },
   async created(){    
       this.obtenerInformes();
-      this.obtenerResidentes();
   },
   methods: {
      ...mapMutations(["setInformes"]),    
@@ -100,12 +96,7 @@ export default {
                     this.setInformes(res.data);    
                     console.log(res.data);                  
             }).catch(err => console.log(err));
-    },async obtenerResidentes(){
-          await axios.get("/residente/all")
-                  .then( x => {
-                            this.listaresidentes = x.data;
-                            console.log(this.listaresidentes);
-                  }).catch(err => console.log(err));}
+    }
   },
   computed:{
     ...mapState(["informes"])

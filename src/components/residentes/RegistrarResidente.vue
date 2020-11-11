@@ -52,7 +52,7 @@
                 :error-messages="errorTipoSexo"
                 color="#009900"
               ></v-select>
-              <!--  Fecha nacimeinto-->
+              <!--  Fecha nacimiento-->
               <v-menu   
           v-model="datemenu"
           :close-on-content-click="false"
@@ -108,6 +108,155 @@
                     label="Ingrese el Lugar de Nacimiento"
                      color="#009900"
                 ></v-text-field>
+<!--Formulario para agregar telefonos -->
+<v-row justify="center">
+      <v-dialog
+        v-model="dialog"
+        persistent
+        max-width="600px"
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn
+            color="primary"
+            
+            v-on="on"
+          >
+            Registrar Telefono
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-title>
+            <span class="headline">Registrar Telefonos</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row >
+                 
+                <v-col
+                  cols="12"
+                  sm="6"
+                  md="4"
+                >
+                  <v-text-field
+                    v-model="telefonos.numero"
+                    label="Ingrese el Referente Familiar"
+                     color="#009900"
+                  ></v-text-field>
+                </v-col>
+                <v-col
+                  cols="12"
+                  sm="6"
+                  md="4"
+                >
+                  <v-text-field
+                    v-model="telefonos.referenteFamiliar"
+                    label="Ingrese el numero"
+                     color="#009900"
+                  ></v-text-field>
+                </v-col>
+          <v-col
+             cols="12"
+             sm="6"
+             md="4"
+                >
+          <v-btn
+            color="success"
+            @click="guardarTelefono"
+          >
+            añadir
+          </v-btn>
+                </v-col>
+          <!--Mostrar Cuadro -->
+           
+  
+      <!--AQUI COMIENZA-->
+<v-card style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA">
+          <v-row align="center">
+            <v-col>
+              <v-card-title style="font-size:22px;padding: 0px 10px;" >Referentes Familiares</v-card-title>
+            </v-col>
+            
+          </v-row>
+          <v-card 
+            tile
+            elevation="0"
+            color="#FAFAFA" 
+            style="margin-top:5px" 
+            height="60"
+            v-for="(item ,index) in residente.telefonosReferencia" :key="index"
+          >
+
+            <v-row style="margin-left:10px;heigh:100%" align="center">
+              <v-col :cols="5">
+                <article>
+                    <img style="margin-right:5px;width:6% " src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg" alt="imagen usuario">
+                    <span style="font-size:18px" > {{ item.referentefamiliar}}</span>
+                </article>
+                  
+              </v-col>
+              <v-col :cols="3">
+                <article>
+                    <img style="margin-right:10px;width:8%" src="https://www.flaticon.es/svg/static/icons/svg/633/633544.svg" alt="imagen telefono">
+                    <span style="font-size:18px">{{ item.numero}}</span>
+                </article>
+              </v-col>
+              <v-col :cols="4" align="right"> 
+                <div style="margin-right:20px">
+                  <!--  <v-btn style="margin-right:10px"
+                    fab
+                    x-small
+                    dark
+                    color="#126BB5"
+                    
+                    >
+                      <v-icon dark>
+                        mdi-pencil      
+                      </v-icon>
+                    </v-btn> -->
+                    <v-btn 
+                    fab
+                    x-small
+                    dark
+                    color="red"
+                    @click ="eliminarTelefono(item.index)"     
+                    >
+                      <v-icon dark>
+                        mdi-minus
+                      </v-icon>
+                    </v-btn>
+                </div>
+              </v-col>
+            </v-row>       
+          </v-card>
+      </v-card>
+
+      
+         <!-- -->  
+              </v-row>
+            </v-container>
+         
+         
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="dialog = false"
+            >
+              Cerrar
+            </v-btn>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="dialog = false"
+            >
+              Guardar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
 <!--botones -->
                    <v-row>
                     <v-col>
@@ -145,7 +294,8 @@
                     label="Ingrese el Juzgado de Procedencia"
                      color="#009900"
                 ></v-text-field>
-         <!-- --> <v-menu   
+         <!--FECHA INGRESO --> 
+         <v-menu   
           v-model="datemenu1"
           :close-on-content-click="false"
           :nudge-right="40"
@@ -183,7 +333,173 @@
           color="#009900"
         ></v-textarea>
 
-        <!--AQUIE DEBE IR EL PROGRESO -->
+<!--------AQUI esta  EL cuadro de progreso -->
+        <v-row justify="center">
+      <v-dialog
+        v-model="dialog1"
+        persistent
+        max-width="850px"
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn
+            color="primary"
+            
+            v-on="on"
+          >
+            Registrar Progreso
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-title>
+            <span class="headline">Registrar Progreso</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row >
+                 
+                
+                  <v-text-field
+                    v-model="progreso.fase"
+                    label="Ingrese la fase"
+                     color="#009900"
+                  ></v-text-field>
+
+                  <v-text-field
+                    v-model="progreso.estado"
+                    label="Ingrese el Estado"
+                     color="#009900"
+                  ></v-text-field>
+                
+    <!--AQUI COMIENZAN LAS FECHAS INGRESO --> 
+         <v-menu   
+          v-model="datemenu2"
+          :close-on-content-click="false"
+          :nudge-right="40"
+          transition="scale-transition"
+          offset-y
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-model="progreso.fechaingreso"
+              label="Fecha de Ingreso"
+              prepend-icon="mdi-calendar"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+              color="#009900"
+            ></v-text-field>
+          </template>
+          <v-date-picker
+            v-model="progreso.fechaingreso"
+            @input="menu2 = false"
+            locale="es-es"
+          ></v-date-picker>
+        </v-menu>
+    <!--acabo  -->
+     <!--FECHA INGRESO --> 
+         <v-menu   
+          v-model="datemenu3"
+          :close-on-content-click="false"
+          :nudge-right="40"
+          transition="scale-transition"
+          offset-y
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-model="progreso.fechafinalizacion"
+              label="Fecha de finalizacion"
+              prepend-icon="mdi-calendar"
+              readonly
+              v-bind="attrs"
+              v-on="on"
+              color="#009900"
+            ></v-text-field>
+          </template>
+          <v-date-picker
+            v-model="progreso.fechafinalizacion"
+            @input="menu2 = false"
+            locale="es-es"
+          ></v-date-picker>
+        </v-menu>
+    <!--acabo  -->
+            
+          <v-col
+             cols="12"
+             sm="6"
+             md="4"
+                >
+          <v-btn
+            color="success"
+            @click="guardarProgreso"
+          >
+            añadir
+          </v-btn>
+                </v-col>
+          <!--En esta parte se muestra Mostrar Cuadro -->
+          
+          
+          <!--fin--> 
+  <div class="container">
+    <v-row>
+      <v-col>
+        <h2 class="text-center">Lista de usuarios</h2>
+        <table class="table text-center">
+          <thead>
+            <tr>
+              <th><h3>Fase</h3></th>
+              <th><h3>Fecha Ingreso</h3></th>
+              <th><h3>Fecha Finalizacion</h3></th>
+              <th><h3>Estado</h3></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item ,index) in residente.progreso" :key="index"> <!-- Recorremos nuestro array -->
+              
+              <td v-text="item.fase"></td> <!--En la primera columna mostramos la fase-->
+              <td v-text="item.fechaingreso"></td> <!--En la segunda mostramos fecha ingreso-->
+              <td v-text="item.fechafinalizacion"></td> <!--En la segunda mostramos fecha ingreso-->
+              <td v-text="item.estado"></td> <!--En la segunda mostramos estado-->
+              <button  class="primary" 
+               @click ="eliminarProgreso(item.index)">Eliminar
+               </button>
+            </tr>
+          </tbody>
+        </table>
+      </v-col>
+      </v-row>
+      </div>
+      
+         <!-- -->  
+              </v-row>
+            </v-container>
+         
+         
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="dialog1 = false"
+            >
+              Cerrar
+            </v-btn>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="dialog1 = false"
+            >
+              Guardar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
+        
+        <!--Aqui acaba -->
                 <v-text-field
                     v-model="residente.estado"
                     @input="$v.residente.estado.$touch()"
@@ -228,11 +544,16 @@ import moment from 'moment'
 export default {
   data(){
     return{
-      datemenu: false,
-      datemenu1:false,
+      dialog: false,  ///abrir modal de numeros
+      dialog1: false,///abrir modal de progreso
+      datemenu: false,  ///fecha de nacimiento
+      datemenu1:false,  ///fecha ingreso
+      datemenu2:false,  ///MODAL fecha ingreso
+       datemenu3:false,  ///MODAL fecha finalizacion
        step:1
        
-   ,
+   ,telefonos:{numero:"",referentefamiliar:""},
+    progreso:{fase:"",fechaingreso:"",fechafinalizacion:"",estado:""},
     residente:{
       id:"",
       nombre:"",
@@ -261,7 +582,7 @@ export default {
     }
     }
   },
-  created:{
+  created(){
     
 
   },
@@ -311,6 +632,35 @@ export default {
         text: texto,
         footer:footer
       });
+      },
+  ////GUARDAR TELEFONO REFERENTE ///
+      guardarTelefono(){
+  let telefonos ={numero:this.telefonos.numero,referentefamiliar:this.telefonos.referenteFamiliar}//creamos variables 
+  this.residente.telefonosReferencia.push(telefonos); //añadimos al arreglo principal
+  ///LIMPIAMOS LOS CAMPOS//
+   console.log(this.residente.telefonosReferencia)
+   this.telefonos.numero="";
+   this.telefonos.referenteFamiliar="";
+      
+},
+      eliminarTelefono(index){
+      this.residente.telefonosReferencia.splice(index,1);   ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
+                                                                    
+},////GUARDAR PROGRESO DEL modal ///
+      guardarProgreso(){
+  let progreso={ fase:this.progreso.fase,fechaingreso:this.progreso.fechaingreso,fechafinalizacion:this.progreso.fechafinalizacion,estado:this.progreso.estado}//creamos variables 
+   console.log(this.residente)
+
+  this.residente.progreso.push(progreso); //añadimos al arreglo principal
+  ///LIMPIAMOS LOS CAMPOS//
+   console.log(this.residente.progreso)
+   this.progreso.fase="";
+   this.progreso.estado="";
+      
+      },
+      eliminarProgreso(index){
+      this.residente.progreso.splice(index,1);   ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
+                                                                    
       },
     ////////////HACER LA CONSULTA CON LA API  REGISTRAR
      async registrarResidente(){
@@ -421,7 +771,8 @@ export default {
           !(dateselected.getTime()<= maxdate.getTime()) && errors.push('La fecha debe ser de hoy')
 
       return errors
-    }
+    },
+    
   },
   validations() {
     return {
@@ -453,7 +804,14 @@ export default {
           sexo:{
               required
                   },
-          telefonosReferencia:[],
+          telefonosReferencia:[{
+                            numero:{
+                                  required,
+                                      minLength: minLength(9)},
+                            referentefamiliar:{
+                                  required,
+                                      minLength: minLength(4)}
+                               }],
           fechaIngreso:{
               required
                   },

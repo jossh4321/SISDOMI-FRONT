@@ -17,7 +17,7 @@
         editable
         step="2"
       >
-        Aspectos de intervención
+        Actualizacion de Datos
       </v-stepper-step>
     </v-stepper-header>
 
@@ -30,6 +30,7 @@
           label="Ingrese el nombre del plan"
           outlined
           color="#009900"
+          disabled
         ></v-text-field>
 
         <v-text-field
@@ -37,6 +38,7 @@
           label="Ingrese el nombre-dni de la usuaria"
           outlined
           color="#009900"
+          disabled
         ></v-text-field>
 
         <v-text-field
@@ -44,6 +46,7 @@
           label="Ingrese el objetivo general"
           outlined
           color="#009900"
+          disabled
         ></v-text-field>
 
         <v-textarea
@@ -55,6 +58,7 @@
           row-height="25"
           color="#009900"
           shaped
+          disabled
         ></v-textarea>
 
         <v-btn block @click="step = 2" color="primary">
@@ -70,18 +74,19 @@
         <br />
         <v-textarea
           v-model="planI.casos_problemas"
-          label="Casos/Problemas"
+          label="Ingrese nuevo nombre de Plan"
           auto-grow
           outlined
           rows="2"
           row-height="25"
           color="#009900"
           shaped
+          editable          
         ></v-textarea>
 
         <v-textarea
          v-model="planI.actividades_estrategias"
-          label="Actividades/estrategias"
+          label="Ingrese nuevo nombre-dni de Usuario"
           auto-grow
           outlined
           rows="2"
@@ -92,7 +97,7 @@
 
         <v-textarea
           v-model="planI.indicadores"
-          label="Indicadores"
+          label="Ingrese nuevo objetivo general"
           auto-grow
           outlined
           rows="2"
@@ -103,7 +108,7 @@
 
         <v-textarea
          v-model="planI.meta"
-          label="Meta"
+          label="Ingrese nuevos objetivos especificos"
           auto-grow
           outlined
           rows="2"
@@ -123,7 +128,7 @@
 
         <v-btn block color="accent">
           <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
-          <span >Modificar Plan</span>
+          <span >Actualizar Plan</span>
         </v-btn>
       </form>
         </div>
@@ -146,10 +151,10 @@ export default {
         nombreplan:"PlanI_Edu_Xiomara_1",
         objetivogeneral:"Realizar un adecuado plan de intervención",
         objetivoespecifico:"Responde a Plan de seguimiento",
-        casos_problemas:"1. Reinserción escolar.\n 2. No quiere participar en nivelación de matemática.\n 3. Retraso escolar.\n 4. Bajo rendimiento.\n 5. Problema de aprendizaje.",
-        actividades_estrategias:"1. Solicitar constancia de vacante.\n 2. Entrevista personal.",
-        indicadores:"1. Matricula en la I.E.\n 2.Participa en la nivelación escolar.",
-        meta:"Lograr nivelación en el grado correspondiente del área de matemática.",
+        casos_problemas:" ",
+        actividades_estrategias:" ",
+        indicadores:" ",
+        meta:" ",
       },
       datemenu: false,
       step:1,
@@ -191,6 +196,7 @@ export default {
 .container-planI {
   margin: 15px;
 }
+
 
 .dropzone-custom-content {
   position: absolute;

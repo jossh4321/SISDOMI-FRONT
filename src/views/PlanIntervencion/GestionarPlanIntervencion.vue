@@ -30,17 +30,22 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                <v-icon left>mdi-account-multiple-plus-outline</v-icon>
+                  <v-icon left>mdi-account-multiple-plus-outline</v-icon>
                   <span>Registrar nuevo Plan</span>
                 </v-btn>
               </template>
-                <RegistrarPlanIntervencion></RegistrarPlanIntervencion>
+              <RegistrarPlanIntervencion
+                @close-dialog="closeDialog"
+              ></RegistrarPlanIntervencion>
             </v-dialog>
           </v-toolbar>
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
+             <v-dialog v-model="dialogoactualizacion" max-width="880px">
+               <ActualizarPlanIntervencion v-if="dialogoactualizacion" :planIntervencion="planIntervencion" @close-dialog-detail="closeDialogActualizar()">
+          </ActualizarPlanIntervencion></v-dialog> 
             <v-btn color="warning" dark @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
@@ -61,31 +66,32 @@
           <VisualizarPlanIntervencion :plan="plan" @close-dialog-detail="closeDialogDetalle()">
           </VisualizarPlanIntervencion>
       </v-dialog>
+      
     </v-card>
   </div>
 </template>
 <script>
-import axios from 'axios';
-import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
-import VisualizarPlanIntervencion from '@/components/planIntervencion/VisualizarPlanIntervencion.vue'
-import {mapMutations, mapState} from "vuex";
+import axios from "axios";
+import RegistrarPlanIntervencion from "@/components/planIntervencion/Educativo/RegistrarPlanIntervencion.vue";
+import VisualizarPlanIntervencion from "@/components/planIntervencion/Educativo/VisualizarPlanIntervencion.vue";
+import { mapMutations, mapState } from "vuex";
 
 export default {
   name: "GestionarPlanI",
   components: {
-     RegistrarPlanIntervencion,
-     VisualizarPlanIntervencion
+    RegistrarPlanIntervencion,
+    VisualizarPlanIntervencion,
   },
   data() {
     return {
       search: "",
-      plan:{},
+      plan: {},
       headers: [
         {
           text: "Nombre Plan Intervención",
           align: "start",
           sortable: false,
-          value: "nombre"
+          value: "nombre",
         },
         { text: "Usuaria", value: "usuaria" },
         { text: "Fecha registro", value: "fechaRegistro" },
@@ -114,7 +120,7 @@ export default {
       ],
       dialogodetalle: false,
       dialogoregistro: false,
-      Visualizarplan:false
+      Visualizarplan: false,
     };
   },
 
@@ -122,16 +128,16 @@ export default {
   methods: {
    //  ...mapMutations(["setPlanInterve"]),
     editItem(item) {
-console.log(item);
+      console.log(item);
     },
     detailItem(item) {
            
   console.log(item.id);
     },
     /////////////////////////////////////
-  closeDialogDetalle(){
+    closeDialogDetalle() {
       this.dialogodetalle = false;
-      },
+    },
     ///abrir dialogo de detalle
     async abrirDialogoDetalle(idPlanI){
        
