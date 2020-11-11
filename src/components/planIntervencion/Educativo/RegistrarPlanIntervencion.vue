@@ -47,7 +47,7 @@
 
               <v-text-field
                 type="number"
-                v-model="planI.contenido.edad"
+                v-model.number="planI.contenido.edad"
                 label="Ingrese la edad del residente"
                 outlined
                 color="#009900"
@@ -55,7 +55,7 @@
 
               <v-text-field
                 type="number"
-                v-model="planI.contenido.trimestre"
+                v-model.number="planI.contenido.trimestre"
                 label="Ingrese el trimestre"
                 outlined
                 color="#009900"
@@ -291,6 +291,8 @@ import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
+import { required, minLength } from "vuelidate/lib/validators";
+
 export default {
   components: {
     vueDropzone: vue2Dropzone,
@@ -307,8 +309,8 @@ export default {
         creadordocumento: "Piero Erickson Lavado Cervantes",
         contenido: {
           car: "",
-          edad: "",
-          trimestre: "",
+          edad: 0,
+          trimestre: 1,
           objetivoGeneral: "",
           objetivoEspecificos: [],
           casos_problemas: [],
@@ -401,12 +403,10 @@ export default {
       this.$emit("close-dialog");
     },
     setFase() {
-      console.log("probar change0");
-      console.log("verificar si value es primero:  " + this.planI.idresidente);
-      this.planI.fase = this.residentes.find(
+      let usuariacar = this.residentes.find(
         (x) => x.id === this.planI.idresidente
-      ).fase;
-      console.log(this.planI);
+      );
+      this.planI.fase = usuariacar.progreso[usuariacar.progreso.length-1].nombre;
     },
     async obtenerResidentes() {
       await axios
@@ -420,8 +420,6 @@ export default {
               idresidente: element.id,
             });
           });
-          //console.log(this.residentes);
-          console.log(this.listResidentes);
         })
         .catch((err) => console.log(err));
     },
@@ -431,6 +429,52 @@ export default {
   },
   async created() {
     this.obtenerResidentes();
+  },
+  validations() {
+    return {
+      planI: {
+        idresidente: {
+          required,
+        },
+        nombreplan: {
+          required,
+        },
+        contenido: {
+          car: {
+            required,
+          },
+          edad: {
+            required,
+            between: between(12, 23),
+          },
+          trimestre: {
+            required,
+            between: between(1, 4),
+          },
+          objetivoGeneral: {
+            required,
+          },
+          objetivoEspecificos: {
+            required,
+          },
+          casos_problemas: {
+            required,
+          },
+          estrategias: {
+            required,
+          },
+          indicadores: {
+            required,
+          },
+          metas: {
+            required,
+          },
+          /*  firma: {
+            urlfirma: ""
+          }, */
+        },
+      },
+    };
   },
 };
 </script>
