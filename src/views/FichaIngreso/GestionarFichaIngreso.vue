@@ -4,7 +4,7 @@
       <v-card-title> Gestionar Ficha Ingreso </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="documento"    
+        :items="fichaIngreso"    
         :search="search"
         class="elevation-1"
       >
@@ -21,7 +21,12 @@
               hide-details
             ></v-text-field>
             <v-spacer></v-spacer>
-            <v-dialog v-model="dialogoregistro" max-width="880px">
+            <!-- Dialogo de Registro-->
+            <v-dialog
+            persistent
+            v-model="dialogregistro"
+            max-width="880px">
+
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
@@ -30,7 +35,7 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                <v-icon left>mdi-account-multiple-plus-outline</v-icon>
+                <v-icon left>mdi-plus</v-icon>
                   <span>Registrar Ficha Ingreso</span>
                 </v-btn>
               </template>
@@ -42,18 +47,33 @@
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
-            <v-btn color="warning" dark @click="editItem(item)">
+            <v-btn color="warning"
+             dark 
+             @click="abrirDialogoModificar(item.id)"
+             >
               <v-icon left> mdi-pencil </v-icon>
-              <span>Modificar Ficha</span>
+              <span>ModificarFichaIngreso</span>
             </v-btn>
-            <v-btn color="info" dark @click="abrirDialogoActualizar(item.id)">
-              <v-icon left> mdi-pencil </v-icon>
-              <span>Ver Ficha</span>
+            <v-btn 
+            color="info" dark
+             @click="abrirDialogoConsultar(item.id)">
+              <v-icon left> mdi-briefcase-edit </v-icon>
+              <span>ConsultarFichaIngreso</span>
             </v-btn>
           </v-row>
         </template>
       </v-data-table>
+      <!--Dialogo de Modificar-->
+      <v-dialog persistent
+                v-model="dialogoactualizacion" 
+                max-width="880px">
+        <ModificarFichaIngreso
+        v-if="dialogoactualizacion" 
+        :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()">
+        </ModificarFichaIngreso>
 
+      </v-dialog>
+     <!--Dialogo de Consultar-->
       <v-dialog persistent
           v-model="dialogoconsultar" 
           max-width="880px">
@@ -67,6 +87,7 @@
 import axios from 'axios';
 //import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
 import RegistrarFichaIngreso from '@/components/fichaIngreso/RegistrarFichaIngreso.vue'
+import ModificarFichaIngreso from '@/components/fichaIngreso/ActualizarFichaIngreso.vue'
 import ConsultarFichaIngresoEducativa  from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
@@ -74,7 +95,7 @@ export default {
   components: {
     // RegistrarPlanIntervencion,
      RegistrarFichaIngreso,
-     ConsultarFichaIngresoEducativa,
+     ConsultarFichaIngresoEducativa,ModificarFichaIngreso
       
   },
   data() {
@@ -83,67 +104,72 @@ export default {
       residente:{},
       headers: [
         {
-          text: "Nombre ",
+          text: "Codigo ",
           align: "start",
           sortable: false,
-          value: "nombre",
+          value: "codigodocumento",
         },
-        { text: "Apellido", value: "apellido" },
-        { text: "N°documento", value: "numerodocumento" },
-        { text:"Fecha de Ingreso",value:"fechaingreso"},
+        { text: "Nombre y apellido ", value: "datosresidente.apellido"},
+        { text: "DNI", value: "datosresidente.numerodocumento" },
+        { text:"Fecha de Inserccion",value:"datosresidente.fechaingreso"},
         { text: "Actions", value: "actions", sortable: false },
       ],
       dialogoconsultar:false,
       dialogoregistro: false,
+      dialogmodificar:false,
       
     };
   },
       async created(){
       this.obtenerfichasIngresos();
-      this.obtenerResidentes()
+     
      
   },
 
   methods: {
  
     ...mapMutations(["setDocumento"]),
-       editItem(item) {
+
+    closeDialogRegistrar()
+    {
+      this.dialogoregistro=false
+    },
+    
+    closeDialogModificar()
+    {
+      this.dialogmodificar=false
+    },
+    
+    closeDialogConsultar()
+    {
+      this.dialogoconsultar=false
+    },
+
+  editItem(item) {
       console.log(item);
     },
     detailItem(item) {
       console.log(item);
     },
-
-    closeDialogConsultar(){
-       this.dialogoconsultar = false;
-    },
-     async abrirDialogoConsultar(idresidente){
-        this.residente = await this.loadResidenteDetalle(idresidente);
-        this.dialogodetalle = !this.dialogodetalle;
-        },
-
-     async loadResidenteDetalle(idresidente){
-      var user = {};
-      await axios.get("/residente/id?id="+idresidente)
-      .then(res => {
-         user = res.data;
-         user.datos.fechanacimiento = res.data.datos
-                  .fechanacimiento.split("T")[0];
-      })
-      .catch(err => console.log(err));
-      console.log(user);
-      return user;
-    },
+   
+    
      //llamando al API para obtener los datos de ficha Educativa especifico
-       async obtenerfichasIngresos(){
+
+        async abrirDialogoModificar(idfichaingreso){
+        this.usuario = await this.loadFichaModificar(idfichaingreso);
+        this.dialogomodificar= !this.dialogomodificar;
+    },
+    async abrirDialogConsultar(idfichaingreso){
+        this.usuario = await this.loadUsuarioDetalle(idfichaingreso);
+        this.dialogodetalle = !this.dialogodetalle;
+    },
+    
+       async obtenerfichasIngresosEducativa(){
            await axios.get("/fichaingresoeducativa/all")
             .then(res => {
                     this.setFichaIngresos(fie.data);
-            }).catch(err => console.log(err));
-
-            
+            }).catch(err => console.log(err));            
     }
-
 
   },computed:{
     ...mapState(["documentos"]),

@@ -38,17 +38,10 @@
             </v-dialog>
           </v-toolbar>
         </template>
-<<<<<<< HEAD
-
-      
-
-
-        <template v-slot:[`item.actions`]="{ item }"><!--Abrir dialogo detalle -->
-=======
 
         <template v-slot:[`item.actions`]="{ item }"><!--Abrir dialogo detalle -->
 
->>>>>>> f299431216b856e16cfccd13f375c826752abc66
+
           <v-row align="center" justify="space-around">
             <!--BOTONES-->
             <v-btn color="warning" 
