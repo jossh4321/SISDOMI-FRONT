@@ -48,7 +48,10 @@ export default new Vuex.Store({
         },
         addFichaIngreso(state, value) {
             state.fichaingreso.push(value);
-        }
+        },replaceResidente(state, value) {
+            var index = state.residentes.findIndex(x => x.id == value.id);
+            state.residentes.splice(index, 1, value);
+        },
     },
     actions: {},
     modules: {}
