@@ -207,17 +207,19 @@ export default {
     async UpdatePlanIntervencion(item) {
       if (item.area == "educativa") {
         this.typePlanSelected = "ModificarPlanIntervencion";
-      } else if (item.area == "social") {
-        this.typePlanSelected = "ModificarPlanIntervencionSocial";
-      } else {
-        this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
-      }
-      await axios
+        await axios
         .get("/PlanIntervencionSocial/id?id=" + item.id)
         .then((x) => {
           this.planI = x.data;
         })
         .catch((err) => console.log(err));
+      } else if (item.area == "social") {
+        this.typePlanSelected = "ModificarPlanIntervencionSocial";
+
+      } else {
+        this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
+        
+      }
       this.dialogPlanModify = true;
     },
     DeletePlanIntervencion(item) {},
