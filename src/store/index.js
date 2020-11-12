@@ -32,8 +32,8 @@ export default new Vuex.Store({
         setResidentes(state, value) {
             state.residentes = value;
         },
-        addResidente(state,value){
-           state.residentes.push(value);
+        addResidente(state, value) {
+            state.residentes.push(value);
         },
         ///INFORMES
         setInformes(state, value) {
@@ -42,13 +42,18 @@ export default new Vuex.Store({
         addInforme(state, value) {
             state.informes.push(value);
         },
+        replaceInforme(state, value) {
+            var index = state.informes.findIndex(x => x.id == value.id);
+            state.informes.splice(index, 1, value);
+        },
         ///FICHAINGRESOS
         setFichaIngreso(state, value) {
             state.fichaingreso = value;
         },
         addFichaIngreso(state, value) {
             state.fichaingreso.push(value);
-        },replaceResidente(state, value) {
+        },
+        replaceResidente(state, value) {
             var index = state.residentes.findIndex(x => x.id == value.id);
             state.residentes.splice(index, 1, value);
         },

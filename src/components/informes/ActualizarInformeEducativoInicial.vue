@@ -1,350 +1,391 @@
 <template>
-    <v-card>
-      <v-card-title class="justify-center">Modificación de Informe Educativo Inicial</v-card-title>
-      <v-stepper v-model="step">
-        <v-stepper-header>
-          <v-stepper-step editable step="1">
-            Datos Generales
-          </v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step editable step="2">
-            Análisis y Diagnóstico
-          </v-stepper-step>
-        </v-stepper-header>
-        <v-stepper-items>
-          <v-stepper-content step="1">
-            <div class="container-user">
-              <form>
-                <v-autocomplete
-                  :items="listaresidentes"
-                  v-model="informe.idresidente"
-                  filled
-                  chips
-                  dense
-                  outlined
-                  color="#009900"
-                  label="Usuaria CAR"
-                  item-text="nombre"
-                  item-value="id"
-                  @input="$v.informe.idresidente.$touch()"
-                  @blur="$v.informe.idresidente.$touch()"
-                  :error-messages="errorResidente"
-                >
-                  <template v-slot:selection="data">
-                    <v-chip
-                      v-bind="data.attrs"
-                      :input-value="data.selected"
-                      style="margin-top:5px"
-                    >
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size:12px">RT</span>
-                      </v-avatar>
-                      {{ data.item.nombre + " "+ data.item.apellido	}}
-                    </v-chip>
-                  </template>
-                  <template v-slot:item="data">
-                    <template>
-                      <v-list-item-avatar>
-                        <v-avatar left color="#b3b3ff" size="24">
-                          <span style="font-size:12px">UC</span>
-                        </v-avatar>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          >Nombre completo: {{ data.item.nombre }}
-                          {{ data.item.apellido }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle
-                          >Nro. Documento:
-                          {{ data.item.numerodocumento }}</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </template>
-                  </template>
-                </v-autocomplete>
-
-                <v-autocomplete
-                  :items="listaeducadores"
-                  filled
-                  chips
-                  dense
-                  outlined
-                  v-model="informe.creadordocumento"
-                  color="#009900"
-                  label="Educador responsable"
-                  item-text="usuario"
-                  item-value="rol"
-                  @input="$v.informe.creadordocumento.$touch()"
-                  @blur="$v.informe.creadordocumento.$touch()"
-                  :error-messages="errorCreador"
-                >
-                  <template v-slot:selection="data">
-                    <v-chip
-                      v-bind="data.attrs"
-                      :input-value="data.selected"
-                      style="margin-top:5px"
-                    >
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size:12px">RT</span>
-                      </v-avatar>
-                      {{ data.item.datos.nombre }}
-                    </v-chip>
-                  </template>
-                  <template v-slot:item="data">
-                    <template>
-                      <v-list-item-avatar>
-                        <v-avatar left color="#b3b3ff" size="24">
-                          <span style="font-size:12px">UC</span>
-                        </v-avatar>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          >Nombre completo: {{ data.item.datos.nombre }}
-                          {{ data.item.datos.apellido }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle
-                          >Nro. Documento:
-                          {{
-                            data.item.datos.numerodocumento
-                          }}</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </template>
-                  </template>
-                </v-autocomplete>
-
-                <v-textarea
-                  label="Lugar de Evaluación"
-                  v-model="informe.contenido.lugarevaluacion"
-                  auto-grow
-                  outlined
-                  rows="2"
-                  row-height="25"
-                  color="#009900"
-                  shaped
-                  @input="$v.informe.contenido.lugarevaluacion.$touch()"
-                  @blur="$v.informe.contenido.lugarevaluacion.$touch()"
-                  :error-messages="errorLugarEvaluacion"
-                ></v-textarea>
-
-                <v-menu
-                  v-model="datemenu"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="informe.fechacreacion"
-                      label="Fecha de Evaluación"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      color="#009900"
-                      @input="$v.informe.fechacreacion.$touch()"
-                      @blur="$v.informe.fechacreacion.$touch()"
-                      :error-messages="errorFechaEvaluacion"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="informe.fechacreacion"
-                    @input="menu2 = false"
-                    locale="es-es"
-                  ></v-date-picker>
-                </v-menu>
-
-                <v-textarea
-                  label="Situación Académica"
-                  v-model="informe.contenido.situacionacademica"
-                  auto-grow
-                  outlined
-                  rows="2"
-                  row-height="40"
-                  color="#009900"
-                  shaped
-                  @input="$v.informe.contenido.situacionacademica.$touch()"
-                  @blur="$v.informe.contenido.situacionacademica.$touch()"
-                  :error-messages="errorSituacionAcademica"
-                ></v-textarea>
-
-                <v-textarea
-                  label="Análisis Académico y de comportamiento"
-                  v-model="informe.contenido.analisisacademico"
-                  auto-grow
-                  outlined
-                  rows="2"
-                  row-height="40"
-                  color="#009900"
-                  shaped
-                  @input="$v.informe.contenido.analisisacademico.$touch()"
-                  @blur="$v.informe.contenido.analisisacademico.$touch()"
-                  :error-messages="errorAnalisisAcademico"
-                ></v-textarea>
-                <v-row>
-                  <v-col>
-                    <v-btn block @click="step = 2" color="success">
-                      <v-icon left>mdi-page-next-outline</v-icon>
-                      <span>Continuar</span>
-                    </v-btn>
-                  </v-col>
-                  <v-col>
-                    <v-btn block @click="cerrarDialogo()" color="primary">
-                      <v-icon left>mdi-close-outline</v-icon>
-                      <span>Cerrar</span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </form>
-            </div>
-          </v-stepper-content>
-          <v-stepper-content step="2">
-            <div class="container-user">
-              <form>
-                <v-card
-                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
-                >
-                  <v-card
-                    elevation="0"
-                    style="background-color:#EAEAEA"
-                    height="70"
+  <v-card>
+    <v-card-title class="justify-center"
+      >Modificación de Informe Educativo Inicial</v-card-title
+    >
+    <v-stepper v-model="step">
+      <v-stepper-header>
+        <v-stepper-step editable step="1">
+          Datos Generales
+        </v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step editable step="2">
+          Análisis y Diagnóstico
+        </v-stepper-step>
+      </v-stepper-header>
+      <v-stepper-items>
+        <v-stepper-content step="1">
+          <div class="container-user">
+            <form>
+              <v-autocomplete
+                :items="listaresidentes"
+                v-model="informe.idresidente"
+                filled
+                chips
+                dense
+                outlined
+                color="#009900"
+                label="Usuaria CAR"
+                item-text="nombre"
+                item-value="id"
+                @input="$v.informe.idresidente.$touch()"
+                @blur="$v.informe.idresidente.$touch()"
+                :error-messages="errorResidente"
+              >
+                <template v-slot:selection="data">
+                  <v-chip
+                    v-bind="data.attrs"
+                    :input-value="data.selected"
+                    style="margin-top:5px"
                   >
-                    <v-row style="margin:1%;heigh:100%" align="center">
-                      <v-col :cols="8" align="left">
-                        <v-text-field
-                          v-model="conclusion"
-                          label="Conclusiones y recomendaciones"
-                          color="#009900"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col :cols="4" align="right">
+                    <v-avatar left color="#b3b3ff" size="24">
+                      <span style="font-size:12px">RT</span>
+                    </v-avatar>
+                    {{ data.item.nombre + " " + data.item.apellido }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <template>
+                    <v-list-item-avatar>
+                      <v-avatar left color="#b3b3ff" size="24">
+                        <span style="font-size:12px">UC</span>
+                      </v-avatar>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        >Nombre completo: {{ data.item.nombre }}
+                        {{ data.item.apellido }}
+                      </v-list-item-title>
+                      <v-list-item-subtitle
+                        >Nro. Documento:
+                        {{ data.item.numerodocumento }}</v-list-item-subtitle
+                      >
+                    </v-list-item-content>
+                  </template>
+                </template>
+              </v-autocomplete>
+
+              <v-autocomplete
+                :items="listaeducadores"
+                filled
+                chips
+                dense
+                outlined
+                v-model="informe.creadordocumento"
+                color="#009900"
+                label="Educador responsable"
+                item-text="usuario"
+                item-value="rol"
+                @input="$v.informe.creadordocumento.$touch()"
+                @blur="$v.informe.creadordocumento.$touch()"
+                :error-messages="errorCreador"
+              >
+                <template v-slot:selection="data">
+                  <v-chip
+                    v-bind="data.attrs"
+                    :input-value="data.selected"
+                    style="margin-top:5px"
+                  >
+                    <v-avatar left color="#b3b3ff" size="24">
+                      <span style="font-size:12px">RT</span>
+                    </v-avatar>
+                    {{ data.item.datos.nombre }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <template>
+                    <v-list-item-avatar>
+                      <v-avatar left color="#b3b3ff" size="24">
+                        <span style="font-size:12px">UC</span>
+                      </v-avatar>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        >Nombre completo: {{ data.item.datos.nombre }}
+                        {{ data.item.datos.apellido }}
+                      </v-list-item-title>
+                      <v-list-item-subtitle
+                        >Nro. Documento:
+                        {{
+                          data.item.datos.numerodocumento
+                        }}</v-list-item-subtitle
+                      >
+                    </v-list-item-content>
+                  </template>
+                </template>
+              </v-autocomplete>
+
+              <v-textarea
+                label="Lugar de Evaluación"
+                v-model="informe.contenido.lugarevaluacion"
+                auto-grow
+                outlined
+                rows="2"
+                row-height="25"
+                color="#009900"
+                shaped
+                @input="$v.informe.contenido.lugarevaluacion.$touch()"
+                @blur="$v.informe.contenido.lugarevaluacion.$touch()"
+                :error-messages="errorLugarEvaluacion"
+              ></v-textarea>
+
+              <v-menu
+                v-model="datemenu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="informe.fechacreacion"
+                    label="Fecha de Evaluación"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    color="#009900"
+                    @input="$v.informe.fechacreacion.$touch()"
+                    @blur="$v.informe.fechacreacion.$touch()"
+                    :error-messages="errorFechaEvaluacion"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="informe.fechacreacion"
+                  @input="menu2 = false"
+                  locale="es-es"
+                ></v-date-picker>
+              </v-menu>
+
+              <v-textarea
+                label="Situación Académica"
+                v-model="informe.contenido.situacionacademica"
+                auto-grow
+                outlined
+                rows="2"
+                row-height="40"
+                color="#009900"
+                shaped
+                @input="$v.informe.contenido.situacionacademica.$touch()"
+                @blur="$v.informe.contenido.situacionacademica.$touch()"
+                :error-messages="errorSituacionAcademica"
+              ></v-textarea>
+
+              <v-textarea
+                label="Análisis Académico y de comportamiento"
+                v-model="informe.contenido.analisisacademico"
+                auto-grow
+                outlined
+                rows="2"
+                row-height="40"
+                color="#009900"
+                shaped
+                @input="$v.informe.contenido.analisisacademico.$touch()"
+                @blur="$v.informe.contenido.analisisacademico.$touch()"
+                :error-messages="errorAnalisisAcademico"
+              ></v-textarea>
+              <v-row>
+                <v-col>
+                  <v-btn block @click="step = 2" color="success">
+                    <v-icon left>mdi-page-next-outline</v-icon>
+                    <span>Continuar</span>
+                  </v-btn>
+                </v-col>
+                <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </div>
+        </v-stepper-content>
+        <v-stepper-content step="2">
+          <div class="container-user">
+            <form>
+              <v-card
+                style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+              >
+                <v-card
+                  elevation="0"
+                  style="background-color:#EAEAEA"
+                  height="70"
+                >
+                  <v-row style="margin:1%;heigh:100%" align="center">
+                    <v-col :cols="8" align="left">
+                      <v-text-field
+                        v-model="conclusion"
+                        label="Conclusiones y recomendaciones"
+                        color="#009900"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col :cols="4" align="right">
+                      <v-btn
+                        fab
+                        small
+                        dark
+                        color="green"
+                        @click="agregarConclusion"
+                      >
+                        <v-icon dark>
+                          mdi-plus
+                        </v-icon>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-card>
+
+                <v-card
+                  tile
+                  elevation="0"
+                  color="#FAFAFA"
+                  style="margin:5px"
+                  height="60"
+                  v-for="conclusion in conclusiones"
+                  :key="conclusion"
+                >
+                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                    <v-col :cols="8" align="left">
+                      <span>{{ conclusion }}</span>
+                    </v-col>
+                    <v-col :cols="4" align="right">
+                      <div style="margin-right:20px">
                         <v-btn
                           fab
-                          small
+                          x-small
                           dark
-                          color="green"
-                          @click="agregarConclusion"
+                          color="red"
+                          @click="eliminarConclusion(conclusion)"
                         >
                           <v-icon dark>
-                            mdi-plus
+                            mdi-minus
                           </v-icon>
                         </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-card>
-
-                  <v-card
-                    tile
-                    elevation="0"
-                    color="#FAFAFA"
-                    style="margin:5px"
-                    height="60"
-                    v-for="conclusion in conclusiones"
-                    :key="conclusion"
-                  >
-                    <v-row style="margin-left:10px;heigh:100%" align="center">
-                      <v-col :cols="8" align="left">
-                        <span>{{ conclusion }}</span>
-                      </v-col>
-                      <v-col :cols="4" align="right">
-                        <div style="margin-right:20px">
-                          <v-btn
-                            fab
-                            x-small
-                            dark
-                            color="red"
-                            @click="eliminarConclusion(conclusion)"
-                          >
-                            <v-icon dark>
-                              mdi-minus
-                            </v-icon>
-                          </v-btn>
-                        </div>
-                      </v-col>
-                    </v-row>
-                  </v-card>
+                      </div>
+                    </v-col>
+                  </v-row>
                 </v-card>
-                <v-row>
-                  <v-col>
-                    <v-btn color="warning" block>
-                      <v-icon left>mdi-briefcase-edit</v-icon>
-                      <span>Actualizar Informe</span>
-                    </v-btn>
-                  </v-col>
+              </v-card>
+              <v-row>
+                <v-col>
+                  <v-btn color="warning" @click="actualizarInformeEducativoInicial()" block>
+                    <v-icon left>mdi-briefcase-edit</v-icon>
+                    <span>Actualizar Informe</span>
+                  </v-btn>
+                </v-col>
 
-                  <v-col>
-                    <v-btn block @click="cerrarDialogo()" color="primary">
-                      <v-icon left>mdi-close-outline</v-icon>
-                      <span>Cerrar</span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </form>
-            </div>
-          </v-stepper-content>
-        </v-stepper-items>
-      </v-stepper>
-    </v-card>
+                <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </div>
+        </v-stepper-content>
+      </v-stepper-items>
+    </v-stepper>
+  </v-card>
 </template>
-<script> 
-import axios from 'axios';
+<script>
+import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState} from "vuex";
-import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
-import moment from 'moment'
+import { mapMutations, mapState } from "vuex";
+import { required, minLength, email, helpers } from "vuelidate/lib/validators";
+import moment from "moment";
+import ActualizarInformeEducativoEvolutivoVue from './ActualizarInformeEducativoEvolutivo.vue';
 export default {
-    props:["informe", "listaresidentes", "listaeducadores"],
-    components: {
-        vueDropzone: vue2Dropzone,
-    },
-    data () {
-      return {                
-        datemenu: false,
-        step:1,
-        dropzoneOptions: {
-            url: "https://httpbin.org/post",
-            thumbnailWidth: 250,
-            maxFilesize: 3.0,
-            maxFiles:1,
-            acceptedFiles:".jpg",
-            headers: { "My-Awesome-Header": "header value" },
-            addRemoveLinks: true,
-            dictDefaultMessage: "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
-        },
-        conclusion: "",
-        conclusiones: []
+  props: ["informe", "listaresidentes", "listaeducadores"],
+  components: {
+    vueDropzone: vue2Dropzone,
+  },
+  data() {
+    return {
+      datemenu: false,
+      step: 1,
+      dropzoneOptions: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFilesize: 3.0,
+        maxFiles: 1,
+        acceptedFiles: ".jpg",
+        headers: { "My-Awesome-Header": "header value" },
+        addRemoveLinks: true,
+        dictDefaultMessage:
+          "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
+      },
+      conclusion: "",
+      conclusiones: [],
+    };
+  },
+  async created() {
+    this.cargarConclusiones();
+  },
+  methods: {
+    ...mapMutations(["replaceInforme"]),
+    async actualizarInformeEducativoInicial() {
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        console.log("hay errores");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
+        console.log("no hay errores");
+        await axios
+          .put("/informe/informeei",this.informe)
+          .then((res) => {
+            var resultado = res.data;
+            this.replaceInforme(resultado);
+            this.cerrarDialogo();
+          })
+          .catch((err) => console.log(err));
+        await this.mensaje(
+          "success",
+          "listo",
+          "Informe Actualizado Satisfactoriamente",
+          "<strong>Se redirigira a la Interfaz de Gestión<strong>"
+        );
       }
     },
-    async created() {
-      this.cargarConclusiones();
+    cerrarDialogo() {
+      //this.resetUsuarioValidationState();
+      this.$emit("close-dialog-update");
     },
-    methods:{
-        cerrarDialogo(){
-            //this.resetUsuarioValidationState();
-            this.$emit("close-dialog-update");
-        },
-        agregarConclusion() {
-          let conclusiones = this.conclusion;
-          this.informe.contenido.conclusiones.push(conclusiones);
-          this.conclusiones = this.informe.contenido.conclusiones;
-          this.conclusion = "";
-        },
-        eliminarConclusion(conclusion) {
-          // this.informe.contenido.conclusiones.splice(conclusion, 1);
-          this.conclusiones.forEach(function(car, index, object) {
-            if(car === conclusion){
-              object.splice(index, 1);
-            }
-          });
-        },
-        cargarConclusiones(){
-          this.conclusiones = this.informe.contenido.conclusiones;
+    agregarConclusion() {
+      let conclusiones = this.conclusion;
+      this.informe.contenido.conclusiones.push(conclusiones);
+      this.conclusiones = this.informe.contenido.conclusiones;
+      this.conclusion = "";
+    },
+    eliminarConclusion(conclusion) {
+      // this.informe.contenido.conclusiones.splice(conclusion, 1);
+      this.conclusiones.forEach(function(car, index, object) {
+        if (car === conclusion) {
+          object.splice(index, 1);
         }
+      });
     },
-    computed: {
+    cargarConclusiones() {
+      this.conclusiones = this.informe.contenido.conclusiones;
+    },
+    async mensaje(icono, titulo, texto, footer) {
+      await this.$swal({
+        icon: icono,
+        title: titulo,
+        text: texto,
+        footer: footer,
+      });
+    },
+  },
+  computed: {
     errorResidente() {
       const errors = [];
       if (!this.$v.informe.idresidente.$dirty) return errors;
@@ -402,7 +443,7 @@ export default {
       return errors;
     },
   },
-    validations() {
+  validations() {
     return {
       informe: {
         idresidente: {
@@ -430,8 +471,8 @@ export default {
         },
       },
     };
-  }
-}
+  },
+};
 </script>
 <style scoped>
 .dropzone-custom-content {

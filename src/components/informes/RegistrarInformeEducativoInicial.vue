@@ -14,7 +14,7 @@
             Análisis y Diagnóstico
           </v-stepper-step>
         </v-stepper-header>
-        <v-stepper-items>          
+        <v-stepper-items>
           <v-stepper-content step="1">
             <div class="container-user">
               <form>
@@ -303,7 +303,7 @@
                           label="Cargo"
                           color="#009900"
                         ></v-text-field>
-                      </v-col>                      
+                      </v-col>
                       <v-col :cols="4" align="right">
                         <v-btn
                           fab
@@ -317,30 +317,30 @@
                           </v-icon>
                         </v-btn>
                       </v-col>
-                    </v-row>                    
+                    </v-row>
                   </v-card>
                   <v-row>
-                       <v-col :cols="12" align="right">
+                    <v-col :cols="12" align="right">
                       <div>
-                          <vue-dropzone
-                            ref="myVueDropzone"
-                            @vdropzone-success="afterSuccess2"
-                            @vdropzone-removed-file="afterRemoved2"
-                            id="dropzone2"
-                            :options="dropzoneOptions2"
-                          >
-                          </vue-dropzone>                        
-                        </div>    
-                       </v-col>
-                      </v-row>
-                  <v-card                   
+                        <vue-dropzone
+                          ref="myVueDropzone"
+                          @vdropzone-success="afterSuccess2"
+                          @vdropzone-removed-file="afterRemoved2"
+                          id="dropzone2"
+                          :options="dropzoneOptions2"
+                        >
+                        </vue-dropzone>
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <v-card
                     color="#FAFAFA"
                     style="margin-top:5px"
                     height="60"
                     v-for="(item, index) in informe.contenido.firmas"
                     :key="index"
                   >
-                    <v-row style="margin-left:10px;heigh:100%" align="center" >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
                       <v-col :cols="8">
                         <article>
                           <img
@@ -348,10 +348,12 @@
                             src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
                             alt="imagen usuario"
                           />
-                          <span style="font-size:18px"> {{ item.nombre }} {{item.cargo}}</span>
+                          <span style="font-size:18px">
+                            {{ item.nombre }} {{ item.cargo }}</span
+                          >
                         </article>
                       </v-col>
-  
+
                       <v-col :cols="4" align="right">
                         <div style="margin-right:20px">
                           <v-btn
@@ -377,13 +379,13 @@
                       <v-icon left>mdi-content-save-all-outline</v-icon>
                       <span>Registrar Informe</span>
                     </v-btn>
-                  </v-col>                  
+                  </v-col>
                   <v-col>
                     <v-btn block @click="show = false" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
                     </v-btn>
-                  </v-col>                  
+                  </v-col>
                 </v-row>
               </form>
             </div>
@@ -409,9 +411,9 @@ export default {
   ...mapMutations(["addInforme"]),
   data() {
     return {
-    //para probar
-      fileList:[],
-    ///
+      //para probar
+      fileList: [],
+      ///
 
       datemenu: false,
       step: 1,
@@ -439,7 +441,7 @@ export default {
       },
       conclusion: "",
       conclusiones: [],
-      urlfirma : "",
+      urlfirma: "",
       firmas: { urlfirma: "", nombre: "", cargo: "" },
       informe: {
         id: "",
@@ -474,15 +476,15 @@ export default {
     this.conclusion = "";
   },
   methods: {
-     async sendPDFFiles(){
+    async sendPDFFiles() {
       let listaanexos = this.fileList;
-      for(let index =0; index < this.fileList.length; index++){
-          let formData = new FormData();
-          formData.append("file",this.fileList[index]);
-          await axios
-          .post("/Media/archivos/pdf",formData)
+      for (let index = 0; index < this.fileList.length; index++) {
+        let formData = new FormData();
+        formData.append("file", this.fileList[index]);
+        await axios
+          .post("/Media/archivos/pdf", formData)
           .then((res) => {
-             listaanexos[index] = res.data;
+            listaanexos[index] = res.data;
           })
           .catch((err) => console.log(err));
       }
@@ -547,25 +549,20 @@ export default {
     eliminarConclusion(conclusion) {
       // this.informe.contenido.conclusiones.splice(conclusion, 1);
       this.conclusiones.forEach(function(car, index, object) {
-            if(car === conclusion){
-              object.splice(index, 1);
-            }
-     });
+        if (car === conclusion) {
+          object.splice(index, 1);
+        }
+      });
     },
     agregarFirma() {
-      console.log("agregando esta cagada");
       let firmas = {
-        urlfirma:  this.urlfirma,
+        urlfirma: this.urlfirma,
         nombre: this.firmas.nombre,
         cargo: this.firmas.cargo,
-      };       
-      console.log("antes de listar el let firmas");
-       console.log(firmas);
-      // console.log(this.urlfirma);
-      this.informe.contenido.firmas.push(firmas);     
+      };
+      this.informe.contenido.firmas.push(firmas);
       this.$refs.myVueDropzone.removeAllFiles();
-      // // console.log("this.informe.contenido.firmas");
-      // // console.log(this.informe.contenido.firmas);     
+
       this.urlfirma = "";
       this.firmas.nombre = "";
       this.firmas.cargo = "";
@@ -588,8 +585,8 @@ export default {
       this.informe.contenido.anexos = "";
       this.$v.informe.contenido.anexos.$model = "";
     },
-    afterSuccess2(file, response) { 
-      this.urlfirma =  file.dataURL.split(",")[1];     
+    afterSuccess2(file, response) {
+      this.urlfirma = file.dataURL.split(",")[1];
       console.log(this.urlfirma);
     },
     afterRemoved2(file, error, xhr) {
