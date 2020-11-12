@@ -51,7 +51,7 @@
               <span>Actualizar</span>
             </v-btn>
                  <!-- <v-dialog v-model="Visualizarplan" max-width="880px">-->
-                  <v-btn color="info" @click="abrirDialogoDetalle(item)" >
+                  <v-btn color="info" @click="abrirDialogoDetalle(item.id)" >
                   <v-icon left> mdi-pencil </v-icon>
                        <span>Visualizar</span>
                   </v-btn>  
@@ -102,7 +102,7 @@ export default {
           nombre: "PlanI_Edu_Xiomara_1",
           usuaria: "Xiomara Paredes Guerra",
           fechaRegistro: "15/09/2019",
-          id:1
+          id: "5f9e4cdae4655cf92eaa4d5b",
         },
         {
           nombre: "PlanI_Psico_Xiomara_1",
@@ -128,11 +128,11 @@ export default {
   methods: {
    //  ...mapMutations(["setPlanInterve"]),
     editItem(item) {
-      console.log(item);
+   //   console.log(item);
     },
     detailItem(item) {
            
-  console.log(item.id);
+ // console.log(item.id);
     },
     /////////////////////////////////////
     closeDialogDetalle() {
@@ -140,15 +140,26 @@ export default {
     },
     ///abrir dialogo de detalle
     async abrirDialogoDetalle(idPlanI){
-       
-       this.plan = idPlanI.nombre; // pasar array con datos
-        this.plan += idPlanI.usuaria;
-        this.plan += idPlanI.fechaRegistro;
-        this.plan += idPlanI.id;
+     
+       this.plan =  await this.obtenerCualquiercosa(idPlanI); 
+        //this.plan += idPlanI.usuaria;
+      //  this.plan += idPlanI.fechaRegistro;
+      //  this.plan += idPlanI.id;
 
         this.dialogodetalle = !this.dialogodetalle;
         console.log(this.plan);
         },
+        
+      async obtenerCualquiercosa(id){
+   
+      var user = {};
+      await axios.get("/usuario/id?id="+id)//prueba
+      .then(res => {
+         user = res.data; 
+      })
+      .catch(err => console.log(err));
+      return user;
+    },
 
   },
    computed:{
