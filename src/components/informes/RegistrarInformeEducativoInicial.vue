@@ -307,7 +307,7 @@ export default {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
         maxFilesize: 10.0,
-        maxFiles: 10,
+        maxFiles: 1,
         acceptedFiles: ".pdf",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
@@ -397,6 +397,7 @@ export default {
     afterSuccess(file, response) {
       console.log(file);
       console.log(file.dataURL);
+      console.log(this.$refs.myVueDropzone);
       //this.informe.contenido.anexos = file.dataURL.split(",")[1];
       //this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
       //console.log(file.dataURL.split(",")[1]);
