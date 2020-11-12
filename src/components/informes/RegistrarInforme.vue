@@ -23,7 +23,8 @@
                         <v-icon left>done</v-icon>
                         <span >Continuar</span>
                         </v-btn>
-                        <RegistrarInformeEducativoEvolutivo v-if="showRegistrarInformeEE" :listaresidentes="listaresidentes" :visible="showRegistrarInformeEE" :titulo="titulo" @close="showRegistrarInformeEE=false"/>                     
+                        <RegistrarInformeEducativoEvolutivo v-if="showRegistrarInformeEE" :listaresidentes="listaresidentes" :listaeducadores="listaeducadores" 
+                        :visible="showRegistrarInformeEE" :titulo="titulo" @close="showRegistrarInformeEE=false"/>                     
                         <RegistrarInformeEducativoInicial 
                             :listaresidentes="listaresidentes"
                             :listaeducadores="listaeducadores"                             

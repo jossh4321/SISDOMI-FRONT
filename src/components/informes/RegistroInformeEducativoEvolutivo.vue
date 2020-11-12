@@ -23,7 +23,8 @@
       <v-stepper-content step="1">
         <div class="container-user">
       <form>
-        <v-autocomplete              
+        <v-autocomplete
+                  v-model="informe.idresidente"             
                   :items="listaresidentes"
                   filled
                   chips
@@ -32,7 +33,10 @@
                   color="#009900"
                   label="Usuaria CAR"
                   item-text="nombre"
-                  item-value="id"                            
+                  item-value="id"
+                  @input="$v.informe.idresidente.$touch()"
+                  @blur="$v.informe.idresidente.$touch()"
+                  :error-messages="errorResidente"                            
                 >
                   <template v-slot:selection="data">
                     <v-chip
@@ -57,6 +61,55 @@
                       <v-list-item-title>Nombre completo: {{ data.item.nombre }} {{data.item.apellido}} </v-list-item-title>
                       <v-list-item-subtitle>Nro. Documento: {{data.item.numerodocumento}}</v-list-item-subtitle>                    
                     </v-list-item-content>
+                    </template>
+                  </template>
+        </v-autocomplete>
+        <v-autocomplete
+                  :items="listaeducadores"
+                  filled
+                  chips
+                  dense
+                  outlined
+                  v-model="informe.creadordocumento"
+                  color="#009900"
+                  label="Educador responsable"
+                  item-text="usuario"
+                  item-value="rol"
+                  @input="$v.informe.creadordocumento.$touch()"
+                  @blur="$v.informe.creadordocumento.$touch()"
+                  :error-messages="errorCreador"
+                >
+                  <template v-slot:selection="data">
+                    <v-chip
+                      v-bind="data.attrs"
+                      :input-value="data.selected"
+                      style="margin-top:5px"
+                    >
+                      <v-avatar left color="#b3b3ff" size="24">
+                        <span style="font-size:12px">RT</span>
+                      </v-avatar>
+                      {{ data.item.datos.nombre }}
+                    </v-chip>
+                  </template>
+                  <template v-slot:item="data">
+                    <template>
+                      <v-list-item-avatar>
+                        <v-avatar left color="#b3b3ff" size="24">
+                          <span style="font-size:12px">UC</span>
+                        </v-avatar>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          >Nombre completo: {{ data.item.datos.nombre }}
+                          {{ data.item.datos.apellido }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle
+                          >Nro. Documento:
+                          {{
+                            data.item.datos.numerodocumento
+                          }}</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
                     </template>
                   </template>
         </v-autocomplete> 
@@ -164,7 +217,7 @@
               <v-col>
                 <v-btn block @click="step = 2" color="success">
                 <v-icon left>mdi-page-next-outline</v-icon>
-                <span>Continuar</span>
+                <span>Registrar Informe</span>
                 </v-btn>
               </v-col>
               <v-col>
@@ -193,7 +246,7 @@ import moment from 'moment'
 
 export default {
     name: "GestionarInformeEducativoEvolutivo",
-    props:["listaresidentes","visible","titulo"],
+    props:["listaresidentes","visible","titulo","listaeducadores"],
     components: {
       vueDropzone: vue2Dropzone,
     },
@@ -361,6 +414,17 @@ export default {
           !this.$v.informe.contenido.situacionactual.required && errors.push('Debe ingresar la situación actual')
         return errors
       },
+      errorResidente() {
+        const errors = [];
+        if (!this.$v.informe.idresidente.$dirty) return errors;
+        !this.$v.informe.idresidente.required && errors.push("Debe seleccionar un residente obligatoriamente");
+        return errors;
+      },errorCreador(){
+        const errors = [];
+        if (!this.$v.informe.creadordocumento.$dirty) return errors;
+        !this.$v.informe.creadordocumento.required && errors.push("Debe seleccionar un educador obligatoriamente");
+      return errors;
+      },
       show: {
         get () {
           return this.visible
@@ -375,6 +439,12 @@ export default {
   validations() {
     return {
         informe: {
+            idresidente : {
+              required
+            },
+            creadordocumento: {
+              required
+            },
            contenido: {
               antecedentes:{
                 required
