@@ -124,6 +124,7 @@
 import axios from "axios";
 import RegistrarPlanIntervencion from "@/components/planIntervencion/Educativo/RegistrarPlanIntervencion.vue";
 import RegistrarPlanIntervencionPsicologico from '@/components/planIntervencion/Psicologico/RegistrarPlanIntervencionPsicologico.vue';
+import RegistrarPlanIntervencionSocial from '@/components/planIntervencion/Social/RegistrarPlanIntervencionSocial.vue';
 
 export default {
   name: "app-gestion-planes",
@@ -209,7 +210,8 @@ export default {
   },
   components: {
     RegistrarPlanIntervencion,
-    RegistrarPlanIntervencionPsicologico
+    RegistrarPlanIntervencionPsicologico,
+    RegistrarPlanIntervencionSocial
   },
 };
 </script>
