@@ -581,6 +581,13 @@ export default {
         fechafinalizacion: "",
         estado: "",
       },
+       itemFase:[{text:'Acogida',value:{nombre:'Acogida',fase:1}},
+              {text:'Desarrollo',value:{nombre:'Desarrollo',fase:2}},
+              {text:'Reinsercion',value:{nombre:'Desarrollo',fase:3}},
+              {text:'Seguimiento',value:{nombre:'Desarrollo',fase:4}}
+                                ],
+    miFase:{nombre:'Acogida',fase:1},
+        progreso:{},
       residente: {
         id: "",
         nombre: "",
@@ -684,12 +691,9 @@ export default {
       this.residente.telefonosReferencia.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     }, ////GUARDAR PROGRESO DEL modal ///
     guardarProgreso() {
-      let progreso = {
-        fase: this.progreso.fase,
-        fechaingreso: this.progreso.fechaingreso,
-        fechafinalizacion: this.progreso.fechafinalizacion,
-        estado: this.progreso.estado,
-      }; //creamos variables
+       let progreso={ fase: this.miFase.fase,nombre: this.miFase.nombre,fechaingreso:this.progreso.fechaingreso,fechafinalizacion:this.progreso.fechafinalizacion,estado:this.progreso.estado}//creamos variables 
+   
+       //creamos variables
       console.log(this.residente);
 
       this.residente.progreso.push(progreso); //añadimos al arreglo principal
@@ -697,6 +701,7 @@ export default {
       console.log(this.residente.progreso);
       this.progreso.fase = "";
       this.progreso.estado = "";
+      this.miFase={nombre:'Acogida',fase:1}
     },
     eliminarProgreso(index) {
       this.residente.progreso.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
