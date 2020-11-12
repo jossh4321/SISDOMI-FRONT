@@ -313,7 +313,6 @@
                     </v-card-title>
                     <v-card-text>
                       <v-container>
-<<<<<<< HEAD
                       
                          
                            <v-select
@@ -337,21 +336,6 @@
                             ></v-select>
                            
                             <br>
-=======
-                        <v-row>
-                          <v-text-field
-                            v-model="progreso.fase"
-                            label="Ingrese la fase"
-                            color="#009900"
-                          ></v-text-field>
-
-                          <v-text-field
-                            v-model="progreso.estado"
-                            label="Ingrese el Estado"
-                            color="#009900"
-                          ></v-text-field>
-
->>>>>>> 45736b904582e6b14c5f16e37807161644279166
                           <!--AQUI COMIENZAN LAS FECHAS INGRESO -->
                           <v-menu
                             v-model="datemenu2"
