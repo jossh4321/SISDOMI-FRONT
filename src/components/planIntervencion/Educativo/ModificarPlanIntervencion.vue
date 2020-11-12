@@ -320,7 +320,7 @@ export default {
   components: {
     vueDropzone: vue2Dropzone,
   },
-  props:["planI"],
+  props: ["planI"],
   data() {
     return {
       planIntervencion: {},
@@ -345,6 +345,12 @@ export default {
       listResidentes: [],
       firmaAux: [],
     };
+  },
+  mounted() {
+    var file = { size: 250, name: "icon", type: "image/jpg" };
+    var url = this.planI.contenido.firmas[0].urlfirma;
+    console.log(url);
+    this.$refs.myVueDropzone.manuallyAddFile(file, url);
   },
   methods: {
     ...mapMutations(["setResidentes"]),
