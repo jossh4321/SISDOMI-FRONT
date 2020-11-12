@@ -833,9 +833,9 @@ export default {
       //validating whether the user are an adult
       var dateselected = new Date(this.residente.fechaNacimiento);
       var maxdate = new Date();
-      maxdate.setFullYear(maxdate.getFullYear() - 18);
+      maxdate.setFullYear(maxdate.getFullYear() - 12);
       !(dateselected.getTime() <= maxdate.getTime()) &&
-        errors.push("El usuario debe ser mayor de edad");
+        errors.push("El residente debe tener por lo menos 12 años");
 
       return errors;
     },
