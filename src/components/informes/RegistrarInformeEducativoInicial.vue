@@ -454,7 +454,7 @@ export default {
         thumbnailWidth: 250,
         maxFilesize: 5.0,
         maxFiles: 1,
-        acceptedFiles: ".jpg, .png, .jpeg",
+        acceptedFiles: ".png",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
         dictDefaultMessage:
@@ -509,6 +509,7 @@ export default {
         );
       } else {
         console.log("no hay errores");
+        console.log(this.informe);
         await axios
           .post("/informe/informeei", this.informe)
           .then((res) => {
@@ -590,6 +591,7 @@ export default {
       //console.log(file.dataURL.split(",")[1]);
     },
     afterRemoved2(file, error, xhr) {
+       this.firmas.urlfirma =""
       this.informe.contenido.firmas.urlfirma = "";
       this.$v.informe.contenido.firmas.urlfirma.$model = "";
     },
