@@ -314,23 +314,17 @@
                     <v-card-text>
                       <v-container>
                         <v-row>
-                           <v-select
-                                :items="itemFase"
-                                label="Ingrese  la fase"
-                                dense
-                                outlined
-                                v-model="miFase"
-                                color="#009900"
-                           ></v-select>
+                          <v-text-field
+                            v-model="progreso.fase"
+                            label="Ingrese la fase"
+                            color="#009900"
+                          ></v-text-field>
 
-                            <v-select
-                                :items="['Inicio','Progreso','Finalizado','En   adopcion']"
-                                label="Ingrese el estado"
-                                dense
-                                outlined
-                                v-model="progreso.estado"
-                                color="#009900"
-                            ></v-select>
+                          <v-text-field
+                            v-model="progreso.estado"
+                            label="Ingrese el Estado"
+                            color="#009900"
+                          ></v-text-field>
 
                           <!--AQUI COMIENZAN LAS FECHAS INGRESO -->
                           <v-menu
@@ -462,16 +456,15 @@
                 </v-dialog>
               </v-row>
 
-              <!--Aqui acaba  el modal -->
-                <v-select
-                    :items="['En tratamiento','Finalizado']"
-                      v-model="residente.estado"
-                    @input="$v.residente.estado.$touch()"
-                     @blur="$v.residente.estado.$touch()"
-                     :error-messages="errorEstado"
-                    label="Ingrese el Estado"
-                     color="#009900"
-                 ></v-select>
+              <!--Aqui acaba -->
+              <v-text-field
+                v-model="residente.estado"
+                @input="$v.residente.estado.$touch()"
+                @blur="$v.residente.estado.$touch()"
+                :error-messages="errorEstado"
+                label="Ingrese el Estado"
+                color="#009900"
+              ></v-text-field>
 
               <!--botones -->
               <v-row>
@@ -515,13 +508,12 @@ export default {
       step: 1,
 
       telefonos: { numero: "", referentefamiliar: "" },
-     progreso:{nombre:'',fase:1,fechaingreso:"",fechafinalizacion:"",estado:""},
-    itemFase:[{text:'Acogida',value:{nombre:'Acogida',fase:1}},
-              {text:'Desarrollo',value:{nombre:'Desarrollo',fase:2}},
-              {text:'Reinsercion',value:{nombre:'Desarrollo',fase:3}},
-              {text:'Seguimiento',value:{nombre:'Desarrollo',fase:4}}
-                                ],
-    miFase:{nombre:'Acogida',fase:1},
+      progreso: {
+        fase: "",
+        fechaingreso: "",
+        fechafinalizacion: "",
+        estado: "",
+      },
       residente: {
         id: "",
         nombre: "",
@@ -607,7 +599,10 @@ export default {
     },
     ////GUARDAR TELEFONO REFERENTE ///
     guardarTelefono() {
-      let telefonos = {numero: this.telefonos.numero,referentefamiliar: this.telefonos.referenteFamiliar,}; //creamos variables
+      let telefonos = {
+        numero: this.telefonos.numero,
+        referentefamiliar: this.telefonos.referenteFamiliar,
+      }; //creamos variables
       this.residente.telefonosReferencia.push(telefonos); //añadimos al arreglo principal
       ///LIMPIAMOS LOS CAMPOS//
       console.log(this.residente.telefonosReferencia);
@@ -618,22 +613,36 @@ export default {
       this.residente.telefonosReferencia.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     }, ////GUARDAR PROGRESO DEL modal ///
     guardarProgreso() {
-      let progreso={ fase: this.miFase.fase,nombre: this.miFase.nombre,fechaingreso:this.progreso.fechaingreso,fechafinalizacion:this.progreso.fechafinalizacion,estado:this.progreso.estado}//creamos variables 
-   console.log(this.residente)
+      let progreso = {
+        fase: this.progreso.fase,
+        fechaingreso: this.progreso.fechaingreso,
+        fechafinalizacion: this.progreso.fechafinalizacion,
+        estado: this.progreso.estado,
+      }; //creamos variables
+      console.log(this.residente);
 
-  this.residente.progreso.push(progreso); //añadimos al arreglo principal
-  ///LIMPIAMOS LOS CAMPOS//
-   console.log(this.residente.progreso)
-   this.progreso.fase="";
-   this.progreso.estado="";
-   this.miFase={nombre:'Acogida',fase:1}
-
+      this.residente.progreso.push(progreso); //añadimos al arreglo principal
+      ///LIMPIAMOS LOS CAMPOS//
+      console.log(this.residente.progreso);
+      this.progreso.fase = "";
+      this.progreso.estado = "";
     },
     eliminarProgreso(index) {
       this.residente.progreso.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     },
     ////////////HACER LA CONSULTA CON LA API  REGISTRAR
-    async registrarResidente() {   
+    async registrarResidente() {
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        console.log("hay errores");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
+        console.log("no hay errores");
         console.warn(this.residente);
         await axios
           .post("/Residente", this.residente)
@@ -644,10 +653,13 @@ export default {
           })
           .catch((err) => console.log(err));
         await this.mensaje(
-          "success", "listo","Usuario registrado Satisfactoriamente","<strong>Se redirigira a la Interfaz de Gestion<strong>"
+          "success",
+          "listo",
+          "Usuario registrado Satisfactoriamente",
+          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
       }
-    
+    },
   },
 
   computed: {
