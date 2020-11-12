@@ -300,13 +300,13 @@ export default {
   },
   data() {
     return {
-      planIntervencionIndividual: {
-        planintervencionindividual: {},
+      planResidenteSocial: {
+        planIntervencionIndividualSocial: {},
         idresidente: "",
       },
       planI: {
         id: "",
-        tipo: "PlanIntervencionIndividualSocial",
+        tipo: "PlanIntervencionIndividual",
         historialcontenido: [],
         fechacreacion: new Date(),
         area: "",
@@ -329,6 +329,7 @@ export default {
             },
           ],
           codigoDocumento: "",
+          titulo: ""
         },
       },
       datemenu: false,
@@ -382,11 +383,11 @@ export default {
             });
         }
 
-        this.planIntervencionIndividual.planintervencionindividual = this.planI;
-        this.planIntervencionIndividual.idresidente = this.planI.idresidente;
+        this.planResidenteSocial.planIntervencionIndividualSocial = this.planI;
+        this.planResidenteSocial.idresidente = this.planI.idresidente;
 
         await axios
-          .post("/PlanIntervencion/social", this.planIntervencionIndividual)
+          .post("/PlanIntervencion/social", this.planResidenteSocial)
           .then((res) => {
             this.planI = res.data;
             if (this.planI.id !== "") {
