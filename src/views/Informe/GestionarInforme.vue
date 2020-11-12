@@ -1,5 +1,5 @@
 <template>
-    <div>
+  <div>
     <v-card class="card">
       <v-card-title> Gestionar Informe </v-card-title>
       <v-data-table
@@ -22,10 +22,7 @@
             ></v-text-field>
             <v-spacer></v-spacer>
             <!--Dialogo de Registro-->
-            <v-dialog 
-              persistent
-              v-model="dialogoregistro" 
-              max-width="880px">
+            <v-dialog persistent v-model="dialogoregistro" max-width="880px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
@@ -34,39 +31,36 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                <v-icon left>mdi-plus</v-icon>
+                  <v-icon left>mdi-plus</v-icon>
                   <span>Registrar Informe</span>
                 </v-btn>
               </template>
-                <RegistrarInformeEducativoInicial                  
-                 @close-dialog-save="closeDialogRegistrar()"></RegistrarInformeEducativoInicial> 
+              <RegistrarInforme
+                @close-dialog-save="closeDialogRegistrar()"
+              ></RegistrarInforme>
             </v-dialog>
             <!---->
           </v-toolbar>
         </template>
-
-      </v-data-table>      
-      <!----->       
+      </v-data-table>
+      <!----->
     </v-card>
   </div>
 </template>
 
 <script>
-
-import axios from 'axios';
-import RegistrarInforme from '@/components/informes/RegistrarInforme.vue'
-import RegistrarInformeEducativoInicial from '@/components/informes/RegistrarInformeEducativoInicial.vue'
-import {mapMutations, mapState} from "vuex";
+import axios from "axios";
+import RegistrarInforme from "@/components/informes/RegistrarInforme.vue";
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarInforme",
   components: {
     RegistrarInforme,
-    RegistrarInformeEducativoInicial
   },
   data() {
     return {
-      search: "",      
-      informe:{},      
+      search: "",
+      informe: {},
       headers: [
         {
           text: "Código del Informe",
@@ -74,33 +68,42 @@ export default {
           sortable: false,
           value: "codigodocumento",
         },
-        { text: "Nombre del residente", value:"datosresidente.apellido"},
+        { text: "Nombre del residente", value: "nombrecompleto" },
         { text: "Fecha de creación", value: "fechacreacion" },
-        { text: "Tipo de Informe", value: "tipo" },        
+        { text: "Tipo de Informe", value: "tipo" },
         { text: "Acciones", value: "actions", sortable: false },
       ],
-       dialogoregistro: false
+      dialogoregistro: false,
+      listaresidentes: [],
     };
   },
-  async created(){    
-      this.obtenerInformes();
+  async created() {
+    this.obtenerInformes();
   },
   methods: {
-     ...mapMutations(["setInformes"]),    
-      closeDialogRegistrar(){
+    ...mapMutations(["setInformes"]),
+    closeDialogRegistrar() {
       this.dialogoregistro = false;
     },
-    async obtenerInformes(){
-           await axios.get("/informe/all")
-            .then(res => { 
-                    this.setInformes(res.data);    
-                    console.log(res.data);                  
-            }).catch(err => console.log(err));
-    }
+    async obtenerInformes() {
+      await axios
+        .get("/informe/all")
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          for (var x=0;x<res.data.length;x++){
+              info[x].fechacreacion = res.data[x].fechacreacion.split("T")[0];
+              info[x].tipo = res.data[x].tipo.replace(/([a-z])([A-Z])/g, '$1 $2');
+          }
+          console.log(res.data[1].tipo);
+          this.setInformes(info);
+        })
+        .catch((err) => console.log(err));
+    },
   },
-  computed:{
-    ...mapState(["informes"])
-  }
+  computed: {
+    ...mapState(["informes"]),
+  },
 };
 </script>
 <style scoped>

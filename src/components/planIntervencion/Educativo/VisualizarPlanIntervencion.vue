@@ -30,6 +30,7 @@
           label="Ingrese el nombre del plan"
           outlined
           color="#009900"
+          disabled
         ></v-text-field>
 
         <v-text-field
@@ -37,6 +38,7 @@
           label="Ingrese el nombre-dni de la usuaria"
           outlined
           color="#009900"
+          disabled
         ></v-text-field>
 
         <v-text-field
@@ -44,6 +46,7 @@
           label="Ingrese el objetivo general"
           outlined
           color="#009900"
+          disabled
         ></v-text-field>
 
         <v-textarea
@@ -55,6 +58,7 @@
           row-height="25"
           color="#009900"
           shaped
+          disabled
         ></v-textarea>
 
         <v-btn block @click="step = 2" color="primary">
@@ -77,6 +81,7 @@
           row-height="25"
           color="#009900"
           shaped
+          disabled
         ></v-textarea>
 
         <v-textarea
@@ -88,6 +93,7 @@
           row-height="25"
           color="#009900"
           shaped
+          disabled
         ></v-textarea>
 
         <v-textarea
@@ -99,32 +105,36 @@
           row-height="25"
           color="#009900"
           shaped
+          disabled
         ></v-textarea>
 
         <v-textarea
-         v-model="planI.meta"
-          label="Meta"
+         v-model="plan.nombre"
+          label = "Meta"
           auto-grow
           outlined
           rows="2"
           row-height="25"
           color="#009900"
           shaped
+          disabled
         ></v-textarea>
 
         <div>
           <vue-dropzone ref="myVueDropzone"
+            
             @vdropzone-success="afterSuccess"
             @vdropzone-removed-file="afterRemoved"
-            id="dropzone" :options="dropzoneOptions" >
+            id="dropzone" :options="dropzoneOptions" 
+            
+            >
           </vue-dropzone>
         </div>
         <v-divider class="divider-custom"></v-divider>
-
-        <v-btn block color="accent">
-          <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
-          <span >Modificar Plan</span>
-        </v-btn>
+            <v-btn block @click="cerrarDialogo()" color="primary">
+              <v-icon left>mdi-close-outline</v-icon>
+              <span>Cerrar</span>
+            </v-btn>
       </form>
         </div>
       </v-stepper-content>
@@ -134,22 +144,27 @@
 </template>
 <script>
 import vue2Dropzone from "vue2-dropzone";
+
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 export default {
+  props:["plan"],
    components: {
-     vueDropzone: vue2Dropzone,
+     vueDropzone: vue2Dropzone
   },
   data() {
       return {
+       
       planI: {
-        nombreusuaria:"Xiomara Paredes Guerra",
+        
+        /*nombreusuaria:"Xiomara Paredes Guerra",
         nombreplan:"PlanI_Edu_Xiomara_1",
         objetivogeneral:"Realizar un adecuado plan de intervención",
         objetivoespecifico:"Responde a Plan de seguimiento",
         casos_problemas:"1. Reinserción escolar.\n 2. No quiere participar en nivelación de matemática.\n 3. Retraso escolar.\n 4. Bajo rendimiento.\n 5. Problema de aprendizaje.",
         actividades_estrategias:"1. Solicitar constancia de vacante.\n 2. Entrevista personal.",
         indicadores:"1. Matricula en la I.E.\n 2.Participa en la nivelación escolar.",
-        meta:"Lograr nivelación en el grado correspondiente del área de matemática.",
+        meta:"Lograr nivelación en el grado correspondiente del área de matemática.",*/
+   
       },
       datemenu: false,
       step:1,
@@ -165,7 +180,11 @@ export default {
       },
     };
   },methods:{
-    afterSuccess(file,response){
+   cerrarDialogo(){
+      this.$emit("close-dialog-detail");
+    },
+   
+   afterSuccess(file,response){
        this.usuario.datos.imagen = file.dataURL;
        this.$v.usuario.datos.imagen.$model = file.dataURL;
     },afterRemoved(file, error, xhr){

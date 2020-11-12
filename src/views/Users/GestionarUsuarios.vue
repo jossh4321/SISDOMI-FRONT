@@ -40,7 +40,7 @@
               </template>
                 <RegistrarUsuario
                   :listaroles="listaroles"
-                 @close-dialog-save="closeDialogRegistrar()"></RegistrarUsuario>
+                  @close-dialog-save="closeDialogRegistrar()"></RegistrarUsuario>
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -90,7 +90,7 @@
         </ActualizarUsuario>
 
       </v-dialog>
-      <!----->
+      <!-----><!--Hola -->
       <!--Dialogo de Detalle-->
       <v-dialog persistent
                 v-model="dialogodetalle" 
@@ -172,15 +172,16 @@ export default {
         this.usuario = await this.loadUsuarioModificacion(idusuario);
         this.dialogoactualizacion = !this.dialogoactualizacion;
     },
+    // Abre
     async abrirDialogoDetalle(idusuario){
-        this.usuario = await this.loadUsuarioDetalle(idusuario);
+        this.usuario = await this.loadUsuarioDetalle(idusuario); //Pide
         this.dialogodetalle = !this.dialogodetalle;
     },
     async loadUsuarioModificacion(idusuario){
       var user = {};
       await axios.get("/usuario/id?id="+idusuario)
       .then(res => {
-         user = res.data;
+         user = res.data; 
          user.datos.fechanacimiento = res.data.datos
                   .fechanacimiento.split("T")[0];
       })
@@ -190,7 +191,7 @@ export default {
       var user = {};
       await axios.get("/usuario/rol/permiso?id="+idusuario)
       .then(res => {
-         user = res.data;
+         user = res.data; // devuelve
          user.datos.fechanacimiento = res.data.datos
                   .fechanacimiento.split("T")[0];
       })
