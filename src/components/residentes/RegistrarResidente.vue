@@ -37,7 +37,7 @@
                 color="#009900"
               ></v-text-field>
               <v-select
-                :items="['Masculino', 'Femenino', 'mucho']"
+                :items="['Masculino', 'Femenino']"
                 label="Ingrese el Sexo"
                 dense
                 outlined
@@ -522,14 +522,15 @@
               </v-row>
 
               <!--Aqui acaba -->
-              <v-text-field
-                v-model="residente.estado"
-                @input="$v.residente.estado.$touch()"
-                @blur="$v.residente.estado.$touch()"
-                :error-messages="errorEstado"
-                label="Ingrese el Estado"
-                color="#009900"
-              ></v-text-field>
+               <v-select
+                    :items="['En tratamiento','Finalizado']"
+                      v-model="residente.estado"
+                    @input="$v.residente.estado.$touch()"
+                     @blur="$v.residente.estado.$touch()"
+                     :error-messages="errorEstado"
+                    label="Ingrese el Estado"
+                     color="#009900"
+                 ></v-select>
 
               <!--botones -->
               <v-row>
@@ -581,6 +582,13 @@ export default {
         fechafinalizacion: "",
         estado: "",
       },
+       itemFase:[{text:'Acogida',value:{nombre:'Acogida',fase:1}},
+              {text:'Desarrollo',value:{nombre:'Desarrollo',fase:2}},
+              {text:'Reinsercion',value:{nombre:'Desarrollo',fase:3}},
+              {text:'Seguimiento',value:{nombre:'Desarrollo',fase:4}}
+                                ],
+    miFase:{nombre:'Acogida',fase:1},
+        progreso:{},
       residente: {
         id: "",
         nombre: "",
@@ -684,12 +692,9 @@ export default {
       this.residente.telefonosReferencia.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     }, ////GUARDAR PROGRESO DEL modal ///
     guardarProgreso() {
-      let progreso = {
-        fase: this.progreso.fase,
-        fechaingreso: this.progreso.fechaingreso,
-        fechafinalizacion: this.progreso.fechafinalizacion,
-        estado: this.progreso.estado,
-      }; //creamos variables
+       let progreso={ fase: this.miFase.fase,nombre: this.miFase.nombre,fechaingreso:this.progreso.fechaingreso,fechafinalizacion:this.progreso.fechafinalizacion,estado:this.progreso.estado}//creamos variables 
+   
+       //creamos variables
       console.log(this.residente);
 
       this.residente.progreso.push(progreso); //añadimos al arreglo principal
@@ -697,12 +702,14 @@ export default {
       console.log(this.residente.progreso);
       this.progreso.fase = "";
       this.progreso.estado = "";
+      this.miFase={nombre:'Acogida',fase:1}
     },
     eliminarProgreso(index) {
       this.residente.progreso.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     },
     ////////////HACER LA CONSULTA CON LA API  REGISTRAR
     async registrarResidente() {
+      console.log("llegue aqui")
       this.$v.$touch();
       if (this.$v.$invalid) {
         console.log("hay errores");
@@ -828,9 +835,9 @@ export default {
       //validating whether the user are an adult
       var dateselected = new Date(this.residente.fechaNacimiento);
       var maxdate = new Date();
-      maxdate.setFullYear(maxdate.getFullYear() - 18);
+      maxdate.setFullYear(maxdate.getFullYear() - 12);
       !(dateselected.getTime() <= maxdate.getTime()) &&
-        errors.push("El usuario debe ser mayor de edad");
+        errors.push("El residente debe tener por lo menos 12 años");
 
       return errors;
     },
@@ -916,7 +923,22 @@ export default {
           required,
         },
         motivoIngreso: {},
-        progreso: [],
+         progreso: [
+            {
+              fase: {
+              required,
+            },
+              fechaingreso: {
+              required,
+            },
+              fechafinalizacion: {
+              required,
+            },
+              estado: {
+              required,
+            },
+            },
+          ],
         estado: {
           required,
           minLength: minLength(4),
