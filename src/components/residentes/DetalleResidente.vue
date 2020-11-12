@@ -331,12 +331,12 @@
                     </v-col>
                     <v-col :cols="3">
                       <article>
-                        <span style="font-size:16px">{{moment(item.fechaingreso).format('L')}}</span>
+                        <span style="font-size:16px">{{convertDateFormat(item.fechaingreso)}}</span>
                       </article>
                     </v-col>
                     <v-col :cols="3">
                       <article>
-                        <span style="font-size:16px">{{item.fechafinalizacion!=="" ? (moment(item.fechafinalizacion).format('L')): "No finalizado"}}</span>
+                        <span style="font-size:16px">{{convertDateFormat(item.fechafinalizacion)!=="" ? (convertDateFormat(item.fechafinalizacion)): "No finalizado"}}</span>
                       </article>
                     </v-col>
                     <v-col :cols="2">
@@ -443,7 +443,13 @@ export default {
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
     },
+    convertDateFormat(string) {
+        var dateMongo = string.split('T');
+        var date = dateMongo[0].split('-');
+        return date[2] + '/' + date[1] + '/' + date[0];
+    },
   },
+  
   computed: {},
 };
 </script>
