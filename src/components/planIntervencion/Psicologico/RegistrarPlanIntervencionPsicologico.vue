@@ -690,6 +690,8 @@ export default {
       }
     },
     registerFile(file, response) {
+      
+      
       this.listImages.push(file);
     },
     removedFile(file, error, xhr) {

@@ -43,6 +43,7 @@ import RegistrarInformeEducativoInicial from '@/components/informes/RegistrarInf
 import RegistrarInformeEducativoEvolutivo from '@/components/informes/RegistroInformeEducativoEvolutivo.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
+    props:["listaresidentes", "listaeducadores"],
     components: {
         RegistrarInformeEducativoInicial,
         RegistrarInformeEducativoEvolutivo
@@ -60,16 +61,10 @@ export default {
             { value: '8', text: 'Informe Psicológico Evolutivo'},
             { value: '9', text: 'Informe Psicológico Final'}
         ],
-        listaresidentes:[],
         titulo:"Titulo por defecto",
-        listaeducadores:[],
         showRegistrarInformeEI: false,
         showRegistrarInformeEE: false
       }
-    },
-    async created(){    
-      this.obtenerResidentes();
-      this.obtenerEducadores();
     },
      methods:{
         cerrarDialogo(){            
@@ -91,20 +86,6 @@ export default {
             }
             this.$emit("close-dialog-save");
         },
-        async obtenerResidentes(){
-          await axios.get("/residente/all")
-                  .then( x => {
-                            this.listaresidentes = x.data;
-                            console.log(this.listaresidentes);
-                  }).catch(err => console.log(err));
-        },
-        async obtenerEducadores(){
-          await axios.get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
-            .then(res => {
-                    this.listaeducadores = res.data;
-                    console.log(this.listaeducadores);
-            }).catch(err => console.log(err));
-        }
      }
 }
 </script>
