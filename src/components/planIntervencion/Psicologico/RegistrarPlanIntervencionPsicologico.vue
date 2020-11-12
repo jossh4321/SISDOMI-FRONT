@@ -722,7 +722,7 @@ export default {
       } else {
         for (let index = 0; index < this.listImages.length; index++) {
           let formData = new FormData();
-          formData.append("file", this.listImages[0]);
+          formData.append("file", this.listImages[index]);
           await axios
             .post("/Media", formData)
             .then((res) => {
