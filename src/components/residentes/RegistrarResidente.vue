@@ -313,19 +313,29 @@
                     </v-card-title>
                     <v-card-text>
                       <v-container>
-                        <v-row>
-                          <v-text-field
-                            v-model="progreso.fase"
-                            label="Ingrese la fase"
-                            color="#009900"
-                          ></v-text-field>
+                      
+                         
+                           <v-select
+                                
+                                :items="itemFase"
+                                label="Ingrese  la fase"
+                                dense
+                                outlined
+                                v-model="miFase"
+                                color="#009900"
+                                
+                           ></v-select>
 
-                          <v-text-field
-                            v-model="progreso.estado"
-                            label="Ingrese el Estado"
-                            color="#009900"
-                          ></v-text-field>
-
+                            <v-select
+                                :items="['Inicio','Progreso','Finalizado','En   adopcion']"
+                                label="Ingrese el estado"
+                                dense
+                                outlined
+                                v-model="progreso.estado"
+                                color="#009900"
+                            ></v-select>
+                           
+                            <br>
                           <!--AQUI COMIENZAN LAS FECHAS INGRESO -->
                           <v-menu
                             v-model="datemenu2"
@@ -387,52 +397,107 @@
                             </v-btn>
                           </v-col>
                           <!--En esta parte se muestra Mostrar Cuadro -->
+            <v-card
+                style="margin-top:10%;width:100%;padding:5px 5px;background-color:#EAEAEA"
+              >
+                <v-card-title style="font-size:22px;padding: 10px 10px;"
+                  >Lista de Progresos de Residente</v-card-title
+                >
+                <!-- Cabecera -->
+                <v-card
+                elevation="0"
+                color="#EAEAEA"
+                style="margin-top:5px; margin-bottom:15px"
+                height="30"
+                >
+                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                    <v-col cols="2">
+                      <article>
+                        <span style="font-size:16px">Fase</span>
+                      </article>
+                    </v-col>
+                    <v-col cols="3">
+                      <article>
+                        <span style="font-size:16px">Fecha Ingreso</span>
+                      </article>
+                    </v-col>
+                    <v-col cols="3">
+                      <article>
+                        <span style="font-size:16px">Fecha Finalizacion</span>
+                      </article>
+                    </v-col>
+                    <v-col>
+                      <article cols="2">
+                        <span style="font-size:16px">Estado</span>
+                      </article>
+                    </v-col>
+                    <v-col align="right">
+                    </v-col>
+                  </v-row>
+                </v-card>
+                <!-- Cuerpo -->
+                <v-card
+                  tile
+                  elevation="0"
+                  color="#FAFAFA"
+                  style="margin-top:5px"
+                  height="60"
+                  v-for="(item, index) in residente.progreso"
+                  :key="index"
+                >
+                  <v-row style="margin-left:10px;heigh:100%;" align="center">
+                    <v-col :cols="2">
+                      <article>
+                        <span style="font-size:16px">Nº{{item.fase}} - {{item.nombre}}</span>
+                      </article>
+                    </v-col>
+                    <v-col :cols="3">
+                      <article>
+                        <span style="font-size:16px">{{moment(item.fechaingreso).format('L')}}</span>
+                      </article>
+                    </v-col>
+                    <v-col :cols="3">
+                      <article>
+                        <span style="font-size:16px">{{item.fechafinalizacion!=="" ? (moment(item.fechafinalizacion).format('L')): "No finalizado"}}</span>
+                      </article>
+                    </v-col>
+                    <v-col :cols="2">
+                      <article>
+                        <span style="font-size:16px">{{item.estado}}</span>
+                      </article>
+                    </v-col>
+                    <v-col align="right">
+                      <div style="margin-right:20px">
+                   <!--     <v-btn
+                          style="margin-right:10px"
+                          fab
+                          x-small
+                          dark
+                          color="#126BB5"
+                        >
+                          <v-icon dark>
+                            mdi-pencil
+                          </v-icon>
+                        </v-btn>  -->
+                        <v-btn
+                        @click="eliminarProgreso(item.index)"
+                        fab x-small 
+                        dark
+                         color="red"  > 
+                          <v-icon dark>
+                            mdi-minus
+                          </v-icon>
+                        </v-btn>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-card>
+<!--fin-->
+                          
 
-                          <!--fin-->
-                          <div class="container">
-                            <v-row>
-                              <v-col>
-                                <h2 class="text-center">Lista de usuarios</h2>
-                                <table class="table text-center">
-                                  <thead>
-                                    <tr>
-                                      <th><h3>Fase</h3></th>
-                                      <th><h3>Fecha Ingreso</h3></th>
-                                      <th><h3>Fecha Finalizacion</h3></th>
-                                      <th><h3>Estado</h3></th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr
-                                      v-for="(item,
-                                      index) in residente.progreso"
-                                      :key="index"
-                                    >
-                                      <!-- Recorremos nuestro array -->
-
-                                      <td v-text="item.fase"></td>
-                                      <!--En la primera columna mostramos la fase-->
-                                      <td v-text="item.fechaingreso"></td>
-                                      <!--En la segunda mostramos fecha ingreso-->
-                                      <td v-text="item.fechafinalizacion"></td>
-                                      <!--En la segunda mostramos fecha ingreso-->
-                                      <td v-text="item.estado"></td>
-                                      <!--En la segunda mostramos estado-->
-                                      <button
-                                        class="primary"
-                                        @click="eliminarProgreso(item.index)"
-                                      >
-                                        Eliminar
-                                      </button>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </v-col>
-                            </v-row>
-                          </div>
-
-                          <!-- -->
-                        </v-row>
+              <!-- -->
+                        
                       </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -490,6 +555,8 @@
 </template>
 
 <script>
+
+const m = moment();
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
@@ -548,6 +615,10 @@ export default {
   created() {},
   methods: {
     ...mapMutations(["setResidentes", "addResidente"]),
+    //METODO MEMENT
+    moment: function () {
+    return moment();
+    },
     ///CERRAR DIALOGO
     cerrarDialogo() {
       this.usuario = this.limpiarResidente();

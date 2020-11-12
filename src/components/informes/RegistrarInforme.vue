@@ -23,12 +23,13 @@
                         <v-icon left>done</v-icon>
                         <span >Continuar</span>
                         </v-btn>
+                        <RegistrarInformeEducativoEvolutivo v-if="showRegistrarInformeEE" :listaresidentes="listaresidentes" :listaeducadores="listaeducadores" 
+                        :visible="showRegistrarInformeEE" :titulo="titulo" @close="showRegistrarInformeEE=false"/>                     
                         <RegistrarInformeEducativoInicial 
                             :listaresidentes="listaresidentes"
                             :listaeducadores="listaeducadores"                             
                             :visible="showRegistrarInformeEI"  
-                            @close="showRegistrarInformeEI=false"/>
-                        <RegistrarInformeEducativoEvolutivo :visible="showRegistrarInformeEE" @close="showRegistrarInformeEE=false"/>                     
+                            @close="showRegistrarInformeEI=false"/>                  
                     </v-col>
                 </template>
             </v-row>
@@ -60,6 +61,7 @@ export default {
             { value: '9', text: 'Informe Psicológico Final'}
         ],
         listaresidentes:[],
+        titulo:"Titulo por defecto",
         listaeducadores:[],
         showRegistrarInformeEI: false,
         showRegistrarInformeEE: false
@@ -78,6 +80,10 @@ export default {
             if(this.items.value === "1"){
                 this.showRegistrarInformeEI = true;
             }else if(this.items.value ==="2"){
+                this.titulo = "Registrar Informe Educativo Evolutivo"
+                this.showRegistrarInformeEE = true;
+            }else if(this.items.value ==="3"){
+                this.titulo = "Registrar Informe Educativo Final"
                 this.showRegistrarInformeEE = true;
             } 
             else{
