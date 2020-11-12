@@ -211,7 +211,7 @@
                                 </v-col>
                                 <v-col :cols="4" align="right">
                                     <div style="margin-right:20px">
-                                        <v-btn
+                                        <!-- <v-btn
                                         style="margin-right:10px"
                                         fab
                                         x-small
@@ -221,7 +221,7 @@
                                         <v-icon dark>
                                             mdi-pencil
                                         </v-icon>
-                                        </v-btn>
+                                        </v-btn> -->
                                         <v-btn
                                         @click="eliminarTelefono(item.index)"
                                         fab x-small 
@@ -510,7 +510,7 @@
                                     </v-col>
                                     <v-col align="right">
                                     <div style="margin-right:20px">
-                                        <v-btn
+                                        <!-- <v-btn
                                         style="margin-right:10px"
                                         fab
                                         x-small
@@ -520,7 +520,7 @@
                                         <v-icon dark>
                                             mdi-pencil
                                         </v-icon>
-                                        </v-btn>
+                                        </v-btn> -->
                                         <v-btn
                                         @click="eliminarProgreso(item.index)"
                                         fab x-small 

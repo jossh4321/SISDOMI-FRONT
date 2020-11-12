@@ -299,6 +299,12 @@ export default {
   components: {
     vueDropzone: vue2Dropzone,
   },
+  mounted() {
+    var file = { size: 250, name: "icon", type: "image/jpg" };
+    var url = this.planI.contenido.firmas[0].urlfirma;
+    console.log(url);
+    this.$refs.myVueDropzone.manuallyAddFile(file, url);
+  },
   data() {
     return {
       planIntervencion: {},
