@@ -709,6 +709,7 @@ export default {
     },
     ////////////HACER LA CONSULTA CON LA API  REGISTRAR
     async registrarResidente() {
+      console.log("llegue aqui")
       this.$v.$touch();
       if (this.$v.$invalid) {
         console.log("hay errores");
@@ -922,7 +923,22 @@ export default {
           required,
         },
         motivoIngreso: {},
-        progreso: [],
+         progreso: [
+            {
+              fase: {
+              required,
+            },
+              fechaingreso: {
+              required,
+            },
+              fechafinalizacion: {
+              required,
+            },
+              estado: {
+              required,
+            },
+            },
+          ],
         estado: {
           required,
           minLength: minLength(4),

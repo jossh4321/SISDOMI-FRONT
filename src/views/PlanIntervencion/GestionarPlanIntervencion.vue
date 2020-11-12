@@ -102,7 +102,7 @@ export default {
           nombre: "PlanI_Edu_Xiomara_1",
           usuaria: "Xiomara Paredes Guerra",
           fechaRegistro: "15/09/2019",
-          id: "5f9e4cdae4655cf92eaa4d5b",
+          id: "5facd2e1bd5f87ed3632aa12",
         },
         {
           nombre: "PlanI_Psico_Xiomara_1",
@@ -142,10 +142,6 @@ export default {
     async abrirDialogoDetalle(idPlanI){
      
        this.plan =  await this.obtenerCualquiercosa(idPlanI); 
-        //this.plan += idPlanI.usuaria;
-      //  this.plan += idPlanI.fechaRegistro;
-      //  this.plan += idPlanI.id;
-
         this.dialogodetalle = !this.dialogodetalle;
         console.log(this.plan);
         },
@@ -153,9 +149,10 @@ export default {
       async obtenerCualquiercosa(id){
    
       var user = {};
-      await axios.get("/usuario/id?id="+id)//prueba
+      await axios.get("/PlanIntervencionSocial/id?id="+id)//prueba
       .then(res => {
          user = res.data; 
+  
       })
       .catch(err => console.log(err));
       return user;
@@ -163,7 +160,7 @@ export default {
 
   },
    computed:{
- //...mapState(["planesI"])
+ ...mapState(["planesD"])
   }
 };
 </script>
