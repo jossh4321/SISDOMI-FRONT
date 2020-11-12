@@ -545,7 +545,7 @@
               <!--botones -->
               <v-row>
                 <v-col>
-                  <v-btn block @click="registrarResidente" color="success">
+                  <v-btn block @click="registrarResidente()" color="success">
                     <v-icon left>mdi-content-save-all-outline</v-icon>
                     <span>Registrar Residente</span>
                   </v-btn>
@@ -554,12 +554,6 @@
                   <v-btn block @click="cerrarDialogo()" color="primary">
                     <v-icon left>mdi-close-outline</v-icon>
                     <span>Cerrar</span>
-                  </v-btn>
-                </v-col>
-                <v-col>
-                  <v-btn block @click="testing3()" color="primary">
-                    <v-icon left>mdi-close-outline</v-icon>
-                    <span>probar</span>
                   </v-btn>
                 </v-col>
               </v-row>
@@ -616,22 +610,10 @@ export default {
         juzgadoProcedencia: "",
         fechaNacimiento: "",
         sexo: "",
-        telefonosReferencia: [
-          /*{
-            numero: "",
-            referentefamiliar: "",
-          },*/
-        ],
+        telefonosReferencia: [],
         fechaIngreso: "",
         motivoIngreso: "",
-        progreso: [
-          /*{
-            fase: 0,
-            fechaingreso: "",
-            fechafinalizacion: "",
-            estado: "",
-          },*/
-        ],
+        progreso: [],
         estado: "",
       },
     };
@@ -649,6 +631,7 @@ export default {
     ///CERRAR DIALOGO
     cerrarDialogo() {
       this.usuario = this.limpiarResidente();
+      this.$v.residente.$reset();
       this.step = 1;
       this.$emit("close-dialog-save");
     },
@@ -664,23 +647,13 @@ export default {
           lugarNacimiento: "",
           ubigeo: "",
           juzgadoProcedencia: "",
-          fechaNacimiento: Date,
+          fechaNacimiento: "",
           sexo: "",
           telefonosReferencia: [
-            /*{
-              numero: "",
-              referentefamiliar: "",
-            },*/
           ],
-          fechaIngreso: Date,
+          fechaIngreso: "",
           motivoIngreso: "",
           progreso: [
-            /*{
-              fase: 0,
-              fechaingreso: Date,
-              fechafinalizacion: Date,
-              estado: "",
-            },*/
           ],
           estado: "",
         },
@@ -765,11 +738,8 @@ export default {
     },
     ////////////HACER LA CONSULTA CON LA API  REGISTRAR
     async registrarResidente() {
-      console.log("llegue aqui");
-      //console.log(this.$v.residente);
       this.$v.residente.$touch();
       if (this.$v.residente.$invalid) {
-        console.log("hay errores");
         this.mensaje(
           "error",
           "..Oops",
@@ -777,14 +747,11 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        console.log("no hay errores");
         console.warn(this.residente);
         await axios
           .post("/Residente", this.residente)
           .then((res) => {
-            this.residente = res.data;
-            this.$v.residente.reset();
-            this.addResidente(this.residente);
+            this.addResidente(res.data);
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -823,6 +790,7 @@ export default {
         errors.push("El apellido debe tener al menos 3 caracteres");
       return errors;
     },
+    
     errorTipoDocumento() {
       const errors = [];
       if (!this.$v.residente.tipoDocumento.$dirty) return errors;

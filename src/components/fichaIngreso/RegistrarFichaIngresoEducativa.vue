@@ -324,15 +324,15 @@ export default {
             this.step = 1;       
             this.$emit("close-dialog-fichaIngreso");
         }, 
-        async rFichaIngresoP(){
-            /*
-            await axios.post("/informe/informeei",this.informe)
+        async rFichaIngresoE(){
+            
+            await axios.post("Documento/all/fichaingresoeducativacrear")
               .then(res => {
-                  this.informe = res.data;
-                  this.addInforme(this.informe);
-                  this.cerrarDialogo();
+                  this.fichaIngreso=res.data;
+              this.rFichaIngresoE(res.data);
+              this.addFichaIngreso(this.fichaIngreso)
             }).catch(err => console.log(err));
-            */
+            
       }
       }, async mensaje(icono,titulo,texto,footer){
       await this.$swal({

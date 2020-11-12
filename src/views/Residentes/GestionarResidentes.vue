@@ -45,6 +45,7 @@
         <template v-slot:[`item.actions`]="{ item }"
           ><!--Abrir dialogo detalle -->
 
+
           <v-row align="center" justify="space-around">
             <!--BOTONES-->
             <v-btn color="warning" dark @click="abrirDialogoModificar(item.id)">
@@ -63,7 +64,7 @@
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
         <ModificarResidente
           :residente="residente"
-          @close-dialog-detail="closeDialogModificar()"
+          @close-dialog-edit="closeDialogModificar()"
         >
         </ModificarResidente>
       </v-dialog>
@@ -176,7 +177,8 @@ export default {
         .then((res) => {
           console.log(res);
           user = res.data;
-          user.fechaNacimiento = res.data.fechaNacimiento.split("T")[0];
+          user.fechaNacimiento = user.fechaNacimiento.split("T")[0];
+          user.fechaIngreso = user.fechaIngreso.split("T")[0];
         })
         .catch((err) => console.log(err));
       console.log(user);

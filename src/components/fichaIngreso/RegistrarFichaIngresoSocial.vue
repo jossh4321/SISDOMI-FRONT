@@ -276,14 +276,15 @@ export default {
             this.$emit("close-dialog-fichaIngreso");
         }, 
         async rFichaIngresoP(){
-            /*
-            await axios.post("/informe/informeei",this.informe)
-              .then(res => {
-                  this.informe = res.data;
-                  this.addInforme(this.informe);
-                  this.cerrarDialogo();
-            }).catch(err => console.log(err));
-            */
+
+           await axios.get("Documento/all/fichaingresosocialcrear")
+            .then(res => {
+              //console.log( "porfavor" )
+              this.fichaIngreso=res.data;
+              this.rFichaIngresoP(res.data);
+              this.addFichaIngreso(this.fichaIngreso)
+            }).catch(err => console.log(err));            
+    
       }
       }, async mensaje(icono,titulo,texto,footer){
       await this.$swal({
