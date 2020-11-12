@@ -411,6 +411,13 @@
                       <span>Cerrar</span>
                     </v-btn>
                   </v-col>
+                  <v-col>
+                    <v-btn block @click="sendPDFFiles()" color="primary">
+                      <v-icon left>mdi-close-outline</v-icon>
+                      <span>Testing</span>
+                    </v-btn>
+                  </v-col>
+
                 </v-row>
               </form>
             </div>
@@ -436,13 +443,17 @@ export default {
   ...mapMutations(["addInforme"]),
   data() {
     return {
+    //para probar
+      fileList:[],
+    ///
+
       datemenu: false,
       step: 1,
       dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
         maxFilesize: 10.0,
-        maxFiles: 1,
+        maxFiles: 10,
         acceptedFiles: ".pdf",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
@@ -496,6 +507,20 @@ export default {
     this.conclusion = "";
   },
   methods: {
+     async sendPDFFiles(){
+      let listaanexos = this.fileList;
+      for(let index =0; index < this.fileList.length; index++){
+          let formData = new FormData();
+          formData.append("file",this.fileList[index]);
+          await axios
+          .post("/Media/archivos/pdf",formData)
+          .then((res) => {
+             listaanexos[index] = res.data;
+          })
+          .catch((err) => console.log(err));
+      }
+      console.log(listaanexos);
+    },
     async registrarInforme() {
       console.log(this.informe);
       this.$v.$touch();
@@ -576,6 +601,9 @@ export default {
       console.log(file);
       console.log(file.dataURL);
       console.log(this.$refs.myVueDropzone);
+
+      this.fileList.push(file);
+
       //this.informe.contenido.anexos = file.dataURL.split(",")[1];
       //this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
       //console.log(file.dataURL.split(",")[1]);
