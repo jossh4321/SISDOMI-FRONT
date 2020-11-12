@@ -235,6 +235,7 @@
   </v-card>
 </template>
 <script>
+import axios from 'axios';
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 export default {
@@ -275,6 +276,22 @@ export default {
     };
   },
   methods: {
+     async actualizarUsuario(){
+       this.$v.$touch();
+      if (this.$v.$invalid) {
+        console.log('hay errores');
+        this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
+      } else {
+        console.log('no hay errores');
+        await axios.put("/usuario?tipo="+this.imagen.tipo+"&modificado="+this.imagen.modificado,this.usuario)
+          .then(res => {
+            var resultado = res.data;
+            this.replaceUsuario(resultado);
+            this.cerrarDialogo();
+          }).catch(err => console.log(err));
+          await this.mensaje('success','listo','Usuario Actualizado Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
+      }
+    },
     afterSuccess(file, response) {
       this.planI.firma = file.dataURL;
       console.log(this.planI);
