@@ -57,6 +57,7 @@
                     label="Fecha de Nacimiento"
                     prepend-icon="mdi-calendar"
                     readonly
+                    outlined
                     v-bind="attrs"
                     v-on="on"
                     color="#009900"
@@ -238,6 +239,7 @@
                     label="Fecha de Ingreso"
                     prepend-icon="mdi-calendar"
                     readonly
+                    outlined
                     v-bind="attrs"
                     v-on="on"
 
@@ -427,6 +429,10 @@ export default {
       dialog: false,
       dialog1: false,
       datemenu: false,
+      datemenu: false, ///fecha de nacimiento
+      datemenu1: false, ///fecha ingreso
+      datemenu2: false, ///MODAL fecha ingreso
+      datemenu3: false, ///MODAL fecha finalizacion
       step: 1,
     };
   },
