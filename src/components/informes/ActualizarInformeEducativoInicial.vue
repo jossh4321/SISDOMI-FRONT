@@ -39,7 +39,7 @@
                       <v-avatar left color="#b3b3ff" size="24">
                         <span style="font-size:12px">RT</span>
                       </v-avatar>
-                      {{ data.item.nombre }}
+                      {{ data.item.nombre + " "+ data.item.apellido	}}
                     </v-chip>
                   </template>
                   <template v-slot:item="data">
@@ -203,6 +203,69 @@
           <v-stepper-content step="2">
             <div class="container-user">
               <form>
+                <v-card
+                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <v-text-field
+                          v-model="conclusion"
+                          label="Conclusiones y recomendaciones"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarConclusion"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+
+                  <v-card
+                    tile
+                    elevation="0"
+                    color="#FAFAFA"
+                    style="margin:5px"
+                    height="60"
+                    v-for="conclusion in conclusiones"
+                    :key="conclusion"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <span>{{ conclusion }}</span>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarConclusion(conclusion)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
                 <v-row>
                   <v-col>
                     <v-btn color="warning" block>
@@ -251,13 +314,35 @@ export default {
             addRemoveLinks: true,
             dictDefaultMessage: "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
         },
+        conclusion: "",
+        conclusiones: []
       }
+    },
+    async created() {
+      this.cargarConclusiones();
     },
     methods:{
         cerrarDialogo(){
             //this.resetUsuarioValidationState();
             this.$emit("close-dialog-update");
         },
+        agregarConclusion() {
+          let conclusiones = this.conclusion;
+          this.informe.contenido.conclusiones.push(conclusiones);
+          this.conclusiones = this.informe.contenido.conclusiones;
+          this.conclusion = "";
+        },
+        eliminarConclusion(conclusion) {
+          // this.informe.contenido.conclusiones.splice(conclusion, 1);
+          this.conclusiones.forEach(function(car, index, object) {
+            if(car === conclusion){
+              object.splice(index, 1);
+            }
+          });
+        },
+        cargarConclusiones(){
+          this.conclusiones = this.informe.contenido.conclusiones;
+        }
     },
     computed: {
     errorResidente() {

@@ -213,6 +213,132 @@
       <v-stepper-content step="2">
         <div  class="container-user">
           <form>
+            <v-card
+                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <v-text-field
+                          v-model="logro"
+                          label="Logros alcanzados"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarLogros"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+
+                  <v-card
+                    tile
+                    elevation="0"
+                    color="#FAFAFA"
+                    style="margin:5px"
+                    height="60"
+                    v-for="logro in logros"
+                    :key="logro"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <span>{{ logro }}</span>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarLogros(logro)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+                <v-card
+                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <v-text-field
+                          v-model="recomendacion"
+                          label="Recomendaciones"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarRecomendaciones"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+
+                  <v-card
+                    tile
+                    elevation="0"
+                    color="#FAFAFA"
+                    style="margin:5px"
+                    height="60"
+                    v-for="recomendacion in recomendaciones"
+                    :key="recomendacion"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <span>{{ recomendacion }}</span>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarRecomendaciones(recomendacion)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
             <v-row>
               <v-col>
                 <v-btn block @click="step = 2" color="success">
@@ -264,6 +390,10 @@ export default {
             addRemoveLinks: true,
             dictDefaultMessage: "Seleccione una documento de su Dispositivo o Arrastrela Aqui"
           },
+          logro: "",
+          logros: [],
+          recomendacion: "",
+          recomendaciones: [],
           informe: {
             id: "",
             tipo: "",
@@ -278,8 +408,8 @@ export default {
             contenido: {
                 antecedentes: "",
                 situacionactual: "",
-                logroalcanzado: "",
-                recomendaciones: "",
+                logroalcanzado: [],
+                recomendaciones: [],
                 iereinsersion: {
                     nombre: "",
                     modalidad: "",
@@ -315,6 +445,32 @@ export default {
             }).catch(err => console.log(err));
             await this.mensaje('success','listo','Informe registrado Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
           }
+        },
+        agregarLogros() {
+          let logros = this.logro;
+          this.informe.contenido.logroalcanzado.push(logros);
+          this.logros = this.informe.contenido.logroalcanzado;
+          this.logro = "";
+        },
+        eliminarLogros(logro) {
+          this.logros.forEach(function(car, index, object) {
+            if(car === logro){
+              object.splice(index, 1);
+            }
+          });
+        },
+        agregarRecomendaciones() {
+          let recomendaciones = this.recomendacion;
+          this.informe.contenido.recomendaciones.push(recomendaciones);
+          this.recomendaciones = this.informe.contenido.recomendaciones;
+          this.recomendacion = "";
+        },
+        eliminarRecomendaciones(recomendacion) {
+          this.recomendaciones.forEach(function(car, index, object) {
+            if(car === recomendacion){
+              object.splice(index, 1);
+            }
+          });
         },
         //Problemas con esta kgada
         resetInformeValidationState(){
@@ -356,8 +512,8 @@ export default {
             contenido: {
                 antecedentes: "",
                 situacionactual: "",
-                logroalcanzado: "",
-                recomendaciones: "",
+                logroalcanzado: [],
+                recomendaciones: [],
                 iereinsersion: {
                     nombre: "",
                     modalidad: "",

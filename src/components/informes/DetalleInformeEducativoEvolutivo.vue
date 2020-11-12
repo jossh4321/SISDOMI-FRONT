@@ -16,14 +16,14 @@
             <div class="container-user">
               <form>
                 <v-text-field
-                    v-model="informe.idresidente"
+                    v-model="residente"
                     label="Usuaria CAR"
                     outlined
                     readonly
                     color="#009900"
                 ></v-text-field>
                 <v-text-field
-                    v-model="informe.creadordocumento"
+                    v-model="educador"
                     label="Educador Responsable"
                     outlined
                     readonly
@@ -116,6 +116,76 @@
           <v-stepper-content step="2">
             <div class="container-user">
               <form>
+                <v-card
+                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <v-text-field
+                          disabled
+                          label="Logros alcanzados"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+
+                  <v-card
+                    tile
+                    elevation="0"
+                    color="#FAFAFA"
+                    style="margin:5px"
+                    height="60"
+                    v-for="logro in informe.contenido.logroalcanzado"
+                    :key="logro"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <span>{{ logro }}</span>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+                <v-card
+                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <v-text-field
+                          disabled
+                          label="Recomendaciones"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+
+                  <v-card
+                    tile
+                    elevation="0"
+                    color="#FAFAFA"
+                    style="margin:5px"
+                    height="60"
+                    v-for="recomendacion in informe.contenido.recomendaciones"
+                    :key="recomendacion"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <span>{{ recomendacion }}</span>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
                     <v-btn block @click="cerrarDialogo()" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
@@ -138,13 +208,33 @@ export default {
     data () {
       return {                
         datemenu: false,
-        step:1
+        step:1,
+        residente:"",
+        educador:"",
+        logro:"",
+        recomendacion:"",
       }
+    },
+    async created() {
+      this.obtenerResidente();
+      this.obtenerEducador();
     },
     methods:{
         cerrarDialogo(){
             this.$emit("close-dialog-detail");
-        }
+        },
+        async obtenerResidente(){
+          await axios.get("/residente/id?id="+this.informe.idresidente)
+                  .then( x => {
+                            this.residente = x.data.nombre + " " +x.data.apellido;
+                  }).catch(err => console.log(err));
+        },
+        async obtenerEducador(){
+          await axios.get("/usuario/id?id="+this.informe.creadordocumento)
+            .then(res => {
+                    this.educador = res.data.datos.nombre + " "+res.data.datos.apellido;
+            }).catch(err => console.log(err));
+       }
     }
 }
 </script>

@@ -241,7 +241,7 @@ import { mapMutations, mapState} from "vuex";
 import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
 export default {
-    props:["informe","titulo"],
+    props:["informe","titulo", "listaresidentes", "listaeducadores"],
     components: {
         vueDropzone: vue2Dropzone,
     },
