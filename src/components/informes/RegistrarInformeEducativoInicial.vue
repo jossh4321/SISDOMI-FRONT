@@ -14,7 +14,7 @@
             Análisis y Diagnóstico
           </v-stepper-step>
         </v-stepper-header>
-        <v-stepper-items>
+        <v-stepper-items>          
           <v-stepper-content step="1">
             <div class="container-user">
               <form>
@@ -59,7 +59,7 @@
                         </v-list-item-title>
                         <v-list-item-subtitle
                           >Nro. Documento:
-                          {{ data.item.numerodocumento }}</v-list-item-subtitle
+                          {{ data.item.numeroDocumento }}</v-list-item-subtitle
                         >
                       </v-list-item-content>
                     </template>
@@ -290,25 +290,21 @@
                     height="70"
                   >
                     <v-row style="margin:1%;heigh:100%" align="center">
-                      <v-col :cols="3" align="left">
+                      <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="firmas.nombre"
                           label="Nombre"
                           color="#009900"
                         ></v-text-field>
                       </v-col>
-                      <v-col :cols="3" align="left">
+                      <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="firmas.cargo"
                           label="Cargo"
                           color="#009900"
                         ></v-text-field>
-                      </v-col>
-                      <v-col :cols="3" align="left">    
-                                       
-                          
-                      </v-col>
-                      <v-col :cols="3" align="right">
+                      </v-col>                      
+                      <v-col :cols="4" align="right">
                         <v-btn
                           fab
                           small
@@ -344,41 +340,19 @@
                     v-for="(item, index) in informe.contenido.firmas"
                     :key="index"
                   >
-                    <v-row style="margin-left:10px;heigh:100%" align="center">
-                      <v-col :cols="3">
+                    <v-row style="margin-left:10px;heigh:100%" align="center" >
+                      <v-col :cols="8">
                         <article>
                           <img
                             style="margin-right:5px;width:6% "
                             src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
                             alt="imagen usuario"
                           />
-                          <span style="font-size:18px"> {{ item.nombre }}</span>
+                          <span style="font-size:18px"> {{ item.nombre }} {{item.cargo}}</span>
                         </article>
                       </v-col>
-                      <v-col :cols="3">
-                        <article>
-                          <img
-                            style="margin-right:10px;width:8%"
-                            src="https://www.flaticon.es/svg/static/icons/svg/633/633544.svg"
-                            alt="imagen telefono"
-                          />
-                          <span style="font-size:18px">{{ item.cargo }}</span>
-                        </article>
-                      </v-col>
-                      <v-col :cols="3">
-                        <article>
-                          <img
-                            style="margin-right:10px;width:8%"
-                            src="https://www.flaticon.es/svg/static/icons/svg/633/633544.svg"
-                            alt="imagen telefono"
-                          />
-                          <span style="font-size:18px">{{
-                            item.urlfirma
-                          }}</span>
-                        </article>
-                      </v-col>
-
-                      <v-col :cols="3" align="right">
+  
+                      <v-col :cols="4" align="right">
                         <div style="margin-right:20px">
                           <v-btn
                             fab
@@ -403,8 +377,7 @@
                       <v-icon left>mdi-content-save-all-outline</v-icon>
                       <span>Registrar Informe</span>
                     </v-btn>
-                  </v-col>
-
+                  </v-col>                  
                   <v-col>
                     <v-btn block @click="show = false" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
@@ -447,7 +420,7 @@ export default {
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
         dictDefaultMessage:
-          "Seleccione un archivo de su dispositivo o arrástrela aquí",
+          "Seleccione un archivo anexo de su dispositivo o arrástrela aquí",
       },
       dropzoneOptions2: {
         url: "https://httpbin.org/post",
@@ -462,6 +435,7 @@ export default {
       },
       conclusion: "",
       conclusiones: [],
+      urlfirma : "",
       firmas: { urlfirma: "", nombre: "", cargo: "" },
       informe: {
         id: "",
@@ -555,17 +529,20 @@ export default {
       this.conclusiones.splice(conclusion, 1);
     },
     agregarFirma() {
+      console.log("agregando esta cagada");
       let firmas = {
-        urlfirma:  this.firmas.urlfirma,
+        urlfirma:  this.urlfirma,
         nombre: this.firmas.nombre,
         cargo: this.firmas.cargo,
-      };
-      console.log("firmas");
-      console.log(firmas);
-      this.informe.contenido.firmas.push(firmas);
-      console.log("this.informe.contenido.firmas");
-      console.log(this.informe.contenido.firmas);
-      this.firmas.urlfirma = "";
+      };       
+      console.log("antes de listar el let firmas");
+       console.log(firmas);
+      // console.log(this.urlfirma);
+      this.informe.contenido.firmas.push(firmas);     
+      this.$refs.myVueDropzone.removeAllFiles();
+      // // console.log("this.informe.contenido.firmas");
+      // // console.log(this.informe.contenido.firmas);     
+      this.urlfirma = "";
       this.firmas.nombre = "";
       this.firmas.cargo = "";
     },
@@ -584,17 +561,14 @@ export default {
       this.informe.contenido.anexos = "";
       this.$v.informe.contenido.anexos.$model = "";
     },
-    afterSuccess2(file, response) {      
-      console.log(file.dataURL);
-      this.firmas.urlfirma = file.dataURL.split(",")[1];
-      // this.informe.contenido.firmas.urlfirma = file.dataURL.split(",")[1];
-      // this.$v.informe.contenido.firmas.urlfirma.$model = file.dataURL.split(",")[1];
-      //console.log(file.dataURL.split(",")[1]);
+    afterSuccess2(file, response) { 
+      this.urlfirma =  file.dataURL.split(",")[1];     
+      console.log(this.urlfirma);
     },
     afterRemoved2(file, error, xhr) {
-       this.firmas.urlfirma =""
-      this.informe.contenido.firmas.urlfirma = "";
-      this.$v.informe.contenido.firmas.urlfirma.$model = "";
+      this.urlfirma = "";
+      //this.informe.contenido.firmas.urlfirma = "";
+      // this.$v.informe.contenido.firmas.urlfirma.$model = "";
     },
     limpiarInforme() {
       return {
