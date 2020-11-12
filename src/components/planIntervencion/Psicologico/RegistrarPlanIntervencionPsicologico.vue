@@ -368,7 +368,7 @@ export default {
         historialcontenido: [],
         creadordocumento: "5f70b799c58b26540822c00f",
         fechacreacion: new Date(),
-        area: "",
+        area: "psicologico",
         fase: "",
         estado: "creado",
         idresidente: "",
