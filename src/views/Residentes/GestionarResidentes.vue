@@ -10,7 +10,7 @@
       >
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>Residentes SISDOMI</v-toolbar-title>
+            <v-toolbar-title>Residentes SISCAR</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-text-field
@@ -48,7 +48,7 @@
 
           <v-row align="center" justify="space-around">
             <!--BOTONES-->
-            <v-btn color="warning" dark @click="editItem(item)">
+            <v-btn color="warning" dark @click="abrirDialogoModificar(item.id)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
@@ -60,6 +60,14 @@
         </template>
       </v-data-table>
       <!----->
+      <!--Dialogo de Modificacion-->
+      <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
+        <ModificarResidente
+          :residente="residente"
+          @close-dialog-detail="closeDialogModificar()"
+        >
+        </ModificarResidente>
+      </v-dialog>
       <!--Dialogo de Detalle-->
       <v-dialog persistent v-model="dialogodetalle" max-width="880px">
         <ConsultarResidente
@@ -148,10 +156,18 @@ export default {
     closeDialogRegistrar() {
       this.dialogoregistro = false;
     },
+    closeDialogModificar() {
+      this.dialogoactualizacion = false;
+    },
     ///abrir dialogo de detalle
     async abrirDialogoDetalle(idresidente) {
       this.residente = await this.loadResidenteDetalle(idresidente);
       this.dialogodetalle = !this.dialogodetalle;
+    },
+    ///abrir dialogo de modificacion
+    async abrirDialogoModificar(idresidente) {
+      this.residente = await this.loadResidenteDetalle(idresidente);
+      this.dialogoactualizacion = !this.dialogoactualizacion;
     },
 
     async loadResidenteDetalle(idresidente) {
