@@ -551,7 +551,11 @@ export default {
     },
     eliminarConclusion(conclusion) {
       // this.informe.contenido.conclusiones.splice(conclusion, 1);
-      this.conclusiones.splice(conclusion, 1);
+      this.conclusiones.forEach(function(car, index, object) {
+            if(car === conclusion){
+              object.splice(index, 1);
+            }
+     });
     },
     agregarFirma() {
       console.log("agregando esta cagada");
