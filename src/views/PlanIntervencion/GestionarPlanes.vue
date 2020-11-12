@@ -116,10 +116,7 @@
 
     <!--Registrar Modal-->
     <v-dialog v-model="dialogPlanRegister" persistent max-width="880">
-      <component
-        :is="selectedPlan.value"
-        @close-dialog="closeDialog"
-      ></component>
+      <component :is="selectedPlan.value" @close-dialog="closeDialog" @register-complete="registerComplete"></component>
     </v-dialog>
 
     <!--Actualizar Modal-->
@@ -234,6 +231,14 @@ export default {
     },
     closeDialog() {
       this.dialogPlanRegister = false;
+      this.selectedPlan = {
+        text: "",
+        value: ""
+      }
+    },
+    registerComplete() {
+      this.closeDialog();
+
     },
     closeDialogModify() {
       this.dialogPlanModify = false;
