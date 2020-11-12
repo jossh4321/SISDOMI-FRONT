@@ -26,6 +26,7 @@
                         <RegistrarInformeEducativoEvolutivo v-if="showRegistrarInformeEE" :listaresidentes="listaresidentes" :listaeducadores="listaeducadores" 
                         :visible="showRegistrarInformeEE" :titulo="titulo" @close="showRegistrarInformeEE=false"/>                     
                         <RegistrarInformeEducativoInicial 
+                            v-if="showRegistrarInformeEI"
                             :listaresidentes="listaresidentes"
                             :listaeducadores="listaeducadores"                             
                             :visible="showRegistrarInformeEI"  

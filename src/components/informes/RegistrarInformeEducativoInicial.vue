@@ -408,7 +408,6 @@ export default {
   components: {
     vueDropzone: vue2Dropzone,
   },
-  ...mapMutations(["addInforme"]),
   data() {
     return {
       //para probar
@@ -459,11 +458,6 @@ export default {
           conclusiones: [],
           anexos: [],
           firmas: [
-            {
-              urlfirma: "",
-              nombre: "",
-              cargo: "",
-            },
           ],
           codigodocumento: "",
           lugarevaluacion: "",
@@ -476,6 +470,7 @@ export default {
     this.conclusion = "";
   },
   methods: {
+    ...mapMutations(["addInforme"]),
     async sendPDFFiles() {
       let listaanexos = this.fileList;
       for (let index = 0; index < this.fileList.length; index++) {
@@ -512,7 +507,6 @@ export default {
             this.informe = res.data;
             this.addInforme(this.informe);
             this.cerrarDialogo();
-            show = false;
           })
           .catch((err) => console.log(err));
         await this.mensaje(
@@ -538,7 +532,7 @@ export default {
     cerrarDialogo() {
       this.informe = this.limpiarInforme();
       this.step = 1;
-      this.$emit("close-dialog-save");
+      this.$emit("close");
     },
     agregarConclusion() {
       let conclusiones = this.conclusion;
