@@ -17,7 +17,7 @@
               v-model="search"
               append-icon="mdi-magnify"
               label="Search"
-              single-line
+              single-line0
               hide-details
             ></v-text-field>
             <v-spacer></v-spacer>
@@ -133,10 +133,21 @@ export default {
 
   methods: {
      ...mapMutations(["setPlanInterve"]),
-    editItem(item) {
+    async editItem(item) {
+      this.planIntervencion =  await this.actu(item); 
       this.dialogoactualizacion=!this.dialogoactualizacion;
       console.log(item);
    //   console.log(item);
+    },
+    async actu(item){
+   
+      var planesI = {};
+      await axios.get("/usuario/id?id="+id)//prueba
+      .then(res => {
+         planesI = res.data; 
+      })
+      .catch(err => console.log(err));
+      return this.planesI;
     },
     detailItem(item) {
            
