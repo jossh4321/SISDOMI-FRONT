@@ -105,7 +105,7 @@
               ></v-text-field>
               <!--Formulario para agregar telefonos -->
               <v-row justify="center">
-                <v-dialog v-model="dialog" persistent max-width="600px">
+                <v-dialog v-model="dialogTelefonoReferencial" persistent max-width="600px">
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" v-on="on">
                       Registrar Telefono
@@ -120,16 +120,22 @@
                         <v-row>
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field
-                              v-model="telefonos.numero"
+                            v-model="telefonos.referenteFamiliar"
                               label="Ingrese el Referente Familiar"
                               color="#009900"
+                              @input="$v.telefonos.referenteFamiliar.$touch()"
+                              @blur="$v.telefonos.referenteFamiliar.$touch()"
+                              :error-messages="errorReferenteFamiliar"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field
-                              v-model="telefonos.referenteFamiliar"
-                              label="Ingrese el numero"
+                              v-model="telefonos.numero"
+                              label="Ingrese el numero Telefonico"
                               color="#009900"
+                               @input="$v.telefonos.numero.$touch()"
+                              @blur="$v.telefonos.numero.$touch()"
+                              :error-messages="errorTelefono"
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
@@ -151,7 +157,8 @@
                                 >
                               </v-col>
                             </v-row>
-                            <v-card
+                            <template v-if="residente.telefonosReferencia.length > 0">
+                                <v-card
                               tile
                               elevation="0"
                               color="#FAFAFA"
@@ -206,6 +213,12 @@
                                 </v-col>
                               </v-row>
                             </v-card>
+                            </template>
+                            <v-card v-if="errorTelefonosReferenciales" color="red">
+                              <v-card-text class="text-center" style="color: white"
+                                >Debe Ingresar un Telefono de referencia Obligatoriamente</v-card-text
+                              >
+                            </v-card>
                           </v-card>
                           <!-- -->
                         </v-row>
@@ -213,10 +226,10 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="dialog = false">
+                      <v-btn color="blue darken-1" text @click="cerrarTelefonosReferencia()">
                         Cerrar
                       </v-btn>
-                      <v-btn color="blue darken-1" text @click="dialog = false">
+                      <v-btn color="blue darken-1" text @click="guardarTelefonosReferencia()">
                         Guardar
                       </v-btn>
                     </v-card-actions>
@@ -301,7 +314,7 @@
 
               <!--------AQUI esta  EL cuadro de progreso -->
               <v-row justify="center">
-                <v-dialog v-model="dialog1" persistent max-width="850px">
+                <v-dialog v-model="dialogProgresoFase" persistent max-width="850px">
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" v-on="on">
                       Registrar Progreso
@@ -313,25 +326,26 @@
                     </v-card-title>
                     <v-card-text>
                       <v-container>
-                      
-                         
                            <v-select
-                                
                                 :items="itemFase"
                                 label="Ingrese  la fase"
                                 dense
                                 outlined
-                                v-model="miFase"
+                                v-model="progreso.fase"
                                 color="#009900"
-                                
+                                @input="$v.progreso.fase.$touch()"
+                                @blur="$v.progreso.fase.$touch()"
+                                :error-messages="errorFase"
                            ></v-select>
-
                             <v-select
                                 :items="['Inicio','Progreso','Finalizado','En   adopcion']"
                                 label="Ingrese el estado"
                                 dense
                                 outlined
                                 v-model="progreso.estado"
+                                @input="$v.progreso.estado.$touch()"
+                                @blur="$v.progreso.estado.$touch()"
+                                :error-messages="errorEstadoProgreso"
                                 color="#009900"
                             ></v-select>
                            
@@ -354,6 +368,9 @@
                                 v-bind="attrs"
                                 v-on="on"
                                 color="#009900"
+                                @input="$v.progreso.fechaingreso.$touch()"
+                                @blur="$v.progreso.fechaingreso.$touch()"
+                                :error-messages="errorFechaIngresoProgreso"
                               ></v-text-field>
                             </template>
                             <v-date-picker
@@ -381,6 +398,9 @@
                                 v-bind="attrs"
                                 v-on="on"
                                 color="#009900"
+                                @input="$v.progreso.fechafinalizacion.$touch()"
+                                @blur="$v.progreso.fechafinalizacion.$touch()"
+                                :error-messages="errorFechaFinalizacionProgreso"
                               ></v-text-field>
                             </template>
                             <v-date-picker
@@ -392,7 +412,7 @@
                           <!--acabo  -->
 
                           <v-col cols="12" sm="6" md="4">
-                            <v-btn color="success" @click="guardarProgreso">
+                            <v-btn color="success" @click="guardarProgreso()">
                               añadir
                             </v-btn>
                           </v-col>
@@ -436,7 +456,8 @@
                   </v-row>
                 </v-card>
                 <!-- Cuerpo -->
-                <v-card
+                <template v-if="residente.progreso.length > 0">
+                    <v-card
                   tile
                   elevation="0"
                   color="#FAFAFA"
@@ -468,17 +489,6 @@
                     </v-col>
                     <v-col align="right">
                       <div style="margin-right:20px">
-                   <!--     <v-btn
-                          style="margin-right:10px"
-                          fab
-                          x-small
-                          dark
-                          color="#126BB5"
-                        >
-                          <v-icon dark>
-                            mdi-pencil
-                          </v-icon>
-                        </v-btn>  -->
                         <v-btn
                         @click="eliminarProgreso(item.index)"
                         fab x-small 
@@ -492,12 +502,12 @@
                     </v-col>
                   </v-row>
                 </v-card>
+                </template>
+                <v-card v-if="errorFasesProgreso" color="red">
+                    <v-card-text class="text-center" style="color: white"
+                      >Debe Ingresar Las Fases de la Residente Obligatoriamente</v-card-text>
+                  </v-card>
               </v-card>
-<!--fin-->
-                          
-
-              <!-- -->
-                        
                       </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -505,14 +515,14 @@
                       <v-btn
                         color="blue darken-1"
                         text
-                        @click="dialog1 = false"
+                        @click="cerrarFaseResidente()"
                       >
                         Cerrar
                       </v-btn>
                       <v-btn
                         color="blue darken-1"
                         text
-                        @click="dialog1 = false"
+                        @click="guardarFasesResidente()"
                       >
                         Guardar
                       </v-btn>
@@ -546,6 +556,12 @@
                     <span>Cerrar</span>
                   </v-btn>
                 </v-col>
+                <v-col>
+                  <v-btn block @click="testing3()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>probar</span>
+                  </v-btn>
+                </v-col>
               </v-row>
             </form>
           </div>
@@ -559,16 +575,17 @@
 
 const m = moment();
 import axios from "axios";
+import Vuelidate from 'vuelidate'
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import { required, minLength, email, helpers } from "vuelidate/lib/validators";
+import { required, minLength, maxLength, email, helpers,numeric } from "vuelidate/lib/validators";
 import moment from "moment";
 export default {
   data() {
     return {
-      dialog: false, ///abrir modal de numeros
-      dialog1: false, ///abrir modal de progreso
+      dialogTelefonoReferencial: false, ///abrir modal de numeros
+      dialogProgresoFase: false, ///abrir modal de progreso
       datemenu: false, ///fecha de nacimiento
       datemenu1: false, ///fecha ingreso
       datemenu2: false, ///MODAL fecha ingreso
@@ -577,7 +594,7 @@ export default {
 
       telefonos: { numero: "", referentefamiliar: "" },
       progreso: {
-        fase: "",
+        fase: {nombre:'Acogida',fase:1},
         fechaingreso: "",
         fechafinalizacion: "",
         estado: "",
@@ -585,10 +602,9 @@ export default {
        itemFase:[{text:'Acogida',value:{nombre:'Acogida',fase:1}},
               {text:'Desarrollo',value:{nombre:'Desarrollo',fase:2}},
               {text:'Reinsercion',value:{nombre:'Desarrollo',fase:3}},
-              {text:'Seguimiento',value:{nombre:'Desarrollo',fase:4}}
-                                ],
-    miFase:{nombre:'Acogida',fase:1},
-        progreso:{},
+              {text:'Seguimiento',value:{nombre:'Desarrollo',fase:4}}],
+        miFase:{nombre:'Acogida',fase:1},
+        //progreso:{},
       residente: {
         id: "",
         nombre: "",
@@ -601,20 +617,20 @@ export default {
         fechaNacimiento: "",
         sexo: "",
         telefonosReferencia: [
-          {
+          /*{
             numero: "",
             referentefamiliar: "",
-          },
+          },*/
         ],
         fechaIngreso: "",
         motivoIngreso: "",
         progreso: [
-          {
+          /*{
             fase: 0,
             fechaingreso: "",
             fechafinalizacion: "",
             estado: "",
-          },
+          },*/
         ],
         estado: "",
       },
@@ -626,6 +642,9 @@ export default {
     //METODO MEMENT
     moment: function () {
     return moment();
+    },
+    testing3(){
+      this.$v.$touch();
     },
     ///CERRAR DIALOGO
     cerrarDialogo() {
@@ -648,20 +667,20 @@ export default {
           fechaNacimiento: Date,
           sexo: "",
           telefonosReferencia: [
-            {
+            /*{
               numero: "",
               referentefamiliar: "",
-            },
+            },*/
           ],
           fechaIngreso: Date,
           motivoIngreso: "",
           progreso: [
-            {
+            /*{
               fase: 0,
               fechaingreso: Date,
               fechafinalizacion: Date,
               estado: "",
-            },
+            },*/
           ],
           estado: "",
         },
@@ -676,9 +695,23 @@ export default {
         footer: footer,
       });
     },
+    guardarTelefonosReferencia(){
+        this.$v.residente.telefonosReferencia.$touch();
+        if(!this.$v.residente.telefonosReferencia.$invalid){
+            this.$v.telefonos.$reset();
+            this.dialogTelefonoReferencial = false;
+        }
+    },
+    cerrarTelefonosReferencia(){
+      this.$v.residente.telefonosReferencia.$reset();
+         this.$v.telefonos.$reset();
+        this.dialogTelefonoReferencial = false;
+    },
     ////GUARDAR TELEFONO REFERENTE ///
     guardarTelefono() {
-      let telefonos = {
+      this.$v.telefonos.$touch();
+      if(!this.$v.telefonos.$invalid && this.residente.telefonosReferencia.length <= 3){
+        let telefonos = {
         numero: this.telefonos.numero,
         referentefamiliar: this.telefonos.referenteFamiliar,
       }; //creamos variables
@@ -687,31 +720,55 @@ export default {
       console.log(this.residente.telefonosReferencia);
       this.telefonos.numero = "";
       this.telefonos.referenteFamiliar = "";
+      !this.$v.telefonos.$reset();
+      }
+      
     },
     eliminarTelefono(index) {
       this.residente.telefonosReferencia.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     }, ////GUARDAR PROGRESO DEL modal ///
     guardarProgreso() {
-       let progreso={ fase: this.miFase.fase,nombre: this.miFase.nombre,fechaingreso:this.progreso.fechaingreso,fechafinalizacion:this.progreso.fechafinalizacion,estado:this.progreso.estado}//creamos variables 
-   
-       //creamos variables
-      console.log(this.residente);
-
-      this.residente.progreso.push(progreso); //añadimos al arreglo principal
-      ///LIMPIAMOS LOS CAMPOS//
-      console.log(this.residente.progreso);
-      this.progreso.fase = "";
-      this.progreso.estado = "";
-      this.miFase={nombre:'Acogida',fase:1}
+      this.$v.progreso.$touch();
+      if(!this.$v.progreso.$invalid){
+          let progreso={ 
+         fase: this.progreso.fase.fase,
+         nombre:this.progreso.fase.nombre,
+         fechaingreso:this.progreso.fechaingreso,
+         fechafinalizacion:this.progreso.fechafinalizacion,
+         estado:this.progreso.estado}//creamos variables 
+        this.residente.progreso.push(progreso); //añadimos al arreglo principal
+        ///LIMPIAMOS LOS CAMPOS//
+        this.progreso.fase = {nombre:'Acogida',fase:1};
+        this.progreso.estado = "";
+        this.progreso.fechafinalizacion = "";
+        this.progreso.fechaingreso = "";
+        //reiniciamos el estado de la validacion
+        this.$v.progreso.$reset();
+      }else{
+        console.log("algo  mal");
+      }
+    },
+    guardarFasesResidente(){
+      this.$v.residente.progreso.$touch();
+        if(!this.$v.residente.progreso.$invalid){
+            this.$v.progreso.$reset();
+            this.dialogProgresoFase = false;
+        }
+    },
+    cerrarFaseResidente(){
+         this.$v.residente.progreso.$reset();
+         this.$v.progreso.$reset();
+        this.dialogProgresoFase = false;
     },
     eliminarProgreso(index) {
       this.residente.progreso.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     },
     ////////////HACER LA CONSULTA CON LA API  REGISTRAR
     async registrarResidente() {
-      console.log("llegue aqui")
-      this.$v.$touch();
-      if (this.$v.$invalid) {
+      console.log("llegue aqui");
+      //console.log(this.$v.residente);
+      this.$v.residente.$touch();
+      if (this.$v.residente.$invalid) {
         console.log("hay errores");
         this.mensaje(
           "error",
@@ -726,6 +783,7 @@ export default {
           .post("/Residente", this.residente)
           .then((res) => {
             this.residente = res.data;
+            this.$v.residente.reset();
             this.addResidente(this.residente);
             this.cerrarDialogo();
           })
@@ -871,6 +929,75 @@ export default {
 
       return errors;
     },
+    //Validaciones Telefono
+    errorReferenteFamiliar() {
+      const errors = [];
+      if (!this.$v.telefonos.referenteFamiliar.$dirty) return errors;
+      !this.$v.telefonos.referenteFamiliar.required &&
+        errors.push("Debe ingresar un Referente Familiar Obligatoriamente");
+      !this.$v.telefonos.referenteFamiliar.minLength &&
+        errors.push(
+          "El Referente Familiar deben tener al menos 3 caracteres"
+        );
+      return errors;
+    },
+    errorTelefono(){
+        const errors = [];
+      if (!this.$v.telefonos.numero.$dirty) return errors;
+      !this.$v.telefonos.numero.required &&
+        errors.push("Debe ingresar un Numero Obligatoriamente");
+      !this.$v.telefonos.numero.minLength &&
+        errors.push(
+          "El telefono debe tener 9 caracteres"
+        );
+        !this.$v.telefonos.numero.maxLength &&
+        errors.push(
+          "El telefono debe tener 9 caracteres"
+        );
+        !this.$v.telefonos.numero.numeric &&
+        errors.push(
+          "Debe Ingresar valores Numericos"
+        );
+      return errors;
+    }, errorTelefonosReferenciales() {
+      return this.$v.residente.telefonosReferencia.required == false &&
+        this.$v.residente.telefonosReferencia.$dirty == true
+        ? true
+        : false;
+    },
+    //Validaciones del Progreso
+    errorFase() {
+      const errors = [];
+      if (!this.$v.progreso.fase.$dirty) return errors;
+      !this.$v.progreso.fase.required &&
+        errors.push("Debe seleccionar una fase Obligatoriamente");
+      return errors;
+    },errorFechaIngresoProgreso() {
+      const errors = [];
+      if (!this.$v.progreso.fechaingreso.$dirty) return errors;
+      !this.$v.progreso.fechaingreso.required &&
+        errors.push("Debe Ingresar una fecha de Inicio Obligatoriamente");
+      return errors;
+    },
+    errorFechaFinalizacionProgreso() {
+      const errors = [];
+      if (!this.$v.progreso.fechafinalizacion.$dirty) return errors;
+      !this.$v.progreso.fechafinalizacion.required &&
+        errors.push("Debe Ingresar una fecha de Inicio Obligatoriamente");
+      return errors;
+    },errorEstadoProgreso() {
+      const errors = [];
+      if (!this.$v.progreso.estado.$dirty) return errors;
+      !this.$v.progreso.estado.required &&
+        errors.push("Debe Seleccionar un Estado Obligatoriamente");
+      return errors;
+    }, errorFasesProgreso() {
+      return this.$v.residente.progreso.required == false &&
+        this.$v.residente.progreso.$dirty == true
+        ? true
+        : false;
+    },
+
   },
   validations() {
     return {
@@ -907,9 +1034,11 @@ export default {
         sexo: {
           required,
         },
-        telefonosReferencia: [
-          {
-            numero: {
+        telefonosReferencia: {
+          required,
+           //minLength: minLength(1),
+           $each:{
+             numero: {
               required,
               minLength: minLength(9),
             },
@@ -917,14 +1046,16 @@ export default {
               required,
               minLength: minLength(4),
             },
-          },
-        ],
+        },
+        },
         fechaIngreso: {
           required,
         },
         motivoIngreso: {},
-         progreso: [
-            {
+         progreso: {
+           required,
+          //minLength: minLength(1),
+           $each:{
               fase: {
               required,
             },
@@ -936,15 +1067,33 @@ export default {
             },
               estado: {
               required,
-            },
-            },
-          ],
-        estado: {
+            }
+           }
+        }, estado: {
           required,
           minLength: minLength(4),
         },
+    },
+    telefonos:{
+      numero: {
+        required,
+        minLength: minLength(9),
+        maxLength: maxLength(9),
+        numeric,
+
       },
-    };
+      referenteFamiliar: {
+        required,
+        minLength: minLength(4),
+      },
+    },
+    progreso: {
+        fase: {required},
+        fechaingreso: {required},
+        fechafinalizacion: {required},
+        estado: {required},
+      },
+    }
   },
 };
 </script>
