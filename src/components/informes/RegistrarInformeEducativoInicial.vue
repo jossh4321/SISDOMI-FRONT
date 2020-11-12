@@ -29,6 +29,9 @@
                   label="Usuaria CAR"
                   item-text="nombre"
                   item-value="id"
+                  @input="$v.informe.idresidente.$touch()"
+                  @blur="$v.informe.idresidente.$touch()"
+                  :error-messages="errorResidente"
                 >
                   <template v-slot:selection="data">
                     <v-chip
@@ -74,6 +77,9 @@
                   label="Educador responsable"
                   item-text="usuario"
                   item-value="rol"
+                  @input="$v.informe.creadordocumento.$touch()"
+                  @blur="$v.informe.creadordocumento.$touch()"
+                  :error-messages="errorCreador"
                 >
                   <template v-slot:selection="data">
                     <v-chip
@@ -112,12 +118,16 @@
 
                 <v-textarea
                   label="Lugar de Evaluación"
+                  v-model="informe.contenido.lugarevaluacion"
                   auto-grow
                   outlined
                   rows="2"
                   row-height="25"
                   color="#009900"
                   shaped
+                  @input="$v.informe.contenido.lugarevaluacion.$touch()"
+                  @blur="$v.informe.contenido.lugarevaluacion.$touch()"
+                  :error-messages="errorLugarEvaluacion"
                 ></v-textarea>
 
                 <v-menu
@@ -187,9 +197,9 @@
           <v-stepper-content step="2">
             <div class="container-user">
               <form>
-                <v-card>                  
+                <v-card>
                   <v-row>
-                    <v-col :col="8" >
+                    <v-col :col="8">
                       <v-text-field
                         v-model="conclusion"
                         label="Conclusión"
@@ -208,7 +218,7 @@
                     color="#FAFAFA"
                     style="margin-top:5px"
                     height="60"
-                    v-for="(conclusion) in conclusiones"
+                    v-for="conclusion in conclusiones"
                     :key="conclusion"
                   >
                     <v-row style="margin-left:10px;heigh:100%" align="center">
@@ -217,8 +227,13 @@
                       </v-col>
                       <v-col :cols="4" align="right">
                         <div style="margin-right:20px">
-                          <v-btn fab x-small dark color="red" 
-                            @click="eliminarConclusion(conclusion)">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarConclusion(conclusion)"
+                          >
                             <v-icon dark>
                               mdi-minus
                             </v-icon>
@@ -230,15 +245,15 @@
                 </v-card>
                 <div>
                   <vue-dropzone
-                      ref="myVueDropzone"
-                      @vdropzone-success="afterSuccess"
-                      @vdropzone-removed-file="afterRemoved"
-                      id="dropzone"
-                      :options="dropzoneOptions"
-                    >
+                    ref="myVueDropzone"
+                    @vdropzone-success="afterSuccess"
+                    @vdropzone-removed-file="afterRemoved"
+                    id="dropzone"
+                    :options="dropzoneOptions"
+                  >
                   </vue-dropzone>
                 </div>
-               <!-- <v-card v-if="errorImagen" color="red">
+                <!-- <v-card v-if="errorImagen" color="red">
                 <v-card-text class="text-center" style="color: white"
                   >Debe Subir una imagen del usuario
                   Obligatoriamente</v-card-text
@@ -286,28 +301,28 @@ export default {
       datemenu: false,
       step: 1,
       dropzoneOptions: {
-      url: "https://httpbin.org/post",
-      thumbnailWidth: 250,
-      maxFilesize: 10.0,
-      maxFiles: 10,
-      acceptedFiles: ".pdf",
-      headers: { "My-Awesome-Header": "header value" },
-      addRemoveLinks: true,
-      dictDefaultMessage:
-        "Seleccione un archivo de su dispositivo o arrástrela aquí",
-    }, //utilizado en los formularios como un prop
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFilesize: 10.0,
+        maxFiles: 10,
+        acceptedFiles: ".pdf",
+        headers: { "My-Awesome-Header": "header value" },
+        addRemoveLinks: true,
+        dictDefaultMessage:
+          "Seleccione un archivo de su dispositivo o arrástrela aquí",
+      }, //utilizado en los formularios como un prop
       conclusion: "",
       conclusiones: [],
       informe: {
         id: "",
-        tipo: "",
+        tipo: "InformeEducativoInicial",
         historialcontenido: [],
         creadordocumento: "",
         fechacreacion: "",
-        area: "",
-        fase: "",
+        area: "educativa",
+        fase: "acogida",
         idresidente: "",
-        estado: "",
+        estado: "creado",
         contenido: {
           situacionacademica: "",
           analisisacademico: "",
@@ -319,20 +334,21 @@ export default {
               nombre: "",
               cargo: "",
             },
-          ],
-          idresidente: "",
+          ],          
           codigodocumento: "",
+          lugarevaluacion:""
         },
       },
     };
-  },  async created() {
+  },
+  async created() {
     this.conclusiones = "";
     this.conclusion = "";
   },
   methods: {
     cerrarDialogo() {
       this.informe = this.limpiarInforme();
-      this.step = 1;      
+      this.step = 1;
       this.$emit("close-dialog-save");
     },
     async registrarInforme() {
@@ -343,13 +359,13 @@ export default {
       //   this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
       // } else {
       //   console.log('no hay errores');
-      // await axios.post("/informe/informeei",this.informe)
-      //   .then(res => {
-      //       this.informe = res.data;
-      //       this.addInforme(this.informe);
-      //       this.cerrarDialogo();
-      //   }).catch(err => console.log(err));
-      //  await this.mensaje('success','listo','Usuario registrado Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
+       await axios.post("/informe/informeei",this.informe)
+         .then(res => {
+             this.informe = res.data;
+             this.addInforme(this.informe);
+             this.cerrarDialogo();
+         }).catch(err => console.log(err));
+        await this.mensaje('success','Listo','Informe registrado Satisfactoriamente',"<strong>Se redirigira a la interfaz de gestión<strong>");
       //}
     },
     async mensaje(icono, titulo, texto, footer) {
@@ -361,16 +377,16 @@ export default {
       });
     },
     agregarConclusion() {
-      let conclusiones = this.conclusion;      
-      this.informe.contenido.conclusiones.push(conclusiones); 
+      let conclusiones = this.conclusion;
+      this.informe.contenido.conclusiones.push(conclusiones);
       this.conclusiones = this.informe.contenido.conclusiones;
       this.conclusion = "";
     },
-    eliminarConclusion(conclusion){
-     // this.informe.contenido.conclusiones.splice(conclusion, 1);     
-      this.conclusiones.splice(conclusion, 1);     
-    },    
-    afterSuccess(file, response) {      
+    eliminarConclusion(conclusion) {
+      // this.informe.contenido.conclusiones.splice(conclusion, 1);
+      this.conclusiones.splice(conclusion, 1);
+    },
+    afterSuccess(file, response) {
       console.log(file);
       console.log(file.dataURL);
       //this.informe.contenido.anexos = file.dataURL.split(",")[1];
@@ -381,36 +397,35 @@ export default {
       this.informe.contenido.anexos = "";
       this.$v.usuario.datos.imagen.$model = "";
     },
-    limpiarInforme(){
-       return { 
-          informe: {
-            id: "",
-            tipo: "",
-            historialcontenido: [],
-            creadordocumento: "",
-            fechacreacion: "",
-            area: "",
-            fase: "",
-            idresidente: "",
-            estado: "",
-            contenido: {
-              situacionacademica: "",
-              analisisacademico: "",
-              conclusiones: [],
-              anexos: [],
-              firmas: [
-                {
-                  urlfirma: "",
-                  nombre: "",
-                  cargo: "",
-                },
-              ],
-              idresidente: "",
-              codigodocumento: "",
-            }
-          }
-       }
-    }
+    limpiarInforme() {
+      return {
+        informe: {
+          id: "",
+          tipo: "",
+          historialcontenido: [],
+          creadordocumento: "",
+          fechacreacion: "",
+          area: "",
+          fase: "",
+          idresidente: "",
+          estado: "",
+          contenido: {
+            situacionacademica: "",
+            analisisacademico: "",
+            conclusiones: [],
+            anexos: [],
+            firmas: [
+              {
+                urlfirma: "",
+                nombre: "",
+                cargo: "",
+              },
+            ],            
+            codigodocumento: "",
+          },
+        },
+      };
+    },
   },
   computed: {
     show: {
@@ -423,6 +438,47 @@ export default {
         }
       },
     },
+    errorResidente() {
+      const errors = [];
+      if (!this.$v.informe.idresidente.$dirty) return errors;
+      !this.$v.informe.idresidente.required &&
+        errors.push("Debe seleccionar un residente obligatoriamente");
+      return errors;
+    },
+    errorCreador() {
+      const errors = [];
+      if (!this.$v.informe.creadordocumento.$dirty) return errors;
+      !this.$v.informe.creadordocumento.required &&
+        errors.push("Debe seleccionar un educador obligatoriamente");
+      return errors;
+    },
+    errorLugarEvaluacion() {
+      const errors = [];
+      if (!this.$v.informe.contenido.lugarevaluacion.$dirty) return errors;
+      !this.$v.informe.contenido.lugarevaluacion.required &&
+        errors.push("Debe ingresar un lugar de evaluación obligatoriamente");
+      !this.$v.usuario.contenido.lugarevaluacion.minLength &&
+        errors.push("El lugar de evaluación debe tener al menos 10 caracteres");
+      return errors;
+    },
   },
+  validations(){
+    return{
+      informe:{
+        idresidente : {
+          required
+        },
+        creadordocumento: {
+          required
+        },
+        contenido: {
+          lugarevaluacion: {
+              required,
+              minLength: minLength(10),
+          }
+        }
+      }
+    }
+  }
 };
 </script>
