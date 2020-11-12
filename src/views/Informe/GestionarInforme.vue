@@ -36,6 +36,8 @@
                 </v-btn>
               </template>
               <RegistrarInforme
+                :listaresidentes="listaresidentes"
+                :listaeducadores="listaeducadores" 
                 @close-dialog-save="closeDialogRegistrar()"
               ></RegistrarInforme>
             </v-dialog>
@@ -67,7 +69,10 @@
                 v-model="dialogoIEIactualizacion" 
                 max-width="880px">
         <ActualizarInformeEducativoInicial
-          v-if="dialogoIEIactualizacion" 
+          v-if="dialogoIEIactualizacion"
+          :informe="informe" 
+          :listaresidentes="listaresidentes"
+          :listaeducadores="listaeducadores" 
           @close-dialog-update="closeDialogActualizar()">
         </ActualizarInformeEducativoInicial>
       </v-dialog>
@@ -75,7 +80,11 @@
                 v-model="dialogoIEEactualizacion" 
                 max-width="880px">
         <ActualizarInformeEducativoEvolutivo
-          v-if="dialogoIEEactualizacion" 
+          v-if="dialogoIEEactualizacion"
+          :informe="informe"
+          :titulo="titulo"
+          :listaresidentes="listaresidentes"
+          :listaeducadores="listaeducadores"  
           @close-dialog-update="closeDialogActualizar()">
         </ActualizarInformeEducativoEvolutivo>
       </v-dialog>
@@ -136,7 +145,9 @@ export default {
         { text: "Tipo de Informe", value: "tipo" },
         { text: "Acciones", value: "actions", sortable: false },
       ],
-      titulo:"",
+      listaresidentes:[],
+      titulo:"Titulo por defecto",
+      listaeducadores:[],
       dialogoregistro: false,
       dialogoIEIactualizacion: false,
       dialogoIEEactualizacion: false,
@@ -147,6 +158,8 @@ export default {
   },
   async created() {
     this.obtenerInformes();
+    this.obtenerResidentes();
+    this.obtenerEducadores();
   },
   methods: {
     ...mapMutations(["setInformes"]),
@@ -213,6 +226,20 @@ export default {
       })
       .catch(err => console.log(err));
       return info;
+    },
+    async obtenerResidentes(){
+          await axios.get("/residente/all")
+                  .then( x => {
+                            this.listaresidentes = x.data;
+                            console.log(this.listaresidentes);
+                  }).catch(err => console.log(err));
+        },
+    async obtenerEducadores(){
+          await axios.get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
+            .then(res => {
+                    this.listaeducadores = res.data;
+                    console.log(this.listaeducadores);
+            }).catch(err => console.log(err));
     }
   },
   computed: {

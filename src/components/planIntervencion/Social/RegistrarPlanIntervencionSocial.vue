@@ -309,7 +309,7 @@ export default {
         tipo: "PlanIntervencionIndividual",
         historialcontenido: [],
         fechacreacion: new Date(),
-        area: "",
+        area: "social",
         idresidente: "",
         fase: "",
         estado: "creado",
