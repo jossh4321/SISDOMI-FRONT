@@ -168,6 +168,9 @@
                   row-height="40"
                   color="#009900"
                   shaped
+                  @input="$v.informe.contenido.situacionacademica.$touch()"
+                  @blur="$v.informe.contenido.situacionacademica.$touch()"
+                  :error-messages="errorSituacionAcademica"
                 ></v-textarea>
 
                 <v-textarea
@@ -179,6 +182,9 @@
                   row-height="40"
                   color="#009900"
                   shaped
+                  @input="$v.informe.contenido.analisisacademico.$touch()"
+                  @blur="$v.informe.contenido.analisisacademico.$touch()"
+                  :error-messages="errorAnalisisAcademico"
                 ></v-textarea>
                 <v-row>
                   <v-col>
@@ -200,26 +206,43 @@
           <v-stepper-content step="2">
             <div class="container-user">
               <form>
-                <v-card>
-                  <v-row>
-                    <v-col :col="8">
-                      <v-text-field
-                        v-model="conclusion"
-                        label="Conclusión"
-                        color="#009900"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col :col="4">
-                      <v-btn color="success" @click="agregarConclusion">
-                        Añadir
-                      </v-btn>
-                    </v-col>
-                  </v-row>
+                <v-card
+                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <v-text-field
+                          v-model="conclusion"
+                          label="Conclusiones y recomendaciones"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarConclusion"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+
                   <v-card
                     tile
                     elevation="0"
                     color="#FAFAFA"
-                    style="margin-top:5px"
+                    style="margin:5px"
                     height="60"
                     v-for="conclusion in conclusiones"
                     :key="conclusion"
@@ -246,6 +269,7 @@
                     </v-row>
                   </v-card>
                 </v-card>
+
                 <div>
                   <vue-dropzone
                     ref="myVueDropzone"
@@ -337,9 +361,9 @@ export default {
               nombre: "",
               cargo: "",
             },
-          ],          
+          ],
           codigodocumento: "",
-          lugarevaluacion:""
+          lugarevaluacion: "",
         },
       },
     };
@@ -348,23 +372,35 @@ export default {
     this.conclusiones = "";
     this.conclusion = "";
   },
-  methods: {    
+  methods: {
     async registrarInforme() {
       console.log(this.informe);
-       this.$v.$touch();
-       if (this.$v.$invalid) {
-         console.log('hay errores');
-         this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
-       } else {
-         console.log('no hay errores');
-       await axios.post("/informe/informeei",this.informe)
-         .then(res => {
-             this.informe = res.data;
-             this.addInforme(this.informe);
-             this.cerrarDialogo();
-             show  = false;
-         }).catch(err => console.log(err));
-        await this.mensaje('success','Listo','Informe registrado Satisfactoriamente',"<strong>Se redirigira a la interfaz de gestión<strong>");
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        console.log("hay errores");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
+        console.log("no hay errores");
+        await axios
+          .post("/informe/informeei", this.informe)
+          .then((res) => {
+            this.informe = res.data;
+            this.addInforme(this.informe);
+            this.cerrarDialogo();
+            show = false;
+          })
+          .catch((err) => console.log(err));
+        await this.mensaje(
+          "success",
+          "Listo",
+          "Informe registrado Satisfactoriamente",
+          "<strong>Se redirigira a la interfaz de gestión<strong>"
+        );
       }
     },
     resetInformeValidationState() {
@@ -429,7 +465,7 @@ export default {
                 nombre: "",
                 cargo: "",
               },
-            ],            
+            ],
             codigodocumento: "",
           },
         },
@@ -478,35 +514,61 @@ export default {
       //validating whether the user are an adult
       var dateselected = new Date(this.informe.fechacreacion);
       var maxdate = new Date();
-      //maxdate.setFullYear(maxdate.getFullYear());
-      !(dateselected.getTime() > maxdate.getTime()) &&
+      !(dateselected.getTime() < maxdate.getTime()) &&
         errors.push("La fecha no debe ser mayor a la actual");
 
       return errors;
     },
-
+    errorSituacionAcademica() {
+      const errors = [];
+      if (!this.$v.informe.contenido.situacionacademica.$dirty) return errors;
+      !this.$v.informe.contenido.situacionacademica.required &&
+        errors.push("Debe ingresar la situación académica obligatoriamente");
+      !this.$v.informe.contenido.situacionacademica.minLength &&
+        errors.push(
+          "La situación académica debe tener al menos 100 caracteres"
+        );
+      return errors;
+    },
+    errorAnalisisAcademico() {
+      const errors = [];
+      if (!this.$v.informe.contenido.analisisacademico.$dirty) return errors;
+      !this.$v.informe.contenido.analisisacademico.required &&
+        errors.push("Debe ingresar el análisis académico obligatoriamente");
+      !this.$v.informe.contenido.analisisacademico.minLength &&
+        errors.push("El análisis académico debe tener al menos 100 caracteres");
+      return errors;
+    },
   },
-  validations(){
-    return{
-      informe:{
-        idresidente : {
-          required
+  validations() {
+    return {
+      informe: {
+        idresidente: {
+          required,
         },
         creadordocumento: {
-          required
+          required,
         },
-        fechacreacion :{
-          required
+        fechacreacion: {
+          required,
         },
         contenido: {
           lugarevaluacion: {
-              required,
-              minLength: minLength(10),
-          }
-        }
-      }
-    }
-  }
+            required,
+            minLength: minLength(10),
+          },
+          situacionacademica: {
+            required,
+            minLength: minLength(100),
+          },
+          analisisacademico: {
+            required,
+            minLength: minLength(100),
+          },
+        },
+      },
+    };
+  },
 };
 </script>
 <style scoped>

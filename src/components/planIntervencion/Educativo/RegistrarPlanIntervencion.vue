@@ -375,7 +375,7 @@ export default {
       indicadorAux: "",
       metaAux: "",
       listResidentes: [],
-      firmaAux: null,
+      firmaAux: [],
     };
   },
   methods: {
@@ -392,14 +392,27 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        console.log("No hay errores");
+        for (let index = 0; index < this.firmaAux.length; index++) {
+          let formData = new FormData();
+
+          formData.append("file", this.firmaAux[0]);
+
+          await axios
+            .post("/Media", formData)
+            .then((res) => {
+              this.planI.contenido.firmas[index].urlfirma =
+                res.data;
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+
         this.planIntervencionIndividual.planIntervencionIndividual = this.planI;
         this.planIntervencionIndividual.idresidente = this.planI.idresidente;
-        console.log(this.planI);
-        console.log(this.planIntervencionIndividual);
 
         await axios
-          .post("/planintervencionsocial", this.planIntervencionIndividual)
+          .post("/PlanIntervencion/educativo", this.planIntervencionIndividual)
           .then((res) => {
             this.planI = res.data;
             if (this.planI.id !== "") {
@@ -423,16 +436,14 @@ export default {
       this.$v.firmaAux.$reset();
     },
     afterSuccess(file, response) {
-      this.firmaAux = file.dataURL;
-      this.$v.firmaAux.$model = file.dataURL;
-      this.planI.contenido.firmas[0].urlfirma = file.dataURL.split(",")[1];
-      //this.$v.planI.contenido.firmas.urlfirma.$model = file.dataURL.split(",")[1];
+      this.firmaAux.push(file);
     },
     afterRemoved(file, error, xhr) {
-      this.firmaAux = "";
-      this.$v.firmaAux.$model = "";
-      this.planI.contenido.firmas[0].urlfirma = "";
-      //this.$v.planI.contenido.firmas.urlfirma.$model = "";
+      let indexFile = this.firmaAux.findIndex((image) => image == file);
+
+      if (indexFile != -1) {
+        this.firmaAux.splice(indexFile, 1);
+      }
     },
     mensaje(icono, titulo, texto, footer) {
       this.$swal({
