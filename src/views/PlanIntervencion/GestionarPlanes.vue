@@ -114,8 +114,21 @@
       </v-card>
     </v-dialog>
 
+    <!--Registrar Modal-->
     <v-dialog v-model="dialogPlanRegister" persistent max-width="880">
-      <component :is="selectedPlan.value" @close-dialog="closeDialog"></component>
+      <component
+        :is="selectedPlan.value"
+        @close-dialog="closeDialog"
+      ></component>
+    </v-dialog>
+
+    <!--Actualizar Modal-->
+    <v-dialog v-model="dialogPlanModify" persistent max-width="880">
+      <component
+        :is="typePlanSelected"
+        :planI="planI"
+        @close-dialog="closeDialogModify"
+      ></component>
     </v-dialog>
   </v-card>
 </template>
@@ -123,8 +136,10 @@
 <script>
 import axios from "axios";
 import RegistrarPlanIntervencion from "@/components/planIntervencion/Educativo/RegistrarPlanIntervencion.vue";
-import RegistrarPlanIntervencionPsicologico from '@/components/planIntervencion/Psicologico/RegistrarPlanIntervencionPsicologico.vue';
-import RegistrarPlanIntervencionSocial from '@/components/planIntervencion/Social/RegistrarPlanIntervencionSocial.vue';
+import ModificarPlanIntervencion from "@/components/planIntervencion/Educativo/ModificarPlanIntervencion.vue";
+import RegistrarPlanIntervencionPsicologico from "@/components/planIntervencion/Psicologico/RegistrarPlanIntervencionPsicologico.vue";
+import RegistrarPlanIntervencionSocial from "@/components/planIntervencion/Social/RegistrarPlanIntervencionSocial.vue";
+import ModificarPlanIntervencionSocial from "@/components/planIntervencion/Social/ModificarPlanIntervencionSocial.vue";
 
 export default {
   name: "app-gestion-planes",
@@ -149,11 +164,13 @@ export default {
         text: "",
         value: "",
       },
+      typePlanSelected: "",
       page: 1,
       pageCount: 0,
       itemsPerPage: 5,
       dialogRegister: false,
       dialogPlanRegister: false,
+      dialogPlanModify: false,
       loading: true,
       headers: [
         {
@@ -182,11 +199,34 @@ export default {
         },
       ],
       planesIntervencion: [],
+      planI: {},
     };
   },
   methods: {
     DetailPlanIntervencion(item) {},
-    UpdatePlanIntervencion(item) {},
+    async UpdatePlanIntervencion(item) {
+      if (item.area == "educativa") {
+        this.typePlanSelected = "ModificarPlanIntervencion";
+        await axios
+        .get("/PlanIntervencion/educativobyid?id=" + item.id)
+        .then((x) => {
+          this.planI = x.data;
+        })
+        .catch((err) => console.log(err));
+      } else if (item.area == "social") {
+        this.typePlanSelected = "ModificarPlanIntervencionSocial";
+        await axios
+        .get("/PlanIntervencion/socialbyid?id=" + item.id)
+        .then((x) => {
+          this.planI = x.data;
+        })
+        .catch((err) => console.log(err));
+      } else {
+        this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
+        
+      }
+      this.dialogPlanModify = true;
+    },
     DeletePlanIntervencion(item) {},
     selectedRegister() {
       this.dialogRegister = false;
@@ -194,7 +234,11 @@ export default {
     },
     closeDialog() {
       this.dialogPlanRegister = false;
-    }
+    },
+    closeDialogModify() {
+      this.dialogPlanModify = false;
+      this.typePlanSelected = "";
+    },
   },
   computed: {},
   created() {
@@ -210,8 +254,10 @@ export default {
   },
   components: {
     RegistrarPlanIntervencion,
+    ModificarPlanIntervencion,
     RegistrarPlanIntervencionPsicologico,
-    RegistrarPlanIntervencionSocial
+    RegistrarPlanIntervencionSocial,
+    ModificarPlanIntervencionSocial
   },
 };
 </script>

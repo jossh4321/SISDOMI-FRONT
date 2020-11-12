@@ -280,12 +280,123 @@
                   >
                   </vue-dropzone>
                 </div>
-                <!-- <v-card v-if="errorImagen" color="red">
-                <v-card-text class="text-center" style="color: white"
-                  >Debe Subir una imagen del usuario
-                  Obligatoriamente</v-card-text
+
+                <v-card
+                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
-              </v-card>  -->
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="3" align="left">
+                        <v-text-field
+                          v-model="firmas.nombre"
+                          label="Nombre"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="3" align="left">
+                        <v-text-field
+                          v-model="firmas.cargo"
+                          label="Cargo"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="3" align="left">    
+                                       
+                          
+                      </v-col>
+                      <v-col :cols="3" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarFirma"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>                    
+                  </v-card>
+                  <v-row>
+                       <v-col :cols="12" align="right">
+                      <div>
+                          <vue-dropzone
+                            ref="myVueDropzone"
+                            @vdropzone-success="afterSuccess2"
+                            @vdropzone-removed-file="afterRemoved2"
+                            id="dropzone2"
+                            :options="dropzoneOptions2"
+                          >
+                          </vue-dropzone>                        
+                        </div>    
+                       </v-col>
+                      </v-row>
+                  <v-card                   
+                    color="#FAFAFA"
+                    style="margin-top:5px"
+                    height="60"
+                    v-for="(item, index) in informe.contenido.firmas"
+                    :key="index"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="3">
+                        <article>
+                          <img
+                            style="margin-right:5px;width:6% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
+                            alt="imagen usuario"
+                          />
+                          <span style="font-size:18px"> {{ item.nombre }}</span>
+                        </article>
+                      </v-col>
+                      <v-col :cols="3">
+                        <article>
+                          <img
+                            style="margin-right:10px;width:8%"
+                            src="https://www.flaticon.es/svg/static/icons/svg/633/633544.svg"
+                            alt="imagen telefono"
+                          />
+                          <span style="font-size:18px">{{ item.cargo }}</span>
+                        </article>
+                      </v-col>
+                      <v-col :cols="3">
+                        <article>
+                          <img
+                            style="margin-right:10px;width:8%"
+                            src="https://www.flaticon.es/svg/static/icons/svg/633/633544.svg"
+                            alt="imagen telefono"
+                          />
+                          <span style="font-size:18px">{{
+                            item.urlfirma
+                          }}</span>
+                        </article>
+                      </v-col>
+
+                      <v-col :cols="3" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarFirma"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+
                 <v-row>
                   <v-col>
                     <v-btn block @click="registrarInforme" color="success">
@@ -337,9 +448,21 @@ export default {
         addRemoveLinks: true,
         dictDefaultMessage:
           "Seleccione un archivo de su dispositivo o arrástrela aquí",
-      }, //utilizado en los formularios como un prop
+      },
+      dropzoneOptions2: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFilesize: 5.0,
+        maxFiles: 1,
+        acceptedFiles: ".png",
+        headers: { "My-Awesome-Header": "header value" },
+        addRemoveLinks: true,
+        dictDefaultMessage:
+          "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
+      },
       conclusion: "",
       conclusiones: [],
+      firmas: { urlfirma: "", nombre: "", cargo: "" },
       informe: {
         id: "",
         tipo: "InformeEducativoInicial",
@@ -386,6 +509,7 @@ export default {
         );
       } else {
         console.log("no hay errores");
+        console.log(this.informe);
         await axios
           .post("/informe/informeei", this.informe)
           .then((res) => {
@@ -430,6 +554,24 @@ export default {
       // this.informe.contenido.conclusiones.splice(conclusion, 1);
       this.conclusiones.splice(conclusion, 1);
     },
+    agregarFirma() {
+      let firmas = {
+        urlfirma:  this.firmas.urlfirma,
+        nombre: this.firmas.nombre,
+        cargo: this.firmas.cargo,
+      };
+      console.log("firmas");
+      console.log(firmas);
+      this.informe.contenido.firmas.push(firmas);
+      console.log("this.informe.contenido.firmas");
+      console.log(this.informe.contenido.firmas);
+      this.firmas.urlfirma = "";
+      this.firmas.nombre = "";
+      this.firmas.cargo = "";
+    },
+    eliminarFirma(index) {
+      this.informe.contenido.firmas.splice(index, 1);
+    },
     afterSuccess(file, response) {
       console.log(file);
       console.log(file.dataURL);
@@ -440,7 +582,19 @@ export default {
     },
     afterRemoved(file, error, xhr) {
       this.informe.contenido.anexos = "";
-      this.$v.usuario.datos.imagen.$model = "";
+      this.$v.informe.contenido.anexos.$model = "";
+    },
+    afterSuccess2(file, response) {      
+      console.log(file.dataURL);
+      this.firmas.urlfirma = file.dataURL.split(",")[1];
+      // this.informe.contenido.firmas.urlfirma = file.dataURL.split(",")[1];
+      // this.$v.informe.contenido.firmas.urlfirma.$model = file.dataURL.split(",")[1];
+      //console.log(file.dataURL.split(",")[1]);
+    },
+    afterRemoved2(file, error, xhr) {
+       this.firmas.urlfirma =""
+      this.informe.contenido.firmas.urlfirma = "";
+      this.$v.informe.contenido.firmas.urlfirma.$model = "";
     },
     limpiarInforme() {
       return {
