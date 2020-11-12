@@ -383,14 +383,7 @@
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
                     </v-btn>
-                  </v-col>
-                  <v-col>
-                    <v-btn block @click="sendPDFFiles()" color="primary">
-                      <v-icon left>mdi-close-outline</v-icon>
-                      <span>Testing</span>
-                    </v-btn>
-                  </v-col>
-
+                  </v-col>                  
                 </v-row>
               </form>
             </div>
@@ -493,9 +486,11 @@ export default {
           })
           .catch((err) => console.log(err));
       }
+      this.informe.contenido.anexos = listaanexos;
       console.log(listaanexos);
     },
     async registrarInforme() {
+      await this.sendPDFFiles();
       console.log(this.informe);
       this.$v.$touch();
       if (this.$v.$invalid) {
@@ -551,7 +546,11 @@ export default {
     },
     eliminarConclusion(conclusion) {
       // this.informe.contenido.conclusiones.splice(conclusion, 1);
-      this.conclusiones.splice(conclusion, 1);
+      this.conclusiones.forEach(function(car, index, object) {
+            if(car === conclusion){
+              object.splice(index, 1);
+            }
+     });
     },
     agregarFirma() {
       console.log("agregando esta cagada");
