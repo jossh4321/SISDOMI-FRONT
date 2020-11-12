@@ -179,11 +179,13 @@ export default {
 
   },
    computed:{
-<<<<<<< HEAD
- ...mapState(["planesI"])
-=======
- ...mapState(["planesD"])
->>>>>>> a1839fa39e8a2356fd36b3af6c2c3bf9bc60fe1b
+     
+     
+          
+     
+     
+     
+    ...mapState(["planesD"])
   }
 };
 </script>
