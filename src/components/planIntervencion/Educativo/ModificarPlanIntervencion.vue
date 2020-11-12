@@ -39,7 +39,7 @@
                 color="#009900"
               ></v-text-field>
 
-              <v-autocomplete
+              <!--  <v-autocomplete
                 filled
                 label="Residente"
                 outlined
@@ -52,7 +52,7 @@
                 item-value="idresidente"
                 @change="setFase"
               >
-              </v-autocomplete>
+              </v-autocomplete> -->
 
               <v-text-field
                 type="number"
@@ -297,9 +297,9 @@
                 <v-btn color="blue darken-1" text @click="closeDialog">
                   Cerrar
                 </v-btn>
-                <v-btn block color="accent" @click="registrarPlan">
+                <v-btn block color="accent" @click="modificarPlan">
                   <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
-                  <span>Registrar Plan</span>
+                  <span>Modificar Plan</span>
                 </v-btn>
               </v-card-actions>
             </form>
@@ -320,42 +320,10 @@ export default {
   components: {
     vueDropzone: vue2Dropzone,
   },
+  props:["planI"],
   data() {
     return {
-      planIntervencionIndividual: {
-        planintervencionindividual: {},
-        idresidente: "",
-      },
-      planI: {
-        id: "",
-        tipo: "PlanIntervencionIndividual",
-        historialcontenido: [],
-        fechacreacion: new Date(),
-        area: "educativa",
-        idresidente: "",
-        fase: "",
-        estado: "creado",
-        creadordocumento: "Piero Erickson Lavado Cervantes",
-        contenido: {
-          car: "",
-          edad: 0,
-          trimestre: 1,
-          objetivoGeneral: "",
-          objetivoEspecificos: [],
-          aspectosIntervencion: [],
-          estrategias: [],
-          indicadores: [],
-          metas: [],
-          firmas: [
-            {
-              urlfirma: "",
-              nombre: "Piero Erickson Lavado Cervantes",
-              cargo: "Educador",
-            },
-          ],
-          codigoDocumento: "",
-        },
-      },
+      planIntervencion: {},
       datemenu: false,
       step: 1,
       dropzoneOptions: {
@@ -380,8 +348,7 @@ export default {
   },
   methods: {
     ...mapMutations(["setResidentes"]),
-    async registrarPlan() {
-      console.log(this.planI);
+    async modificarPlan() {
       this.$v.$touch();
       if (this.$v.$invalid) {
         console.log("Hay errores");
@@ -400,29 +367,25 @@ export default {
           await axios
             .post("/Media", formData)
             .then((res) => {
-              this.planI.contenido.firmas[index].urlfirma =
-                res.data;
+              this.planI.contenido.firmas[index].urlfirma = res.data;
             })
             .catch((err) => {
               console.error(err);
             });
         }
 
-        this.planIntervencionIndividual.planIntervencionIndividual = this.planI;
-        this.planIntervencionIndividual.idresidente = this.planI.idresidente;
+        this.planIntervencion = this.planI;
 
         await axios
-          .post("/PlanIntervencion/educativo", this.planIntervencionIndividual)
+          .put("/PlanIntervencion/educativo", this.planIntervencion)
           .then((res) => {
-            this.planI = res.data;
-            if (this.planI.id !== "") {
+            if (res.data.id !== "") {
               this.resetPlanIValidationState();
-              this.limpiarPlanI();
               this.mensaje(
                 "success",
                 "Listo",
-                "Plan registrado Satisfactoriamente",
-                "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+                "Plan modificado satisfactoriamente",
+                "<strong>Se redirigirá a la Interfaz de Gestión<strong>"
               );
               this.closeDialog();
             }
@@ -518,32 +481,6 @@ export default {
         footer: footer,
       });
     },
-    limpiarPlanI() {
-      return {
-        id: "",
-        tipo: "PlanIntervencionIndividual",
-        idresidente: "",
-        fase: "",
-        estado: "creado",
-        creadordocumento: "5f9e4cdae4655cf92eaa4d5b",
-        contenido: {
-          car: "",
-          edad: 0,
-          trimestre: 1,
-          objetivoGeneral: "",
-          objetivoEspecificos: [],
-          aspectosIntervencion: [],
-          estrategias: [],
-          indicadores: [],
-          metas: [],
-          firma: {
-            urlfirma: "",
-            nombre: "Piero Lavado Cervantes",
-            cargo: "director",
-          },
-        },
-      };
-    },
     async obtenerResidentes() {
       await axios
         .get("/residente/all")
@@ -574,7 +511,7 @@ export default {
         errors.push("El nombre de plan debe poseer al menos 4 caracteres");
       return errors;
     },
-    errorResidente() {
+    /*errorResidente() {
       const errors = [];
       if (!this.$v.planI.idresidente.$dirty) return errors;
       !this.$v.planI.idresidente.required &&
@@ -582,7 +519,7 @@ export default {
       !this.$v.planI.idresidente != "" &&
         errors.push("Debe seleccionar el residente inicialmente");
       return errors;
-    },
+    },*/
     errorCar() {
       const errors = [];
       if (!this.$v.planI.contenido.car.$dirty) return errors;
@@ -669,9 +606,9 @@ export default {
   validations() {
     return {
       planI: {
-        idresidente: {
+        /*idresidente: {
           required,
-        },
+        },*/
         contenido: {
           car: {
             required,
@@ -706,9 +643,6 @@ export default {
             required,
             minLength: minLength(4),
           },
-          /*  firma: {
-            urlfirma: ""
-          }, */
         },
       },
       firmaAux: {

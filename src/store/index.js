@@ -8,7 +8,8 @@ export default new Vuex.Store({
         drawer: true,
         usuarios: [],
         residentes: [],
-        informes: []
+        informes: [],
+        fichaingreso: [],
     },
     mutations: {
         toggleDrawer(state) {
@@ -40,6 +41,16 @@ export default new Vuex.Store({
         },
         addInforme(state, value) {
             state.informes.push(value);
+        },
+        ///FICHAINGRESOS
+        setFichaIngreso(state, value) {
+            state.fichaingreso = value;
+        },
+        addFichaIngreso(state, value) {
+            state.fichaingreso.push(value);
+        },replaceResidente(state, value) {
+            var index = state.residentes.findIndex(x => x.id == value.id);
+            state.residentes.splice(index, 1, value);
         },
     },
     actions: {},

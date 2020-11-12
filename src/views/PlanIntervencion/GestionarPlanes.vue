@@ -114,8 +114,32 @@
       </v-card>
     </v-dialog>
 
+    <!--Registrar Modal-->
     <v-dialog v-model="dialogPlanRegister" persistent max-width="880">
-      <component :is="selectedPlan.value" @close-dialog="closeDialog"></component>
+      <component
+        :is="selectedPlan.value"
+        @close-dialog="closeDialog"
+        @register-complete="registerComplete"
+      ></component>
+    </v-dialog>
+
+    <!--Actualizar Modal-->
+    <v-dialog v-model="dialogPlanModify" persistent max-width="880">
+      <component
+        :is="typePlanSelected"
+        :planI="planI"
+        @close-dialog="closeDialogModify"
+      ></component>
+    </v-dialog>
+
+    <!--Visualizar Model-->
+    <v-dialog v-model="dialogoPlanDetail" persistent max-width="880">
+      <component
+        :is="typeDetailPlanSelected"
+        :planIntervencion="planIntervencionDetail"
+        @close-dialog-detail="closeDialogDetail"
+      >
+      </component>
     </v-dialog>
   </v-card>
 </template>
@@ -123,8 +147,13 @@
 <script>
 import axios from "axios";
 import RegistrarPlanIntervencion from "@/components/planIntervencion/Educativo/RegistrarPlanIntervencion.vue";
-import RegistrarPlanIntervencionPsicologico from '@/components/planIntervencion/Psicologico/RegistrarPlanIntervencionPsicologico.vue';
-import RegistrarPlanIntervencionSocial from '@/components/planIntervencion/Social/RegistrarPlanIntervencionSocial.vue';
+import ModificarPlanIntervencion from "@/components/planIntervencion/Educativo/ModificarPlanIntervencion.vue";
+import RegistrarPlanIntervencionPsicologico from "@/components/planIntervencion/Psicologico/RegistrarPlanIntervencionPsicologico.vue";
+import RegistrarPlanIntervencionSocial from "@/components/planIntervencion/Social/RegistrarPlanIntervencionSocial.vue";
+import ModificarPlanIntervencionSocial from "@/components/planIntervencion/Social/ModificarPlanIntervencionSocial.vue";
+import VisualizarPlanIntervencion from '@/components/planIntervencion/Educativo/VisualizarPlanIntervencion.vue';
+import VisualizarPlanIntervencionPsicologico from '@/components/planIntervencion/Psicologico/VisualizarPlanIntervencionPsicologico.vue';
+import VisualizarPlanIntervencionSocial from '@/components/planIntervencion/Social/VisualizarPlanIntervencionSocial.vue';
 
 export default {
   name: "app-gestion-planes",
@@ -149,11 +178,15 @@ export default {
         text: "",
         value: "",
       },
+      typePlanSelected: "",
+      typeDetailPlanSelected: "",
       page: 1,
       pageCount: 0,
       itemsPerPage: 5,
       dialogRegister: false,
       dialogPlanRegister: false,
+      dialogPlanModify: false,
+      dialogoPlanDetail: false,
       loading: true,
       headers: [
         {
@@ -182,11 +215,57 @@ export default {
         },
       ],
       planesIntervencion: [],
+      planI: {},
+      planIntervencionDetail: {},
     };
   },
   methods: {
-    DetailPlanIntervencion(item) {},
-    UpdatePlanIntervencion(item) {},
+    async DetailPlanIntervencion(item) {
+      await axios
+        .get("/PlanIntervencion/" + item.id)
+        .then((res) => {
+          console.log(res);
+          this.planIntervencionDetail = res.data;
+
+          if(res.data.area == "educativa") {
+            this.typeDetailPlanSelected = "VisualizarPlanIntervencion";
+          }
+          else if(res.data.area == "psicologico") {
+            this.typeDetailPlanSelected = "VisualizarPlanIntervencionPsicologico";
+          }
+          else if(res.data.area == "social") {
+            this.typeDetailPlanSelected = "VisualizarPlanIntervencionSocial";
+          }
+
+          this.dialogoPlanDetail = true;
+
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    async UpdatePlanIntervencion(item) {
+      if (item.area == "educativa") {
+        this.typePlanSelected = "ModificarPlanIntervencion";
+        await axios
+          .get("/PlanIntervencion/educativobyid?id=" + item.id)
+          .then((x) => {
+            this.planI = x.data;
+          })
+          .catch((err) => console.log(err));
+      } else if (item.area == "social") {
+        this.typePlanSelected = "ModificarPlanIntervencionSocial";
+        await axios
+          .get("/PlanIntervencion/socialbyid?id=" + item.id)
+          .then((x) => {
+            this.planI = x.data;
+          })
+          .catch((err) => console.log(err));
+      } else {
+        this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
+      }
+      this.dialogPlanModify = true;
+    },
     DeletePlanIntervencion(item) {},
     selectedRegister() {
       this.dialogRegister = false;
@@ -194,6 +273,21 @@ export default {
     },
     closeDialog() {
       this.dialogPlanRegister = false;
+      this.selectedPlan = {
+        text: "",
+        value: "",
+      };
+    },
+    registerComplete() {
+      this.closeDialog();
+    },
+    closeDialogModify() {
+      this.dialogPlanModify = false;
+      this.typePlanSelected = "";
+    },
+    closeDialogDetail() {
+      this.dialogoPlanDetail = false;
+      this.typeDetailPlanSelected = "";
     }
   },
   computed: {},
@@ -210,8 +304,13 @@ export default {
   },
   components: {
     RegistrarPlanIntervencion,
+    ModificarPlanIntervencion,
     RegistrarPlanIntervencionPsicologico,
-    RegistrarPlanIntervencionSocial
+    RegistrarPlanIntervencionSocial,
+    ModificarPlanIntervencionSocial,
+    VisualizarPlanIntervencion,
+    VisualizarPlanIntervencionPsicologico,
+    VisualizarPlanIntervencionSocial
   },
 };
 </script>
