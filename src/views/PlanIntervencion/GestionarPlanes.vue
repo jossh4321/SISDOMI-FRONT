@@ -385,7 +385,7 @@ export default {
         title: title,
         text: text
       }).then(res => {
-
+        this.dialogoPlanState = false;
       });
     }
   },
