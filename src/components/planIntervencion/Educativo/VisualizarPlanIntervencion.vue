@@ -26,7 +26,7 @@
         <div class="container-planI">
       <form>
         <v-text-field
-          v-model="planI.nombreplan"
+          v-model="plan.tipo"
           label="Ingrese el nombre del plan"
           outlined
           color="#009900"
@@ -34,7 +34,7 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="planI.nombreusuaria"
+          v-model="plan.contenido.firmas.nombre"
           label="Ingrese el nombre-dni de la usuaria"
           outlined
           color="#009900"
@@ -42,7 +42,7 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="planI.objetivogeneral"
+          v-model="plan.contenido.objetivoGeneral"
           label="Ingrese el objetivo general"
           outlined
           color="#009900"
@@ -50,7 +50,7 @@
         ></v-text-field>
 
         <v-textarea
-          v-model="planI.objetivoespecifico"
+          v-model="plan.contenido.objetivoEspecificos"
           label="Ingrese los objetivos específicos"
           auto-grow
           outlined
@@ -73,7 +73,7 @@
       <form>
         <br />
         <v-textarea
-          v-model="planI.casos_problemas"
+          v-model="plan.fase"
           label="Casos/Problemas"
           auto-grow
           outlined
@@ -85,7 +85,7 @@
         ></v-textarea>
 
         <v-textarea
-         v-model="planI.actividades_estrategias"
+         v-model="plan.contenido.estrategias"
           label="Actividades/estrategias"
           auto-grow
           outlined
@@ -97,7 +97,7 @@
         ></v-textarea>
 
         <v-textarea
-          v-model="planI.indicadores"
+          v-model="plan.contenido.indicadores"
           label="Indicadores"
           auto-grow
           outlined
@@ -109,7 +109,7 @@
         ></v-textarea>
 
         <v-textarea
-         v-model="plan.nombre"
+         v-model="plan.contenido.metas"
           label = "Meta"
           auto-grow
           outlined
@@ -153,23 +153,21 @@ export default {
   },
   data() {
       return {
-       
-      planI: {
-        
-        /*nombreusuaria:"Xiomara Paredes Guerra",
+       datemenu: false,
+     /* planI: {
+        nombreusuaria:"Xiomara Paredes Guerra",
         nombreplan:"PlanI_Edu_Xiomara_1",
         objetivogeneral:"Realizar un adecuado plan de intervención",
         objetivoespecifico:"Responde a Plan de seguimiento",
         casos_problemas:"1. Reinserción escolar.\n 2. No quiere participar en nivelación de matemática.\n 3. Retraso escolar.\n 4. Bajo rendimiento.\n 5. Problema de aprendizaje.",
         actividades_estrategias:"1. Solicitar constancia de vacante.\n 2. Entrevista personal.",
         indicadores:"1. Matricula en la I.E.\n 2.Participa en la nivelación escolar.",
-        meta:"Lograr nivelación en el grado correspondiente del área de matemática.",*/
-   
-      },
+        meta:"Lograr nivelación en el grado correspondiente del área de matemática.",
+      },*/
       datemenu: false,
       step:1,
       dropzoneOptions: {
-        url: "https://httpbin.org/post",
+        url: "",
         thumbnailWidth: 250,
         maxFilesize: 3.0,
         maxFiles:1,
