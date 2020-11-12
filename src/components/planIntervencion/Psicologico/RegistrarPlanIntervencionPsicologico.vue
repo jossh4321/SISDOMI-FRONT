@@ -52,9 +52,10 @@
                         <v-list-item-title>{{
                           item.item.residente
                         }}</v-list-item-title>
-                        <v-list-item-subtitle>DNI: {{
-                          item.item.numeroDocumento
-                        }}</v-list-item-subtitle>
+                        <v-list-item-subtitle
+                          >DNI:
+                          {{ item.item.numeroDocumento }}</v-list-item-subtitle
+                        >
                       </v-list-item-content>
                     </template>
                   </v-autocomplete>
@@ -156,7 +157,10 @@
                   <v-text-field
                     label="Número de sesiones"
                     outlined
-                    v-model="planResidentePsicologico.contenido.numeroSesion"
+                    type="number"
+                    v-model.number="
+                      planResidentePsicologico.contenido.numeroSesion
+                    "
                   >
                   </v-text-field>
                 </v-col>
@@ -291,10 +295,21 @@
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="12">
-                  <!-- <vue-dropzone></vue-dropzone> -->
+                  <vue-dropzone
+                    ref="myVueDropzone"
+                    :options="dropzoneOptions"
+                    id="dropzone"
+                    @vdropzone-success="registerFile"
+                    @vdropzone-removed-file="removedFile"
+                  ></vue-dropzone>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
-                  <v-btn color="success" elevation="2" width="100%">
+                  <v-btn
+                    color="success"
+                    elevation="2"
+                    width="100%"
+                    @click="sendPlan"
+                  >
                     <v-icon left>mdi-check</v-icon>
                     Finalizar
                   </v-btn>
@@ -336,6 +351,18 @@ export default {
       indicador: "",
       requerimiento: "",
       searchResidente: null,
+      dropzoneOptions: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFiles: 1,
+        addRemoveLinks: true,
+        dictDefaultMessage: "Ingrese su firma para el registro",
+        acceptedFiles: "image/*",
+        headers: { "My-Awesome-Header": "header value" },
+        dictRemoveFile: "Remover firma",
+        dictMaxFilesExceeded: "Tamaño excedido",
+      },
+      listImages: [],
       planResidentePsicologico: {
         tipo: "PlanIntervencionIndividual",
         historialcontenido: [],
@@ -352,13 +379,13 @@ export default {
           metas: [],
           indicadores: [],
           frecuenciaSesion: "",
-          numeroSesion: "",
+          numeroSesion: 0,
           requerimientos: [],
           codigoDocumento: "",
           titulo: "",
           firmas: [
             {
-              url: "",
+              urlfirma: "",
               nombre: "",
               cargo: "",
             },
@@ -417,18 +444,11 @@ export default {
           this.residentes = residentesMap;
 
           this.loadingSearch = false;
-
         })
         .catch((err) => {
           console.error(err);
         });
     },
-  },
-  computed: {
-      formatDateBorn() {
-          return this.residente != null ? this.residente.fechaNacimiento == "" ? '':
-          this.$moment(this.residente.fechaNacimiento).format("DD/MM/YYYY")  : '';
-      }
   },
   methods: {
     closeDialog() {
@@ -460,7 +480,73 @@ export default {
         this.requerimiento
       );
       this.requerimiento = "";
-    }
+    },
+    registerFile(file, response) {
+      this.listImages.push(file);
+    },
+    removedFile(file, error, xhr) {
+      let indexFile = this.listImages.findIndex((image) => image == file);
+
+      if (indexFile != -1) {
+        this.listImages.splice(indexFile, 1);
+      }
+    },
+    async sendPlan() {
+      for (let index = 0; index < this.listImages.length; index++) {
+        let formData = new FormData();
+
+        formData.append("file", this.listImages[0]);
+
+        await axios
+          .post("/Media", formData)
+          .then((res) => {
+
+             this.planResidentePsicologico.contenido.firmas[index].urlfirma =
+               res.data;
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+
+      this.planResidentePsicologico.idresidente = this.residente.id;
+
+      let planResidentePsicologico = {
+        idresidente: this.residente.id,
+        planIntervencionIndividualPsicologico: this.planResidentePsicologico,
+      };
+
+      axios
+        .post("/PlanIntervencion/psicologico", planResidentePsicologico)
+        .then((res) => {
+          this.messageSweet(
+            "success",
+            "Registro del Plan de Intervencion",
+            "Se registro el plan de intervencion de manera satisfactoria"
+          );
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    messageSweet(icon, title, text) {
+      this.$swal({
+        icon: icon,
+        title: title,
+        text: text,
+      }).then((res) => {
+        console.log(entre);
+      });
+    },
+  },
+  computed: {
+    formatDateBorn() {
+      return this.residente != null
+        ? this.residente.fechaNacimiento == ""
+          ? ""
+          : this.$moment(this.residente.fechaNacimiento).format("DD/MM/YYYY")
+        : "";
+    },
   },
   components: {
     vueDropzone: vue2Dropzone,
