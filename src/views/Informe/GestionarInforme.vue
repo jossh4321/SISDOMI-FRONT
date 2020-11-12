@@ -89,8 +89,14 @@ export default {
       await axios
         .get("/informe/all")
         .then((res) => {
-          this.setInformes(res.data);
-          console.log(res.data);
+          var info = {};
+          info = res.data;
+          for (var x=0;x<res.data.length;x++){
+              info[x].fechacreacion = res.data[x].fechacreacion.split("T")[0];
+              info[x].tipo = res.data[x].tipo.replace(/([a-z])([A-Z])/g, '$1 $2');
+          }
+          console.log(res.data[1].tipo);
+          this.setInformes(info);
         })
         .catch((err) => console.log(err));
     },

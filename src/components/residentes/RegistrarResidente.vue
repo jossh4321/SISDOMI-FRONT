@@ -313,14 +313,17 @@
                     </v-card-title>
                     <v-card-text>
                       <v-container>
-                        <v-row>
+                      
+                         
                            <v-select
+                                
                                 :items="itemFase"
                                 label="Ingrese  la fase"
                                 dense
                                 outlined
                                 v-model="miFase"
                                 color="#009900"
+                                
                            ></v-select>
 
                             <v-select
@@ -331,7 +334,8 @@
                                 v-model="progreso.estado"
                                 color="#009900"
                             ></v-select>
-
+                           
+                            <br>
                           <!--AQUI COMIENZAN LAS FECHAS INGRESO -->
                           <v-menu
                             v-model="datemenu2"
@@ -393,52 +397,107 @@
                             </v-btn>
                           </v-col>
                           <!--En esta parte se muestra Mostrar Cuadro -->
+            <v-card
+                style="margin-top:10%;width:100%;padding:5px 5px;background-color:#EAEAEA"
+              >
+                <v-card-title style="font-size:22px;padding: 10px 10px;"
+                  >Lista de Progresos de Residente</v-card-title
+                >
+                <!-- Cabecera -->
+                <v-card
+                elevation="0"
+                color="#EAEAEA"
+                style="margin-top:5px; margin-bottom:15px"
+                height="30"
+                >
+                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                    <v-col cols="2">
+                      <article>
+                        <span style="font-size:16px">Fase</span>
+                      </article>
+                    </v-col>
+                    <v-col cols="3">
+                      <article>
+                        <span style="font-size:16px">Fecha Ingreso</span>
+                      </article>
+                    </v-col>
+                    <v-col cols="3">
+                      <article>
+                        <span style="font-size:16px">Fecha Finalizacion</span>
+                      </article>
+                    </v-col>
+                    <v-col>
+                      <article cols="2">
+                        <span style="font-size:16px">Estado</span>
+                      </article>
+                    </v-col>
+                    <v-col align="right">
+                    </v-col>
+                  </v-row>
+                </v-card>
+                <!-- Cuerpo -->
+                <v-card
+                  tile
+                  elevation="0"
+                  color="#FAFAFA"
+                  style="margin-top:5px"
+                  height="60"
+                  v-for="(item, index) in residente.progreso"
+                  :key="index"
+                >
+                  <v-row style="margin-left:10px;heigh:100%;" align="center">
+                    <v-col :cols="2">
+                      <article>
+                        <span style="font-size:16px">Nº{{item.fase}} - {{item.nombre}}</span>
+                      </article>
+                    </v-col>
+                    <v-col :cols="3">
+                      <article>
+                        <span style="font-size:16px">{{moment(item.fechaingreso).format('L')}}</span>
+                      </article>
+                    </v-col>
+                    <v-col :cols="3">
+                      <article>
+                        <span style="font-size:16px">{{item.fechafinalizacion!=="" ? (moment(item.fechafinalizacion).format('L')): "No finalizado"}}</span>
+                      </article>
+                    </v-col>
+                    <v-col :cols="2">
+                      <article>
+                        <span style="font-size:16px">{{item.estado}}</span>
+                      </article>
+                    </v-col>
+                    <v-col align="right">
+                      <div style="margin-right:20px">
+                   <!--     <v-btn
+                          style="margin-right:10px"
+                          fab
+                          x-small
+                          dark
+                          color="#126BB5"
+                        >
+                          <v-icon dark>
+                            mdi-pencil
+                          </v-icon>
+                        </v-btn>  -->
+                        <v-btn
+                        @click="eliminarProgreso(item.index)"
+                        fab x-small 
+                        dark
+                         color="red"  > 
+                          <v-icon dark>
+                            mdi-minus
+                          </v-icon>
+                        </v-btn>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-card>
+<!--fin-->
+                          
 
-                          <!--fin-->
-                          <div class="container">
-                            <v-row>
-                              <v-col>
-                                <h2 class="text-center">Lista de usuarios</h2>
-                                <table class="table text-center">
-                                  <thead>
-                                    <tr>
-                                      <th><h3>Fase</h3></th>
-                                      <th><h3>Fecha Ingreso</h3></th>
-                                      <th><h3>Fecha Finalizacion</h3></th>
-                                      <th><h3>Estado</h3></th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr
-                                      v-for="(item,
-                                      index) in residente.progreso"
-                                      :key="index"
-                                    >
-                                      <!-- Recorremos nuestro array -->
-
-                                      <td v-text="item.fase"></td>
-                                      <!--En la primera columna mostramos la fase-->
-                                      <td v-text="item.fechaingreso"></td>
-                                      <!--En la segunda mostramos fecha ingreso-->
-                                      <td v-text="item.fechafinalizacion"></td>
-                                      <!--En la segunda mostramos fecha ingreso-->
-                                      <td v-text="item.estado"></td>
-                                      <!--En la segunda mostramos estado-->
-                                      <button
-                                        class="primary"
-                                        @click="eliminarProgreso(item.index)"
-                                      >
-                                        Eliminar
-                                      </button>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </v-col>
-                            </v-row>
-                          </div>
-
-                          <!-- -->
-                        </v-row>
+              <!-- -->
+                        
                       </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -462,16 +521,15 @@
                 </v-dialog>
               </v-row>
 
-              <!--Aqui acaba  el modal -->
-                <v-select
-                    :items="['En tratamiento','Finalizado']"
-                      v-model="residente.estado"
-                    @input="$v.residente.estado.$touch()"
-                     @blur="$v.residente.estado.$touch()"
-                     :error-messages="errorEstado"
-                    label="Ingrese el Estado"
-                     color="#009900"
-                 ></v-select>
+              <!--Aqui acaba -->
+              <v-text-field
+                v-model="residente.estado"
+                @input="$v.residente.estado.$touch()"
+                @blur="$v.residente.estado.$touch()"
+                :error-messages="errorEstado"
+                label="Ingrese el Estado"
+                color="#009900"
+              ></v-text-field>
 
               <!--botones -->
               <v-row>
@@ -497,6 +555,8 @@
 </template>
 
 <script>
+
+const m = moment();
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
@@ -515,13 +575,19 @@ export default {
       step: 1,
 
       telefonos: { numero: "", referentefamiliar: "" },
-     progreso:{nombre:'',fase:1,fechaingreso:"",fechafinalizacion:"",estado:""},
-    itemFase:[{text:'Acogida',value:{nombre:'Acogida',fase:1}},
+      progreso: {
+        fase: "",
+        fechaingreso: "",
+        fechafinalizacion: "",
+        estado: "",
+      },
+       itemFase:[{text:'Acogida',value:{nombre:'Acogida',fase:1}},
               {text:'Desarrollo',value:{nombre:'Desarrollo',fase:2}},
               {text:'Reinsercion',value:{nombre:'Desarrollo',fase:3}},
               {text:'Seguimiento',value:{nombre:'Desarrollo',fase:4}}
                                 ],
     miFase:{nombre:'Acogida',fase:1},
+        progreso:{},
       residente: {
         id: "",
         nombre: "",
@@ -556,6 +622,10 @@ export default {
   created() {},
   methods: {
     ...mapMutations(["setResidentes", "addResidente"]),
+    //METODO MEMENT
+    moment: function () {
+    return moment();
+    },
     ///CERRAR DIALOGO
     cerrarDialogo() {
       this.usuario = this.limpiarResidente();
@@ -607,7 +677,10 @@ export default {
     },
     ////GUARDAR TELEFONO REFERENTE ///
     guardarTelefono() {
-      let telefonos = {numero: this.telefonos.numero,referentefamiliar: this.telefonos.referenteFamiliar,}; //creamos variables
+      let telefonos = {
+        numero: this.telefonos.numero,
+        referentefamiliar: this.telefonos.referenteFamiliar,
+      }; //creamos variables
       this.residente.telefonosReferencia.push(telefonos); //añadimos al arreglo principal
       ///LIMPIAMOS LOS CAMPOS//
       console.log(this.residente.telefonosReferencia);
@@ -618,22 +691,34 @@ export default {
       this.residente.telefonosReferencia.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     }, ////GUARDAR PROGRESO DEL modal ///
     guardarProgreso() {
-      let progreso={ fase: this.miFase.fase,nombre: this.miFase.nombre,fechaingreso:this.progreso.fechaingreso,fechafinalizacion:this.progreso.fechafinalizacion,estado:this.progreso.estado}//creamos variables 
-   console.log(this.residente)
+       let progreso={ fase: this.miFase.fase,nombre: this.miFase.nombre,fechaingreso:this.progreso.fechaingreso,fechafinalizacion:this.progreso.fechafinalizacion,estado:this.progreso.estado}//creamos variables 
+   
+       //creamos variables
+      console.log(this.residente);
 
-  this.residente.progreso.push(progreso); //añadimos al arreglo principal
-  ///LIMPIAMOS LOS CAMPOS//
-   console.log(this.residente.progreso)
-   this.progreso.fase="";
-   this.progreso.estado="";
-   this.miFase={nombre:'Acogida',fase:1}
-
+      this.residente.progreso.push(progreso); //añadimos al arreglo principal
+      ///LIMPIAMOS LOS CAMPOS//
+      console.log(this.residente.progreso);
+      this.progreso.fase = "";
+      this.progreso.estado = "";
+      this.miFase={nombre:'Acogida',fase:1}
     },
     eliminarProgreso(index) {
       this.residente.progreso.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     },
     ////////////HACER LA CONSULTA CON LA API  REGISTRAR
-    async registrarResidente() {   
+    async registrarResidente() {
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        console.log("hay errores");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
+        console.log("no hay errores");
         console.warn(this.residente);
         await axios
           .post("/Residente", this.residente)
@@ -644,10 +729,13 @@ export default {
           })
           .catch((err) => console.log(err));
         await this.mensaje(
-          "success", "listo","Usuario registrado Satisfactoriamente","<strong>Se redirigira a la Interfaz de Gestion<strong>"
+          "success",
+          "listo",
+          "Usuario registrado Satisfactoriamente",
+          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
       }
-    
+    },
   },
 
   computed: {
@@ -745,9 +833,9 @@ export default {
       //validating whether the user are an adult
       var dateselected = new Date(this.residente.fechaNacimiento);
       var maxdate = new Date();
-      maxdate.setFullYear(maxdate.getFullYear() - 18);
+      maxdate.setFullYear(maxdate.getFullYear() - 12);
       !(dateselected.getTime() <= maxdate.getTime()) &&
-        errors.push("El usuario debe ser mayor de edad");
+        errors.push("El residente debe tener por lo menos 12 años");
 
       return errors;
     },
