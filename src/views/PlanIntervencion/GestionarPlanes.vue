@@ -208,14 +208,19 @@ export default {
       if (item.area == "educativa") {
         this.typePlanSelected = "ModificarPlanIntervencion";
         await axios
-        .get("/PlanIntervencionSocial/id?id=" + item.id)
+        .get("/PlanIntervencion/educativobyid?id=" + item.id)
         .then((x) => {
           this.planI = x.data;
         })
         .catch((err) => console.log(err));
       } else if (item.area == "social") {
         this.typePlanSelected = "ModificarPlanIntervencionSocial";
-
+        await axios
+        .get("/PlanIntervencion/socialbyid?id=" + item.id)
+        .then((x) => {
+          this.planI = x.data;
+        })
+        .catch((err) => console.log(err));
       } else {
         this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
         
