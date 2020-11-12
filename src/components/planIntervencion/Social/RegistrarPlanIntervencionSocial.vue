@@ -313,7 +313,7 @@ export default {
         idresidente: "",
         fase: "",
         estado: "creado",
-        creadordocumento: "Piero Erickson Lavado Cervantes",
+        creadordocumento: "5f9e4cdae4655cf92eaa4d5b",
         contenido: {
           diagnostico: "",
           objetivos: [],
@@ -511,8 +511,8 @@ export default {
           firmas: [
             {
               urlfirma: "",
-              nombre: "Piero Erickson Lavado Cervantes",
-              cargo: "Educador",
+              nombre: "Piero Lavado Cervantes",
+              cargo: "director",
             },
           ],
           codigoDocumento: "",

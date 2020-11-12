@@ -24,7 +24,7 @@
                   <v-text-field
                     label="Título"
                     outlined
-                    v-model="planResidentePsicologico.contenido.titulo"
+                    v-model.trim="planResidentePsicologico.contenido.titulo"
                     required
                     :error-messages="planTituloErrors"
                     @input="
@@ -87,6 +87,7 @@
                     label="Fecha de Nacimiento"
                     :value="formatDateBorn"
                     outlined
+                    readonly
                   >
                   </v-text-field>
                 </v-col>
@@ -95,6 +96,7 @@
                     label="Sexo"
                     outlined
                     :value="residente != null ? residente.sexo : ''"
+                    readonly
                   >
                   </v-text-field>
                 </v-col>
@@ -103,6 +105,7 @@
                     label="Motivo de ingreso"
                     outlined
                     :value="residente != null ? residente.motivoIngreso : ''"
+                    readonly
                   >
                   </v-text-field
                 ></v-col>
@@ -111,6 +114,7 @@
                     label="Estado"
                     outlined
                     :value="residente != null ? residente.estado : ''"
+                    readonly
                   >
                   </v-text-field>
                 </v-col>
@@ -150,7 +154,7 @@
                     rows="3"
                     row-height="10"
                     outlined
-                    v-model="planResidentePsicologico.contenido.descripcion"
+                    v-model.trim="planResidentePsicologico.contenido.descripcion"
                     required
                     :error-messages="planDescripcionErrors"
                     @input="
@@ -169,7 +173,7 @@
                     rows="3"
                     row-height="10"
                     outlined
-                    v-model="
+                    v-model.trim="
                       planResidentePsicologico.contenido.frecuenciaSesion
                     "
                     required
@@ -208,7 +212,7 @@
                     <v-text-field
                       label="Objetivo específicos"
                       outlined
-                      v-model="objetivoEspecifico"
+                      v-model.trim="objetivoEspecifico"
                       :error-messages="objetivoEspecificoErrors"
                       @input="$v.objetivoEspecifico.$touch()"
                       @blur="$v.objetivoEspecifico.$touch()"
@@ -247,7 +251,7 @@
                     <v-text-field
                       label="Técnica"
                       outlined
-                      v-model="tecnica"
+                      v-model.trim="tecnica"
                       :error-messages="tecnicaErrors"
                       @input="$v.tecnica.$touch()"
                       @blur="$v.tecnica.$touch()"
@@ -279,7 +283,7 @@
                     <v-text-field
                       label="Meta"
                       outlined
-                      v-model="meta"
+                      v-model.trim="meta"
                       :error-messages="metaErrors"
                       @input="$v.meta.$touch()"
                       @blur="$v.meta.$touch()"
@@ -311,7 +315,7 @@
                     <v-text-field
                       label="Indicador"
                       outlined
-                      v-model="indicador"
+                      v-model.trim="indicador"
                       :error-messages="indicadorErrors"
                       @input="$v.indicador.$touch()"
                       @blur="$v.indicador.$touch()"
@@ -348,7 +352,7 @@
                     <v-text-field
                       label="Requerimiento"
                       outlined
-                      v-model="requerimiento"
+                      v-model.trim="requerimiento"
                       :error-messages="requerimientoErrors"
                       @input="$v.requerimiento.$touch()"
                       @blur="$v.requerimiento.$touch()"
@@ -494,7 +498,7 @@ export default {
       planResidentePsicologico: {
         tipo: "PlanIntervencionIndividual",
         historialcontenido: [],
-        creadordocumento: "5f70b799c58b26540822c00f",
+        creadordocumento: "5f9e4cdae4655cf92eaa4d5b",
         fechacreacion: new Date(),
         area: "psicologico",
         fase: "",
@@ -514,8 +518,8 @@ export default {
           firmas: [
             {
               urlfirma: "",
-              nombre: "",
-              cargo: "",
+              nombre: "Piero Lavado Cervantes",
+              cargo: "director",
             },
           ],
         },
