@@ -457,34 +457,6 @@ export default {
         footer: footer,
       });
     },
-    limpiarPlanI() {
-      return {
-        id: "",
-        tipo: "PlanIntervencionIndividualSocial",
-        idresidente: "",
-        fase: "",
-        estado: "creado",
-        creadordocumento: "Piero Erickson Lavado Cervantes",
-        contenido: {
-          edad: 0,
-          diagnostico: "",
-          objetivos: [],
-          titulo: "",
-          avances: [],
-          estrategias: [],
-          indicadores: [],
-          metas: [],
-          firmas: [
-            {
-              urlfirma: "",
-              nombre: "Piero Erickson Lavado Cervantes",
-              cargo: "Educador",
-            },
-          ],
-          codigoDocumento: "",
-        },
-      };
-    },
     async obtenerResidentes() {
       await axios
         .get("/residente/all")
