@@ -139,6 +139,7 @@ import RegistrarPlanIntervencion from "@/components/planIntervencion/Educativo/R
 import ModificarPlanIntervencion from "@/components/planIntervencion/Educativo/ModificarPlanIntervencion.vue";
 import RegistrarPlanIntervencionPsicologico from "@/components/planIntervencion/Psicologico/RegistrarPlanIntervencionPsicologico.vue";
 import RegistrarPlanIntervencionSocial from "@/components/planIntervencion/Social/RegistrarPlanIntervencionSocial.vue";
+import ModificarPlanIntervencionSocial from "@/components/planIntervencion/Social/ModificarPlanIntervencionSocial.vue";
 
 export default {
   name: "app-gestion-planes",
@@ -249,6 +250,7 @@ export default {
     ModificarPlanIntervencion,
     RegistrarPlanIntervencionPsicologico,
     RegistrarPlanIntervencionSocial,
+    ModificarPlanIntervencionSocial
   },
 };
 </script>
