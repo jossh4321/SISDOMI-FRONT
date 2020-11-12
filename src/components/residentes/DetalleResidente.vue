@@ -10,14 +10,9 @@
         <v-divider></v-divider>
 
         <v-stepper-step editable step="2">
-          Area Psicologica
+          Datos Especificos
         </v-stepper-step>
 
-        <v-divider></v-divider>
-
-        <v-stepper-step editable step="3">
-          Area Educativa
-        </v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items
@@ -62,6 +57,7 @@
                     label="Fecha de Nacimiento"
                     prepend-icon="mdi-calendar"
                     readonly
+                    outlined
                     v-bind="attrs"
                     v-on="on"
                     color="#009900"
@@ -97,81 +93,190 @@
                 color="#009900"
               ></v-text-field>
               <!--NUMEROS TELEFONO -->
-              <v-card
-                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
-              >
-                <v-row align="center">
-                  <v-col>
-                    <v-card-title style="font-size:22px;padding: 0px 10px;"
-                      >Referentes Familiares</v-card-title
-                    >
-                  </v-col>
-                  <v-col align="right">
-                    <v-btn style="margin-right:10px;" dark color="green"
-                      >Agregar
+             <v-row justify="center">
+                <v-dialog v-model="dialog" persistent max-width="600px">
+                  <template v-slot:activator="{ on }">
+                    <v-btn color="primary" v-on="on">
+                      Ver Telefonos
                     </v-btn>
-                  </v-col>
-                </v-row>
-                <v-card
-                  tile
-                  elevation="0"
-                  color="#FAFAFA"
-                  style="margin-top:5px"
-                  height="60"
-                  v-for="(item, index) in residente.telefonosReferencia"
-                  :key="index"
-                >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col :cols="5">
-                      <article>
-                        <img
-                          style="margin-right:5px;width:6% "
-                          src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
-                          alt="imagen usuario"
-                        />
-                        <span style="font-size:18px">
-                          {{ item.referentefamiliar }}</span
-                        >
-                      </article>
-                    </v-col>
-                    <v-col :cols="3">
-                      <article>
-                        <img
-                          style="margin-right:10px;width:8%"
-                          src="https://www.flaticon.es/svg/static/icons/svg/633/633544.svg"
-                          alt="imagen telefono"
-                        />
-                        <span style="font-size:18px">{{ item.numero }}</span>
-                      </article>
-                    </v-col>
-                    <v-col :cols="4" align="right">
-                      <div style="margin-right:20px">
-                        <v-btn
-                          style="margin-right:10px"
-                          fab
-                          x-small
-                          dark
-                          color="#126BB5"
-                        >
-                          <v-icon dark>
-                            mdi-pencil
-                          </v-icon>
-                        </v-btn>
-                        <v-btn fab x-small dark color="red">
-                          <v-icon dark>
-                            mdi-minus
-                          </v-icon>
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-card>
+                  </template>
+                  <v-card>
+                    <v-card-title>
+                      <span class="headline">Referente Familiar </span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                      
+                          <!--Mostrar Cuadro -->
 
+                          <!--AQUI COMIENZA-->
+                          <v-card
+                            style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                          >
+                            <v-row align="center">
+                              <v-col>
+                                <v-card-title
+                                  style="font-size:22px;padding: 0px 10px;"
+                                  >Referentes Familiares</v-card-title
+                                >
+                              </v-col>
+                            </v-row>
+                            <v-card
+                              tile
+                              elevation="0"
+                              color="#FAFAFA"
+                              style="margin-top:5px"
+                              height="60"
+                              v-for="(item,
+                              index) in residente.telefonosReferencia"
+                              :key="index"
+                            >
+                              <v-row
+                                style="margin-left:10px;heigh:100%"
+                                align="center"
+                              >
+                                <v-col :cols="5">
+                                  <article>
+                                    <img
+                                      style="margin-right:5px;width:6% "
+                                      src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
+                                      alt="imagen usuario"
+                                    />
+                                    <span style="font-size:18px">
+                                      {{ item.referentefamiliar }}</span
+                                    >
+                                  </article>
+                                </v-col>
+                                <v-col :cols="3">
+                                  <article>
+                                    <img
+                                      style="margin-right:10px;width:8%"
+                                      src="https://www.flaticon.es/svg/static/icons/svg/633/633544.svg"
+                                      alt="imagen telefono"
+                                    />
+                                    <span style="font-size:18px">{{
+                                      item.numero
+                                    }}</span>
+                                  </article>
+                                </v-col>
+                                <v-col :cols="4" align="right">
+                                  <div style="margin-right:20px">
+                                    
+                                  </div>
+                                </v-col>
+                              </v-row>
+                            </v-card>
+                          </v-card>
+                          <!-- -->
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="dialog = false">
+                        Cerrar
+                      </v-btn>
+                      
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-row>
               <!--FIN NUMEROS TELEFONO -->
               <!--PROGRESO RESIDENTE -->
-              <v-card
-                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+              
+
+
+
+
+              <v-row>
+                <v-col>
+                  <v-btn block @click="step = 2" color="success">
+                    <v-icon left>mdi-page-next-outline</v-icon>
+                    <span>Continuar</span>
+                  </v-btn>
+                </v-col>
+                <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </div>
+        </v-stepper-content>
+        <v-stepper-content step="2"
+          ><!--CONTIENE LOS STEPPERS 2 -->
+          <div class="container-user">
+            <form>
+              <v-text-field
+                v-model="residente.ubigeo"
+                outlined
+                readonly
+                label="Ingrese el Ubigeo"
+                color="#009900"
+              ></v-text-field>
+              <v-text-field
+                v-model="residente.juzgadoProcedencia"
+                outlined
+                readonly
+                label="Ingrese el Juzgado de Procedencia"
+                color="#009900"
+              ></v-text-field>
+              <!--FECHA INGRESO -->
+              <v-menu
+                v-model="datemenu1"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="residente.fechaIngreso"
+                    label="Fecha de Ingreso"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    outlined
+                    v-bind="attrs"
+                    v-on="on"
+
+                    color="#009900"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="residente.fechaIngreso"
+                  @input="menu2 = false"
+                  locale="es-es"
+                ></v-date-picker> </v-menu
+              ><!--acabo  -->
+
+              <v-textarea
+                v-model="residente.motivoIngreso"
+                label="Ingrese el Motivo de Ingreso"
+                color="#009900"
+              ></v-textarea>
+              <!--------AQUI esta  EL cuadro de progreso -->
+              <v-row justify="center">
+                <v-dialog v-model="dialog1" persistent max-width="850px">
+                  <template v-slot:activator="{ on }">
+                    <v-btn color="primary" v-on="on">
+                      Ver Progreso
+                    </v-btn>
+                  </template>
+                  <v-card>
+                    <v-card-title>
+                      <span class="headline"> Progreso</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                      
+                         
+        
+            <v-card
+                style="margin-top:10%;width:100%;padding:5px 5px;background-color:#EAEAEA"
               >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
                   >Lista de Progresos de Residente</v-card-title
@@ -241,7 +346,7 @@
                     </v-col>
                     <v-col align="right">
                       <div style="margin-right:20px">
-                        <v-btn
+                   <!--     <v-btn
                           style="margin-right:10px"
                           fab
                           x-small
@@ -251,102 +356,46 @@
                           <v-icon dark>
                             mdi-pencil
                           </v-icon>
-                        </v-btn>
-                        <v-btn fab x-small dark color="red">
-                          <v-icon dark>
-                            mdi-minus
-                          </v-icon>
-                        </v-btn>
+                        </v-btn>  -->
+                        
                       </div>
                     </v-col>
                   </v-row>
                 </v-card>
               </v-card>
-              <!--FIN RESIDENTE -->
+<!--fin-->
+                          
 
-
-
-
-              <v-row>
-                <v-col>
-                  <v-btn block @click="step = 2" color="success">
-                    <v-icon left>mdi-page-next-outline</v-icon>
-                    <span>Continuar</span>
-                  </v-btn>
-                </v-col>
-                <v-col>
-                  <v-btn block @click="cerrarDialogo()" color="primary">
-                    <v-icon left>mdi-close-outline</v-icon>
-                    <span>Cerrar</span>
-                  </v-btn>
-                </v-col>
+              <!-- -->
+                        
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="dialog1 = false"
+                      >
+                        Cerrar
+                      </v-btn>
+                  
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
               </v-row>
-            </form>
-          </div>
-        </v-stepper-content>
-        <v-stepper-content step="2"
-          ><!--CONTIENE LOS STEPPERS 2 -->
-          <div class="container-user">
-            <form>
-              <v-textarea
-                label="Motivo de Ingreso"
-                v-model="residente.motivoIngreso"
-                disabled:true
-              >
-              </v-textarea>
 
-              <v-textarea
-                label="Diagnostico Psicologico"
-                v-model="residente.motivoIngreso"
-                disabled:true
-              >
-              </v-textarea>
+              <!--Aqui acaba -->
+               <v-select
+                    :items="['En tratamiento','Finalizado']"
+                      v-model="residente.estado"
+                    
+                    label="Ingrese el Estado"
+                     color="#009900"
+                 ></v-select>
 
               <v-row>
                 <!-- termina le texto -->
-                <v-col>
-                  <v-btn block @click="step = 3" color="success">
-                    <v-icon left>mdi-page-next-outline</v-icon>
-                    <span>Continuar</span>
-                  </v-btn>
-                </v-col>
-                <v-col>
-                  <v-btn block @click="cerrarDialogo()" color="primary">
-                    <v-icon left>mdi-close-outline</v-icon>
-                    <span>Cerrar</span>
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </form>
-          </div>
-        </v-stepper-content>
-        <v-stepper-content step="3"
-          ><!--CONTIENE LOS STEPPERS 3 -->
-          <div class="container-user">
-            <form>
-              <v-text-field
-                v-model="residente.nombre"
-                label="Modalidad:"
-                outlined
-                readonly
-                color="#009900"
-              ></v-text-field>
-              <v-text-field
-                v-model="residente.apellido"
-                label="Nivel:"
-                outlined
-                readonly
-                color="#009900"
-              ></v-text-field>
-              <v-text-field
-                v-model="residente.apellido"
-                label="Grado:"
-                outlined
-                readonly
-                color="#009900"
-              ></v-text-field>
-
-              <v-row>
                 <v-col>
                   <v-btn block @click="step = 1" color="success">
                     <v-icon left>mdi-page-next-outline</v-icon>
@@ -363,6 +412,7 @@
             </form>
           </div>
         </v-stepper-content>
+       
       </v-stepper-items>
     </v-stepper>
   </v-card>
@@ -376,7 +426,13 @@ export default {
   props: ["residente"],
   data() {
     return {
+      dialog: false,
+      dialog1: false,
       datemenu: false,
+      datemenu: false, ///fecha de nacimiento
+      datemenu1: false, ///fecha ingreso
+      datemenu2: false, ///MODAL fecha ingreso
+      datemenu3: false, ///MODAL fecha finalizacion
       step: 1,
     };
   },
