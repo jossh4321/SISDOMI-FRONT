@@ -20,7 +20,7 @@
           <div class="container-planI">
             <form>
               <v-text-field
-                v-model="planI.contenido.titulo"
+                v-model.trim="planI.contenido.titulo"
                 label="Ingrese el nombre del plan"
                 @input="$v.planI.contenido.titulo.$touch()"
                 @blur="$v.planI.contenido.titulo.$touch()"
@@ -30,7 +30,7 @@
               ></v-text-field>
 
               <v-text-field
-                v-model="planI.contenido.car"
+                v-model.trim="planI.contenido.car"
                 label="Ingrese el nombre del CAR"
                 @input="$v.planI.contenido.car.$touch()"
                 @blur="$v.planI.contenido.car.$touch()"
@@ -46,7 +46,7 @@
                 @input="$v.planI.idresidente.$touch()"
                 @blur="$v.planI.idresidente.$touch()"
                 :error-messages="errorResidente"
-                v-model="planI.idresidente"
+                v-model.trim="planI.idresidente"
                 :items="listResidentes"
                 item-text="residente"
                 item-value="idresidente"
@@ -77,7 +77,7 @@
               ></v-text-field>
 
               <v-text-field
-                v-model="planI.contenido.objetivoGeneral"
+                v-model.trim="planI.contenido.objetivoGeneral"
                 label="Ingrese el objetivo general"
                 @input="$v.planI.contenido.objetivoGeneral.$touch()"
                 @blur="$v.planI.contenido.objetivoGeneral.$touch()"
@@ -90,7 +90,7 @@
                 <v-layout row wrap>
                   <v-flex xs10>
                     <v-text-field
-                      v-model="objetivoespecificoAux"
+                      v-model.trim="objetivoespecificoAux"
                       label="Ingrese los objetivos específicos"
                       @blur="$v.planI.contenido.objetivoEspecificos.$touch()"
                       :error-messages="errorEspecificos"
@@ -144,7 +144,7 @@
                 <v-layout row wrap>
                   <v-flex xs10>
                     <v-text-field
-                      v-model="aspectoAux"
+                      v-model.trim="aspectoAux"
                       label="Aspectos de Intervención"
                       @blur="$v.planI.contenido.aspectosIntervencion.$touch()"
                       :error-messages="errorAspectos"
@@ -178,7 +178,7 @@
                 <v-layout row wrap>
                   <v-flex xs10>
                     <v-text-field
-                      v-model="actividadAux"
+                      v-model.trim="actividadAux"
                       label="Actividades/Estrategias"
                       @blur="$v.planI.contenido.estrategias.$touch()"
                       :error-messages="errorEstrategias"
@@ -212,7 +212,7 @@
                 <v-layout row wrap>
                   <v-flex xs10>
                     <v-text-field
-                      v-model="indicadorAux"
+                      v-model.trim="indicadorAux"
                       label="Indicadores"
                       @blur="$v.planI.contenido.indicadores.$touch()"
                       :error-messages="errorIndicadores"
@@ -246,7 +246,7 @@
                 <v-layout row wrap>
                   <v-flex xs10>
                     <v-text-field
-                      v-model="metaAux"
+                      v-model.trim="metaAux"
                       label="Metas"
                       @blur="$v.planI.contenido.metas.$touch()"
                       :error-messages="errorMetas"
@@ -346,11 +346,13 @@ export default {
           estrategias: [],
           indicadores: [],
           metas: [],
-          firmas: [{
-            urlfirma: "",
-            nombre: "Piero Erickson Lavado Cervantes",
-            cargo: "Educador",
-          }],
+          firmas: [
+            {
+              urlfirma: "",
+              nombre: "Piero Erickson Lavado Cervantes",
+              cargo: "Educador",
+            },
+          ],
           codigoDocumento: "",
         },
       },
@@ -456,24 +458,36 @@ export default {
       this.planI.contenido.metas.splice(index, 1);
     },
     addObjEspecifico() {
-      this.planI.contenido.objetivoEspecificos.push(this.objetivoespecificoAux);
-      this.objetivoespecificoAux = "";
+      if (this.objetivoespecificoAux != "") {
+        this.planI.contenido.objetivoEspecificos.push(
+          this.objetivoespecificoAux
+        );
+        this.objetivoespecificoAux = "";
+      }
     },
     addAspecto() {
-      this.planI.contenido.aspectosIntervencion.push(this.aspectoAux);
-      this.aspectoAux = "";
+      if (this.aspectoAux != "") {
+        this.planI.contenido.aspectosIntervencion.push(this.aspectoAux);
+        this.aspectoAux = "";
+      }
     },
     addActividad() {
-      this.planI.contenido.estrategias.push(this.actividadAux);
-      this.actividadAux = "";
+      if (this.actividadAux != "") {
+        this.planI.contenido.estrategias.push(this.actividadAux);
+        this.actividadAux = "";
+      }
     },
     addIndicador() {
-      this.planI.contenido.indicadores.push(this.indicadorAux);
-      this.indicadorAux = "";
+      if (this.indicadorAux != "") {
+        this.planI.contenido.indicadores.push(this.indicadorAux);
+        this.indicadorAux = "";
+      }
     },
     addMeta() {
-      this.planI.contenido.metas.push(this.metaAux);
-      this.metaAux = "";
+      if (this.metaAux != "") {
+        this.planI.contenido.metas.push(this.metaAux);
+        this.metaAux = "";
+      }
     },
     closeDialog() {
       this.$emit("close-dialog");
