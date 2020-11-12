@@ -533,6 +533,7 @@ export default {
         sexo: "",
         motivoIngreso: "",
         estado: "",
+        faseActual: ""
       },
     };
   },
@@ -611,6 +612,7 @@ export default {
           sexo: "",
           motivoIngreso: "",
           estado: "",
+          faseActual: ""
         };
       }
 
@@ -627,6 +629,7 @@ export default {
         .get("/Residente/all")
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
+
             return {
               residente: res.nombre + " " + res.apellido,
               id: res.id,
@@ -635,6 +638,7 @@ export default {
               sexo: res.sexo,
               motivoIngreso: res.motivoIngreso,
               estado: res.estado,
+              faseActual: res.progreso[res.progreso.length - 1].nombre
             };
           });
 
@@ -730,6 +734,7 @@ export default {
             });
         }
         this.planResidentePsicologico.idresidente = this.residente.id;
+        this.planResidentePsicologico.fase = this.residente.faseActual;
         let planResidentePsicologico = {
           idresidente: this.residente.id,
           planIntervencionIndividualPsicologico: this.planResidentePsicologico,
