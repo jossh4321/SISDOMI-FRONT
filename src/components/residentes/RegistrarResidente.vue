@@ -37,7 +37,7 @@
                 color="#009900"
               ></v-text-field>
               <v-select
-                :items="['Masculino', 'Femenino', 'mucho']"
+                :items="['Masculino', 'Femenino']"
                 label="Ingrese el Sexo"
                 dense
                 outlined
@@ -522,14 +522,15 @@
               </v-row>
 
               <!--Aqui acaba -->
-              <v-text-field
-                v-model="residente.estado"
-                @input="$v.residente.estado.$touch()"
-                @blur="$v.residente.estado.$touch()"
-                :error-messages="errorEstado"
-                label="Ingrese el Estado"
-                color="#009900"
-              ></v-text-field>
+               <v-select
+                    :items="['En tratamiento','Finalizado']"
+                      v-model="residente.estado"
+                    @input="$v.residente.estado.$touch()"
+                     @blur="$v.residente.estado.$touch()"
+                     :error-messages="errorEstado"
+                    label="Ingrese el Estado"
+                     color="#009900"
+                 ></v-select>
 
               <!--botones -->
               <v-row>
