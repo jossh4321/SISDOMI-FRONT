@@ -389,7 +389,8 @@ export default {
           "error",
           "..Oops",
           "Se encontraron errores en el formulario",
-          "<strong>Verifique los campos Ingresados<strong>"
+          "<strong>Verifique los campos Ingresados<strong>",
+          false
         );
       } else {
         for (let index = 0; index < this.firmaAux.length; index++) {
@@ -422,9 +423,9 @@ export default {
                 "success",
                 "Listo",
                 "Plan registrado Satisfactoriamente",
-                "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+                "<strong>Se redirigira a la Interfaz de Gestion<strong>",
+                true
               );
-              this.closeDialog();
             }
           })
           .catch((err) => console.log(err));
@@ -445,12 +446,18 @@ export default {
         this.firmaAux.splice(indexFile, 1);
       }
     },
-    mensaje(icono, titulo, texto, footer) {
+    mensaje(icono, titulo, texto, footer, valid) {
       this.$swal({
         icon: icono,
         title: titulo,
         text: texto,
         footer: footer,
+      }).then((res) => {
+        
+        if(valid) {
+          this.$emit('register-complete');
+        }
+
       });
     },
     deleteItemObjEspecificios(index) {
@@ -509,14 +516,6 @@ export default {
       );
       this.planI.fase =
         usuariacar.progreso[usuariacar.progreso.length - 1].nombre;
-    },
-    async mensaje(icono, titulo, texto, footer) {
-      await this.$swal({
-        icon: icono,
-        title: titulo,
-        text: texto,
-        footer: footer,
-      });
     },
     limpiarPlanI() {
       return {
