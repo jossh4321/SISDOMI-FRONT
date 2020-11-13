@@ -546,7 +546,7 @@ export default {
       this.$emit("close-dialog");
     },
     addStep(step) {
-      this.startStteper = step;
+      this.startSttepper = step;
     },
     addObjetivo() {
       if (
