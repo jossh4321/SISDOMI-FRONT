@@ -335,7 +335,7 @@ export default {
         idresidente: "",
         fase: "",
         estado: "creado",
-        creadordocumento: "Piero Erickson Lavado Cervantes",
+        creadordocumento: "5f9e4cdae4655cf92eaa4d5b",
         contenido: {
           car: "",
           edad: 0,
