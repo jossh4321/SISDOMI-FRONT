@@ -505,7 +505,21 @@ export default {
           .post("/informe/informeei", this.informe)
           .then((res) => {
             this.informe = res.data;
-            this.addInforme(this.informe);
+            console.log(this.listaresidentes)
+            var resi = this.listaresidentes.filter(function(residente) {
+                return residente.id == res.data.idresidente;
+            });
+            console.log(resi)
+            var info = {
+                id: res.data.id,
+                tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, '$1 $2'),
+                fechacreacion: res.data.fechacreacion.split("T")[0],
+                codigodocumento: res.data.contenido.codigodocumento,
+                nombrecompleto: resi[0].nombre + " " + resi[0].apellido
+            }
+            console.log("HOLA")
+            console.log(info)
+            this.addInforme(info);
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));

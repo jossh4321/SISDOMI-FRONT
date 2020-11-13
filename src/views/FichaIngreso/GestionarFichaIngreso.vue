@@ -124,7 +124,7 @@ export default {
 
     closeDialogNuevaFichaIngreso()
     {
-      this.dialogoregistro=false
+      this.dialogDialogNuevaFichaIngreso=false
     },
     
        async obtenerfichasIngresos(){
