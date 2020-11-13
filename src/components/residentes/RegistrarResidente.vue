@@ -842,7 +842,7 @@ export default {
       const errors = [];
       if (!this.$v.residente.ubigeo.$dirty) return errors;
       !this.$v.residente.ubigeo.required &&
-        errors.push("Debe ingresar un Lugar de Nacimiento Obligatoriamente");
+        errors.push("Debe ingresar un Ubigeo Obligatoriamente");
       !this.$v.residente.ubigeo.minLength &&
         errors.push("El Lugar de Nacimiento debe tener al menos 3 caracteres");
       return errors;
@@ -999,7 +999,7 @@ export default {
         },
         juzgadoProcedencia: {
           required,
-          minLength: minLength(4),
+          minLength: minLength(3),
         },
         fechaNacimiento: {
           required,
