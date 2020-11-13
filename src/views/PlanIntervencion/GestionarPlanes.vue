@@ -379,6 +379,17 @@ export default {
         .catch((err) => {
           console.error(err);
         });
+
+      this.loading = true;
+      axios
+        .get("/PlanIntervencionSocial/all")
+        .then((res) => {
+          this.loading = false;
+          this.planesIntervencion = res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
     selectedRegister() {
       this.dialogRegister = false;
@@ -393,6 +404,16 @@ export default {
     },
     registerComplete() {
       this.closeDialog();
+      this.loading = true;
+      axios
+        .get("/PlanIntervencionSocial/all")
+        .then((res) => {
+          this.loading = false;
+          this.planesIntervencion = res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
     closeDialogModify() {
       this.dialogPlanModify = false;
@@ -437,7 +458,7 @@ export default {
     VisualizarPlanIntervencion,
     VisualizarPlanIntervencionPsicologico,
     VisualizarPlanIntervencionSocial,
-    ModificarPlanIntervencionPsicologico
+    ModificarPlanIntervencionPsicologico,
   },
 };
 </script>
