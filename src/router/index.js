@@ -41,7 +41,7 @@ const routes = [{
         }, {
             path: 'planIntervencion',
             name: 'GestionarPlanIntervencion',
-            component: PlanIntervencion
+            component: GestionarPlanes
         }, {
             path: 'talleres',
             name: 'GestionarTalleres',

@@ -201,6 +201,7 @@ import ModificarPlanIntervencionSocial from "@/components/planIntervencion/Socia
 import VisualizarPlanIntervencion from "@/components/planIntervencion/Educativo/VisualizarPlanIntervencion.vue";
 import VisualizarPlanIntervencionPsicologico from "@/components/planIntervencion/Psicologico/VisualizarPlanIntervencionPsicologico.vue";
 import VisualizarPlanIntervencionSocial from "@/components/planIntervencion/Social/VisualizarPlanIntervencionSocial.vue";
+import ModificarPlanIntervencionPsicologico from "@/components/planIntervencion/Psicologico/ModificarPlanIntervencionPsicologico.vue";
 
 export default {
   name: "app-gestion-planes",
@@ -279,7 +280,6 @@ export default {
       await axios
         .get("/PlanIntervencion/" + item.id)
         .then((res) => {
-          console.log(res);
           this.planIntervencionDetail = res.data;
 
           if (res.data.area == "educativa") {
@@ -298,26 +298,45 @@ export default {
         });
     },
     async updatePlanIntervencion(item) {
-      if (item.area == "educativa") {
-        this.typePlanSelected = "ModificarPlanIntervencion";
-        await axios
-          .get("/PlanIntervencion/educativobyid?id=" + item.id)
-          .then((x) => {
-            this.planI = x.data;
-          })
-          .catch((err) => console.log(err));
-      } else if (item.area == "social") {
-        this.typePlanSelected = "ModificarPlanIntervencionSocial";
-        await axios
-          .get("/PlanIntervencion/socialbyid?id=" + item.id)
-          .then((x) => {
-            this.planI = x.data;
-          })
-          .catch((err) => console.log(err));
-      } else {
-        this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
-      }
-      this.dialogPlanModify = true;
+      await axios
+        .get("/PlanIntervencion/" + item.id)
+        .then((res) => {
+          this.planI = res.data;
+
+          if (res.data.area == "educativa") {
+            this.typePlanSelected = "ModificarPlanIntervencion";
+          } else if (res.data.area == "social") {
+            this.typePlanSelected = "ModificarPlanIntervencionSocial";
+          } else if (res.data.area == "psicologico") {
+            this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
+          }
+
+          this.dialogPlanModify = true;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+
+      // if (item.area == "educativa") {
+      //   this.typePlanSelected = "ModificarPlanIntervencion";
+      //   await axios
+      //     .get("/PlanIntervencion/educativobyid?id=" + item.id)
+      //     .then((x) => {
+      //       this.planI = x.data;
+      //     })
+      //     .catch((err) => console.log(err));
+      // } else if (item.area == "social") {
+      //   this.typePlanSelected = "ModificarPlanIntervencionSocial";
+      //   await axios
+      //     .get("/PlanIntervencion/socialbyid?id=" + item.id)
+      //     .then((x) => {
+      //       this.planI = x.data;
+      //     })
+      //     .catch((err) => console.log(err));
+      // } else {
+      //   this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
+      // }
+      // this.dialogPlanModify = true;
     },
     deletePlanIntervencion(item) {
       this.messagesState.title = "Desactivación del plan de intervención";
@@ -346,12 +365,16 @@ export default {
       await axios
         .put("/PlanIntervencion/state", planState)
         .then((res) => {
-            
-            let title = planState.estado == "activo" ? "Desactivación del plan de Intervención": "Activacion del plan de Intervención";
-            let text = planState.estado == "activo" ? "Se desactivo el plan de intervención de manera satisfactoria": "Se activo el plan de intervención de manera satisfactoria";
+          let title =
+            planState.estado == "activo"
+              ? "Desactivación del plan de Intervención"
+              : "Activacion del plan de Intervención";
+          let text =
+            planState.estado == "activo"
+              ? "Se desactivo el plan de intervención de manera satisfactoria"
+              : "Se activo el plan de intervención de manera satisfactoria";
 
-            this.messageSweetUpdated('success', title, text);
-
+          this.messageSweetUpdated("success", title, text);
         })
         .catch((err) => {
           console.error(err);
@@ -381,13 +404,13 @@ export default {
     },
     messageSweetUpdated(icon, title, text) {
       this.$swal({
-        icon: 'success',
+        icon: "success",
         title: title,
-        text: text
-      }).then(res => {
+        text: text,
+      }).then((res) => {
         this.dialogoPlanState = false;
       });
-    }
+    },
   },
   computed: {
     planStateCss() {
@@ -414,6 +437,7 @@ export default {
     VisualizarPlanIntervencion,
     VisualizarPlanIntervencionPsicologico,
     VisualizarPlanIntervencionSocial,
+    ModificarPlanIntervencionPsicologico
   },
 };
 </script>

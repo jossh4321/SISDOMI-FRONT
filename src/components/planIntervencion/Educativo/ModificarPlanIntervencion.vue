@@ -77,10 +77,10 @@
               ></v-text-field>
 
               <v-text-field
-                v-model.trim="planI.contenido.objetivoGeneral"
+                v-model.trim="planI.contenido.objetivogeneral"
                 label="Ingrese el objetivo general"
-                @input="$v.planI.contenido.objetivoGeneral.$touch()"
-                @blur="$v.planI.contenido.objetivoGeneral.$touch()"
+                @input="$v.planI.contenido.objetivogeneral.$touch()"
+                @blur="$v.planI.contenido.objetivogeneral.$touch()"
                 :error-messages="errorGeneral"
                 outlined
                 color="#009900"
@@ -92,7 +92,7 @@
                     <v-text-field
                       v-model.trim="objetivoespecificoAux"
                       label="Ingrese los objetivos específicos"
-                      @blur="$v.planI.contenido.objetivoEspecificos.$touch()"
+                      @blur="$v.planI.contenido.objetivoespecificos.$touch()"
                       :error-messages="errorEspecificos"
                       outlined
                       color="#009900"
@@ -106,7 +106,7 @@
 
               <v-list flat>
                 <v-list-item
-                  v-for="(item, i) in planI.contenido.objetivoEspecificos"
+                  v-for="(item, i) in planI.contenido.objetivoespecificos"
                   :key="i"
                 >
                   <v-list-item-icon>
@@ -146,7 +146,7 @@
                     <v-text-field
                       v-model.trim="aspectoAux"
                       label="Aspectos de Intervención"
-                      @blur="$v.planI.contenido.aspectosIntervencion.$touch()"
+                      @blur="$v.planI.contenido.aspectosintervencion.$touch()"
                       :error-messages="errorAspectos"
                       outlined
                       color="#009900"
@@ -160,7 +160,7 @@
 
               <v-list flat>
                 <v-list-item
-                  v-for="(item, i) in planI.contenido.aspectosIntervencion"
+                  v-for="(item, i) in planI.contenido.aspectosintervencion"
                   :key="i"
                 >
                   <v-list-item-icon>
@@ -555,15 +555,15 @@ export default {
     },
     errorGeneral() {
       const errors = [];
-      if (!this.$v.planI.contenido.objetivoGeneral.$dirty) return errors;
-      !this.$v.planI.contenido.objetivoGeneral.required &&
+      if (!this.$v.planI.contenido.objetivogeneral.$dirty) return errors;
+      !this.$v.planI.contenido.objetivogeneral.required &&
         errors.push("Debe ingresar un objetivo general obligatoriamente");
       return errors;
     },
     errorEspecificos() {
       const errors = [];
-      if (!this.$v.planI.contenido.objetivoEspecificos.$dirty) return errors;
-      !this.$v.planI.contenido.objetivoEspecificos.required &&
+      if (!this.$v.planI.contenido.objetivoespecificos.$dirty) return errors;
+      !this.$v.planI.contenido.objetivoespecificos.required &&
         errors.push(
           "Debe ingresar al menos un objetivo específico obligatoriamente"
         );
@@ -571,8 +571,8 @@ export default {
     },
     errorAspectos() {
       const errors = [];
-      if (!this.$v.planI.contenido.aspectosIntervencion.$dirty) return errors;
-      !this.$v.planI.contenido.aspectosIntervencion.required &&
+      if (!this.$v.planI.contenido.aspectosintervencion.$dirty) return errors;
+      !this.$v.planI.contenido.aspectosintervencion.required &&
         errors.push(
           "Debe ingresar al menos un aspecto de intervención obligatoriamente"
         );
@@ -627,13 +627,13 @@ export default {
             required,
             between: between(1, 4),
           },
-          objetivoGeneral: {
+          objetivogeneral: {
             required,
           },
-          objetivoEspecificos: {
+          objetivoespecificos: {
             required,
           },
-          aspectosIntervencion: {
+          aspectosintervencion: {
             required,
           },
           estrategias: {
