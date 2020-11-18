@@ -175,7 +175,13 @@ export default {
           icon: "dashboard",
           name: "GestionarFichaIngreso",
           href: "/dashboard/fichaIngreso"
-        },
+        },{
+          title: "Gestion Sesiones Educativas",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarSesionesEducativas",
+          href: "/dashboard/sesioneseducativas"
+        }
       ],
       scrollSettings: {
         maxScrollbarLength: 160,
