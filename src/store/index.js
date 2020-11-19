@@ -10,6 +10,7 @@ export default new Vuex.Store({
         residentes: [],
         informes: [],
         fichaingreso: [],
+        seguimientoEducativo :[],
     },
     mutations: {
         toggleDrawer(state) {
@@ -56,6 +57,17 @@ export default new Vuex.Store({
         replaceResidente(state, value) {
             var index = state.residentes.findIndex(x => x.id == value.id);
             state.residentes.splice(index, 1, value);
+        },
+        //SEGUIMIENTO EDUCATIVO
+        setSeguimiento(state, value) {
+            state.seguimientoEducativo = value;
+        },
+        addSeguimiento(state, value) {
+            state.seguimientoEducativo.push(value);
+        },
+        replaceSeguimiento(state, value) {
+            var index = state.seguimientoEducativo.findIndex(x => x.id == value.id);
+            state.seguimientoEducativo.splice(index, 1, value);
         },
     },
     actions: {},

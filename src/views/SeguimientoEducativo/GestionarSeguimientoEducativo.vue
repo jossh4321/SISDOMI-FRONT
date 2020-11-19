@@ -4,7 +4,7 @@
       <v-card-title> Gestionar Seguimiento Educativo </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="planesI"
+        :items="seguimientoEducativo"
         :search="search"
         class="elevation-1"
       >
@@ -63,8 +63,7 @@
             <v-dialog persistent
                 v-model="dialogodetalle" 
                 max-width="880px">
-          <VisualizarPlanIntervencion :plan="plan" @close-dialog-detail="closeDialogDetalle()">
-          </VisualizarPlanIntervencion>
+          <!-- VIZUALIZAR SEGUIMIENTO -->
       </v-dialog>
       
     </v-card>
@@ -72,101 +71,73 @@
 </template>
 <script>
 import axios from "axios";
-import RegistrarPlanIntervencion from "@/components/planIntervencion/Educativo/RegistrarPlanIntervencion.vue";
-import VisualizarPlanIntervencion from "@/components/planIntervencion/Educativo/VisualizarPlanIntervencion.vue";
+
 import { mapMutations, mapState } from "vuex";
 
 export default {
   name: "GestionarSeguimientoEducativo",
   components: {
-    RegistrarPlanIntervencion,
-    VisualizarPlanIntervencion,
+    
   },
   data() {
     return {
       search: "",
-      plan: {},
+      Seguimiento: {},
       headers: [
         {
           text: "Nombre Documento",
           align: "start",
           sortable: false,
-          value: "nombre",
+          value: "codigodocumento",
         },
-        { text: "Nombre del residente", value: "usuaria" },
-        { text: "Fecha de creacion", value: "fechaRegistro" },
+        { text: "Nombre del residente", value: "nombrecompleto" },
+        { text: "Fecha de creacion", value: "fechacreacion" },
         { text: "Estado", value: "estado" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-     planesI: [
-        {
-          nombre: "PlanI_Edu_Xiomara_1",
-          usuaria: "Xiomara Paredes Guerra",
-          fechaRegistro: "15/09/2019",
-          estado: "activo",
-          id: "5facd2e1bd5f87ed3632aa12",
-        },
-        {
-          nombre: "PlanI_Psico_Xiomara_1",
-          usuaria: "Xiomara Paredes Guerra",
-          fechaRegistro: "16/09/2019",
-          estado: "activo",
-          id:2
-
-        },
-        {
-          nombre: "PlanI_Edu_Marlyn_1",
-          usuaria: "Marlyn Candela Peña",
-          fechaRegistro: "20/10/2019",
-          estado: "activo",
-          id:3
-        }
-      ],
-      dialogodetalle: false,
+    
       dialogoregistro: false,
-      Visualizarplan: false,
+      dialogoactualizacion: false,
+      dialogodetalle: false,
     };
   },
-
-
+  async created(){
+ this.obtenerSeguimiento();
+  },
   methods: {
-   //  ...mapMutations(["setPlanInterve"]),
+    ...mapMutations(["setSeguimiento"]),
     editItem(item) {
-   //   console.log(item);
     },
     detailItem(item) {
-           
- // console.log(item.id);
     },
-    /////////////////////////////////////
     closeDialogDetalle() {
       this.dialogodetalle = false;
     },
     ///abrir dialogo de detalle
     async abrirDialogoDetalle(idPlanI){
-     
-       this.plan =  await this.obtenerCualquiercosa(idPlanI); 
-        this.dialogodetalle = !this.dialogodetalle;
-        console.log(this.plan);
-        },
-        
-      async obtenerCualquiercosa(id){
-   
-      var user = {};
-      await axios.get("/PlanIntervencionSocial/id?id="+id)//prueba
-      .then(res => {
-         user = res.data; 
-  
-      })
-      .catch(err => console.log(err));
-      return user;
     },
-
+    ///////////////////Consumo de  apis 
+    async obtenerSeguimiento() {
+      await axios
+        .get("/SeguimientoEducativo/all")
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          console.log(res.data)
+          for (var x=0;x<res.data.length;x++){
+              info[x].fechacreacion = res.data[x].fechacreacion.split("T")[0];
+          }
+          
+          this.setSeguimiento(info);
+        })
+        .catch((err) => console.log(err));
+    },
   },
    computed:{
- ...mapState(["planesD"])
+ ...mapState(["seguimientoEducativo"])
   }
-};
+}
+
 </script>
 <style scoped>
 .card {
