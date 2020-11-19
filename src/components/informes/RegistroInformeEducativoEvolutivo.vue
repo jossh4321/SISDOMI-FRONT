@@ -1,23 +1,17 @@
 <template>
-  <v-dialog persistent v-model="show" max-width="880px">
+  <v-dialog v-model="show" max-width="880px">
     <v-card >
     <v-card-title class="justify-center">{{titulo}}</v-card-title>
      <v-stepper v-model="step">
-    <v-stepper-header>
-      <v-stepper-step
-        editable
-        step="1"
-      >
-        Datos Generales
-      </v-stepper-step>
-      <v-divider></v-divider>
-      <v-stepper-step
-        editable
-        step="2"
-      >
-        Análisis y Diagnóstico
-      </v-stepper-step>
-    </v-stepper-header>
+       <v-stepper-header>
+          <v-stepper-step editable step="1">
+            Datos Generales
+          </v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step editable step="2">
+            Análisis y Diagnóstico
+          </v-stepper-step>
+        </v-stepper-header>
     <!-- fdsfs -->
     <v-stepper-items>
       <v-stepper-content step="1">
@@ -379,7 +373,7 @@
                   </vue-dropzone>
                 </div>
 
-              <v-card
+               <v-card
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
                   <v-card
@@ -401,7 +395,7 @@
                           label="Cargo"
                           color="#009900"
                         ></v-text-field>
-                      </v-col>                      
+                      </v-col>
                       <v-col :cols="4" align="right">
                         <v-btn
                           fab
@@ -415,30 +409,30 @@
                           </v-icon>
                         </v-btn>
                       </v-col>
-                    </v-row>                    
+                    </v-row>
                   </v-card>
                   <v-row>
-                       <v-col :cols="12" align="right">
+                    <v-col :cols="12" align="right">
                       <div>
-                          <vue-dropzone
-                            ref="myVueDropzone"
-                            @vdropzone-success="afterSuccess2"
-                            @vdropzone-removed-file="afterRemoved2"
-                            id="dropzone2"
-                            :options="dropzoneOptions2"
-                          >
-                          </vue-dropzone>                        
-                        </div>    
-                       </v-col>
-                      </v-row>
-                  <v-card                   
+                        <vue-dropzone
+                          ref="myVueDropzone"
+                          @vdropzone-success="afterSuccess2"
+                          @vdropzone-removed-file="afterRemoved2"
+                          id="dropzone2"
+                          :options="dropzoneOptions2"
+                        >
+                        </vue-dropzone>
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <v-card
                     color="#FAFAFA"
                     style="margin-top:5px"
                     height="60"
                     v-for="(item, index) in informe.contenido.firmas"
                     :key="index"
                   >
-                    <v-row style="margin-left:10px;heigh:100%" align="center" >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
                       <v-col :cols="8">
                         <article>
                           <img
@@ -446,10 +440,12 @@
                             src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
                             alt="imagen usuario"
                           />
-                          <span style="font-size:18px"> {{ item.nombre }} {{item.cargo}}</span>
+                          <span style="font-size:18px">
+                            {{ item.nombre }} {{ item.cargo }}</span
+                          >
                         </article>
                       </v-col>
-  
+
                       <v-col :cols="4" align="right">
                         <div style="margin-right:20px">
                           <v-btn
@@ -477,7 +473,7 @@
                 </v-btn>
               </v-col>
               <v-col>
-                 <v-btn block @click="cerrarDialogo()" color="primary">
+                 <v-btn block @click="show = false" color="primary">
                   <v-icon left>mdi-close-outline</v-icon>
                   <span>Cerrar</span>
                 </v-btn>
@@ -501,7 +497,6 @@ import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
 
 export default {
-    name: "RegistrarInformeEducativoEvolutivo",
     props:["listaresidentes","visible","titulo","listaeducadores"],
     components: {
       vueDropzone: vue2Dropzone,
@@ -569,17 +564,23 @@ export default {
           }
         }
     },
+    async created() {
+      this.logros = "";
+      this.logro = "";
+      this.recomendaciones = "";
+      this.recomendacion = "";
+    },
     methods:{
-        ...mapMutations(["setInformeEE","addInforme"]),
-        async sendPDFFiles(){
+        ...mapMutations(["addInforme"]),
+        async sendPDFFiles() {
           let listaanexos = this.fileList;
-          for(let index =0; index < this.fileList.length; index++){
+          for (let index = 0; index < this.fileList.length; index++) {
             let formData = new FormData();
-            formData.append("file",this.fileList[index]);
+            formData.append("file", this.fileList[index]);
             await axios
-            .post("/Media/archivos/pdf",formData)
+            .post("/Media/archivos/pdf", formData)
             .then((res) => {
-               listaanexos[index] = res.data;
+              listaanexos[index] = res.data;
             })
             .catch((err) => console.log(err));
           }
@@ -588,10 +589,9 @@ export default {
         },
         async registrarInforme() {
           await this.sendPDFFiles();
-          console.log(this.informe);
           if(this.titulo === "Registrar Informe Educativo Evolutivo"){
               this.informe.tipo = "InformeEducativoEvolutivo"
-          }else if(this.titulo === "Registrar Informe Educativo Final"){
+          }else{
               this.informe.tipo = "InformeEducativoFinal"
           }
           console.log(this.informe);
@@ -599,20 +599,35 @@ export default {
           if (this.$v.$invalid) {
             console.log("hay errores");
             this.mensaje(
-            "error",
-            "..Oops",
-            "Se encontraron errores en el formulario",
-            "<strong>Verifique los campos Ingresados<strong>"
+              "error",
+              "..Oops",
+              "Se encontraron errores en el formulario",
+              "<strong>Verifique los campos Ingresados<strong>"
             );
           } else {
-          console.log("no hay errores");
-          await axios
-            .post("/informe/informeee", this.informe)
-            .then((res) => {
-              this.informe = res.data;
-              this.addInforme(this.informe);
+            console.log("no hay errores");
+            console.log(this.informe);
+            await axios
+              .post("/informe/informeee", this.informe)
+              .then((res) => {
+                this.informe = res.data;
+                console.log(this.listaresidentes)
+                var resi = this.listaresidentes.filter(function(residente) {
+                return residente.id == res.data.idresidente;
+                });
+                console.log(resi)
+                var info = {
+                  id: res.data.id,
+                  tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, '$1 $2'),
+                  fechacreacion: res.data.fechacreacion.split("T")[0],
+                  codigodocumento: res.data.contenido.codigodocumento,
+                  nombrecompleto: resi[0].nombre + " " + resi[0].apellido
+                }
+              console.log("HOLA")
+              console.log(info)
+              this.addInforme(info);
               this.cerrarDialogo();
-            })
+              })
             .catch((err) => console.log(err));
             await this.mensaje(
               "success",
@@ -648,16 +663,9 @@ export default {
             }
           });
         },
-        //Problemas con esta kgada
-        resetInformeValidationState(){
-          //this.$refs.myVueDropzone.removeAllFiles();
-          //this.$v.informe.$reset();
-
-        },
         cerrarDialogo(){   
-          this.informe = this.limpiarInforme();  
+          this.informe = this.limpiarInforme();
           this.step = 1;
-          this.resetInformeValidationState();       
           this.$emit("close");
         },
         async mensaje(icono,titulo,texto,footer){
@@ -668,25 +676,20 @@ export default {
             footer:footer
           });
         },
-        agregarFirma() {
-          console.log("agregando esta cagada");
-          let firmas = {
-            urlfirma:  this.urlfirma,
-            nombre: this.firmas.nombre,
-            cargo: this.firmas.cargo,
-          };       
-          console.log("antes de listar el let firmas");
-          console.log(firmas);
-          // console.log(this.urlfirma);
-          this.informe.contenido.firmas.push(firmas);     
-          this.$refs.myVueDropzone.removeAllFiles();
-          // // console.log("this.informe.contenido.firmas");
-          // // console.log(this.informe.contenido.firmas);     
-          this.urlfirma = "";
-          this.firmas.nombre = "";
-          this.firmas.cargo = "";
+      agregarFirma() {
+        let firmas = {
+          urlfirma: this.urlfirma,
+          nombre: this.firmas.nombre,
+          cargo: this.firmas.cargo,
+        };
+        this.informe.contenido.firmas.push(firmas);
+        this.$refs.myVueDropzone.removeAllFiles();
+
+        this.urlfirma = "";
+        this.firmas.nombre = "";
+        this.firmas.cargo = "";
       },
-      eliminarFirma(index) {
+      eliminarFirma(firma) {
        this.informe.contenido.firmas.splice(index, 1);
       },
       afterSuccess(file, response) {
@@ -826,12 +829,6 @@ export default {
               situacionactual: {
                 required
               },
-              logroalcanzado:{
-                required
-              },
-              recomendaciones:{
-                required
-              },
               iereinsersion: {
                 nombre:{
                   required
@@ -845,14 +842,7 @@ export default {
                 grado:{
                   required
                 }
-              },
-              firmas: [
-                {
-                  urlfirma: {
-                    required
-                  },
-                }
-              ]
+              }
           }
         }
     }
