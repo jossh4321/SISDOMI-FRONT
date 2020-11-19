@@ -342,8 +342,20 @@ export default {
         await axios
           .put("/informe/informeei",this.informe)
           .then((res) => {
-            var resultado = res.data;
-            this.replaceInforme(resultado);
+            this.informe = res.data;
+            console.log(this.listaresidentes)
+            var resi = this.listaresidentes.filter(function(residente) {
+                return residente.id == res.data.idresidente;
+            });
+            console.log(resi)
+            var info = {
+                id: res.data.id,
+                tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, '$1 $2'),
+                fechacreacion: res.data.fechacreacion.split("T")[0],
+                codigodocumento: res.data.contenido.codigodocumento,
+                nombrecompleto: resi[0].nombre + " " + resi[0].apellido
+            }
+            this.replaceInforme(info);
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));

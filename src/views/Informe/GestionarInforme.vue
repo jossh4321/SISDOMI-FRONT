@@ -138,7 +138,7 @@ export default {
           text: "Código del Informe",
           align: "start",
           sortable: false,
-          value: "codigodocumento",
+          value: "id",
         },
         { text: "Nombre del residente", value: "nombrecompleto" },
         { text: "Fecha de creación", value: "fechacreacion" },

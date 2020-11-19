@@ -61,6 +61,10 @@ const routes = [{
             name: 'GestionarResidentes',
             component: GestionarResidentes
         }, {
+            path: 'seguimientoEducativo',
+            name: 'GestionarSeguimientoEducativo',
+            component: GestionarSeguimientoEducativo
+        },{
             path: 'sesioneseducativas',
             name: 'GestionarSesionesEducativas',
             component: GestionarSesionesEducativas
