@@ -68,6 +68,11 @@ const routes = [{
             path: 'sesioneseducativas',
             name: 'GestionarSesionesEducativas',
             component: GestionarSesionesEducativas
+        },
+        {
+            path: 'seguimientoEducativo',
+            name: 'GestionarSeguimientoEducativo',
+            component: GestionarSeguimientoEducativo
         }, {
             path: 'planIntervencionR',
             name: 'plandeIntervencion',
