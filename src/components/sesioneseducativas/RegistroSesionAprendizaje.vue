@@ -8,7 +8,7 @@
             <v-text-field
               v-model="residente.nombre"
               label="Nombre del Residente"
-              outlined
+              filled
               readonly
               color="#009900"
             ></v-text-field>
@@ -17,12 +17,51 @@
             <v-text-field
               v-model="residente.apellido"
               label="Apellidos del Residente"
-              outlined
+              filled
               readonly
               color="#009900"
             ></v-text-field>
           </v-col>
         </v-row>
+        <v-menu
+          v-model="datemenu"
+          :close-on-content-click="false"
+          :nudge-right="40"
+          transition="scale-transition"
+          offset-y
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-model="fechaejemplo"
+              style="margin-top_5px"
+              outlined
+              readonly
+              color="#009900"
+              prepend-icon="mdi-calendar"
+              v-bind="attrs"
+              v-on="on"
+              label="Fecha de Realización de Sesion de Aprendizaje"
+            ></v-text-field>
+          </template>
+          <v-date-picker
+            v-model="fechaejemplo"
+            @input="menu2 = false"
+            locale="es-es"
+          ></v-date-picker>
+        </v-menu>
+        <v-text-field
+          v-model="curso"
+          label="Curso o Materia"
+          outlined
+          color="#009900"
+        ></v-text-field>
+        <v-text-field
+          v-model="tema"
+          label="Actividad o Tema a realizar"
+          outlined
+          color="#009900"
+        ></v-text-field>
         <v-row>
           <v-col>
             <v-btn block color="success">
@@ -31,7 +70,7 @@
             </v-btn>
           </v-col>
           <v-col>
-            <v-btn block @click="show = false" color="warning">
+            <v-btn block @click="cerrarModal()" color="warning">
               <v-icon left>mdi-close-outline</v-icon>
               <span>Regresar</span>
             </v-btn>
@@ -56,9 +95,26 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 export default {
   props:["residente","visible"],
+  data(){
+    return{
+      datemenu: false,
+      tema:"",
+      curso:"",
+      fechaejemplo: '2011-04-11'
+    }
+  },
   methods:{
+    limpiar(){
+      this.tema="";
+      this.curso="";
+    },
+    cerrarModal() {
+      this.show = false;
+      this.limpiar();
+    },
     cerrarTodo() {
       this.$emit("close-all");
+      this.limpiar();
       this.show = false
     },
   },

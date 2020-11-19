@@ -87,7 +87,8 @@
               <v-dialog persistent v-model="showRegistrarReforzamiento" max-width="880px">               
                 <RegistroSesionReforzamiento 
                   :residente="residente"                             
-                  :visible="showRegistrarReforzamiento"  
+                  :visible="showRegistrarReforzamiento"
+                  @close-all="cerrarDialogo"   
                   @close="showRegistrarReforzamiento=false"/>                  
               </v-dialog>
             </v-col>
