@@ -166,6 +166,34 @@
             ></v-text-field>
           </v-col>
         </v-row>
+        <v-menu
+                  v-model="datemenu"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="informe.fechacreacion"
+                      label="Fecha de Evaluación"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      color="#009900"
+                      @input="$v.informe.fechacreacion.$touch()"
+                      @blur="$v.informe.fechacreacion.$touch()"
+                      :error-messages="errorFechaEvaluacion"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="informe.fechacreacion"
+                    @input="menu2 = false"
+                    locale="es-es"
+                  ></v-date-picker>
+                </v-menu>
         <v-textarea
           v-model="informe.contenido.antecedentes"        
           label="Antecedentes"
@@ -213,9 +241,237 @@
       <v-stepper-content step="2">
         <div  class="container-user">
           <form>
+            <v-card
+                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <v-text-field
+                          v-model="logro"
+                          label="Logros alcanzados"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarLogros"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+
+                  <v-card
+                    tile
+                    elevation="0"
+                    color="#FAFAFA"
+                    style="margin:5px"
+                    height="60"
+                    v-for="logro in logros"
+                    :key="logro"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <span>{{ logro }}</span>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarLogros(logro)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+                <v-card
+                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <v-text-field
+                          v-model="recomendacion"
+                          label="Recomendaciones"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarRecomendaciones"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+
+                  <v-card
+                    tile
+                    elevation="0"
+                    color="#FAFAFA"
+                    style="margin:5px"
+                    height="60"
+                    v-for="recomendacion in recomendaciones"
+                    :key="recomendacion"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <span>{{ recomendacion }}</span>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarRecomendaciones(recomendacion)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+
+                <div>
+                  <vue-dropzone
+                    ref="myVueDropzone"
+                    @vdropzone-success="afterSuccess"
+                    @vdropzone-removed-file="afterRemoved"
+                    id="dropzone"
+                    :options="dropzoneOptions"
+                  >
+                  </vue-dropzone>
+                </div>
+
+              <v-card
+                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="4" align="left">
+                        <v-text-field
+                          v-model="firmas.nombre"
+                          label="Nombre"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="left">
+                        <v-text-field
+                          v-model="firmas.cargo"
+                          label="Cargo"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>                      
+                      <v-col :cols="4" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarFirma"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>                    
+                  </v-card>
+                  <v-row>
+                       <v-col :cols="12" align="right">
+                      <div>
+                          <vue-dropzone
+                            ref="myVueDropzone"
+                            @vdropzone-success="afterSuccess2"
+                            @vdropzone-removed-file="afterRemoved2"
+                            id="dropzone2"
+                            :options="dropzoneOptions2"
+                          >
+                          </vue-dropzone>                        
+                        </div>    
+                       </v-col>
+                      </v-row>
+                  <v-card                   
+                    color="#FAFAFA"
+                    style="margin-top:5px"
+                    height="60"
+                    v-for="(item, index) in informe.contenido.firmas"
+                    :key="index"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center" >
+                      <v-col :cols="8">
+                        <article>
+                          <img
+                            style="margin-right:5px;width:6% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
+                            alt="imagen usuario"
+                          />
+                          <span style="font-size:18px"> {{ item.nombre }} {{item.cargo}}</span>
+                        </article>
+                      </v-col>
+  
+                      <v-col :cols="4" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarFirma"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+
             <v-row>
               <v-col>
-                <v-btn block @click="step = 2" color="success">
+                <v-btn block @click="registrarInforme" color="success">
                 <v-icon left>mdi-page-next-outline</v-icon>
                 <span>Registrar Informe</span>
                 </v-btn>
@@ -245,25 +501,44 @@ import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
 
 export default {
-    name: "GestionarInformeEducativoEvolutivo",
+    name: "RegistrarInformeEducativoEvolutivo",
     props:["listaresidentes","visible","titulo","listaeducadores"],
     components: {
       vueDropzone: vue2Dropzone,
     },
     data() {
         return {
+          fileList:[],
           datemenu: false,
           step: 1,
           dropzoneOptions: {
             url: "https://httpbin.org/post",
             thumbnailWidth: 250,
-            maxFilesize: 3.0,
-            maxFiles:1,
-            acceptedFiles:".jpg",
+            maxFilesize: 10.0,
+            maxFiles: 10,
+            acceptedFiles: ".pdf",
             headers: { "My-Awesome-Header": "header value" },
             addRemoveLinks: true,
-            dictDefaultMessage: "Seleccione una documento de su Dispositivo o Arrastrela Aqui"
+            dictDefaultMessage:
+            "Seleccione un archivo anexo de su dispositivo o arrástrela aquí",
           },
+          dropzoneOptions2: {
+            url: "https://httpbin.org/post",
+            thumbnailWidth: 250,
+            maxFilesize: 5.0,
+            maxFiles: 1,
+            acceptedFiles: ".png",
+            headers: { "My-Awesome-Header": "header value" },
+            addRemoveLinks: true,
+            dictDefaultMessage:
+            "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
+          },
+          logro: "",
+          logros: [],
+          recomendacion: "",
+          recomendaciones: [],
+          urlfirma : "",
+          firmas: { urlfirma: "", nombre: "", cargo: "" },
           informe: {
             id: "",
             tipo: "",
@@ -278,22 +553,16 @@ export default {
             contenido: {
                 antecedentes: "",
                 situacionactual: "",
-                logroalcanzado: "",
-                recomendaciones: "",
+                logroalcanzado: [],
+                recomendaciones: [],
                 iereinsersion: {
                     nombre: "",
                     modalidad: "",
                     nivel: "",
                     grado: ""
                 },
-                anexos: [
-                ],
+                anexos: [],
                 firmas: [
-                {
-                  urlfirma: "",
-                  nombre: "",
-                  cargo: ""
-                }
                 ],
                 codigodocumento:""
             }
@@ -301,38 +570,95 @@ export default {
         }
     },
     methods:{
-        ...mapMutations(["setInformeEE","addInformeEE"]),
-        async registrarUsuario(){
+        ...mapMutations(["setInformeEE","addInforme"]),
+        async sendPDFFiles(){
+          let listaanexos = this.fileList;
+          for(let index =0; index < this.fileList.length; index++){
+            let formData = new FormData();
+            formData.append("file",this.fileList[index]);
+            await axios
+            .post("/Media/archivos/pdf",formData)
+            .then((res) => {
+               listaanexos[index] = res.data;
+            })
+            .catch((err) => console.log(err));
+          }
+          this.informe.contenido.anexos = listaanexos;
+          console.log(listaanexos);
+        },
+        async registrarInforme() {
+          await this.sendPDFFiles();
+          console.log(this.informe);
+          if(this.titulo === "Registrar Informe Educativo Evolutivo"){
+              this.informe.tipo = "InformeEducativoEvolutivo"
+          }else if(this.titulo === "Registrar Informe Educativo Final"){
+              this.informe.tipo = "InformeEducativoFinal"
+          }
+          console.log(this.informe);
           this.$v.$touch();
           if (this.$v.$invalid) {
-            this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
+            console.log("hay errores");
+            this.mensaje(
+            "error",
+            "..Oops",
+            "Se encontraron errores en el formulario",
+            "<strong>Verifique los campos Ingresados<strong>"
+            );
           } else {
-            await axios.post("/informe/informeee",this.informe)
-            .then(res => {
+          console.log("no hay errores");
+          await axios
+            .post("/informe/informeee", this.informe)
+            .then((res) => {
               this.informe = res.data;
-              this.addInformeEE(this.informe);
+              this.addInforme(this.informe);
               this.cerrarDialogo();
-            }).catch(err => console.log(err));
-            await this.mensaje('success','listo','Informe registrado Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
+            })
+            .catch((err) => console.log(err));
+            await this.mensaje(
+              "success",
+              "Listo",
+              "Informe registrado Satisfactoriamente",
+              "<strong>Se redirigira a la interfaz de gestión<strong>"
+            );
           }
+        },
+        agregarLogros() {
+          let logros = this.logro;
+          this.informe.contenido.logroalcanzado.push(logros);
+          this.logros = this.informe.contenido.logroalcanzado;
+          this.logro = "";
+        },
+        eliminarLogros(logro) {
+          this.logros.forEach(function(car, index, object) {
+            if(car === logro){
+              object.splice(index, 1);
+            }
+          });
+        },
+        agregarRecomendaciones() {
+          let recomendaciones = this.recomendacion;
+          this.informe.contenido.recomendaciones.push(recomendaciones);
+          this.recomendaciones = this.informe.contenido.recomendaciones;
+          this.recomendacion = "";
+        },
+        eliminarRecomendaciones(recomendacion) {
+          this.recomendaciones.forEach(function(car, index, object) {
+            if(car === recomendacion){
+              object.splice(index, 1);
+            }
+          });
         },
         //Problemas con esta kgada
         resetInformeValidationState(){
           //this.$refs.myVueDropzone.removeAllFiles();
           //this.$v.informe.$reset();
 
-        },afterSuccess(file,response){
-          //this.informe.contenido.anexos = file.dataURL.split(",")[1];
-          //this.$v.informe.contenido.anexos.$model = file.dataURL.split(",")[1];
-        },afterRemoved(file, error, xhr){
-          //this.informe.contenido.anexos = [];
-          //this.$v.informe.contenido.anexos.$model = [];
         },
         cerrarDialogo(){   
-          this.usuario = this.limpiarInforme();  
+          this.informe = this.limpiarInforme();  
           this.step = 1;
           this.resetInformeValidationState();       
-          this.show = false;
+          this.$emit("close");
         },
         async mensaje(icono,titulo,texto,footer){
           await this.$swal({
@@ -342,6 +668,43 @@ export default {
             footer:footer
           });
         },
+        agregarFirma() {
+          console.log("agregando esta cagada");
+          let firmas = {
+            urlfirma:  this.urlfirma,
+            nombre: this.firmas.nombre,
+            cargo: this.firmas.cargo,
+          };       
+          console.log("antes de listar el let firmas");
+          console.log(firmas);
+          // console.log(this.urlfirma);
+          this.informe.contenido.firmas.push(firmas);     
+          this.$refs.myVueDropzone.removeAllFiles();
+          // // console.log("this.informe.contenido.firmas");
+          // // console.log(this.informe.contenido.firmas);     
+          this.urlfirma = "";
+          this.firmas.nombre = "";
+          this.firmas.cargo = "";
+      },
+      eliminarFirma(index) {
+       this.informe.contenido.firmas.splice(index, 1);
+      },
+      afterSuccess(file, response) {
+        console.log(file);
+        console.log(file.dataURL);
+        console.log(this.$refs.myVueDropzone);
+        this.fileList.push(file);
+      },
+      afterRemoved(file, error, xhr) {
+        this.informe.contenido.anexos = "";
+        //this.$v.informe.contenido.anexos.$model = "";
+      },
+      afterSuccess2(file, response) { 
+        this.urlfirma =  file.dataURL.split(",")[1];     
+      },
+      afterRemoved2(file, error, xhr) {
+        this.urlfirma = "";
+      },
         limpiarInforme(){
           return {
             tipo: "",
@@ -356,8 +719,8 @@ export default {
             contenido: {
                 antecedentes: "",
                 situacionactual: "",
-                logroalcanzado: "",
-                recomendaciones: "",
+                logroalcanzado: [],
+                recomendaciones: [],
                 iereinsersion: {
                     nombre: "",
                     modalidad: "",
@@ -367,11 +730,6 @@ export default {
                 anexos: [
                 ],
                 firmas: [
-                {
-                  urlfirma: "",
-                  nombre: "",
-                  cargo: ""
-                }
                 ],
                 codigodocumento:""
             }
@@ -425,6 +783,19 @@ export default {
         !this.$v.informe.creadordocumento.required && errors.push("Debe seleccionar un educador obligatoriamente");
       return errors;
       },
+      errorFechaEvaluacion() {
+      const errors = [];
+      if (!this.$v.informe.fechacreacion.$dirty) return errors;
+      !this.$v.informe.fechacreacion.required &&
+        errors.push("Debe ingresar la fecha de evaluación obligatoriamente");
+      //validating whether the user are an adult
+      var dateselected = new Date(this.informe.fechacreacion);
+      var maxdate = new Date();
+      !(dateselected.getTime() < maxdate.getTime()) &&
+        errors.push("La fecha no debe ser mayor a la actual");
+
+      return errors;
+    },
       show: {
         get () {
           return this.visible
@@ -444,6 +815,9 @@ export default {
             },
             creadordocumento: {
               required
+            },
+            fechacreacion: {
+              required,
             },
            contenido: {
               antecedentes:{

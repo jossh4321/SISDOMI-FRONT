@@ -211,7 +211,7 @@
                                 </v-col>
                                 <v-col :cols="4" align="right">
                                     <div style="margin-right:20px">
-                                        <v-btn
+                                        <!-- <v-btn
                                         style="margin-right:10px"
                                         fab
                                         x-small
@@ -221,7 +221,7 @@
                                         <v-icon dark>
                                             mdi-pencil
                                         </v-icon>
-                                        </v-btn>
+                                        </v-btn> -->
                                         <v-btn
                                         @click="eliminarTelefono(item.index)"
                                         fab x-small 
@@ -495,12 +495,12 @@
                                     </v-col>
                                     <v-col :cols="3">
                                     <article>
-                                        <span style="font-size:16px">{{moment(item.fechaingreso).format('L')}}</span>
+                                        <span style="font-size:16px">{{convertDateFormat(item.fechaingreso)}}</span>
                                     </article>
                                     </v-col>
                                     <v-col :cols="3">
                                     <article>
-                                        <span style="font-size:16px">{{item.fechafinalizacion!=="" ? (moment(item.fechafinalizacion).format('L')): "No finalizado"}}</span>
+                                        <span style="font-size:16px">{{convertDateFormat(item.fechafinalizacion)!=="" ? (convertDateFormat(item.fechafinalizacion)): "No finalizado"}}</span>
                                     </article>
                                     </v-col>
                                     <v-col :cols="2">
@@ -510,7 +510,7 @@
                                     </v-col>
                                     <v-col align="right">
                                     <div style="margin-right:20px">
-                                        <v-btn
+                                        <!-- <v-btn
                                         style="margin-right:10px"
                                         fab
                                         x-small
@@ -520,7 +520,7 @@
                                         <v-icon dark>
                                             mdi-pencil
                                         </v-icon>
-                                        </v-btn>
+                                        </v-btn> -->
                                         <v-btn
                                         @click="eliminarProgreso(item.index)"
                                         fab x-small 
@@ -632,7 +632,7 @@ export default {
   methods: {
     ...mapMutations(["replaceResidente"]),
     moment: function () {
-    return moment();
+      return moment();
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -765,6 +765,11 @@ export default {
       this.step = 1;
       this.$emit("close-dialog-edit");
     },
+    convertDateFormat(string) {
+        var dateMongo = string.split('T');
+        var date = dateMongo[0].split('-');
+        return date[2] + '/' + date[1] + '/' + date[0];
+    }
   },
   computed: {
 
@@ -992,7 +997,7 @@ export default {
         },
         juzgadoProcedencia: {
           required,
-          minLength: minLength(4),
+          minLength: minLength(3),
         },
         fechaNacimiento: {
           required,
