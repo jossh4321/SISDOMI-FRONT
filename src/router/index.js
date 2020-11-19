@@ -9,7 +9,11 @@ import Test from '../views/Users/Test.vue'
 import Test1 from '../views/Users/TEST1.vue'
 import GestionarInforme from '../views/Informe/GestionarInforme.vue'
 import GestionarResidentes from '../views/Residentes/GestionarResidentes.vue'
+<<<<<<< HEAD
+import GestionarSeguimientoEducativo from '../views/SeguimientoEducativo/GestionarSeguimientoEducativo.vue'
+=======
 import GestionarSesionesEducativas from '../views/SesionesEducativas/GestionarSesionesEducativas.vue'
+>>>>>>> e966dd01a07be8e39045af710715f98f3ec104b8
 
 
 /* Rutas de sebas, fede, jaime y angello */
@@ -60,10 +64,17 @@ const routes = [{
             name: 'GestionarResidentes',
             component: GestionarResidentes
         }, {
+<<<<<<< HEAD
+            path: 'seguimientoEducativo',
+            name: 'GestionarSeguimientoEducativo',
+            component: GestionarSeguimientoEducativo
+        },{
+=======
             path: 'sesioneseducativas',
             name: 'GestionarSesionesEducativas',
             component: GestionarSesionesEducativas
         }, {
+>>>>>>> e966dd01a07be8e39045af710715f98f3ec104b8
             path: 'planIntervencionR',
             name: 'plandeIntervencion',
             component: GestionarPlanes
