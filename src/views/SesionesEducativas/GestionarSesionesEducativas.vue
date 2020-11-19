@@ -33,11 +33,12 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  <v-icon left>mdi-account-multiple-plus-outline</v-icon>
+                  <v-icon left>mdi-book</v-icon>
                   <span>Nueva Sesion Educativa</span>
                 </v-btn>
               </template>
               <RegistrarSesionEducativa
+                :listaresidentes="listaresidentes"
                 @close-dialog-save="closeDialogRegistrar()"
               ></RegistrarSesionEducativa>
             </v-dialog>
@@ -89,6 +90,7 @@ export default {
         { text: "Fase", value: "" },
         { text: "Actions", value: "actions", sortable: false }
       ],
+      listaresidentes:[],
       dialogoregistro: false,
       dialogodetalle: false,
       loading:true
@@ -116,7 +118,6 @@ export default {
       await axios
         .get("/residente/id?id=" + idresidente)
         .then((res) => {
-          console.log(res);
           user = res.data;
           user.fechaNacimiento = user.fechaNacimiento.split("T")[0];
           user.fechaIngreso = user.fechaIngreso.split("T")[0];
@@ -133,9 +134,10 @@ export default {
         .get("/residente/all")
         .then((res) => {
           this.loading = false;
+          console.log(res.data)
           var info = {};
           info = res.data;
-          console.log(res.data)
+          this.listaresidentes = info;
           for (var x=0;x<res.data.length;x++){
               info[x].fechaIngreso = res.data[x].fechaIngreso.split("T")[0];
           }

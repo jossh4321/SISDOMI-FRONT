@@ -9,6 +9,7 @@ import Test from '../views/Users/Test.vue'
 import Test1 from '../views/Users/TEST1.vue'
 import GestionarInforme from '../views/Informe/GestionarInforme.vue'
 import GestionarResidentes from '../views/Residentes/GestionarResidentes.vue'
+import GestionarSeguimientoEducativo from '../views/SeguimientoEducativo/GestionarSeguimientoEducativo.vue'
 import GestionarSesionesEducativas from '../views/SesionesEducativas/GestionarSesionesEducativas.vue'
 
 
@@ -60,9 +61,18 @@ const routes = [{
             name: 'GestionarResidentes',
             component: GestionarResidentes
         }, {
+            path: 'seguimientoEducativo',
+            name: 'GestionarSeguimientoEducativo',
+            component: GestionarSeguimientoEducativo
+        },{
             path: 'sesioneseducativas',
             name: 'GestionarSesionesEducativas',
             component: GestionarSesionesEducativas
+        },
+        {
+            path: 'seguimientoEducativo',
+            name: 'GestionarSeguimientoEducativo',
+            component: GestionarSeguimientoEducativo
         }, {
             path: 'planIntervencionR',
             name: 'plandeIntervencion',
