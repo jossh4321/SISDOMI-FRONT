@@ -9,6 +9,7 @@ import Test from '../views/Users/Test.vue'
 import Test1 from '../views/Users/TEST1.vue'
 import GestionarInforme from '../views/Informe/GestionarInforme.vue'
 import GestionarResidentes from '../views/Residentes/GestionarResidentes.vue'
+import GestionarSeguimientoEducativo from '../views/SeguimientoEducativo/GestionarSeguimientoEducativo.vue'
 
 
 /* Rutas de sebas, fede, jaime y angello */
@@ -59,6 +60,10 @@ const routes = [{
             name: 'GestionarResidentes',
             component: GestionarResidentes
         }, {
+            path: 'seguimientoEducativo',
+            name: 'GestionarSeguimientoEducativo',
+            component: GestionarSeguimientoEducativo
+        },{
             path: 'planIntervencionR',
             name: 'plandeIntervencion',
             component: GestionarPlanes

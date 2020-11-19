@@ -643,7 +643,7 @@ export default {
       });
     },
     async modificarResidente(){
-
+  console.log(this.residente)
       this.$v.residente.$touch();
       if (this.$v.residente.$invalid) {
         await this.mensaje(
