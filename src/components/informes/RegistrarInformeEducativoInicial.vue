@@ -353,15 +353,56 @@
                           >
                         </article>
                       </v-col>
-
-                      <v-col :cols="4" align="right">
+                      <v-col :cols="2" align="center">
+                        <v-dialog
+                          v-model="dialogVistaPreviaFirma"
+                          persistent
+                          max-width="600px"
+                        >
+                          <template v-slot:activator="{ on }">
+                            <v-btn
+                              v-on="on"
+                              fab
+                              icon=""
+                              x-small
+                              dark
+                              color="#EAEAEA"
+                              @click="verFirma(index)"
+                            >
+                              <img
+                                style="width:25% "
+                                src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
+                                alt="firma"
+                              />
+                            </v-btn>
+                          </template>
+                          <v-card>
+                            <v-card-title>
+                              <span class="headline">Vista previa</span>
+                            </v-card-title>
+                            <v-card-text>
+                               <img 
+                               width="100px"
+                               height="100px"
+                               :src="'data:image/jpeg;base64,' + imagen" alt="">                               
+                            </v-card-text>
+                            <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="cerrarVistaPreviaFirma()">
+                        Cerrar
+                      </v-btn>                      
+                    </v-card-actions>
+                          </v-card>
+                        </v-dialog>
+                      </v-col>
+                      <v-col :cols="2" align="right">
                         <div style="margin-right:20px">
                           <v-btn
                             fab
                             x-small
                             dark
                             color="red"
-                            @click="eliminarFirma"
+                            @click="eliminarFirma(index)"
                           >
                             <v-icon dark>
                               mdi-minus
@@ -412,8 +453,8 @@ export default {
     return {
       //para probar
       fileList: [],
-      ///
-
+      ///      
+      dialogVistaPreviaFirma: false,
       datemenu: false,
       step: 1,
       dropzoneOptions: {
@@ -457,12 +498,12 @@ export default {
           analisisacademico: "",
           conclusiones: [],
           anexos: [],
-          firmas: [
-          ],
+          firmas: [],
           codigodocumento: "",
           lugarevaluacion: "",
         },
       },
+      imagen: ""
     };
   },
   async created() {
@@ -505,20 +546,20 @@ export default {
           .post("/informe/informeei", this.informe)
           .then((res) => {
             this.informe = res.data;
-            console.log(this.listaresidentes)
+            console.log(this.listaresidentes);
             var resi = this.listaresidentes.filter(function(residente) {
-                return residente.id == res.data.idresidente;
+              return residente.id == res.data.idresidente;
             });
-            console.log(resi)
+            console.log(resi);
             var info = {
-                id: res.data.id,
-                tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, '$1 $2'),
-                fechacreacion: res.data.fechacreacion.split("T")[0],
-                codigodocumento: res.data.contenido.codigodocumento,
-                nombrecompleto: resi[0].nombre + " " + resi[0].apellido
-            }
-            console.log("HOLA")
-            console.log(info)
+              id: res.data.id,
+              tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
+              fechacreacion: res.data.fechacreacion.split("T")[0],
+              codigodocumento: res.data.contenido.codigodocumento,
+              nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
+            };
+            console.log("HOLA");
+            console.log(info);
             this.addInforme(info);
             this.cerrarDialogo();
           })
@@ -577,6 +618,13 @@ export default {
     },
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
+    },
+    verFirma(index) {      
+      console.log(this.informe.contenido.firmas[index].urlfirma);        
+      this.imagen = this.informe.contenido.firmas[index].urlfirma;
+    },
+    cerrarVistaPreviaFirma(){ 
+        this.dialogVistaPreviaFirma = false;
     },
     afterSuccess(file, response) {
       console.log(file);
@@ -706,7 +754,7 @@ export default {
         idresidente: {
           required,
         },
-        creadordocumento: {
+        creadordocumento: { 
           required,
         },
         fechacreacion: {

@@ -40,7 +40,7 @@
                 :listaeducadores="listaeducadores" 
                 @close-dialog-save="closeDialogRegistrar()"
               ></RegistrarInforme>
-            </v-dialog>
+            </v-dialog>            
             <!---->
           </v-toolbar>
         </template>
@@ -138,7 +138,7 @@ export default {
           text: "Código del Informe",
           align: "start",
           sortable: false,
-          value: "id",
+          value: "codigodocumento",
         },
         { text: "Nombre del residente", value: "nombrecompleto" },
         { text: "Fecha de creación", value: "fechacreacion" },

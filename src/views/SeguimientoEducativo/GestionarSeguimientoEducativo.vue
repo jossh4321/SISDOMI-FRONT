@@ -50,21 +50,24 @@
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
-                 <!-- <v-dialog v-model="Visualizarplan" max-width="880px">-->
-                  <v-btn color="info" @click="abrirDialogoDetalle(item.id)" >
-                  <v-icon left> mdi-pencil </v-icon>
-                       <span>Visualizar</span>
-                  </v-btn>  
-               <!--   </v-dialog> -->
+                 
+            <v-btn color="info" @click="abrirDialogoDetalle(item.id)" >
+              <v-icon left> mdi-pencil </v-icon>
+              <span>Visualizar</span>
+            </v-btn>  
+               
           </v-row>
         </template>
       </v-data-table>
        
-            <v-dialog persistent
-                v-model="dialogodetalle" 
-                max-width="880px">
-          <!-- VIZUALIZAR SEGUIMIENTO -->
-      </v-dialog>
+    <v-dialog persistent v-model="dialogodetalle" max-width="880px">
+        <DetalleSeguimientoEducativo
+          :seguimiento="seguimiento"
+          :residente ="residente"
+          @close-dialog-detail="closeDialogDetalle()"
+        >
+        </DetalleSeguimientoEducativo>
+    </v-dialog>
       
     </v-card>
   </div>
@@ -72,23 +75,26 @@
 <script>
 import axios from "axios";
 
+import DetalleSeguimientoEducativo from '@/components/seguimientoEducativo/DetalleSeguimientoEducativo.vue'
 import { mapMutations, mapState } from "vuex";
 
 export default {
   name: "GestionarSeguimientoEducativo",
   components: {
+    DetalleSeguimientoEducativo
     
   },
   data() {
     return {
       search: "",
-      Seguimiento: {},
+      seguimiento: {},
+      residente:{},
       headers: [
         {
           text: "Nombre Documento",
           align: "start",
           sortable: false,
-          value: "codigodocumento",
+          value: "id",
         },
         { text: "Nombre del residente", value: "nombrecompleto" },
         { text: "Fecha de creacion", value: "fechacreacion" },
@@ -113,10 +119,19 @@ export default {
     closeDialogDetalle() {
       this.dialogodetalle = false;
     },
-    ///abrir dialogo de detalle
-    async abrirDialogoDetalle(idPlanI){
+    closeDialogRegistrar() {
+      this.dialogoregistro = false;
     },
-    ///////////////////Consumo de  apis 
+    closeDialogModificar() {
+      this.dialogoactualizacion = false;
+    },
+    ///abrir dialogo de detalle
+   async abrirDialogoDetalle(idseguimiento) {
+      this.seguimiento = await this.loadSeguimientoDetalle(idseguimiento);
+      this.residente = await this.loadResidente(this.seguimiento.idresidente);// traelos datos del residnete
+      this.dialogodetalle = !this.dialogodetalle;
+      },
+  /////////////////Consumo de  apis 
     async obtenerSeguimiento() {
       await axios
         .get("/SeguimientoEducativo/all")
@@ -131,6 +146,34 @@ export default {
           this.setSeguimiento(info);
         })
         .catch((err) => console.log(err));
+    },
+    ///////////Obtener seguimiento con id
+     async loadSeguimientoDetalle(idseguimiento) {
+      var user = {};
+      await axios
+        .get("/SeguimientoEducativo/id?id=" + idseguimiento)
+        .then((res) => {
+          console.log(res);
+          user = res.data;
+          user.fechacreacion = user.fechacreacion.split("T")[0];
+        })
+        .catch((err) => console.log(err));
+      console.log(user);
+      return user;
+    },
+    /////Obtener residente
+     async loadResidente(idresidente) {
+      var user = {};
+      await axios
+        .get("/Residente/id?id=" + idresidente)
+        .then((res) => {
+          console.log(res);
+          user = res.data;
+          user.fechacreacion = user.fechacreacion.split("T")[0];
+        })
+        .catch((err) => console.log(err));
+      console.log(user);
+      return user;
     },
   },
    computed:{

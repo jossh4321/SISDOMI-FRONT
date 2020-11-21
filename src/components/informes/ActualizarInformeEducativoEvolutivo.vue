@@ -24,7 +24,7 @@
       <form>
         <v-autocomplete
                   v-model="informe.idresidente"             
-                  :items="listaresidentes"
+                  :items="residente.nombre"
                   filled
                   chips
                   dense
@@ -33,9 +33,7 @@
                   label="Usuaria CAR"
                   item-text="nombre"
                   item-value="id"
-                  @input="$v.informe.idresidente.$touch()"
-                  @blur="$v.informe.idresidente.$touch()"
-                  :error-messages="errorResidente"                            
+                                            
                 >
                   <template v-slot:selection="data">
                     <v-chip
