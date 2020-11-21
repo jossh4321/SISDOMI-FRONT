@@ -35,11 +35,11 @@
                   <span>Registrar Informe</span>
                 </v-btn>
               </template>
-              <RegistrarInforme
+              <SeleccionarInforme
                 :listaresidentes="listaresidentes"
                 :listaeducadores="listaeducadores" 
                 @close-dialog-save="closeDialogRegistrar()"
-              ></RegistrarInforme>
+              ></SeleccionarInforme>
             </v-dialog>            
             <!---->
           </v-toolbar>
@@ -114,7 +114,7 @@
 
 <script>
 import axios from "axios";
-import RegistrarInforme from "@/components/informes/RegistrarInforme.vue";
+import SeleccionarInforme from "@/components/informes/SeleccionarInforme.vue";
 import ActualizarInformeEducativoInicial from "@/components/informes/ActualizarInformeEducativoInicial.vue";
 import ActualizarInformeEducativoEvolutivo from "@/components/informes/ActualizarInformeEducativoEvolutivo.vue";
 import DetalleInformeEducativoInicial from "@/components/informes/DetalleInformeEducativoInicial.vue";
@@ -123,7 +123,7 @@ import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarInforme",
   components: {
-    RegistrarInforme,
+    SeleccionarInforme,
     ActualizarInformeEducativoInicial,
     ActualizarInformeEducativoEvolutivo,
     DetalleInformeEducativoInicial,
