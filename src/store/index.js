@@ -1,7 +1,18 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+// jshint esversion:8
 
-Vue.use(Vuex)
+import Vue from 'vue';
+import Vuex from 'vuex';
+
+//Para el uso del axios en las acciones
+import axios from 'axios';
+
+//Para el uso de rutas en las acciones
+import router from '../router/index.js';
+
+/* Uso del módulo de autenticación */
+import authentication from '@/store/modules/authentication.js';
+
+Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
@@ -10,7 +21,7 @@ export default new Vuex.Store({
         residentes: [],
         informes: [],
         fichaingreso: [],
-        seguimientoEducativo :[],
+        seguimientoEducativo: [],
     },
     mutations: {
         toggleDrawer(state) {
@@ -70,6 +81,7 @@ export default new Vuex.Store({
             state.seguimientoEducativo.splice(index, 1, value);
         },
     },
-    actions: {},
-    modules: {}
-})
+    modules: {
+        authentication
+    }
+});
