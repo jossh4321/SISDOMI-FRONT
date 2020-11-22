@@ -68,17 +68,28 @@
               </v-btn>
             </v-card-actions >
             <v-card-actions v-else>
-              <v-btn @click="GuardarEdicionSesionEducativa()" color="success">
+              <v-btn @click="step=2" color="success">
                 <v-icon left>mdi-page-next-outline</v-icon>
-                <span>Guardar</span>
+                <span>Continuar</span>
               </v-btn>
-              <v-btn @click="CancelarEdicionSesionEducativa()" dark color="red">
+              <v-btn @click="CancelarEdicionSesionEducativa()"  dark color="red">
                 <span>Cancelar</span>
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-stepper-content>
         <v-stepper-content step="2">
+          <v-card>
+            <v-card-actions v-if="edicion">
+              <v-btn @click="GuardarEdicionSesionEducativa()" color="success">
+                <v-icon left>mdi-page-next-outline</v-icon>
+                <span>Guardar</span>
+              </v-btn>
+              <v-btn @click="CancelarEdicionSesionEducativa()"  dark color="red">
+                <span>Cancelar</span>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
           <!-- Esto no va aqui exactamente, solo es vista y modificacion, no insercion  
           <AgregarParticipante
           :sesioneducativa="sesioneducativa"
@@ -88,7 +99,7 @@
         </v-stepper-content>  
         <v-spacer></v-spacer>
         <v-card-actions style="padding:2% 3%">
-          <v-btn block color="red" dark @click="cerrarDialogo()">
+          <v-btn :disabled="edicion" block color="red"  :dark="!edicion" @click="cerrarDialogo()">
             Cerrar
           </v-btn>
         </v-card-actions>
