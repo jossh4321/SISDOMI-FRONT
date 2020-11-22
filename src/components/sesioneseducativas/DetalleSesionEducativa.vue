@@ -3,157 +3,88 @@
     <v-card-title class="justify-center">Sesiones Educativas</v-card-title>
     <v-stepper v-model="step">
       <v-stepper-header>
-        <v-stepper-step editable step="1">Sesiones de Aprendizaje</v-stepper-step>
+        <v-stepper-step editable step="1">Datos de la Sesión Educativa</v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step editable step="2">Sesiones de Reforzamiento</v-stepper-step>
+        <v-stepper-step editable step="2">Participantes de la Sesión Educativa</v-stepper-step>
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
 
-          <!--Div que contendrá todos los datos de una sola sesion de aprendizaje-->
-          <v-card color="#EFEFEF" style="padding:3%" class="container-user">
-            <form>
-              <v-text-field
-                style="margin-top_5px"
-                outlined
-                :readonly="!edicionAprendizaje"
-                color="#009900"
-                label="Curso/Materia"
-              ></v-text-field>
-
-              <v-menu
-                v-model="datemenu"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="fechaejemplo"
-                    style="margin-top_5px"
-                    outlined
-                    :readonly="!edicionAprendizaje"
-                    color="#009900"
-                    prepend-icon="mdi-calendar"
-                    v-bind="attrs"
-                    v-on="on"
-                    label="Fecha de Realización"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="fechaejemplo"
-                  :readonly="!edicionAprendizaje"
-                  @input="menu2 = false"
-                  locale="es-es"
-                ></v-date-picker>
-              </v-menu>
-              
-              <v-text-field
-                style="margin-top_5px"
-                outlined
-                :readonly="!edicionAprendizaje"
-                color="#009900"
-                label="Observaciones"
-              ></v-text-field>
-              <v-text-field
-                style="margin-top_5px"
-                outlined
-                :readonly="!edicionAprendizaje"
-                color="#009900"
-                label="Curso/Materia"
-              ></v-text-field>
-            </form>
-            <v-card-actions v-if="!edicionAprendizaje">
-              <v-btn @click="activarEdicionAprendizaje()" color="warning">
+          <!--Div que contendrá todos los datos de una sola sesion educativa-->
+          <v-card class="container-user">
+            <div style="margin-top:5px">
+              <form>
+                <v-row>
+                  <v-col>
+                    <v-text-field
+                      v-model="sesioneducativa.titulo"
+                      :readonly="!edicion"
+                      color="#009900"
+                      label="Titulo de Sesión"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      v-model="sesioneducativa.area"
+                      :readonly="!edicion"
+                      color="#009900"
+                      label="Area correspondiente"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-menu
+                  v-model="datemenu"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="sesioneducativa.fechaCreacion"
+                      style="margin-top_5px"
+                      :readonly="!edicion"
+                      color="#009900"
+                      prepend-icon="mdi-calendar"
+                      v-bind="attrs"
+                      v-on="on"
+                      label="Fecha de Realización de Sesion de Aprendizaje"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="sesioneducativa.fechaCreacion"
+                    :readonly="!edicion"
+                    @input="menu2 = false"
+                    locale="es-es"
+                  ></v-date-picker>
+                </v-menu>
+              </form>
+            </div>
+            <v-card-actions v-if="!edicion">
+              <v-btn @click="activarEdicionSesionEducativa()" color="warning">
                 <v-icon left>mdi-book-outline</v-icon>
                 <span>Modificar</span>
               </v-btn>
             </v-card-actions >
             <v-card-actions v-else>
-              <v-btn @click="GuardarEdicionAprendizaje()" color="success">
+              <v-btn @click="GuardarEdicionSesionEducativa()" color="success">
                 <v-icon left>mdi-page-next-outline</v-icon>
                 <span>Guardar</span>
               </v-btn>
-              <v-btn @click="CancelarEdicionAprendizaje()" dark color="red">
+              <v-btn @click="CancelarEdicionSesionEducativa()" dark color="red">
                 <span>Cancelar</span>
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-stepper-content>
         <v-stepper-content step="2">
-          <!--Div que contendrá todos los datos de una sola sesion de reforzamiento-->
-          <v-card color="#EFEFEF" style="padding:3%" class="container-user">
-            <form>
-              <v-text-field
-                style="margin-top_5px"
-                outlined
-                :readonly="!edicionReforzamiento"
-                color="#009900"
-                label="Curso/Materia"
-              ></v-text-field>
-
-              <v-menu
-                v-model="datemenu1"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="fechaejemplo"
-                    style="margin-top_5px"
-                    outlined
-                    :readonly="!edicionReforzamiento"
-                    color="#009900"
-                    prepend-icon="mdi-calendar"
-                    v-bind="attrs"
-                    v-on="on"
-                    label="Fecha de Realización"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="fechaejemplo"
-                  :readonly="!edicionReforzamiento"
-                  @input="menu2 = false"
-                  locale="es-es"
-                ></v-date-picker>
-              </v-menu>
-              
-              <v-text-field
-                style="margin-top_5px"
-                outlined
-                :readonly="!edicionReforzamiento"
-                color="#009900"
-                label="Observaciones"
-              ></v-text-field>
-              <v-text-field
-                style="margin-top_5px"
-                outlined
-                :readonly="!edicionReforzamiento"
-                color="#009900"
-                label="Curso/Materia"
-              ></v-text-field>
-            </form>
-            <v-card-actions v-if="!edicionReforzamiento">
-              <v-btn @click="activarEdicionReforzamiento()" color="warning">
-                <v-icon left>mdi-book-outline</v-icon>
-                <span>Modificar</span>
-              </v-btn>
-            </v-card-actions >
-            <v-card-actions v-else>
-              <v-btn @click="GuardarEdicionReforzamiento()" color="success">
-                <v-icon left>mdi-page-next-outline</v-icon>
-                <span>Guardar</span>
-              </v-btn>
-              <v-btn @click="CancelarEdicionReforzamiento()" dark color="red">
-                <span>Cancelar</span>
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+          <!-- Esto no va aqui exactamente, solo es vista y modificacion, no insercion  
+          <AgregarParticipante
+          :sesioneducativa="sesioneducativa"
+          :listaresidentes="listaresidentes"
+          @close-dialog-detail="closeDialogDetalle()"
+        ></AgregarParticipante> -->
         </v-stepper-content>  
         <v-spacer></v-spacer>
         <v-card-actions style="padding:2% 3%">
@@ -167,16 +98,18 @@
 </template>
 
 <script>
+import AgregarParticipante from "@/components/sesioneseducativas/AgregarParticipante.vue";
 import moment from "moment";
 export default {
   name: "DetalleSesionEducativa",
-  props: ["residente"],
+  props: ["sesioneducativa"],
+  components:{
+    AgregarParticipante
+  },
   data(){
     return{
-      edicionAprendizaje:false,
-      edicionReforzamiento:false,
-      botonGuardarAprendizaje:false,
-      botonGuardarReforzamiento:false,
+      edicion:false,
+      botonGuardarSesionEducativa:false,
       step:1,
       datemenu: false,
       datemenu1:false,
@@ -187,34 +120,20 @@ export default {
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
     },
-    activarEdicionAprendizaje(){
-      this.edicionAprendizaje = true;
+    activarEdicionSesionEducativa(){
+      this.edicion = true;
     },
-    activarEdicionReforzamiento(){
-      this.edicionReforzamiento = true;
-    },
-    GuardarEdicionAprendizaje(){
-      this.edicionAprendizaje = false;
+    GuardarEdicionSesionEducativa(){
+      this.edicion = false;
       //Petición post para guardar edicion de sesion
     },
-    GuardarEdicionReforzamiento(){
-      //Petición post para guardar edicion de sesion
-      this.botonGuardarReforzamiento = true;
-      //Si todo es correcto, sucederá lo siguiente
-      this.edicionReforzamiento = false;
-    },
-    CancelarEdicionAprendizaje(){
-      this.edicionAprendizaje = false;
-
+    CancelarEdicionSesionEducativa(){
+      this.edicion = false;
       //Cancelar edicion de Reforzamiento
     },
-    CancelarEdicionReforzamiento(){
-      //Cancelar edicion de Reforzamiento
-      this.botonGuardarReforzamiento = true;
-      //Si todo es correcto, sucederá lo siguiente
-      this.edicionReforzamiento = false;
-      
-    }
+  },
+  created(){
+    
   }
 }
 </script>

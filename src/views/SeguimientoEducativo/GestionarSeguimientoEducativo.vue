@@ -77,6 +77,7 @@
 import axios from "axios";
 
 import DetalleSeguimientoEducativo from '@/components/seguimientoEducativo/DetalleSeguimientoEducativo.vue'
+import RegistrarSeguimientoEducativo from '@/components/seguimientoEducativo/RegistrarSeguimientoEducativo.vue'
 import { mapMutations, mapState } from "vuex";
 
 export default {
