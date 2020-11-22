@@ -376,22 +376,28 @@
                               />
                             </v-btn>
                           </template>
-                          <v-card>
+                          <v-card align="center">
                             <v-card-title>
                               <span class="headline">Vista previa</span>
                             </v-card-title>
                             <v-card-text>
-                               <img 
-                               width="100px"
-                               height="100px"
-                               :src="'data:image/jpeg;base64,' + imagen" alt="">                               
+                              <img
+                                width="100%"
+                                height="100%"
+                                :src="'data:image/jpeg;base64,' + imagen"
+                                alt=""
+                              />
                             </v-card-text>
                             <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="cerrarVistaPreviaFirma()">
-                        Cerrar
-                      </v-btn>                      
-                    </v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="cerrarVistaPreviaFirma()"
+                              >
+                                Cerrar
+                              </v-btn>
+                            </v-card-actions>
                           </v-card>
                         </v-dialog>
                       </v-col>
@@ -453,7 +459,7 @@ export default {
     return {
       //para probar
       fileList: [],
-      ///      
+      ///
       dialogVistaPreviaFirma: false,
       datemenu: false,
       step: 1,
@@ -503,7 +509,7 @@ export default {
           lugarevaluacion: "",
         },
       },
-      imagen: ""
+      imagen: "",
     };
   },
   async created() {
@@ -558,8 +564,6 @@ export default {
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
-            console.log("HOLA");
-            console.log(info);
             this.addInforme(info);
             this.cerrarDialogo();
           })
@@ -619,23 +623,19 @@ export default {
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
     },
-    verFirma(index) {      
-      console.log(this.informe.contenido.firmas[index].urlfirma);        
+    verFirma(index) {
+      console.log(this.informe.contenido.firmas[index].urlfirma);
       this.imagen = this.informe.contenido.firmas[index].urlfirma;
     },
-    cerrarVistaPreviaFirma(){ 
-        this.dialogVistaPreviaFirma = false;
+    cerrarVistaPreviaFirma() {
+      this.dialogVistaPreviaFirma = false;
     },
     afterSuccess(file, response) {
-      console.log(file);
-      console.log(file.dataURL);
-      console.log(this.$refs.myVueDropzone);
+      // console.log(file);
+      // console.log(file.dataURL);
+      // console.log(this.$refs.myVueDropzone);
 
       this.fileList.push(file);
-
-      //this.informe.contenido.anexos = file.dataURL.split(",")[1];
-      //this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
-      //console.log(file.dataURL.split(",")[1]);
     },
     afterRemoved(file, error, xhr) {
       this.informe.contenido.anexos = "";
@@ -754,7 +754,7 @@ export default {
         idresidente: {
           required,
         },
-        creadordocumento: { 
+        creadordocumento: {
           required,
         },
         fechacreacion: {
