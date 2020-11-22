@@ -708,7 +708,7 @@ export default {
          nombre:this.progreso.fase.nombre.toLowerCase(),
          fechaingreso:this.progreso.fechaingreso,
          fechafinalizacion:this.progreso.fechafinalizacion,
-         estado:this.progreso.estado}//creamos variables 
+         estado:this.progreso.estado.toLowerCase()}//creamos variables 
         this.residente.progreso.push(progreso); //añadimos al arreglo principal
         ///LIMPIAMOS LOS CAMPOS//
         this.progreso.fase = {nombre:'Acogida',fase:1};
