@@ -65,7 +65,6 @@ const actions = {
                 const DateNow = new Date();
 
                 let DateExpiration = new Date(res.data.expiration);
-                DateExpiration = new Date(DateExpiration.setHours(DateExpiration.getHours() + 5));
 
                 const expirationTime = (DateExpiration - DateNow);
 

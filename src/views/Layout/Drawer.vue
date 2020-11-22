@@ -157,7 +157,7 @@ export default {
           href: "/dashboard/seguimientoEducativo"
         },
         {
-          title: "Gestionar Plan de Intervención",
+          title: "Planes",
           group: "admin",
           icon: "dashboard",
           name: "GestionPlanIntervencion",

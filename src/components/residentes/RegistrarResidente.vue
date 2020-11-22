@@ -705,7 +705,7 @@ export default {
       if(!this.$v.progreso.$invalid){
           let progreso={ 
          fase: this.progreso.fase.fase,
-         nombre:this.progreso.fase.nombre,
+         nombre:this.progreso.fase.nombre.toLowerCase(),
          fechaingreso:this.progreso.fechaingreso,
          fechafinalizacion:this.progreso.fechafinalizacion,
          estado:this.progreso.estado}//creamos variables 

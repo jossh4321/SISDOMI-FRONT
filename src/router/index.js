@@ -88,6 +88,10 @@ const routes = [{
         component: () =>
             import ('../views/Login/Login.vue')
     },
+    {
+        path: '',
+        redirect: '/dashboard'
+    }
 ]
 
 const router = new VueRouter({
