@@ -197,6 +197,14 @@
                           </v-card-title>
                           <v-card-text>
                             <img
+                              v-if="imagen.includes('http')"
+                              width="100%"
+                              height="100%"
+                              :src="imagen"
+                              alt=""
+                            />
+                            <img
+                              v-else
                               width="100%"
                               height="100%"
                               :src="'data:image/jpeg;base64,' + imagen"
@@ -269,29 +277,11 @@ export default {
     async obtenerEducador() {
       await axios
         .get("/usuario/id?id=" + this.informe.creadordocumento)
-        .then((res) => {
+        .then((res) => {          
           console.log(res);
-          console.log(res.data);
           this.educador = res.data.datos.nombre + " " + res.data.datos.apellido;
         })
-        .catch((err) => console.log(err));
-        console.log(this.informe.creadordocumento);
-    },
-    agregarFirma() {
-      let firmas = {
-        urlfirma: this.urlfirma,
-        nombre: this.firmas.nombre,
-        cargo: this.firmas.cargo,
-      };
-      this.informe.contenido.firmas.push(firmas);
-      this.$refs.myVueDropzone.removeAllFiles();
-
-      this.urlfirma = "";
-      this.firmas.nombre = "";
-      this.firmas.cargo = "";
-    },
-    eliminarFirma(index) {
-      this.informe.contenido.firmas.splice(index, 1);
+        .catch((err) => console.log(err));        
     },
     verFirma(index) {
       console.log(this.informe.contenido.firmas[index].urlfirma);

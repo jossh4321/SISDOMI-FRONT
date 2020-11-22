@@ -74,7 +74,7 @@
                   color="#009900"
                   label="Educador responsable"
                   item-text="usuario"
-                  item-value="rol"
+                  item-value="id"
                   @input="$v.informe.creadordocumento.$touch()"
                   @blur="$v.informe.creadordocumento.$touch()"
                   :error-messages="errorCreador"
@@ -373,7 +373,7 @@
                   </vue-dropzone>
                 </div>
 
-                  <v-card
+                <v-card
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
                   <v-card
@@ -643,7 +643,7 @@ export default {
       if (this.$v.$invalid) {
         console.log("hay errores");
         this.mensaje(
-          "error",
+          "Error",
           "..Oops",
           "Se encontraron errores en el formulario",
           "<strong>Verifique los campos Ingresados<strong>"
