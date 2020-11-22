@@ -263,26 +263,26 @@
                     <v-col :cols="3">
                       <div style="margin-right:20px">
                         <!--card de  notas (conbinacion fuerte)-->
-                <v-row justify="center">
-                <v-dialog v-model="dialog1" persistent max-width="850px">
-                  <template v-slot:activator="{ on }">
+               
                        <v-btn
                           style="margin-right:15px;margin-top:-5px"
                           dark
                           color="#2E9CCF"
-                          v-on="on"
+                          @click="abrirDialogoNotas(item.puntajes)"
                         >
                           Ver Notas
-                        </v-btn>           
-                  </template>
+                        </v-btn>  
+          <!--Card de  trimestre --> 
+          <v-row justify="center">
+                <v-dialog v-model="dialog1" persistent max-width="850px">
                   <v-card>
                     <v-card-title>
                       <span class="headline"> Calificaciones</span>
                     </v-card-title>
                     <v-card-text>
-            <v-card align="center">
+            <v-card align="center" elevation="0">
             <v-card
-                style="margin-top:30px;left-top:10px;padding:5px -15px;width:50%;background-color:#EAEAEA"
+                style="margin-top:30px;left-top:10px;padding:5px -15px;width:50%;background-color:#4ABBEF"
                 
               >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
@@ -291,7 +291,7 @@
                 <!-- Cabecera -->
                 <v-card
                 elevation="0"
-                color="#EAEAEA"
+                color="#4ABBEF"
                 style="margin-top:5px; margin-bottom:15px"
                 height="30"
                 >
@@ -318,11 +318,10 @@
                   color="#FAFAFA"
                   style="margin-top:5px"
                   height="50"
-                  v-for="(item, index) in seguimiento.contenido.trimestre"
+                  v-for="(item, index) in notas"
                   :key="index"
                   
                 >
-                <div v-for="(item, index) in item.puntajes" :key="index">
                   <v-row style="margin-left:10px;heigh:100%;" align="center">
                     <v-col :cols="4">
                       <article>
@@ -351,7 +350,7 @@
                       </div>
                     </v-col>
                   </v-row>
-                </div>
+               
                 </v-card>
               </v-card>
               </v-card>
@@ -368,7 +367,7 @@
                       <v-btn
                         color="blue darken-1"
                         text
-                        @click="dialog1 = false"
+                        @click="dialog1 = false;"
                       >
                         Cerrar
                       </v-btn>
@@ -420,6 +419,7 @@ data(){
     dialog: false,//dialogo de ver firma
     dialog1:false,//dialogo de ver notas
     step: 1,
+    notas:[],
     nombrecompleto: this.residente.nombre +" " + this.residente.apellido
     
         }
@@ -429,6 +429,11 @@ data(){
       cerrarDialogo(){
         this.$emit("close-dialog-detail");
       },
+      abrirDialogoNotas(notas){
+        this.notas=notas;
+        this.dialog1=true;
+        console.log(this.notas)
+      }
       
 
 
