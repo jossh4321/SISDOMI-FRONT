@@ -30,7 +30,7 @@
 
 <script>
 export default {
-name:RegistrarSeguimientoEducativo
+name:'RegistrarSeguimientoEducativo'
 }
 </script>
 
