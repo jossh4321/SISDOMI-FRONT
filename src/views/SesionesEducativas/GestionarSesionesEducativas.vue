@@ -37,11 +37,10 @@
                   <span>Nueva Sesion Educativa</span>
                 </v-btn>
               </template>
-              <!--
               <RegistrarSesionEducativa
                 :listaresidentes="listaresidentes"
-                @close-dialog-save="closeDialogRegistrar()"
-              ></RegistrarSesionEducativa>-->
+                @close-dialog-dontsave="closeDialogRegistrar()"
+              ></RegistrarSesionEducativa>
             </v-dialog>
           </v-toolbar>
         </template>
@@ -63,11 +62,18 @@
       </v-data-table>
       <!--Dialogo de Detalle-->
       <v-dialog persistent v-model="dialogodetalle" max-width="880px">
-        <!--
         <DetalleSesionEducativa
           :sesioneducativa="sesioneducativa"
           @close-dialog-detail="closeDialogDetalle()"
-        ></DetalleSesionEducativa>-->
+        ></DetalleSesionEducativa>
+      </v-dialog>
+      <!--Dialogo de Agregar Participantes-->
+      <v-dialog persistent v-model="dialogoparticipante" max-width="880px">
+        <AgregarParticipante
+          :sesioneducativa="sesioneducativa"
+          :listaresidentes="listaresidentes"
+          @close-dialog-detail="closeDialogDetalle()"
+        ></AgregarParticipante>
       </v-dialog>
     </v-card>
   </div>
@@ -99,6 +105,7 @@ export default {
       listaresidentes:[],
       dialogoregistro: false,
       dialogodetalle: false,
+      dialogoparticipante:false,
       loading:true
     }
   },
@@ -113,6 +120,9 @@ export default {
     closeDialogRegistrar() {
       this.dialogoregistro = false;
     },
+    closeDialogParticipantes() {
+      this.dialogoparticipante = false;
+    },
 
     convertDateFormat(string) {
         //cambia formato de fecha de MongoDB a dd/MM/yyyy
@@ -124,15 +134,20 @@ export default {
       this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion);
       this.dialogodetalle = !this.dialogodetalle;
     },
+    async abrirDialogoParticipante(idsesion) {
+      this.listaresidentes = await this.obtenerResidentes();
+      this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion);
+      this.dialogoparticipante = !this.dialogoparticipante;
+    },
 
     //Obtener datos de una sesión por id
     async loadSesionEducativaDetalle(idsesion) {
       var user = {};
       await axios
-        .get("/residente/id?id=" + idsesion)
+        .get("/SesionesEducativas/id?id=" + idsesion)
         .then((res) => {
           user = res.data;
-          user.fechaCreacion = this.convertDateFormat(user.fechaCreacion);
+          user.fechaCreacion = user.fechaCreacion.split("T")[0];
         })
         .catch((err) => console.log(err));
       console.log(user);
