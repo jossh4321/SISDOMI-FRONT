@@ -73,7 +73,7 @@
                 color="#009900"
                 label="Educador responsable"
                 item-text="usuario"
-                item-value="rol"
+                item-value="id"
                 @input="$v.informe.creadordocumento.$touch()"
                 @blur="$v.informe.creadordocumento.$touch()"
                 :error-messages="errorCreador"
@@ -313,8 +313,6 @@
                 </v-row>
               </v-card> -->
             </v-card>
-
-
               <v-card
                 style="
                   margin-top: 30px;
