@@ -88,7 +88,7 @@ export default {
     return {
       search: "",
       plan: {},
-      planIntervencion: [],
+      planA: [],
       headers: [
         {
           text: "Nombre Plan Intervención",
@@ -128,26 +128,26 @@ export default {
     };
   },
  async created(){
-    this.obtenerPlanInterve()
+    //this.obtenerPlanInterve()
  },
 
   methods: {
      ...mapMutations(["setPlanInterve"]),
     async editItem(item) {
-      this.planIntervencion =  await this.actu(item); 
+      this.planA =  await this.actu(item); 
       this.dialogoactualizacion=!this.dialogoactualizacion;
       console.log(item);
    //   console.log(item);
     },
     async actu(item){
    
-      var planesI = {};
+      var planA = {};
       await axios.get("/usuario/id?id="+id)//prueba
       .then(res => {
-         planesI = res.data; 
+         planA = res.data; 
       })
       .catch(err => console.log(err));
-      return this.planesI;
+      return this.planA;
     },
     detailItem(item) {
            
