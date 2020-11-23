@@ -215,16 +215,20 @@
                   </v-card>
                 </v-card>
 
-                <div>
-                  <vue-dropzone
-                    ref="myVueDropzone"
-                    @vdropzone-success="afterSuccess"
-                    @vdropzone-removed-file="afterRemoved"
-                    id="dropzone"
-                    :options="dropzoneOptions"
-                  >
-                  </vue-dropzone>
-                </div>
+                <v-card
+                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                >
+                      <div>
+                        <vue-dropzone
+                        ref="myVueDropzone2"
+                        @vdropzone-success="afterSuccess"
+                        @vdropzone-removed-file="afterRemoved"
+                        id="dropzone"
+                        :options="dropzoneOptions"
+                        >
+                        </vue-dropzone>
+                      </div>
+                </v-card>
 
                 <v-card
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
@@ -436,7 +440,7 @@ export default {
         id: "",
         tipo: "",
         historialcontenido: [],
-        creadordocumento: "",
+        creadordocumento: "5f9e4cdae4655cf92eaa4d5b",
         fechacreacion: "",
         area: "social",
         fase: "acogida",
@@ -461,9 +465,11 @@ export default {
   methods: {
     ...mapMutations(["addInforme"]),
     async sendPDFFiles() {
+      let listaTitulos = [];
       let listaanexos = this.fileList;
       for (let index = 0; index < this.fileList.length; index++) {
         let formData = new FormData();
+        listaTitulos.push(this.fileList[index].name)
         formData.append("file", this.fileList[index]);
         await axios
           .post("/Media/archivos/pdf", formData)
@@ -472,15 +478,22 @@ export default {
           })
           .catch((err) => console.log(err));
       }
-      this.informe.contenido.anexos = listaanexos;
-      console.log(listaanexos);
+      for (let index = 0; index < this.fileList.length; index++) {
+        this.informe.contenido.anexos.push(
+          {
+            url: listaanexos[index],
+            titulo: listaTitulos[index],
+          }
+        )
+      }
+      console.log(this.informe.contenido.anexos);
     },
     async registrarInforme() {
       await this.sendPDFFiles();
-      if (this.titulo === "Registrar Informe Educativo Evolutivo") {
-        this.informe.tipo = "InformeEducativoEvolutivo";
+      if (this.titulo === "Registrar Informe Social Evolutivo") {
+        this.informe.tipo = "InformeSocialEvolutivo";
       } else {
-        this.informe.tipo = "InformeEducativoFinal";
+        this.informe.tipo = "InformeSocialFinal";
       }
       console.log(this.informe);
       this.$v.$touch();
@@ -576,14 +589,16 @@ export default {
       this.dialogVistaPreviaFirma = false;
     },
     afterSuccess(file, response) {
-      console.log(file);
-      console.log(file.dataURL);
-      console.log(this.$refs.myVueDropzone);
       this.fileList.push(file);
+      console.log(this.fileList.length)
     },
     afterRemoved(file, error, xhr) {
-      this.informe.contenido.anexos = "";
-      //this.$v.informe.contenido.anexos.$model = "";
+      this.fileList.forEach(function(car, index, object) {
+        if (car === file) {
+          object.splice(index, 1);
+        }
+      });
+      console.log(this.fileList.length)
     },
     afterSuccess2(file, response) {
       this.urlfirma = file.dataURL.split(",")[1];
