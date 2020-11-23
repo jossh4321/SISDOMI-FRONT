@@ -20,7 +20,7 @@
             <div class="container-planI">
               <form>
                 <v-row>
-                  <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                     <v-text-field
                       :value="planIntervencion.contenido.titulo"
                       label="Nombre del Plan de Intervención"
@@ -29,7 +29,7 @@
                       readonly
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                     <v-text-field
                       :value="planIntervencion.contenido.car"
                       label="Nombre del CAR"
@@ -39,7 +39,7 @@
                     >
                     </v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                     <v-text-field
                       :value="
                         planIntervencion.residente.nombre +
@@ -53,7 +53,7 @@
                     >
                     </v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                     <v-text-field
                       :value="planIntervencion.contenido.edad"
                       label="Edad del Residente"
@@ -63,7 +63,7 @@
                     >
                     </v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                     <v-text-field
                       :value="planIntervencion.contenido.trimestre"
                       label="Trimestre"
@@ -73,7 +73,7 @@
                     >
                     </v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                     <v-text-field
                       :value="planIntervencion.contenido.objetivogeneral"
                       label="Objetivo General"
