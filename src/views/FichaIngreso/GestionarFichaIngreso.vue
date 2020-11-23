@@ -116,11 +116,12 @@ export default {
      SeleccionarFichaIngreso:false,
       fichaIngreso: [],
       dialogDialogNuevaFichaIngreso :false,
+       listaresidentes: [],
     };
   },
       async created(){
       this.obtenerfichasIngresos();
-      this.obtenerFichasBusquedad();
+     
   },
 
   methods: {
@@ -130,21 +131,7 @@ export default {
     {
       this.dialogDialogNuevaFichaIngreso=false
     },
-        async obtenerFichasBusquedad() {
-      await axios
-        .get("Documento/all/fichaingresoresidente")
-        .then((res) => {
-          var info = {};
-          info = res.data;
-          for (var x=0;x<res.data.length;x++){
-              info[x].fechacreacion = res.data[x].fechacreacion.split("T")[0];
-              info[x].tipo = res.data[x].tipo.replace(/([a-z])([A-Z])/g, '$1 $2');
-          }
-          console.log(res.data[1].tipo);
-          this.setInformes(info);
-        })
-        .catch((err) => console.log(err));
-    },
+       
     
        async obtenerfichasIngresos(){
            await axios.get("/Documento/all/fichaingresoresidente")
