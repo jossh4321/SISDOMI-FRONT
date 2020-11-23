@@ -80,6 +80,17 @@
         </v-stepper-content>
         <v-stepper-content step="2">
           <v-card>
+            <v-expansion-panels focusable>
+              <v-expansion-panel
+                v-for="(item,i) in sesioneducativa.contenido.participantes"
+                :key="i"
+              >
+                <v-expansion-panel-header>{{item.idparticipante}}</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
             <v-card-actions v-if="edicion">
               <v-btn @click="GuardarEdicionSesionEducativa()" color="success">
                 <v-icon left>mdi-page-next-outline</v-icon>
@@ -123,8 +134,6 @@ export default {
       botonGuardarSesionEducativa:false,
       step:1,
       datemenu: false,
-      datemenu1:false,
-      fechaejemplo: '2011-04-11' //Ejemplo de fecha
     }
   },
   methods:{
