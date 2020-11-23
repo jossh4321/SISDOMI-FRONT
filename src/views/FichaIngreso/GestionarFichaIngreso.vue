@@ -41,8 +41,11 @@
               </template>
                 <SeleccionarFichaIngreso @close-dialog-initial="closeDialogNuevaFichaIngreso()"/>
                 
-            </v-dialog>-->
+            </v-dialog>
           </v-toolbar>
+        </template>
+         <template v-slot:[`item.fechacreacion`]="{ item }">
+          {{ item.fechacreacion | moment("DD-MM-YYYY") }}
         </template>
         <template ><!-- v-slot:[`item.actions`]="{ item }"-->
           <v-row align="center" justify="space-around">
@@ -53,7 +56,7 @@
             <v-icon left> mdi-pencil </v-icon>
               <span>ModificarFichaIngreso</span>
             </v-btn>
-            <v-btn 
+            <v-btn ,
             color="info" dark
              @click="abrirDialogoConsultar(item.id)">
               <v-icon left> mdi-briefcase-edit </v-icon>
@@ -100,23 +103,25 @@ export default {
       residente:{},
       headers: [
         {
-          text: "Codigo ",
+          text: "Codigo de la Ficha ",
           align: "start",
           sortable: false,
           value: "codigodocumento",
         },
-        { text: "Tipo Ficha Ingreso ", value: "tipo"},
-        { text: "Àrea", value: "area" },
-        { text:"Fase",value:"fase"},
-        { text: "Actions", value: "actions", sortable: false },
+        { text: "Residente", value: "residenteresultado"},
+        { text: "Fecha Creacion", value: "fechacreacion" },
+        { text: "Area",value:"area"},
+        { text: "Aciones", value: "actions", sortable: false },
       ],
      SeleccionarFichaIngreso:false,
       fichaIngreso: [],
       dialogDialogNuevaFichaIngreso :false,
+       listaresidentes: [],
     };
   },
       async created(){
       this.obtenerfichasIngresos();
+     
   },
 
   methods: {
@@ -126,6 +131,7 @@ export default {
     {
       this.dialogDialogNuevaFichaIngreso=false
     },
+       
     
        async obtenerfichasIngresos(){
            await axios.get("/Documento/all/fichaingresoresidente")
@@ -133,7 +139,14 @@ export default {
               //console.log( "porfavor" )
               this.setFichaIngreso(res.data);
             }).catch(err => console.log(err));            
-    }
+    },
+    async obtenerResidentes(){
+          await axios.get("/residente/all")
+                  .then( x => {
+                            this.listaresidentes = x.data;
+                            console.log(this.listaresidentes);
+                  }).catch(err => console.log(err));
+        },
 
   },computed:{
     ...mapState(["fichaingreso"]),
