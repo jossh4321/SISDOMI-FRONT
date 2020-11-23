@@ -34,9 +34,12 @@
                   <span>Registrar Sesion  Educativo</span>
                 </v-btn>
               </template>
-           <!--   <RegistrarPlanIntervencion
-                @close-dialog="closeDialog"
-              ></RegistrarPlanIntervencion>-->
+             <RegistrarSeguimientoEducativo
+             
+             :listaresidentes ="listaresidentes"
+             @close-dialog-save="closeDialogRegistrar()"
+             >
+             </RegistrarSeguimientoEducativo>
             </v-dialog>
           </v-toolbar>
         </template>
@@ -83,7 +86,8 @@ import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarSeguimientoEducativo",
   components: {
-    DetalleSeguimientoEducativo
+    DetalleSeguimientoEducativo,
+    RegistrarSeguimientoEducativo
     
   },
   data() {
