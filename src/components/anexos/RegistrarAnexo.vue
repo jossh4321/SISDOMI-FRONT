@@ -15,16 +15,37 @@
         ></v-text-field>
 
         <v-autocomplete
-          filled
-          label="Residente"
+          label="Nombres y apellidos del residente"
           outlined
-          v-model.trim="anexo.idresidente"
+          v-model="residente"
+          :loading="loadingSearch"
+          :search-input.sync="searchResidente"
           :items="listResidentes"
-          @input="$v.anexo.idresidente.$touch()"
-          @blur="$v.anexo.idresidente.$touch()"
           item-text="residente"
-          item-value="idresidente"
+          item-value="id"
+          hide-no-data
+          hide-selected
+          return-object
+          @input="$v.residente.id.$touch()"
+          @blur="$v.residente.id.$touch()"
+          :error-messages="errorResidente"
         >
+          <template v-slot:item="item">
+            <v-list-item-avatar
+              color="primary"
+              class="headline font-weight-light white--text"
+            >
+              {{ item.item.residente.charAt(0) }}
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ item.item.residente }}
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                DNI: {{ item.item.numeroDocumento }}
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </template>
         </v-autocomplete>
 
         <v-textarea
@@ -48,22 +69,25 @@
             :options="dropzoneOptions"
           >
           </vue-dropzone>
-          <v-card color="red">
-            <v-card-text class="text-center" style="color: white">
-              Debe subir un anexo obligatoriamente
-            </v-card-text>
-          </v-card>
+          <v-alert type="error" v-if="!$v.anexosAux.required" class="mt-2">
+            Debe subir un anexo obligatoriamente
+          </v-alert>
         </div>
         <v-divider class="divider-custom"></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="closeDialog">
-            Cerrar
-          </v-btn>
-          <v-btn block color="accent">
-            <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
-            <span>Registrar Anexo</span>
-          </v-btn>
+          <v-col cols="12" sm="6" md="6">
+            <v-btn block color="success" elevation="2" @click="registrarAnexo">
+              <v-icon left>mdi-content-save-all-outline</v-icon>
+              <span>Registrar Anexo</span>
+            </v-btn>
+          </v-col>
+          <v-col cols="12" sm="6" md="6">
+            <v-btn color="error" elevation="2" block @click="closeDialog">
+              <v-icon left>mdi-close-outline</v-icon>
+              Cerrar
+            </v-btn>
+          </v-col>
         </v-card-actions>
       </form>
     </div>
@@ -109,10 +133,64 @@ export default {
         dictDefaultMessage: "Seleccione el anexo respectivo o arrástrelo aquí",
       },
       anexosAux: [],
+      residente: {
+        residente: "",
+        id: "",
+      },
+      searchResidente: null,
+      loadingSearch: false,
     };
   },
   methods: {
     ...mapMutations(["setResidentes"]),
+    async registrarAnexo() {
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>",
+          false
+        );
+      } else {
+        /*
+        for (let index = 0; index < this.anexosAux.length; index++) {
+          let formData = new FormData();
+
+          formData.append("file", this.anexosAux[index]);
+
+          await axios
+            .post("/Media", formData)
+            .then((res) => {
+              this.anexo.enlaces[index].link = res.data;
+              this.anexo.enlaces[index].descripcion = "Enlace " + (index + 1);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+
+        this.anexo.idresidente = this.residente.id;
+
+        await axios
+          .post("/Anexo", anexo)
+          .then((res) => {
+            this.anexo = res.data;
+            if (this.anexo.id !== "") {
+              this.mensaje(
+                "success",
+                "Listo",
+                "Anexo registrado satisfactoriamente",
+                "<strong>Se redirigiá a la Interfaz de Gestión<strong>",
+                true
+              );
+            }
+          })
+          .catch((err) => console.log(err)); */
+        alert("Ta bien");
+      }
+    },
     afterSuccess(file, response) {
       this.anexosAux.push(file);
     },
@@ -152,21 +230,6 @@ export default {
         area: "",
       };
     },
-    async obtenerResidentes() {
-      await axios
-        .get("/residente/all")
-        .then((res) => {
-          this.setResidentes(res.data);
-          res.data.forEach((element) => {
-            //this.listResidentes.splice(0,0,element.apellido)
-            this.listResidentes.push({
-              residente: element.apellido + " " + element.nombre,
-              idresidente: element.id,
-            });
-          });
-        })
-        .catch((err) => console.log(err));
-    },
     closeDialog() {
       this.$emit("close-dialog");
     },
@@ -196,23 +259,58 @@ export default {
     },
     errorResidente() {
       const errors = [];
-      if (!this.$v.anexo.idresidente.$dirty) return errors;
-      !this.$v.anexo.idresidente.required &&
+      if (!this.$v.residente.id.$dirty) return errors;
+      !this.$v.residente.id.required &&
         errors.push("Debe ingresar un residente obligatoriamente");
-      !this.$v.anexo.idresidente != "" &&
-        errors.push("Debe seleccionar el residente inicialmente");
       return errors;
     },
   },
-  async created() {
-    this.obtenerResidentes();
+  watch: {
+    searchResidente(value) {
+      if (value == null) {
+        this.residente = {
+          residente: "",
+          id: "",
+        };
+      }
+
+      if (this.listResidentes.length > 0) {
+        return;
+      }
+      if (this.loadingSearch) {
+        return;
+      }
+
+      this.loadingSearch = true;
+
+      axios
+        .get("/residente/all")
+        .then((res) => {
+          let residentesMap = res.data.map(function (res) {
+            return {
+              residente: res.nombre + " " + res.apellido,
+              numeroDocumento: res.numeroDocumento,
+              id: res.id,
+            };
+          });
+
+          this.listResidentes = residentesMap;
+
+          this.loadingSearch = false;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
   },
   validations() {
     return {
-      anexo: {
-        idresidente: {
+      residente: {
+        id: {
           required,
         },
+      },
+      anexo: {
         descripcion: {
           required,
           minLength: minLength(4),
