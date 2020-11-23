@@ -1,7 +1,18 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+// jshint esversion:8
 
-Vue.use(Vuex)
+import Vue from 'vue';
+import Vuex from 'vuex';
+
+//Para el uso del axios en las acciones
+import axios from 'axios';
+
+//Para el uso de rutas en las acciones
+import router from '../router/index.js';
+
+/* Uso del módulo de autenticación */
+import authentication from '@/store/modules/authentication.js';
+
+Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
@@ -10,6 +21,8 @@ export default new Vuex.Store({
         residentes: [],
         informes: [],
         fichaingreso: [],
+        seguimientoEducativo: [],
+        sesionesEducativas: []
     },
     mutations: {
         toggleDrawer(state) {
@@ -32,8 +45,19 @@ export default new Vuex.Store({
         setResidentes(state, value) {
             state.residentes = value;
         },
-        addResidente(state,value){
-           state.residentes.push(value);
+        addResidente(state, value) {
+            state.residentes.push(value);
+        },
+        ///SESIONES EDUCATIVAS
+        setSesionesEducativas(state, value) {
+            state.sesionesEducativas = value;
+        },
+        addSesionesEducativas(state, value) {
+            state.sesionesEducativas.push(value);
+        },
+        replaceSesionesEducativas(state, value) {
+            var index = state.sesionesEducativas.findIndex(x => x.id == value.id);
+            state.sesionesEducativas.splice(index, 1, value);
         },
         ///INFORMES
         setInformes(state, value) {
@@ -42,17 +66,34 @@ export default new Vuex.Store({
         addInforme(state, value) {
             state.informes.push(value);
         },
+        replaceInforme(state, value) {
+            var index = state.informes.findIndex(x => x.id == value.id);
+            state.informes.splice(index, 1, value);
+        },
         ///FICHAINGRESOS
         setFichaIngreso(state, value) {
             state.fichaingreso = value;
         },
         addFichaIngreso(state, value) {
             state.fichaingreso.push(value);
-        },replaceResidente(state, value) {
+        },
+        replaceResidente(state, value) {
             var index = state.residentes.findIndex(x => x.id == value.id);
             state.residentes.splice(index, 1, value);
         },
+        //SEGUIMIENTO EDUCATIVO
+        setSeguimiento(state, value) {
+            state.seguimientoEducativo = value;
+        },
+        addSeguimiento(state, value) {
+            state.seguimientoEducativo.push(value);
+        },
+        replaceSeguimiento(state, value) {
+            var index = state.seguimientoEducativo.findIndex(x => x.id == value.id);
+            state.seguimientoEducativo.splice(index, 1, value);
+        },
     },
-    actions: {},
-    modules: {}
-})
+    modules: {
+        authentication
+    }
+});

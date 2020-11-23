@@ -23,13 +23,24 @@
                         <v-icon left>done</v-icon>
                         <span >Continuar</span>
                         </v-btn>
-                        <RegistrarInformeEducativoEvolutivo v-if="showRegistrarInformeEE" :listaresidentes="listaresidentes" :listaeducadores="listaeducadores" 
-                        :visible="showRegistrarInformeEE" :titulo="titulo" @close="showRegistrarInformeEE=false"/>                     
+                        <RegistrarInformeEducativoEvolutivo 
+                            v-if="showRegistrarInformeEE" 
+                            :listaresidentes="listaresidentes" 
+                            :listaeducadores="listaeducadores" 
+                            :visible="showRegistrarInformeEE" 
+                            :titulo="titulo" 
+                            @close="showRegistrarInformeEE=false"/>                     
                         <RegistrarInformeEducativoInicial 
+                            v-if="showRegistrarInformeEI"
                             :listaresidentes="listaresidentes"
-                            :listaeducadores="listaeducadores"                             
+                            :listaeducadores="listaeducadores"           
                             :visible="showRegistrarInformeEI"  
-                            @close="showRegistrarInformeEI=false"/>                  
+                            @close="showRegistrarInformeEI=false"/>
+                        <RegistrarInformeSocialInicial                 
+                            v-if="showRegistrarInformeSI"
+                            :listaresidentes="listaresidentes" 
+                            :visible="showRegistrarInformeSI"  
+                            @close="showRegistrarInformeSI=false"/>                  
                     </v-col>
                 </template>
             </v-row>
@@ -40,13 +51,16 @@
 <script> 
 import axios from 'axios';
 import RegistrarInformeEducativoInicial from '@/components/informes/RegistrarInformeEducativoInicial.vue'
-import RegistrarInformeEducativoEvolutivo from '@/components/informes/RegistroInformeEducativoEvolutivo.vue'
+import RegistrarInformeEducativoEvolutivo from '@/components/informes/RegistrarInformeEducativoEvolutivo.vue'
+import RegistrarInformeSocialInicial from '@/components/informes/RegistrarInformeSocialInicial.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
     props:["listaresidentes", "listaeducadores"],
     components: {
         RegistrarInformeEducativoInicial,
-        RegistrarInformeEducativoEvolutivo
+        RegistrarInformeEducativoEvolutivo,
+        RegistrarInformeSocialInicial
+        
     },
     data () {
       return {                
@@ -63,7 +77,8 @@ export default {
         ],
         titulo:"Titulo por defecto",
         showRegistrarInformeEI: false,
-        showRegistrarInformeEE: false
+        showRegistrarInformeEE: false,
+        showRegistrarInformeSI: false,
       }
     },
      methods:{
@@ -72,18 +87,24 @@ export default {
         },
         abrirDialogo(){
             console.log(this.items.value);
-            if(this.items.value === "1"){
-                this.showRegistrarInformeEI = true;
-            }else if(this.items.value ==="2"){
-                this.titulo = "Registrar Informe Educativo Evolutivo"
-                this.showRegistrarInformeEE = true;
-            }else if(this.items.value ==="3"){
-                this.titulo = "Registrar Informe Educativo Final"
-                this.showRegistrarInformeEE = true;
-            } 
-            else{
-                console.log("no encontre ni pincho");
-            }
+            switch(this.items.value){
+                case "1":
+                    this.showRegistrarInformeEI = true;
+                    break;
+                case "2":
+                    this.titulo = "Registrar Informe Educativo Evolutivo"
+                    this.showRegistrarInformeEE = true;
+                    break;
+                case "3":
+                    this.titulo = "Registrar Informe Educativo Final"
+                    this.showRegistrarInformeEE = true;
+                    break;
+                case "4":
+                    this.showRegistrarInformeSI = true;
+                    break;
+                default: 
+                    console.log("no encontre ni pincho");
+            }            
             this.$emit("close-dialog-save");
         },
      }

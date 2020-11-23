@@ -474,12 +474,12 @@
                     </v-col>
                     <v-col :cols="3">
                       <article>
-                        <span style="font-size:16px">{{moment(item.fechaingreso).format('L')}}</span>
+                        <span style="font-size:16px">{{convertDateFormat(item.fechaingreso)}}</span>
                       </article>
                     </v-col>
                     <v-col :cols="3">
                       <article>
-                        <span style="font-size:16px">{{item.fechafinalizacion!=="" ? (moment(item.fechafinalizacion).format('L')): "No finalizado"}}</span>
+                        <span style="font-size:16px">{{convertDateFormat(item.fechafinalizacion)!=="" ? (convertDateFormat(item.fechafinalizacion)): "No finalizado"}}</span>
                       </article>
                     </v-col>
                     <v-col :cols="2">
@@ -705,10 +705,10 @@ export default {
       if(!this.$v.progreso.$invalid){
           let progreso={ 
          fase: this.progreso.fase.fase,
-         nombre:this.progreso.fase.nombre,
+         nombre:this.progreso.fase.nombre.toLowerCase(),
          fechaingreso:this.progreso.fechaingreso,
          fechafinalizacion:this.progreso.fechafinalizacion,
-         estado:this.progreso.estado}//creamos variables 
+         estado:this.progreso.estado.toLowerCase()}//creamos variables 
         this.residente.progreso.push(progreso); //añadimos al arreglo principal
         ///LIMPIAMOS LOS CAMPOS//
         this.progreso.fase = {nombre:'Acogida',fase:1};
@@ -763,6 +763,11 @@ export default {
         );
       }
     },
+    convertDateFormat(string) {
+        var dateMongo = string.split('T');
+        var date = dateMongo[0].split('-');
+        return date[2] + '/' + date[1] + '/' + date[0];
+    }
   },
 
   computed: {
@@ -837,7 +842,7 @@ export default {
       const errors = [];
       if (!this.$v.residente.ubigeo.$dirty) return errors;
       !this.$v.residente.ubigeo.required &&
-        errors.push("Debe ingresar un Lugar de Nacimiento Obligatoriamente");
+        errors.push("Debe ingresar un Ubigeo Obligatoriamente");
       !this.$v.residente.ubigeo.minLength &&
         errors.push("El Lugar de Nacimiento debe tener al menos 3 caracteres");
       return errors;
@@ -994,7 +999,7 @@ export default {
         },
         juzgadoProcedencia: {
           required,
-          minLength: minLength(4),
+          minLength: minLength(3),
         },
         fechaNacimiento: {
           required,

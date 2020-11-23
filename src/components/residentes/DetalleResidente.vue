@@ -276,7 +276,7 @@
                          
         
             <v-card
-                style="margin-top:10%;width:100%;padding:5px 5px;background-color:#EAEAEA"
+                style="margin-top:30px;width:100%;padding:5px 5px;background-color:#EAEAEA"
               >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
                   >Lista de Progresos de Residente</v-card-title
@@ -331,12 +331,12 @@
                     </v-col>
                     <v-col :cols="3">
                       <article>
-                        <span style="font-size:16px">{{moment(item.fechaingreso).format('L')}}</span>
+                        <span style="font-size:16px">{{convertDateFormat(item.fechaingreso)}}</span>
                       </article>
                     </v-col>
                     <v-col :cols="3">
                       <article>
-                        <span style="font-size:16px">{{item.fechafinalizacion!=="" ? (moment(item.fechafinalizacion).format('L')): "No finalizado"}}</span>
+                        <span style="font-size:16px">{{convertDateFormat(item.fechafinalizacion)!=="" ? (convertDateFormat(item.fechafinalizacion)): "No finalizado"}}</span>
                       </article>
                     </v-col>
                     <v-col :cols="2">
@@ -443,7 +443,13 @@ export default {
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
     },
+    convertDateFormat(string) {
+        var dateMongo = string.split('T');
+        var date = dateMongo[0].split('-');
+        return date[2] + '/' + date[1] + '/' + date[0];
+    },
   },
+  
   computed: {},
 };
 </script>

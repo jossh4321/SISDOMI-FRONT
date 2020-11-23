@@ -1,17 +1,19 @@
 <template>
   <v-card>
     <v-card-title class="justify-center">
-      Registrar plan de intervención psicológico
+      Modificación del plan de intervencion psicológico
     </v-card-title>
     <v-card-text>
-      <v-stepper v-model="startStteper">
+      <v-stepper v-model="startSttepper">
         <v-stepper-header>
           <v-stepper-step editable step="1">
             Datos del Residente
           </v-stepper-step>
+          <v-divider></v-divider>
           <v-stepper-step editable step="2">
             Aspectos de Intervención
           </v-stepper-step>
+          <v-divider></v-divider>
           <v-stepper-step editable step="3">
             Datos del Psicólogo
           </v-stepper-step>
@@ -24,20 +26,15 @@
                   <v-text-field
                     label="Título"
                     outlined
-                    v-model.trim="getTitleByFaseResident"
+                    v-model.trim="planI.contenido.titulo"
                     required
                     :error-messages="planTituloErrors"
-                    @input="
-                      $v.planResidentePsicologico.contenido.titulo.$touch()
-                    "
-                    @blur="
-                      $v.planResidentePsicologico.contenido.titulo.$touch()
-                    "
-                    readonly
+                    @input="$v.planI.contenido.titulo.$touch()"
+                    @blur="$v.planI.contenido.titulo.$touch()"
                     color="success"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="6">
+                <!-- <v-col cols="12" sm="6" md="6">
                   <v-autocomplete
                     v-model="residente"
                     :loading="loadingSearch"
@@ -73,12 +70,12 @@
                       </v-list-item-content>
                     </template>
                   </v-autocomplete>
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
                     label="DNI del Residente"
                     outlined
-                    :value="residente != null ? residente.numeroDocumento : ''"
+                    :value="planI.residente.numeroDocumento != null ? planI.residente.numeroDocumento : ''"
                     readonly
                   >
                   </v-text-field>
@@ -96,7 +93,7 @@
                   <v-text-field
                     label="Sexo"
                     outlined
-                    :value="residente != null ? residente.sexo : ''"
+                    :value="planI.residente != null ? planI.residente.sexo : ''"
                     readonly
                   >
                   </v-text-field>
@@ -105,7 +102,7 @@
                   <v-text-field
                     label="Motivo de ingreso"
                     outlined
-                    :value="residente != null ? residente.motivoIngreso : ''"
+                    :value="planI.residente != null ? planI.residente.motivoIngreso : ''"
                     readonly
                   >
                   </v-text-field
@@ -114,7 +111,7 @@
                   <v-text-field
                     label="Estado"
                     outlined
-                    :value="residente != null ? residente.estado : ''"
+                    :value="planI.residente != null ? planI.residente.estado : ''"
                     readonly
                   >
                   </v-text-field>
@@ -155,17 +152,11 @@
                     rows="3"
                     row-height="10"
                     outlined
-                    v-model.trim="
-                      planResidentePsicologico.contenido.descripcion
-                    "
+                    v-model.trim="planI.contenido.descripcion"
                     required
                     :error-messages="planDescripcionErrors"
-                    @input="
-                      $v.planResidentePsicologico.contenido.descripcion.$touch()
-                    "
-                    @blur="
-                      $v.planResidentePsicologico.contenido.descripcion.$touch()
-                    "
+                    @input="$v.planI.contenido.descripcion.$touch()"
+                    @blur="$v.planI.contenido.descripcion.$touch()"
                     color="success"
                   >
                   </v-textarea>
@@ -176,17 +167,11 @@
                     rows="3"
                     row-height="10"
                     outlined
-                    v-model.trim="
-                      planResidentePsicologico.contenido.frecuenciaSesion
-                    "
+                    v-model.trim="planI.contenido.frecuenciasesion"
                     required
                     :error-messages="planFrecuenciaSesionErrors"
-                    @input="
-                      $v.planResidentePsicologico.contenido.frecuenciaSesion.$touch()
-                    "
-                    @blur="
-                      $v.planResidentePsicologico.contenido.frecuenciaSesion.$touch()
-                    "
+                    @input="$v.planI.contenido.frecuenciasesion.$touch()"
+                    @blur="$v.planI.contenido.frecuenciasesion.$touch()"
                     color="success"
                   >
                   </v-textarea>
@@ -196,16 +181,10 @@
                     label="Número de sesiones"
                     outlined
                     type="number"
-                    v-model.number="
-                      planResidentePsicologico.contenido.numeroSesion
-                    "
+                    v-model.number="planI.contenido.numerosesion"
                     :error-messages="planNumeroSesionErrors"
-                    @input="
-                      $v.planResidentePsicologico.contenido.numeroSesion.$touch()
-                    "
-                    @blur="
-                      $v.planResidentePsicologico.contenido.numeroSesion.$touch()
-                    "
+                    @input="$v.planI.contenido.numerosesion.$touch()"
+                    @blur="$v.planI.contenido.numerosesion.$touch()"
                     color="success"
                   >
                   </v-text-field>
@@ -233,19 +212,14 @@
                   </div>
                   <div>
                     <h4
-                      v-if="
-                        $v.planResidentePsicologico.contenido
-                          .objetivoEspecificos.$error
-                      "
+                      v-if="$v.planI.contenido.objetivoespecificos.$error"
                       class="red--text"
                     >
                       Debe tener como mínimo un objetivo específico registrado
                     </h4>
                   </div>
                   <registro-multiple
-                    :items="
-                      planResidentePsicologico.contenido.objetivoEspecificos
-                    "
+                    :items="planI.contenido.objetivoespecificos"
                     name="Objetivos específicos"
                   ></registro-multiple>
                 </v-col>
@@ -267,16 +241,14 @@
                   </div>
                   <div>
                     <h4
-                      v-if="
-                        $v.planResidentePsicologico.contenido.tecnicas.$error
-                      "
+                      v-if="$v.planI.contenido.tecnicas.$error"
                       class="red--text"
                     >
                       Debe tener como mínimo una técnica registrada
                     </h4>
                   </div>
                   <registro-multiple
-                    :items="planResidentePsicologico.contenido.tecnicas"
+                    :items="planI.contenido.tecnicas"
                     name="Técnicas"
                   ></registro-multiple>
                 </v-col>
@@ -298,14 +270,14 @@
                   </div>
                   <div>
                     <h4
-                      v-if="$v.planResidentePsicologico.contenido.metas.$error"
+                      v-if="$v.planI.contenido.metas.$error"
                       class="red--text"
                     >
                       Debe tener como mínimo una meta registrada
                     </h4>
                   </div>
                   <registro-multiple
-                    :items="planResidentePsicologico.contenido.metas"
+                    :items="planI.contenido.metas"
                     name="Metas"
                   ></registro-multiple>
                 </v-col>
@@ -332,16 +304,14 @@
                   </div>
                   <div>
                     <h4
-                      v-if="
-                        $v.planResidentePsicologico.contenido.indicadores.$error
-                      "
+                      v-if="$v.planI.contenido.indicadores.$error"
                       class="red--text"
                     >
                       Debe tener como mínimo un indicador registrado
                     </h4>
                   </div>
                   <registro-multiple
-                    :items="planResidentePsicologico.contenido.indicadores"
+                    :items="planI.contenido.indicadores"
                     name="Indicadores"
                   ></registro-multiple>
                 </v-col>
@@ -368,17 +338,14 @@
                   </div>
                   <div>
                     <h4
-                      v-if="
-                        $v.planResidentePsicologico.contenido.requerimientos
-                          .$error
-                      "
+                      v-if="$v.planI.contenido.requerimientos.$error"
                       class="red--text"
                     >
                       Debe tener como mínimo un requerimiento registrado
                     </h4>
                   </div>
                   <registro-multiple
-                    :items="planResidentePsicologico.contenido.requerimientos"
+                    :items="planI.contenido.requerimientos"
                     name="Requerimientos"
                   ></registro-multiple>
                 </v-col>
@@ -431,7 +398,6 @@
                     color="success"
                     elevation="2"
                     width="100%"
-                    @click="sendPlan"
                   >
                     <v-icon left>mdi-check</v-icon>
                     Finalizar
@@ -456,7 +422,6 @@
     </v-card-text>
   </v-card>
 </template>
-
 <script>
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
@@ -471,10 +436,10 @@ import {
 } from "vuelidate/lib/validators";
 
 export default {
-  name: "registrar-plan-intervencion-psicologico",
+  name: "modificar-plan-intervencion-psicologico",
   data() {
     return {
-      startStteper: 1,
+      startSttepper: 1,
       objetivoEspecifico: "",
       tecnica: "",
       meta: "",
@@ -493,35 +458,6 @@ export default {
         dictMaxFilesExceeded: "Tamaño excedido",
       },
       listImages: [],
-      planResidentePsicologico: {
-        tipo: "PlanIntervencionIndividual",
-        historialcontenido: [],
-        creadordocumento: "5f9e4cdae4655cf92eaa4d5b",
-        fechacreacion: new Date(),
-        area: "psicologico",
-        fase: "",
-        estado: "creado",
-        idresidente: "",
-        contenido: {
-          descripcion: "",
-          objetivoEspecificos: [],
-          tecnicas: [],
-          metas: [],
-          indicadores: [],
-          frecuenciaSesion: "",
-          numeroSesion: 0,
-          requerimientos: [],
-          codigoDocumento: "",
-          titulo: "",
-          firmas: [
-            {
-              urlfirma: "",
-              nombre: "Piero Lavado Cervantes",
-              cargo: "director",
-            },
-          ],
-        },
-      },
       residentes: [],
       loadingSearch: false,
       residente: {
@@ -534,6 +470,11 @@ export default {
         faseActual: "",
       },
     };
+  },
+  props: {
+    planI: {
+      type: Object,
+    },
   },
   validations: {
     listImages: {
@@ -559,13 +500,13 @@ export default {
         required,
       },
     },
-    planResidentePsicologico: {
+    planI: {
       contenido: {
         descripcion: {
           required,
           minLength: minLength(10),
         },
-        objetivoEspecificos: {
+        objetivoespecificos: {
           required,
           minLength: minLength(1),
         },
@@ -581,11 +522,11 @@ export default {
           required,
           minLength: minLength(1),
         },
-        frecuenciaSesion: {
+        frecuenciasesion: {
           required,
           minLength: minLength(10),
         },
-        numeroSesion: {
+        numerosesion: {
           required,
           between: between(2, 10),
         },
@@ -600,97 +541,43 @@ export default {
       },
     },
   },
-  watch: {
-    searchResidente(value) {
-      if (value == null) {
-        this.residente = {
-          residente: "",
-          id: "",
-          fechaNacimiento: "",
-          sexo: "",
-          motivoIngreso: "",
-          estado: "",
-          faseActual: "",
-        };
-      }
-
-      if (this.residentes.length > 0) {
-        return;
-      }
-      if (this.loadingSearch) {
-        return;
-      }
-
-      this.loadingSearch = true;
-
-      axios
-        .get("/Residente/all")
-        .then((res) => {
-          let residentesMap = res.data.map(function (res) {
-            return {
-              residente: res.nombre + " " + res.apellido,
-              id: res.id,
-              numeroDocumento: res.numeroDocumento,
-              fechaNacimiento: res.fechaNacimiento,
-              sexo: res.sexo,
-              motivoIngreso: res.motivoIngreso,
-              estado: res.estado,
-              faseActual: res.progreso[res.progreso.length - 1].nombre,
-            };
-          });
-
-          this.residentes = residentesMap;
-
-          this.loadingSearch = false;
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    },
-  },
   methods: {
     closeDialog() {
       this.$emit("close-dialog");
     },
     addStep(step) {
-      this.startStteper = step;
+      this.startSttepper = step;
     },
     addObjetivo() {
       if (
         this.objetivoEspecifico != "" &&
         !this.$v.objetivoEspecifico.$invalid
       ) {
-        this.planResidentePsicologico.contenido.objetivoEspecificos.push(
-          this.objetivoEspecifico
-        );
+        this.planI.contenido.objetivoespecificos.push(this.objetivoEspecifico);
         this.objetivoEspecifico = "";
       }
     },
     addTecnica() {
       if (this.tecnica != "" && !this.$v.tecnica.$invalid) {
-        this.planResidentePsicologico.contenido.tecnicas.push(this.tecnica);
+        this.planI.contenido.tecnicas.push(this.tecnica);
         this.tecnica = "";
       }
     },
     addMeta() {
       if (this.meta != "" && !this.$v.meta.$invalid) {
-        this.planResidentePsicologico.contenido.metas.push(this.meta);
+        this.planI.contenido.metas.push(this.meta);
         this.meta = "";
       }
     },
     addIndicador() {
       if (this.indicador != "" && !this.$v.indicador.$invalid) {
-        this.planResidentePsicologico.contenido.indicadores.push(
-          this.indicador
-        );
+        this.planI.contenido.indicadores.push(this.indicador);
         this.indicador = "";
       }
     },
     addRequerimiento() {
       if (this.requerimiento != "" && !this.$v.requerimiento.$invalid) {
-        this.planResidentePsicologico.contenido.requerimientos.push(
-          this.requerimiento
-        );
+        this.planI.contenido.requerimientos.push(this.requerimiento);
         this.requerimiento = "";
       }
     },
@@ -704,51 +591,6 @@ export default {
         this.listImages.splice(indexFile, 1);
       }
     },
-    async sendPlan() {
-      this.$v.$touch();
-
-      if (this.$v.$invalid) {
-        this.messageSweet(
-          "error",
-          "Errores al intentar registrar",
-          "Se ha presentado errores en los campos para el registro del Plan de Intervención",
-          false
-        );
-      } else {
-        for (let index = 0; index < this.listImages.length; index++) {
-          let formData = new FormData();
-          formData.append("file", this.listImages[index]);
-          await axios
-            .post("/Media", formData)
-            .then((res) => {
-              this.planResidentePsicologico.contenido.firmas[index].urlfirma =
-                res.data;
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        }
-        this.planResidentePsicologico.idresidente = this.residente.id;
-        this.planResidentePsicologico.fase = this.residente.faseActual;
-        let planResidentePsicologico = {
-          idresidente: this.residente.id,
-          planIntervencionIndividualPsicologico: this.planResidentePsicologico,
-        };
-        axios
-          .post("/PlanIntervencion/psicologico", planResidentePsicologico)
-          .then((res) => {
-            this.messageSweet(
-              "success",
-              "Registro del Plan de Intervencion",
-              "Se registro el plan de intervencion de manera satisfactoria",
-              true
-            );
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      }
-    },
     messageSweet(icon, title, text, valid) {
       this.$swal({
         icon: icon,
@@ -756,40 +598,18 @@ export default {
         text: text,
       }).then((res) => {
         if (valid) {
-          this.$emit("register-complete");
+          //this.$emit('register-complete');
         }
       });
     },
   },
   computed: {
     formatDateBorn() {
-      return this.residente != null
-        ? this.residente.fechaNacimiento == ""
+      return this.planI.residente != null
+        ? this.planI.residente.fechaNacimiento == ""
           ? ""
-          : this.$moment(this.residente.fechaNacimiento).format("DD/MM/YYYY")
+          : this.$moment(this.planI.residente.fechaNacimiento).format("DD/MM/YYYY")
         : "";
-    },
-    getTitleByFaseResident() {
-        if(this.residente != null) {
-            if(this.residente.faseActual != "") {
-
-              if(this.residente.faseActual == "acogida") {
-                this.planResidentePsicologico.contenido.titulo = "Plan de Intervención psicológica";
-              }
-              else {
-                this.planResidentePsicologico.contenido.titulo = "Plan de Intervención Individual " + this.residente.residente;
-              }
-
-              return this.planResidentePsicologico.contenido.titulo;
-              
-            }
-            else {
-              return "";
-            }
-        }
-        else {
-          return "";
-        }
     },
     objetivoEspecificoErrors() {
       const errors = [];
@@ -872,15 +692,15 @@ export default {
     planDescripcionErrors() {
       const errors = [];
 
-      if (!this.$v.planResidentePsicologico.contenido.descripcion.$dirty) {
+      if (!this.$v.planI.contenido.descripcion.$dirty) {
         return errors;
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.descripcion.minLength) {
+      if (!this.$v.planI.contenido.descripcion.minLength) {
         errors.push("La descripción debe tener como mínimo 10 caracteres");
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.descripcion.required) {
+      if (!this.$v.planI.contenido.descripcion.required) {
         errors.push("La descripción es requerida");
       }
 
@@ -889,22 +709,15 @@ export default {
     planObjetivoEspecificosErrors() {
       const errors = [];
 
-      if (
-        !this.$v.planResidentePsicologico.contenido.objetivoEspecificos.$dirty
-      ) {
+      if (!this.$v.planI.contenido.objetivoespecificos.$dirty) {
         return errors;
       }
 
-      if (
-        !this.$v.planResidentePsicologico.contenido.objetivoEspecificos.required
-      ) {
+      if (!this.$v.planI.contenido.objetivoespecificos.required) {
         errors.push("Los objetivos específicos son requerido");
       }
 
-      if (
-        !this.$v.planResidentePsicologico.contenido.objetivoEspecificos
-          .minLength
-      ) {
+      if (!this.$v.planI.contenido.objetivoespecificos.minLength) {
         errors.push("Se debe registrar un objetivos específico como mínimo");
       }
 
@@ -913,15 +726,15 @@ export default {
     planTecnicasErrors() {
       const errors = [];
 
-      if (!this.$v.planResidentePsicologico.contenido.tecnicas.$dirty) {
+      if (!this.$v.planI.contenido.tecnicas.$dirty) {
         return errors;
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.tecnicas.required) {
+      if (!this.$v.planI.contenido.tecnicas.required) {
         errors.push("Las técnicas son requerido");
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.tecnicas.minLength) {
+      if (!this.$v.planI.contenido.tecnicas.minLength) {
         errors.push("Se debe registrar una técnica como mínimo");
       }
 
@@ -930,15 +743,15 @@ export default {
     planMetasErrors() {
       const errors = [];
 
-      if (!this.$v.planResidentePsicologico.contenido.metas.$dirty) {
+      if (!this.$v.planI.contenido.metas.$dirty) {
         return errors;
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.metas.required) {
+      if (!this.$v.planI.contenido.metas.required) {
         errors.push("Las metas son requerido");
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.metas.minLength) {
+      if (!this.$v.planI.contenido.metas.minLength) {
         errors.push("Se debe registrar una meta como mínimo");
       }
 
@@ -947,15 +760,15 @@ export default {
     planIndicadoresErrors() {
       const errors = [];
 
-      if (!this.$v.planResidentePsicologico.contenido.indicadores.$dirty) {
+      if (!this.$v.planI.contenido.indicadores.$dirty) {
         return errors;
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.indicadores.required) {
+      if (!this.$v.planI.contenido.indicadores.required) {
         errors.push("Las indicadores son requerido");
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.indicadores.minLength) {
+      if (!this.$v.planI.contenido.indicadores.minLength) {
         errors.push("Se debe registrar un indicador como mínimo");
       }
 
@@ -964,19 +777,15 @@ export default {
     planFrecuenciaSesionErrors() {
       const errors = [];
 
-      if (!this.$v.planResidentePsicologico.contenido.frecuenciaSesion.$dirty) {
+      if (!this.$v.planI.contenido.frecuenciasesion.$dirty) {
         return errors;
       }
 
-      if (
-        !this.$v.planResidentePsicologico.contenido.frecuenciaSesion.required
-      ) {
+      if (!this.$v.planI.contenido.frecuenciasesion.required) {
         errors.push("La frecuencia de la sesión es requerido");
       }
 
-      if (
-        !this.$v.planResidentePsicologico.contenido.frecuenciaSesion.minLength
-      ) {
+      if (!this.$v.planI.contenido.frecuenciasesion.minLength) {
         errors.push("Debe ingresar como mínimo 10 caracteres");
       }
 
@@ -985,15 +794,15 @@ export default {
     planNumeroSesionErrors() {
       const errors = [];
 
-      if (!this.$v.planResidentePsicologico.contenido.numeroSesion.$dirty) {
+      if (!this.$v.planI.contenido.numerosesion.$dirty) {
         return errors;
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.numeroSesion.required) {
+      if (!this.$v.planI.contenido.numerosesion.required) {
         errors.push("El número de sesión es requerido");
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.numeroSesion.between) {
+      if (!this.$v.planI.contenido.numerosesion.between) {
         errors.push("Debe estar entre el rango de 2 y 10 sesiones");
       }
 
@@ -1002,15 +811,15 @@ export default {
     planRequerimientosErrors() {
       const errors = [];
 
-      if (!this.$v.planResidentePsicologico.contenido.requerimientos.$dirty) {
+      if (!this.$v.planI.contenido.requerimientos.$dirty) {
         return errors;
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.indicadores.required) {
+      if (!this.$v.planI.contenido.indicadores.required) {
         errors.push("Los requerimientos son requerido");
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.indicadores.minLength) {
+      if (!this.$v.planI.contenido.indicadores.minLength) {
         errors.push("Se debe registrar un requerimiento como mínimo");
       }
 
@@ -1019,20 +828,28 @@ export default {
     planTituloErrors() {
       const errors = [];
 
-      if (!this.$v.planResidentePsicologico.contenido.titulo.$dirty) {
+      if (!this.$v.planI.contenido.titulo.$dirty) {
         return errors;
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.titulo.required) {
+      if (!this.$v.planI.contenido.titulo.required) {
         errors.push("El título es requerido");
       }
 
-      if (!this.$v.planResidentePsicologico.contenido.titulo.minLength) {
+      if (!this.$v.planI.contenido.titulo.minLength) {
         errors.push("Debe ingresar como mínimo 4 caracteres");
       }
 
       return errors;
     },
+  },
+  mounted() {
+      var file = { size: 250, name: "firma_trabajador", type: "image/jpg" };
+      var url = this.planI.contenido.firmas[0].urlfirma;
+
+      this.$refs.myVueDropzone.manuallyAddFile(file, url);
+
+      this.listImages.push(this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[0]);
   },
   components: {
     vueDropzone: vue2Dropzone,

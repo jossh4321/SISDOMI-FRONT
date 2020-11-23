@@ -99,7 +99,6 @@
           </ConsultarUsuario>
       </v-dialog>
       <!----->
-        <v-btn @click="testing2()">TEST</v-btn>
     </v-card>
   </div>
 </template>

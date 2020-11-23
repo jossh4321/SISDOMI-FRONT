@@ -4,16 +4,22 @@
 
 <script>
 import Principal from '@/views/Layout/Principal.vue';
-//hola
+import { mapActions } from 'vuex';
+
 export default {
   name: 'App',
 
   components: {
     appPrincipal: Principal,
   },
-
+  methods: {
+    ...mapActions(['tryAutoLogin'])
+  },
   data: () => ({
     //
   }),
+  created() {
+    this.tryAutoLogin();
+  }
 };
 </script>

@@ -51,7 +51,11 @@
           {{ item.fechacreacion | moment("DD/MM/YYYY") }}
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn color="warning" @click="UpdatePlanIntervencion(item)">
+          <v-btn
+            color="warning"
+            @click="updatePlanIntervencion(item)"
+            v-if="item.estado != 'inactivo'"
+          >
             <v-icon left class="ml-auto ml-sm-0 mr-auto mr-sm-1"
               >mdi-pencil</v-icon
             >
@@ -60,7 +64,7 @@
           <v-btn
             color="info"
             class="ml-3"
-            @click="DetailPlanIntervencion(item)"
+            @click="detailPlanIntervencion(item)"
           >
             <v-icon left class="ml-auto ml-sm-0 mr-auto mr-sm-1"
               >mdi-file-eye</v-icon
@@ -70,12 +74,24 @@
           <v-btn
             color="error"
             class="ml-3"
-            @click="DeletePlanIntervencion(item)"
+            @click="deletePlanIntervencion(item)"
+            v-if="item.estado != 'inactivo'"
           >
             <v-icon left class="ml-auto ml-sm-0 mr-auto mr-sm-1"
               >mdi-delete</v-icon
             >
             <span class="d-none d-sm-block">Desactivar</span>
+          </v-btn>
+          <v-btn
+            color="success"
+            class="ml-3"
+            v-if="item.estado == 'inactivo'"
+            @click="activatePlanIntervencion(item)"
+          >
+            <v-icon left class="ml-auto ml-sm-0 mr-auto mr-sm-1">
+              mdi-check
+            </v-icon>
+            <span class="d-none d-sm-block">Activar</span>
           </v-btn>
         </template>
       </v-data-table>
@@ -87,9 +103,9 @@
     <!-- Modal para seleccionar el tipo de informe -->
     <v-dialog v-model="dialogRegister" persistent max-width="500">
       <v-card>
-        <v-card-title>Selección del Informe</v-card-title>
+        <v-card-title>Selección del Plan</v-card-title>
         <v-card-subtitle class="mt-1"
-          >Seleeccione el tipo de informe para el registro</v-card-subtitle
+          >Seleccione el tipo del plan para el registro</v-card-subtitle
         >
         <v-card-text class="pr-2">
           <v-combobox
@@ -141,6 +157,37 @@
       >
       </component>
     </v-dialog>
+
+    <!--Prevenir Activación o Desactivación -->
+    <v-dialog v-model="dialogoPlanState" persistent max-width="450">
+      <v-card>
+        <v-card-title :class="[planStateCss, 'white--text']">{{
+          messagesState.title
+        }}</v-card-title>
+        <v-card-text class="mt-2">
+          <h3>{{ messagesState.text }}</h3>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn class="secondary mr-1" @click="dialogoPlanState = false">
+            <v-icon left>mdi-close</v-icon>
+            <span>Cerrar</span>
+          </v-btn>
+          <v-btn
+            class="success"
+            v-if="messagesState.action == 'activo'"
+            @click="updateState"
+          >
+            <v-icon left>mdi-check</v-icon>
+            <span>Activar</span>
+          </v-btn>
+          <v-btn class="primary" v-else @click="updateState">
+            <v-icon left>mdi-delete</v-icon>
+            <span>Inactivar</span>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -151,9 +198,10 @@ import ModificarPlanIntervencion from "@/components/planIntervencion/Educativo/M
 import RegistrarPlanIntervencionPsicologico from "@/components/planIntervencion/Psicologico/RegistrarPlanIntervencionPsicologico.vue";
 import RegistrarPlanIntervencionSocial from "@/components/planIntervencion/Social/RegistrarPlanIntervencionSocial.vue";
 import ModificarPlanIntervencionSocial from "@/components/planIntervencion/Social/ModificarPlanIntervencionSocial.vue";
-import VisualizarPlanIntervencion from '@/components/planIntervencion/Educativo/VisualizarPlanIntervencion.vue';
-import VisualizarPlanIntervencionPsicologico from '@/components/planIntervencion/Psicologico/VisualizarPlanIntervencionPsicologico.vue';
-import VisualizarPlanIntervencionSocial from '@/components/planIntervencion/Social/VisualizarPlanIntervencionSocial.vue';
+import VisualizarPlanIntervencion from "@/components/planIntervencion/Educativo/VisualizarPlanIntervencion.vue";
+import VisualizarPlanIntervencionPsicologico from "@/components/planIntervencion/Psicologico/VisualizarPlanIntervencionPsicologico.vue";
+import VisualizarPlanIntervencionSocial from "@/components/planIntervencion/Social/VisualizarPlanIntervencionSocial.vue";
+import ModificarPlanIntervencionPsicologico from "@/components/planIntervencion/Psicologico/ModificarPlanIntervencionPsicologico.vue";
 
 export default {
   name: "app-gestion-planes",
@@ -187,6 +235,7 @@ export default {
       dialogPlanRegister: false,
       dialogPlanModify: false,
       dialogoPlanDetail: false,
+      dialogoPlanState: false,
       loading: true,
       headers: [
         {
@@ -217,56 +266,110 @@ export default {
       planesIntervencion: [],
       planI: {},
       planIntervencionDetail: {},
+      messagesState: {
+        title: "",
+        subtitle: "",
+        text: "",
+        action: "",
+      },
+      idPlanUpdatedState: "",
     };
   },
   methods: {
-    async DetailPlanIntervencion(item) {
+    async detailPlanIntervencion(item) {
       await axios
         .get("/PlanIntervencion/" + item.id)
         .then((res) => {
-          console.log(res);
           this.planIntervencionDetail = res.data;
 
-          if(res.data.area == "educativa") {
+          if (res.data.area == "educativa") {
             this.typeDetailPlanSelected = "VisualizarPlanIntervencion";
-          }
-          else if(res.data.area == "psicologico") {
-            this.typeDetailPlanSelected = "VisualizarPlanIntervencionPsicologico";
-          }
-          else if(res.data.area == "social") {
+          } else if (res.data.area == "psicologico") {
+            this.typeDetailPlanSelected =
+              "VisualizarPlanIntervencionPsicologico";
+          } else if (res.data.area == "social") {
             this.typeDetailPlanSelected = "VisualizarPlanIntervencionSocial";
           }
 
           this.dialogoPlanDetail = true;
-
         })
         .catch((err) => {
           console.error(err);
         });
     },
-    async UpdatePlanIntervencion(item) {
-      if (item.area == "educativa") {
-        this.typePlanSelected = "ModificarPlanIntervencion";
-        await axios
-          .get("/PlanIntervencion/educativobyid?id=" + item.id)
-          .then((x) => {
-            this.planI = x.data;
-          })
-          .catch((err) => console.log(err));
-      } else if (item.area == "social") {
-        this.typePlanSelected = "ModificarPlanIntervencionSocial";
-        await axios
-          .get("/PlanIntervencion/socialbyid?id=" + item.id)
-          .then((x) => {
-            this.planI = x.data;
-          })
-          .catch((err) => console.log(err));
-      } else {
-        this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
-      }
-      this.dialogPlanModify = true;
+    async updatePlanIntervencion(item) {
+      await axios
+        .get("/PlanIntervencion/" + item.id)
+        .then((res) => {
+          this.planI = res.data;
+
+          if (res.data.area == "educativa") {
+            this.typePlanSelected = "ModificarPlanIntervencion";
+          } else if (res.data.area == "social") {
+            this.typePlanSelected = "ModificarPlanIntervencionSocial";
+          } else if (res.data.area == "psicologico") {
+            this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
+          }
+
+          this.dialogPlanModify = true;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
-    DeletePlanIntervencion(item) {},
+    deletePlanIntervencion(item) {
+      this.messagesState.title = "Desactivación del plan de intervención";
+      this.messagesState.text =
+        "Se va a realizar la desactivación del plan de intervención. ¿Esta seguro de desactivar el plan de intervención?";
+      this.messagesState.action = "inactivo";
+
+      this.dialogoPlanState = true;
+      this.idPlanUpdatedState = item.id;
+    },
+    activatePlanIntervencion(item) {
+      this.messagesState.title = "Activación del plan de intervención";
+      this.messagesState.text =
+        "Se va a realizar la activación del plan de intervención. ¿Esta seguro de activar el plan de intervención?";
+      this.messagesState.action = "activo";
+
+      this.dialogoPlanState = true;
+      this.idPlanUpdatedState = item.id;
+    },
+    async updateState() {
+      let planState = {
+        idDocumento: this.idPlanUpdatedState,
+        estado: this.messagesState.action,
+      };
+
+      await axios
+        .put("/PlanIntervencion/state", planState)
+        .then((res) => {
+          let title =
+            planState.estado == "activo"
+              ? "Desactivación del plan de Intervención"
+              : "Activacion del plan de Intervención";
+          let text =
+            planState.estado == "activo"
+              ? "Se desactivo el plan de intervención de manera satisfactoria"
+              : "Se activo el plan de intervención de manera satisfactoria";
+
+          this.messageSweetUpdated("success", title, text);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+
+      this.loading = true;
+      axios
+        .get("/PlanIntervencion/all")
+        .then((res) => {
+          this.loading = false;
+          this.planesIntervencion = res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
     selectedRegister() {
       this.dialogRegister = false;
       this.dialogPlanRegister = true;
@@ -280,6 +383,16 @@ export default {
     },
     registerComplete() {
       this.closeDialog();
+      this.loading = true;
+      axios
+        .get("/PlanIntervencion/all")
+        .then((res) => {
+          this.loading = false;
+          this.planesIntervencion = res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
     closeDialogModify() {
       this.dialogPlanModify = false;
@@ -288,12 +401,25 @@ export default {
     closeDialogDetail() {
       this.dialogoPlanDetail = false;
       this.typeDetailPlanSelected = "";
-    }
+    },
+    messageSweetUpdated(icon, title, text) {
+      this.$swal({
+        icon: "success",
+        title: title,
+        text: text,
+      }).then((res) => {
+        this.dialogoPlanState = false;
+      });
+    },
   },
-  computed: {},
+  computed: {
+    planStateCss() {
+      return this.messagesState.action == "inactivo" ? "error" : "green";
+    },
+  },
   created() {
     axios
-      .get("/PlanIntervencionSocial/all")
+      .get("/PlanIntervencion/all")
       .then((res) => {
         this.loading = false;
         this.planesIntervencion = res.data;
@@ -310,7 +436,8 @@ export default {
     ModificarPlanIntervencionSocial,
     VisualizarPlanIntervencion,
     VisualizarPlanIntervencionPsicologico,
-    VisualizarPlanIntervencionSocial
+    VisualizarPlanIntervencionSocial,
+    ModificarPlanIntervencionPsicologico,
   },
 };
 </script>

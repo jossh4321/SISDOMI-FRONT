@@ -150,7 +150,14 @@ export default {
           href: "/dashboard/residentes"
         },
         {
-          title: "Gestionar Plan de Intervención",
+          title: "Gestionar Seguimiento Educativo",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarSeguimientoEducativo",
+          href: "/dashboard/seguimientoEducativo"
+        },
+        {
+          title: "Planes",
           group: "admin",
           icon: "dashboard",
           name: "GestionPlanIntervencion",
@@ -175,7 +182,13 @@ export default {
           icon: "dashboard",
           name: "GestionarFichaIngreso",
           href: "/dashboard/fichaIngreso"
-        },
+        },{
+          title: "Gestion Sesiones Educativas",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarSesionesEducativas",
+          href: "/dashboard/sesioneseducativas"
+        }
       ],
       scrollSettings: {
         maxScrollbarLength: 160,

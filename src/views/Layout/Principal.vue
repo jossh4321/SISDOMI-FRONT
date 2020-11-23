@@ -24,13 +24,23 @@
 <script>
 import Drawer from '@/views/Layout/Drawer.vue';
 import Toolbar from '@/views/Layout/Toolbar.vue';
+import { mapGetters,mapActions } from 'vuex';
 
 export default {
     name: "AppPrincipal",
     components: {
         appDrawer: Drawer,
         appToolbar: Toolbar
-    }
+    },
+    computed: {
+        ...mapGetters(['user'])
+    },
+    methods: {
+        ...mapActions(['fetchUser'])
+    },
+    created() {
+        this.fetchUser();
+    }   
 }
 </script>
 

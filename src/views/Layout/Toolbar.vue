@@ -45,7 +45,7 @@
       <template v-slot:activator="{ on }">
         <v-btn icon large text v-on="on">
           <v-avatar size="30">
-            <img src="../../assets/static/man_4.jpg" alt="Josue Colombo" />
+            <img :src="User.imagen" :alt="User.nombre"  />
           </v-avatar>
         </v-btn>
       </template>
@@ -76,6 +76,7 @@
 <script>
 import Util from "../../util/index";
 import NotificationList from "@/views/Notifications/NotificationList.vue";
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: "app-toolbar",
@@ -115,7 +116,17 @@ export default {
       Util.toggleFullScreen();
     },
     handleLogout() {
-      this.$router.push('/login');
+      this.logOut();
+    },
+    ...mapActions(['logOut'])
+  },
+  computed: {
+    ...mapGetters(['user']),
+    User() {
+      return this.user ? this.user.datos: { 
+         imagen: "",
+         nombre: ""
+       };
     }
   },
   components: {

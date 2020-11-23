@@ -32,7 +32,7 @@
                 </v-form>
               </v-card-text>
               <v-card-actions>
-                  <v-btn block color="primary" @click="login" :loading="loading">Iniciar Sesión</v-btn>
+                  <v-btn block color="primary" @click="logIn(model)" :loading="loading">Iniciar Sesión</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -43,24 +43,24 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
     name: 'login',
     data: ()=> {
         return {
-            loading: false,
             model: {
-                username: 'josue_colombo@gmail.com',
-                password: 'password'
+                username: '',
+                password: ''
             }
         }
     },
     methods: {
-        login() {
-            this.loading = true;
-            setTimeout(() => {
-                this.$router.push('/dashboard');
-            }, 1000);
-        }
+       ...mapActions(['logIn'])
+    },
+    computed: {
+      ...mapGetters(['loading'])
     }
 };
 </script>

@@ -189,7 +189,14 @@ export default {
       await axios
         .get("/residente/all")
         .then((res) => {
-          this.setResidentes(res.data);
+          var info = {};
+          info = res.data;
+          console.log(res.data)
+          for (var x=0;x<res.data.length;x++){
+              info[x].fechaIngreso = res.data[x].fechaIngreso.split("T")[0];
+          }
+          
+          this.setResidentes(info);
         })
         .catch((err) => console.log(err));
     },
