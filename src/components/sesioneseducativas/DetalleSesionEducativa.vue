@@ -82,16 +82,58 @@
           <v-card>
             <v-expansion-panels focusable>
               <v-expansion-panel
-                v-for="(item,i) in sesioneducativa.contenido.participantes"
+                v-for="(item,i) in datoSesion.contenido.participantes"
                 :key="i"
               >
-                <v-expansion-panel-header>{{item.idparticipante}}</v-expansion-panel-header>
+                <v-expansion-panel-header>{{item.datosresidente.nombre + " " + item.datosresidente.apellido }}</v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                  <form>
+                    <v-card elevation="0">
+                      <v-text-field
+                          v-model="item.grado"
+                          style="margin-top_5px"
+                          :readonly="!edicion"
+                          color="#009900"
+                          label="Grado"
+                      ></v-text-field>
+                      <v-text-field
+                          v-model="item.firma"
+                          style="margin-top_5px"
+                          :readonly="!edicion"
+                          color="#009900"
+                          label="Firma (enlace)"
+                      ></v-text-field>
+                      <v-text-field
+                          v-model="item.observaciones"
+                          style="margin-top_5px"
+                          :readonly="!edicion"
+                          color="#009900"
+                          label="Observaciones"
+                      ></v-text-field>
+                      <v-card-actions v-if="edicion" align="right">
+                        <v-row
+                          align="center"
+                          justify="end"
+                        >
+                          <v-btn dark color="red">
+                            <v-icon left>mdi-delete</v-icon>
+                            <span>Eliminar Participante</span>
+                          </v-btn>
+                        </v-row>
+                      </v-card-actions>
+                      
+                    </v-card>
+                  </form>
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
-            <v-card-actions v-if="edicion">
+            <v-card-actions v-if="!edicion" style="margin-top:3%">
+              <v-btn @click="activarEdicionSesionEducativa()" color="warning">
+                <v-icon left>mdi-book-outline</v-icon>
+                <span>Modificar</span>
+              </v-btn>
+            </v-card-actions >
+            <v-card-actions v-else style="margin-top:3%">
               <v-btn @click="GuardarEdicionSesionEducativa()" color="success">
                 <v-icon left>mdi-page-next-outline</v-icon>
                 <span>Guardar</span>
@@ -101,12 +143,6 @@
               </v-btn>
             </v-card-actions>
           </v-card>
-          <!-- Esto no va aqui exactamente, solo es vista y modificacion, no insercion  
-          <AgregarParticipante
-          :sesioneducativa="sesioneducativa"
-          :listaresidentes="listaresidentes"
-          @close-dialog-detail="closeDialogDetalle()"
-        ></AgregarParticipante> -->
         </v-stepper-content>  
         <v-spacer></v-spacer>
         <v-card-actions style="padding:2% 3%">
@@ -120,25 +156,24 @@
 </template>
 
 <script>
-import AgregarParticipante from "@/components/sesioneseducativas/AgregarParticipante.vue";
+import axios from "axios";
 import moment from "moment";
 export default {
   name: "DetalleSesionEducativa",
   props: ["sesioneducativa"],
-  components:{
-    AgregarParticipante
-  },
   data(){
     return{
       edicion:false,
       botonGuardarSesionEducativa:false,
       step:1,
       datemenu: false,
+      datoSesion:{}
     }
   },
   methods:{
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
+      this.step=1;
     },
     activarEdicionSesionEducativa(){
       this.edicion = true;
@@ -151,10 +186,24 @@ export default {
       this.edicion = false;
       //Cancelar edicion de Reforzamiento
     },
+    //Obtener datos de una sesión por id
+    async obtenerSesionEducativaDTO(idsesion) {
+      var user = {};
+      await axios
+        .get("/SesionesEducativas/allsesiondto/id?id=" + idsesion)
+        .then((res) => {
+          user = res.data;
+          user.fechacreacion = user.fechacreacion.split("T")[0];
+        })
+        .catch((err) => console.log(err));
+      console.log("Sesion educativa DTO:");
+      console.log(user);
+      return user;
+    },
   },
-  created(){
-    
-  }
+  async created() {
+    this.datoSesion= await this.obtenerSesionEducativaDTO(this.sesioneducativa.id);
+  },
 }
 </script>
 
