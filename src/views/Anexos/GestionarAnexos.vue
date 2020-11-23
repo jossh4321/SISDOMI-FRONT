@@ -54,7 +54,6 @@
           <v-btn
             color="warning"
             @click="updateAnexo(item)"
-            v-if="item.estado != 'inactivo'"
           >
             <v-icon left class="ml-auto ml-sm-0 mr-auto mr-sm-1"
               >mdi-pencil</v-icon
@@ -66,17 +65,6 @@
               >mdi-file-eye</v-icon
             >
             <span class="d-none d-sm-block">Detalle</span>
-          </v-btn>
-          <v-btn
-            color="success"
-            class="ml-3"
-            v-if="item.estado == 'inactivo'"
-            @click="activateAnexo(item)"
-          >
-            <v-icon left class="ml-auto ml-sm-0 mr-auto mr-sm-1">
-              mdi-check
-            </v-icon>
-            <span class="d-none d-sm-block">Activar</span>
           </v-btn>
         </template>
       </v-data-table>
@@ -95,13 +83,14 @@
     </v-dialog>
 
     <!--Actualizar Modal-->
-    <!--    <v-dialog v-model="dialogPlanModify" persistent max-width="880">
+    <v-dialog v-model="dialogModify" persistent max-width="880">
       <component
-        :is="typePlanSelected"
-        :planI="planI"
+        :is="ismodifier"
+        :anexo="selectedanexo"
         @close-dialog="closeDialogModify"
+        @modifier-complete="modifierComplete"
       ></component>
-    </v-dialog> -->
+    </v-dialog> 
 
     <!--Visualizar Model-->
     <!--  <v-dialog v-model="dialogoPlanDetail" persistent max-width="880">
@@ -118,15 +107,19 @@
 <script>
 import axios from "axios";
 import RegistrarAnexo from "@/components/anexos/RegistrarAnexo.vue";
+import ModificarAnexo from "@/components/anexos/ModificarAnexo.vue";
 
 export default {
   components: {
     RegistrarAnexo,
+    ModificarAnexo
   },
   name: "app-gestion-anexos",
   data() {
     return {
       isregister: "RegistrarAnexo",
+      ismodifier: "ModificarAnexo",
+      selectedanexo: {},
       search: "",
       page: 1,
       pageCount: 0,
@@ -171,7 +164,7 @@ export default {
           enlaces: [
             {
               link: "www.twitch.tv/fede_3012",
-              descripcion: "buenas",
+              descripcion: "Enlace 1",
             },
           ],
           idresidente: "5f9f182cba5ac935cc3fe6f5",
@@ -188,8 +181,26 @@ export default {
       this.closeDialog();
       this.loading = true;
     },
+    modifierComplete() {
+      this.closeDialogModify();
+      this.loading = true;
+    },
     closeDialog() {
       this.dialogRegister = false;
+    },
+    closeDialogModify() {
+      this.dialogModify = false;
+    },
+    async updateAnexo(item) {
+      await axios
+        .get("/Anexo/" + item.id)
+        .then((res) => {
+          this.selectedanexo = res.data;
+          this.dialogPlanModify = true;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
   },
 };
