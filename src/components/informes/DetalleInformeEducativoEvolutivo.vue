@@ -219,14 +219,8 @@
                       </article>
                     </v-col>
                     <v-col :cols="4" align="center">
-                      <v-dialog
-                        v-model="dialogVistaPreviaFirma"
-                        persistent
-                        max-width="600px"
-                      >
-                        <template v-slot:activator="{ on }">
+                      <template>
                           <v-btn
-                            v-on="on"
                             fab
                             icon=""
                             x-small
@@ -241,6 +235,16 @@
                             />
                           </v-btn>
                         </template>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-card>
+
+              <v-dialog
+                        v-model="dialogVistaPreviaFirma"
+                        persistent
+                        max-width="600px"
+                      >
                         <v-card align="center">
                           <v-card-title>
                             <span class="headline">Vista previa</span>
@@ -273,10 +277,7 @@
                           </v-card-actions>
                         </v-card>
                       </v-dialog>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-card>
+
                     <v-btn block @click="cerrarDialogo()" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
@@ -330,13 +331,14 @@ export default {
                     this.educador = res.data.datos.nombre + " "+res.data.datos.apellido;
             }).catch(err => console.log(err));
        },
-       verFirma(index) {
-      console.log(this.informe.contenido.firmas[index].urlfirma);
-      this.imagen = this.informe.contenido.firmas[index].urlfirma;
-    },
-    cerrarVistaPreviaFirma() {
-      this.dialogVistaPreviaFirma = false;
-    },
+        verFirma(index) {
+          console.log(this.informe.contenido.firmas[index].urlfirma);
+          this.imagen = this.informe.contenido.firmas[index].urlfirma;
+          this.dialogVistaPreviaFirma = true;
+        },
+        cerrarVistaPreviaFirma() {
+          this.dialogVistaPreviaFirma = false;
+        },
     }
 }
 </script>

@@ -64,103 +64,6 @@
                     </template>
                   </template>
                 </v-autocomplete>
-                <v-autocomplete
-                  :items="listaeducadores"
-                  filled
-                  chips
-                  dense
-                  outlined
-                  v-model="informe.creadordocumento"
-                  color="#009900"
-                  label="Educador responsable"
-                  item-text="usuario"
-                  item-value="id"
-                  @input="$v.informe.creadordocumento.$touch()"
-                  @blur="$v.informe.creadordocumento.$touch()"
-                  :error-messages="errorCreador"
-                >
-                  <template v-slot:selection="data">
-                    <v-chip
-                      v-bind="data.attrs"
-                      :input-value="data.selected"
-                      style="margin-top:5px"
-                    >
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size:12px">RT</span>
-                      </v-avatar>
-                      {{ data.item.datos.nombre }}
-                    </v-chip>
-                  </template>
-                  <template v-slot:item="data">
-                    <template>
-                      <v-list-item-avatar>
-                        <v-avatar left color="#b3b3ff" size="24">
-                          <span style="font-size:12px">UC</span>
-                        </v-avatar>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          >Nombre completo: {{ data.item.datos.nombre }}
-                          {{ data.item.datos.apellido }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle
-                          >Nro. Documento:
-                          {{
-                            data.item.datos.numerodocumento
-                          }}</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </template>
-                  </template>
-                </v-autocomplete>
-                <v-text-field
-                  v-model="informe.contenido.iereinsersion.nombre"
-                  label="Institución Educativa"
-                  outlined
-                  @input="$v.informe.contenido.iereinsersion.nombre.$touch()"
-                  @blur="$v.informe.contenido.iereinsersion.nombre.$touch()"
-                  :error-messages="errorNombreIE"
-                  color="#009900"
-                ></v-text-field>
-                <v-row>
-                  <v-col cols="12" md="4">
-                    <v-text-field
-                      v-model="informe.contenido.iereinsersion.modalidad"
-                      label="Modalidad"
-                      outlined
-                      @input="
-                        $v.informe.contenido.iereinsersion.modalidad.$touch()
-                      "
-                      @blur="
-                        $v.informe.contenido.iereinsersion.modalidad.$touch()
-                      "
-                      :error-messages="errorModalidadIE"
-                      color="#009900"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" md="4">
-                    <v-text-field
-                      v-model="informe.contenido.iereinsersion.nivel"
-                      label="Nivel Educativo"
-                      outlined
-                      @input="$v.informe.contenido.iereinsersion.nivel.$touch()"
-                      @blur="$v.informe.contenido.iereinsersion.nivel.$touch()"
-                      :error-messages="errorNivelIE"
-                      color="#009900"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" md="4">
-                    <v-text-field
-                      v-model="informe.contenido.iereinsersion.grado"
-                      label="Grado"
-                      outlined
-                      @input="$v.informe.contenido.iereinsersion.grado.$touch()"
-                      @blur="$v.informe.contenido.iereinsersion.grado.$touch()"
-                      :error-messages="errorGradoIE"
-                      color="#009900"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
                 <v-menu
                   v-model="datemenu"
                   :close-on-content-click="false"
@@ -204,12 +107,25 @@
                 ></v-textarea>
                 <v-textarea
                   v-model="informe.contenido.situacionactual"
-                  label="Situación Educativa Actual"
+                  label="Situación Social Actual"
                   auto-grow
                   outlined
                   @input="$v.informe.contenido.situacionactual.$touch()"
                   @blur="$v.informe.contenido.situacionactual.$touch()"
-                  :error-messages="errorSituacionEducativa"
+                  :error-messages="errorSituacionSocial"
+                  rows="2"
+                  row-height="40"
+                  color="#009900"
+                  shaped
+                ></v-textarea>
+                <v-textarea
+                  v-model="informe.contenido.diagnosticosocial"
+                  label="Diagnostico Social"
+                  auto-grow
+                  outlined
+                  @input="$v.informe.contenido.diagnosticosocial.$touch()"
+                  @blur="$v.informe.contenido.diagnosticosocial.$touch()"
+                  :error-messages="errorDiagnosticoSocial"
                   rows="2"
                   row-height="40"
                   color="#009900"
@@ -235,69 +151,6 @@
           <v-stepper-content step="2">
             <div class="container-user">
               <form>
-                <v-card
-                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
-                >
-                  <v-card
-                    elevation="0"
-                    style="background-color:#EAEAEA"
-                    height="70"
-                  >
-                    <v-row style="margin:1%;heigh:100%" align="center">
-                      <v-col :cols="8" align="left">
-                        <v-text-field
-                          v-model="logro"
-                          label="Logros alcanzados"
-                          color="#009900"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col :cols="4" align="right">
-                        <v-btn
-                          fab
-                          small
-                          dark
-                          color="green"
-                          @click="agregarLogros"
-                        >
-                          <v-icon dark>
-                            mdi-plus
-                          </v-icon>
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-card>
-
-                  <v-card
-                    tile
-                    elevation="0"
-                    color="#FAFAFA"
-                    style="margin:5px"
-                    height="60"
-                    v-for="logro in logros"
-                    :key="logro"
-                  >
-                    <v-row style="margin-left:10px;heigh:100%" align="center">
-                      <v-col :cols="8" align="left">
-                        <span>{{ logro }}</span>
-                      </v-col>
-                      <v-col :cols="4" align="right">
-                        <div style="margin-right:20px">
-                          <v-btn
-                            fab
-                            x-small
-                            dark
-                            color="red"
-                            @click="eliminarLogros(logro)"
-                          >
-                            <v-icon dark>
-                              mdi-minus
-                            </v-icon>
-                          </v-btn>
-                        </div>
-                      </v-col>
-                    </v-row>
-                  </v-card>
-                </v-card>
                 <v-card
                   style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
                 >
@@ -542,7 +395,7 @@ import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 
 export default {
-  props: ["listaresidentes", "visible", "titulo", "listaeducadores"],
+  props: ["listaresidentes", "visible", "titulo"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -572,10 +425,8 @@ export default {
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
         dictDefaultMessage:
-          "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
+          "Seleccione la imagen de la firma de su dispositivo o arrástrela aquí",
       },
-      logro: "",
-      logros: [],
       recomendacion: "",
       recomendaciones: [],
       urlfirma: "",
@@ -587,21 +438,15 @@ export default {
         historialcontenido: [],
         creadordocumento: "",
         fechacreacion: "",
-        area: "educativa",
+        area: "social",
         fase: "acogida",
         idresidente: "",
         estado: "creado",
         contenido: {
           antecedentes: "",
           situacionactual: "",
-          logroalcanzado: [],
+          diagnosticosocial: "",
           recomendaciones: [],
-          iereinsersion: {
-            nombre: "",
-            modalidad: "",
-            nivel: "",
-            grado: "",
-          },
           anexos: [],
           firmas: [],
           codigodocumento: "",
@@ -610,8 +455,6 @@ export default {
     };
   },
   async created() {
-    this.logros = "";
-    this.logro = "";
     this.recomendaciones = "";
     this.recomendacion = "";
   },
@@ -653,7 +496,7 @@ export default {
         console.log("no hay errores");
         console.log(this.informe);
         await axios
-          .post("/informe/informeee", this.informe)
+          .post("/informe/informese", this.informe)
           .then((res) => {
             this.informe = res.data;
             console.log(this.listaresidentes);
@@ -681,19 +524,6 @@ export default {
           "<strong>Se redirigira a la interfaz de gestión<strong>"
         );
       }
-    },
-    agregarLogros() {
-      let logros = this.logro;
-      this.informe.contenido.logroalcanzado.push(logros);
-      this.logros = this.informe.contenido.logroalcanzado;
-      this.logro = "";
-    },
-    eliminarLogros(logro) {
-      this.logros.forEach(function(car, index, object) {
-        if (car === logro) {
-          object.splice(index, 1);
-        }
-      });
     },
     agregarRecomendaciones() {
       let recomendaciones = this.recomendacion;
@@ -767,21 +597,15 @@ export default {
         historialcontenido: [],
         creadordocumento: "",
         fechacreacion: "",
-        area: "educativa",
+        area: "social",
         fase: "acogida",
         idresidente: "",
         estado: "creado",
         contenido: {
           antecedentes: "",
           situacionactual: "",
-          logroalcanzado: [],
+          diagnosticosocial: "",
           recomendaciones: [],
-          iereinsersion: {
-            nombre: "",
-            modalidad: "",
-            nivel: "",
-            grado: "",
-          },
           anexos: [],
           firmas: [],
           codigodocumento: "",
@@ -794,35 +618,6 @@ export default {
     verifyColor() {
       return "red";
     },
-    errorNombreIE() {
-      const errors = [];
-      if (!this.$v.informe.contenido.iereinsersion.nombre.$dirty) return errors;
-      !this.$v.informe.contenido.iereinsersion.nombre.required &&
-        errors.push("Debe ingresar el nombre de la Institución Educativa");
-      return errors;
-    },
-    errorModalidadIE() {
-      const errors = [];
-      if (!this.$v.informe.contenido.iereinsersion.modalidad.$dirty)
-        return errors;
-      !this.$v.informe.contenido.iereinsersion.modalidad.required &&
-        errors.push("Debe ingresar la modalidad");
-      return errors;
-    },
-    errorNivelIE() {
-      const errors = [];
-      if (!this.$v.informe.contenido.iereinsersion.nivel.$dirty) return errors;
-      !this.$v.informe.contenido.iereinsersion.nivel.required &&
-        errors.push("Debe ingresar el nivel");
-      return errors;
-    },
-    errorGradoIE() {
-      const errors = [];
-      if (!this.$v.informe.contenido.iereinsersion.grado.$dirty) return errors;
-      !this.$v.informe.contenido.iereinsersion.grado.required &&
-        errors.push("Debe ingresar el grado");
-      return errors;
-    },
     errorAntecedentes() {
       const errors = [];
       if (!this.$v.informe.contenido.antecedentes.$dirty) return errors;
@@ -830,7 +625,7 @@ export default {
         errors.push("Debe ingresar un antecedente");
       return errors;
     },
-    errorSituacionEducativa() {
+    errorSituacionSocial() {
       const errors = [];
       if (!this.$v.informe.contenido.situacionactual.$dirty) return errors;
       !this.$v.informe.contenido.situacionactual.required &&
@@ -844,11 +639,11 @@ export default {
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
     },
-    errorCreador() {
+    errorDiagnosticoSocial(){
       const errors = [];
-      if (!this.$v.informe.creadordocumento.$dirty) return errors;
-      !this.$v.informe.creadordocumento.required &&
-        errors.push("Debe seleccionar un educador obligatoriamente");
+      if (!this.$v.informe.contenido.diagnosticosocial.$dirty) return errors;
+      !this.$v.informe.contenido.diagnosticosocial.required &&
+        errors.push("Debe ingresar un diagnostico");
       return errors;
     },
     errorFechaEvaluacion() {
@@ -881,9 +676,6 @@ export default {
         idresidente: {
           required,
         },
-        creadordocumento: {
-          required,
-        },
         fechacreacion: {
           required,
         },
@@ -894,19 +686,8 @@ export default {
           situacionactual: {
             required,
           },
-          iereinsersion: {
-            nombre: {
-              required,
-            },
-            modalidad: {
-              required,
-            },
-            nivel: {
-              required,
-            },
-            grado: {
-              required,
-            },
+          diagnosticosocial: {
+            required,
           },
         },
       },

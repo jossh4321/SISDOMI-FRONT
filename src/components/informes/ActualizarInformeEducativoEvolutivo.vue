@@ -340,15 +340,19 @@
                 </vue-dropzone>
               </div>
 
-              <v-card
-                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+               <v-card
+                style="
+                  margin-top: 30px;
+                  padding: 5px 5px;
+                  background-color: #eaeaea;
+                "
               >
                 <v-card
                   elevation="0"
-                  style="background-color:#EAEAEA"
+                  style="background-color: #eaeaea"
                   height="70"
                 >
-                  <v-row style="margin:1%;heigh:100%" align="center">
+                  <v-row style="margin: 1%; heigh: 100%" align="center">
                     <v-col :cols="4" align="left">
                       <v-text-field
                         v-model="firmas.nombre"
@@ -365,9 +369,7 @@
                     </v-col>
                     <v-col :cols="4" align="right">
                       <v-btn fab small dark color="green" @click="agregarFirma">
-                        <v-icon dark>
-                          mdi-plus
-                        </v-icon>
+                        <v-icon dark> mdi-plus </v-icon>
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -388,33 +390,27 @@
                 </v-row>
                 <v-card
                   color="#FAFAFA"
-                  style="margin-top:5px"
+                  style="margin-top: 5px"
                   height="60"
                   v-for="(item, index) in informe.contenido.firmas"
                   :key="index"
                 >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                  <v-row style="margin-left: 10px; heigh: 100%" align="center">
                     <v-col :cols="8">
                       <article>
                         <img
-                          style="margin-right:5px;width:6% "
+                          style="margin-right: 5px; width: 6%"
                           src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
                           alt="imagen usuario"
                         />
-                        <span style="font-size:18px">
-                          {{ item.nombre }} {{ item.cargo }}</span
+                        <span style="font-size: 18px">
+                          {{ item.nombre }} - {{ item.cargo }}</span
                         >
                       </article>
                     </v-col>
                     <v-col :cols="2" align="center">
-                      <v-dialog
-                        v-model="dialogVistaPreviaFirma"
-                        persistent
-                        max-width="600px"
-                      >
-                        <template v-slot:activator="{ on }">
+                      <template>
                           <v-btn
-                            v-on="on"
                             fab
                             icon=""
                             x-small
@@ -423,12 +419,35 @@
                             @click="verFirma(index)"
                           >
                             <img
-                              style="width:25% "
+                              style="width: 25%"
                               src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
                               alt="firma"
                             />
                           </v-btn>
                         </template>
+                    </v-col>
+                    <v-col :cols="2" align="right">
+                      <div style="margin-right: 20px">
+                        <v-btn
+                          fab
+                          x-small
+                          dark
+                          color="red"
+                          @click="eliminarFirma(index)"
+                        >
+                          <v-icon dark> mdi-minus </v-icon>
+                        </v-btn>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-card>
+
+              <v-dialog
+                        v-model="dialogVistaPreviaFirma"
+                        persistent
+                        max-width="600px"
+                      >
                         <v-card align="center">
                           <v-card-title>
                             <span class="headline">Vista previa</span>
@@ -461,25 +480,8 @@
                           </v-card-actions>
                         </v-card>
                       </v-dialog>
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <div style="margin-right:20px">
-                        <v-btn
-                          fab
-                          x-small
-                          dark
-                          color="red"
-                          @click="eliminarFirma(index)"
-                        >
-                          <v-icon dark>
-                            mdi-minus
-                          </v-icon>
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-card>
+              
+              
               <v-row>
                 <v-col>
                   <v-btn color="warning" block>
@@ -624,6 +626,7 @@ export default {
     verFirma(index) {
       console.log(this.informe.contenido.firmas[index].urlfirma);
       this.imagen = this.informe.contenido.firmas[index].urlfirma;
+      this.dialogVistaPreviaFirma = true;
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;

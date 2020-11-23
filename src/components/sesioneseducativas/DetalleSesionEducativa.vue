@@ -68,17 +68,39 @@
               </v-btn>
             </v-card-actions >
             <v-card-actions v-else>
-              <v-btn @click="GuardarEdicionSesionEducativa()" color="success">
+              <v-btn @click="step=2" color="success">
                 <v-icon left>mdi-page-next-outline</v-icon>
-                <span>Guardar</span>
+                <span>Continuar</span>
               </v-btn>
-              <v-btn @click="CancelarEdicionSesionEducativa()" dark color="red">
+              <v-btn @click="CancelarEdicionSesionEducativa()"  dark color="red">
                 <span>Cancelar</span>
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-stepper-content>
         <v-stepper-content step="2">
+          <v-card>
+            <v-expansion-panels focusable>
+              <v-expansion-panel
+                v-for="(item,i) in sesioneducativa.contenido.participantes"
+                :key="i"
+              >
+                <v-expansion-panel-header>{{item.idparticipante}}</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+            <v-card-actions v-if="edicion">
+              <v-btn @click="GuardarEdicionSesionEducativa()" color="success">
+                <v-icon left>mdi-page-next-outline</v-icon>
+                <span>Guardar</span>
+              </v-btn>
+              <v-btn @click="CancelarEdicionSesionEducativa()"  dark color="red">
+                <span>Cancelar</span>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
           <!-- Esto no va aqui exactamente, solo es vista y modificacion, no insercion  
           <AgregarParticipante
           :sesioneducativa="sesioneducativa"
@@ -88,7 +110,7 @@
         </v-stepper-content>  
         <v-spacer></v-spacer>
         <v-card-actions style="padding:2% 3%">
-          <v-btn block color="red" dark @click="cerrarDialogo()">
+          <v-btn :disabled="edicion" block color="red"  :dark="!edicion" @click="cerrarDialogo()">
             Cerrar
           </v-btn>
         </v-card-actions>
@@ -112,8 +134,6 @@ export default {
       botonGuardarSesionEducativa:false,
       step:1,
       datemenu: false,
-      datemenu1:false,
-      fechaejemplo: '2011-04-11' //Ejemplo de fecha
     }
   },
   methods:{

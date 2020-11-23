@@ -10,6 +10,7 @@
           <v-divider></v-divider>
           <v-stepper-step editable step="2">
             Agregar participantes
+            <small>(Opcional)</small>
           </v-stepper-step>
         </v-stepper-header>
         <v-stepper-items>
