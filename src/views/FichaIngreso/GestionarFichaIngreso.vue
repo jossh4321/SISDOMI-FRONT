@@ -41,8 +41,11 @@
               </template>
                 <SeleccionarFichaIngreso @close-dialog-initial="closeDialogNuevaFichaIngreso()"/>
                 
-            </v-dialog>-->
+            </v-dialog>
           </v-toolbar>
+        </template>
+         <template v-slot:[`item.fechacreacion`]="{ item }">
+          {{ item.fechacreacion | moment("DD-MM-YYYY") }}
         </template>
         <template ><!-- v-slot:[`item.actions`]="{ item }"-->
           <v-row align="center" justify="space-around">
@@ -53,7 +56,7 @@
             <v-icon left> mdi-pencil </v-icon>
               <span>ModificarFichaIngreso</span>
             </v-btn>
-            <v-btn 
+            <v-btn ,
             color="info" dark
              @click="abrirDialogoConsultar(item.id)">
               <v-icon left> mdi-briefcase-edit </v-icon>
@@ -100,15 +103,15 @@ export default {
       residente:{},
       headers: [
         {
-          text: "Codigo ",
+          text: "Codigo de la Ficha ",
           align: "start",
           sortable: false,
           value: "codigodocumento",
         },
-        { text: "Tipo Ficha Ingreso ", value: "tipo"},
-        { text: "Àrea", value: "area" },
-        { text:"Fase",value:"fase"},
-        { text: "Actions", value: "actions", sortable: false },
+        { text: "Residente", value: "residenteresultado"},
+        { text: "Fecha Creacion", value: "fechacreacion" },
+        { text: "Area",value:"area"},
+        { text: "Aciones", value: "actions", sortable: false },
       ],
      SeleccionarFichaIngreso:false,
       fichaIngreso: [],
@@ -117,6 +120,7 @@ export default {
   },
       async created(){
       this.obtenerfichasIngresos();
+      this.obtenerFichasBusquedad();
   },
 
   methods: {
@@ -126,6 +130,21 @@ export default {
     {
       this.dialogoregistro=false
     },
+        async obtenerFichasBusquedad() {
+      await axios
+        .get("Documento/all/fichaingresoresidente")
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          for (var x=0;x<res.data.length;x++){
+              info[x].fechacreacion = res.data[x].fechacreacion.split("T")[0];
+              info[x].tipo = res.data[x].tipo.replace(/([a-z])([A-Z])/g, '$1 $2');
+          }
+          console.log(res.data[1].tipo);
+          this.setInformes(info);
+        })
+        .catch((err) => console.log(err));
+    },
     
        async obtenerfichasIngresos(){
            await axios.get("/Documento/all/fichaingresoresidente")
@@ -133,7 +152,14 @@ export default {
               //console.log( "porfavor" )
               this.setFichaIngreso(res.data);
             }).catch(err => console.log(err));            
-    }
+    },
+    async obtenerResidentes(){
+          await axios.get("/residente/all")
+                  .then( x => {
+                            this.listaresidentes = x.data;
+                            console.log(this.listaresidentes);
+                  }).catch(err => console.log(err));
+        },
 
   },computed:{
     ...mapState(["fichaingreso"]),
