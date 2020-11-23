@@ -103,9 +103,9 @@
     <!-- Modal para seleccionar el tipo de informe -->
     <v-dialog v-model="dialogRegister" persistent max-width="500">
       <v-card>
-        <v-card-title>Selección del Informe</v-card-title>
+        <v-card-title>Selección del Plan</v-card-title>
         <v-card-subtitle class="mt-1"
-          >Seleeccione el tipo de informe para el registro</v-card-subtitle
+          >Seleccione el tipo del plan para el registro</v-card-subtitle
         >
         <v-card-text class="pr-2">
           <v-combobox
@@ -316,27 +316,6 @@ export default {
         .catch((err) => {
           console.error(err);
         });
-
-      // if (item.area == "educativa") {
-      //   this.typePlanSelected = "ModificarPlanIntervencion";
-      //   await axios
-      //     .get("/PlanIntervencion/educativobyid?id=" + item.id)
-      //     .then((x) => {
-      //       this.planI = x.data;
-      //     })
-      //     .catch((err) => console.log(err));
-      // } else if (item.area == "social") {
-      //   this.typePlanSelected = "ModificarPlanIntervencionSocial";
-      //   await axios
-      //     .get("/PlanIntervencion/socialbyid?id=" + item.id)
-      //     .then((x) => {
-      //       this.planI = x.data;
-      //     })
-      //     .catch((err) => console.log(err));
-      // } else {
-      //   this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
-      // }
-      // this.dialogPlanModify = true;
     },
     deletePlanIntervencion(item) {
       this.messagesState.title = "Desactivación del plan de intervención";
@@ -382,7 +361,7 @@ export default {
 
       this.loading = true;
       axios
-        .get("/PlanIntervencionSocial/all")
+        .get("/PlanIntervencion/all")
         .then((res) => {
           this.loading = false;
           this.planesIntervencion = res.data;
@@ -406,7 +385,7 @@ export default {
       this.closeDialog();
       this.loading = true;
       axios
-        .get("/PlanIntervencionSocial/all")
+        .get("/PlanIntervencion/all")
         .then((res) => {
           this.loading = false;
           this.planesIntervencion = res.data;
@@ -440,7 +419,7 @@ export default {
   },
   created() {
     axios
-      .get("/PlanIntervencionSocial/all")
+      .get("/PlanIntervencion/all")
       .then((res) => {
         this.loading = false;
         this.planesIntervencion = res.data;

@@ -276,7 +276,7 @@
                          
         
             <v-card
-                style="margin-top:10%;width:100%;padding:5px 5px;background-color:#EAEAEA"
+                style="margin-top:30px;width:100%;padding:5px 5px;background-color:#EAEAEA"
               >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
                   >Lista de Progresos de Residente</v-card-title

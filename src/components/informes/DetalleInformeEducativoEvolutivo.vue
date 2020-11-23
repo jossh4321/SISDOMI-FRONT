@@ -186,6 +186,98 @@
                     </v-row>
                   </v-card>
                 </v-card>
+                 <v-card
+                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+              >
+                <v-card
+                  elevation="0"
+                  style="background-color:#EAEAEA"
+                  height="50"
+                >
+                  <v-card-title>
+                    Firmas
+                  </v-card-title>
+                </v-card>
+                <v-card
+                  color="#FAFAFA"
+                  style="margin-top:5px"
+                  height="60"
+                  v-for="(item, index) in informe.contenido.firmas"
+                  :key="index"
+                >
+                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                    <v-col :cols="8">
+                      <article>
+                        <img
+                          style="margin-right:5px;width:6% "
+                          src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
+                          alt="imagen usuario"
+                        />
+                        <span style="font-size:18px">
+                          {{ item.nombre }} - {{ item.cargo }}</span
+                        >
+                      </article>
+                    </v-col>
+                    <v-col :cols="4" align="center">
+                      <template>
+                          <v-btn
+                            fab
+                            icon=""
+                            x-small
+                            dark
+                            color="#EAEAEA"
+                            @click="verFirma(index)"
+                          >
+                            <img
+                              style="width:25% "
+                              src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
+                              alt="firma"
+                            />
+                          </v-btn>
+                        </template>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-card>
+
+              <v-dialog
+                        v-model="dialogVistaPreviaFirma"
+                        persistent
+                        max-width="600px"
+                      >
+                        <v-card align="center">
+                          <v-card-title>
+                            <span class="headline">Vista previa</span>
+                          </v-card-title>
+                          <v-card-text>
+                            <img
+                              v-if="imagen.includes('http')"
+                              width="100%"
+                              height="100%"
+                              :src="imagen"
+                              alt=""
+                            />
+                            <img
+                              v-else
+                              width="100%"
+                              height="100%"
+                              :src="'data:image/jpeg;base64,' + imagen"
+                              alt=""
+                            />
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              color="blue darken-1"
+                              text
+                              @click="cerrarVistaPreviaFirma()"
+                            >
+                              Cerrar
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+
                     <v-btn block @click="cerrarDialogo()" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
@@ -213,6 +305,10 @@ export default {
         educador:"",
         logro:"",
         recomendacion:"",
+        urlfirma: "",
+        firmas: { urlfirma: "", nombre: "", cargo: "" },
+        imagen: "",
+        dialogVistaPreviaFirma: false,
       }
     },
     async created() {
@@ -234,7 +330,15 @@ export default {
             .then(res => {
                     this.educador = res.data.datos.nombre + " "+res.data.datos.apellido;
             }).catch(err => console.log(err));
-       }
+       },
+        verFirma(index) {
+          console.log(this.informe.contenido.firmas[index].urlfirma);
+          this.imagen = this.informe.contenido.firmas[index].urlfirma;
+          this.dialogVistaPreviaFirma = true;
+        },
+        cerrarVistaPreviaFirma() {
+          this.dialogVistaPreviaFirma = false;
+        },
     }
 }
 </script>

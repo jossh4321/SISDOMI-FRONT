@@ -4,15 +4,15 @@
       <v-card-title>Gestionar Sesiones Educativas</v-card-title>
       <v-data-table
         :headers="headers"
-        :items="residentes"
+        :items="sesionesEducativas"
         :search="search"
         :loading="loading"
-        loading-text="Cargando residentes"
+        loading-text="Cargando Sesiones Educativas"
         class="elevation-1"
       > 
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>Residentes SISCAR</v-toolbar-title>
+            <v-toolbar-title>Sesiones Educativas SISCAR</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-text-field
@@ -39,18 +39,23 @@
               </template>
               <RegistrarSesionEducativa
                 :listaresidentes="listaresidentes"
-                @close-dialog-save="closeDialogRegistrar()"
+                @close-dialog-dontsave="closeDialogRegistrar()"
               ></RegistrarSesionEducativa>
             </v-dialog>
           </v-toolbar>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <!--Abrir dialogo Ver Sesiones -->
+          <!--BOTONES-->
           <v-row align="center" justify="space-around">
-            <!--BOTONES-->
+            <!--Abrir dialogo Ver Sesiones -->
             <v-btn color="info" dark @click="abrirDialogoDetalle(item.id)">
               <v-icon left> info </v-icon>
-              <span>Ver Sesiones</span>
+              <span>Ver Sesión</span>
+            </v-btn>
+            <!--Abrir Agregar Participante -->
+            <v-btn color="info" dark @click="abrirDialogoDetalle(item.id)">
+              <v-icon left>mdi-plus</v-icon>
+              <span>Agregar Participante</span>
             </v-btn>
           </v-row>
         </template>
@@ -58,10 +63,17 @@
       <!--Dialogo de Detalle-->
       <v-dialog persistent v-model="dialogodetalle" max-width="880px">
         <DetalleSesionEducativa
-          :residente="residente"
+          :sesioneducativa="sesioneducativa"
           @close-dialog-detail="closeDialogDetalle()"
-        >
-        </DetalleSesionEducativa>
+        ></DetalleSesionEducativa>
+      </v-dialog>
+      <!--Dialogo de Agregar Participantes-->
+      <v-dialog persistent v-model="dialogoparticipante" max-width="880px">
+        <AgregarParticipante
+          :sesioneducativa="sesioneducativa"
+          :listaresidentes="listaresidentes"
+          @close-dialog-detail="closeDialogDetalle()"
+        ></AgregarParticipante>
       </v-dialog>
     </v-card>
   </div>
@@ -69,58 +81,73 @@
 
 <script>
 import axios from "axios";
+import AgregarParticipante from "@/components/sesioneseducativas/AgregarParticipante.vue";
 import RegistrarSesionEducativa from "@/components/sesioneseducativas/RegistrarSesionEducativa.vue";
 import DetalleSesionEducativa from "@/components/sesioneseducativas/DetalleSesionEducativa.vue";
 import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarSesionesEducativas",
   components:{
-    RegistrarSesionEducativa, DetalleSesionEducativa
+    AgregarParticipante, RegistrarSesionEducativa, DetalleSesionEducativa
   },
   data(){
     return{
       search:"",
-      residente: {},
+      sesioneducativa: {},
       headers:[
-        { text: "Nombre", align:"start", sortable:false, value: "nombre" },
-        { text: "Apellido", value: "apellido" },
-        { text: "Tipo de documento", value: "tipoDocumento" },
-        { text: "N°documento", value: "numeroDocumento" },
-        { text: "N° Fase", value: "" },
-        { text: "Fase", value: "" },
+        { text: "Titulo", align:"start", sortable:false, value: "titulo" },
+        { text: "Tipo de Sesión", value: "tipo" },
+        { text: "Id Creador", value: "idCreador" },
+        { text: "Fecha de Creacion", value: "fechaCreacion" },
+        { text: "Area", value: "area" },
         { text: "Actions", value: "actions", sortable: false }
       ],
       listaresidentes:[],
       dialogoregistro: false,
       dialogodetalle: false,
+      dialogoparticipante:false,
       loading:true
     }
   },
   async created() {
-    this.obtenerResidentes();
+    this.obtenerSesionesEducativas();
   },
   methods:{
-    ...mapMutations(["setResidentes"]),
+    ...mapMutations(["setSesionesEducativas","setResidentes"]),
     closeDialogDetalle() {
       this.dialogodetalle = false;
     },
     closeDialogRegistrar() {
       this.dialogoregistro = false;
     },
-    async abrirDialogoDetalle(idresidente) {
-      this.residente = await this.loadResidenteDetalle(idresidente);
-      this.dialogodetalle = !this.dialogodetalle;
+    closeDialogParticipantes() {
+      this.dialogoparticipante = false;
     },
 
-    //Obtener datos de un residente por id
-    async loadResidenteDetalle(idresidente) {
+    convertDateFormat(string) {
+        //cambia formato de fecha de MongoDB a dd/MM/yyyy
+        var dateMongo = string.split('T');
+        var date = dateMongo[0].split('-');
+        return date[2] + '/' + date[1] + '/' + date[0];
+    },
+    async abrirDialogoDetalle(idsesion) {
+      this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion);
+      this.dialogodetalle = !this.dialogodetalle;
+    },
+    async abrirDialogoParticipante(idsesion) {
+      this.listaresidentes = await this.obtenerResidentes();
+      this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion);
+      this.dialogoparticipante = !this.dialogoparticipante;
+    },
+
+    //Obtener datos de una sesión por id
+    async loadSesionEducativaDetalle(idsesion) {
       var user = {};
       await axios
-        .get("/residente/id?id=" + idresidente)
+        .get("/SesionesEducativas/id?id=" + idsesion)
         .then((res) => {
           user = res.data;
-          user.fechaNacimiento = user.fechaNacimiento.split("T")[0];
-          user.fechaIngreso = user.fechaIngreso.split("T")[0];
+          user.fechaCreacion = user.fechaCreacion.split("T")[0];
         })
         .catch((err) => console.log(err));
       console.log(user);
@@ -129,26 +156,43 @@ export default {
 
 
     //Datos para tabla principal
-    async obtenerResidentes() {
+    async obtenerSesionesEducativas() {
       await axios
-        .get("/residente/all")
+        .get("/SesionesEducativas/all")
         .then((res) => {
           this.loading = false;
           console.log(res.data)
           var info = {};
           info = res.data;
+          for (var x=0;x<res.data.length;x++){
+              info[x].fechaCreacion = this.convertDateFormat(info[x].fechaCreacion);
+          }
+          this.setSesionesEducativas(info);
+          
+        })
+        .catch((err) => console.log(err));
+    },
+
+    //Lista de Residentes para agregar participantes
+    async obtenerResidentes() {
+      await axios
+        .get("/residente/all")
+        .then((res) => {
+          var info = {};
+          info = res.data;
           this.listaresidentes = info;
+          console.log(res.data)
           for (var x=0;x<res.data.length;x++){
               info[x].fechaIngreso = res.data[x].fechaIngreso.split("T")[0];
           }
-          this.setResidentes(info);
           
+          this.setResidentes(info);
         })
         .catch((err) => console.log(err));
     },
   },
   computed:{
-    ...mapState(["residentes"]),
+    ...mapState(["sesionesEducativas","residentes"]),
     }
 };
 </script>

@@ -24,7 +24,7 @@
                   <v-text-field
                     label="Título"
                     outlined
-                    v-model.trim="planResidentePsicologico.contenido.titulo"
+                    v-model.trim="getTitleByFaseResident"
                     required
                     :error-messages="planTituloErrors"
                     @input="
@@ -33,6 +33,7 @@
                     @blur="
                       $v.planResidentePsicologico.contenido.titulo.$touch()
                     "
+                    readonly
                     color="success"
                   ></v-text-field>
                 </v-col>
@@ -154,7 +155,9 @@
                     rows="3"
                     row-height="10"
                     outlined
-                    v-model.trim="planResidentePsicologico.contenido.descripcion"
+                    v-model.trim="
+                      planResidentePsicologico.contenido.descripcion
+                    "
                     required
                     :error-messages="planDescripcionErrors"
                     @input="
@@ -265,8 +268,7 @@
                   <div>
                     <h4
                       v-if="
-                        $v.planResidentePsicologico.contenido
-                          .tecnicas.$error
+                        $v.planResidentePsicologico.contenido.tecnicas.$error
                       "
                       class="red--text"
                     >
@@ -296,10 +298,7 @@
                   </div>
                   <div>
                     <h4
-                      v-if="
-                        $v.planResidentePsicologico.contenido
-                          .metas.$error
-                      "
+                      v-if="$v.planResidentePsicologico.contenido.metas.$error"
                       class="red--text"
                     >
                       Debe tener como mínimo una meta registrada
@@ -334,8 +333,7 @@
                   <div>
                     <h4
                       v-if="
-                        $v.planResidentePsicologico.contenido
-                          .indicadores.$error
+                        $v.planResidentePsicologico.contenido.indicadores.$error
                       "
                       class="red--text"
                     >
@@ -371,8 +369,8 @@
                   <div>
                     <h4
                       v-if="
-                        $v.planResidentePsicologico.contenido
-                          .requerimientos.$error
+                        $v.planResidentePsicologico.contenido.requerimientos
+                          .$error
                       "
                       class="red--text"
                     >
@@ -533,7 +531,7 @@ export default {
         sexo: "",
         motivoIngreso: "",
         estado: "",
-        faseActual: ""
+        faseActual: "",
       },
     };
   },
@@ -612,7 +610,7 @@ export default {
           sexo: "",
           motivoIngreso: "",
           estado: "",
-          faseActual: ""
+          faseActual: "",
         };
       }
 
@@ -629,7 +627,6 @@ export default {
         .get("/Residente/all")
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
-
             return {
               residente: res.nombre + " " + res.apellido,
               id: res.id,
@@ -638,7 +635,7 @@ export default {
               sexo: res.sexo,
               motivoIngreso: res.motivoIngreso,
               estado: res.estado,
-              faseActual: res.progreso[res.progreso.length - 1].nombre
+              faseActual: res.progreso[res.progreso.length - 1].nombre,
             };
           });
 
@@ -698,8 +695,6 @@ export default {
       }
     },
     registerFile(file, response) {
-      
-      
       this.listImages.push(file);
     },
     removedFile(file, error, xhr) {
@@ -726,8 +721,8 @@ export default {
           await axios
             .post("/Media", formData)
             .then((res) => {
-               this.planResidentePsicologico.contenido.firmas[index].urlfirma =
-                 res.data;
+              this.planResidentePsicologico.contenido.firmas[index].urlfirma =
+                res.data;
             })
             .catch((err) => {
               console.error(err);
@@ -760,11 +755,9 @@ export default {
         title: title,
         text: text,
       }).then((res) => {
-        
-        if(valid) {
-          this.$emit('register-complete');
+        if (valid) {
+          this.$emit("register-complete");
         }
-
       });
     },
   },
@@ -775,6 +768,28 @@ export default {
           ? ""
           : this.$moment(this.residente.fechaNacimiento).format("DD/MM/YYYY")
         : "";
+    },
+    getTitleByFaseResident() {
+        if(this.residente != null) {
+            if(this.residente.faseActual != "") {
+
+              if(this.residente.faseActual == "acogida") {
+                this.planResidentePsicologico.contenido.titulo = "Plan de Intervención psicológica";
+              }
+              else {
+                this.planResidentePsicologico.contenido.titulo = "Plan de Intervención Individual " + this.residente.residente;
+              }
+
+              return this.planResidentePsicologico.contenido.titulo;
+              
+            }
+            else {
+              return "";
+            }
+        }
+        else {
+          return "";
+        }
     },
     objetivoEspecificoErrors() {
       const errors = [];

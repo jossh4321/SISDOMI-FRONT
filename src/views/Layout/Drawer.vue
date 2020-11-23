@@ -150,7 +150,14 @@ export default {
           href: "/dashboard/residentes"
         },
         {
-          title: "Gestionar Plan de Intervención",
+          title: "Gestionar Seguimiento Educativo",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarSeguimientoEducativo",
+          href: "/dashboard/seguimientoEducativo"
+        },
+        {
+          title: "Planes",
           group: "admin",
           icon: "dashboard",
           name: "GestionPlanIntervencion",

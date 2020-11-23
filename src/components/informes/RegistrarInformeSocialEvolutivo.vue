@@ -1,9 +1,7 @@
 <template>
-  <v-dialog v-model="show" max-width="50%">
+  <v-dialog v-model="show" max-width="880px">
     <v-card>
-      <v-card-title class="justify-center"
-        >Registro de Informe Educativo Inicial</v-card-title
-      >
+      <v-card-title class="justify-center">{{ titulo }}</v-card-title>
       <v-stepper v-model="step">
         <v-stepper-header>
           <v-stepper-step editable step="1">
@@ -14,13 +12,14 @@
             Análisis y Diagnóstico
           </v-stepper-step>
         </v-stepper-header>
+        <!-- fdsfs -->
         <v-stepper-items>
           <v-stepper-content step="1">
             <div class="container-user">
               <form>
                 <v-autocomplete
-                  :items="listaresidentes"
                   v-model="informe.idresidente"
+                  :items="listaresidentes"
                   filled
                   chips
                   dense
@@ -40,16 +39,16 @@
                       style="margin-top:5px"
                     >
                       <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size:12px">RT</span>
+                        <span style="font-size:12px">UE</span>
                       </v-avatar>
-                      {{ data.item.nombre }}
+                      {{ data.item.nombre + " " + data.item.apellido }}
                     </v-chip>
                   </template>
                   <template v-slot:item="data">
                     <template>
                       <v-list-item-avatar>
                         <v-avatar left color="#b3b3ff" size="24">
-                          <span style="font-size:12px">UC</span>
+                          <span style="font-size:12px">US</span>
                         </v-avatar>
                       </v-list-item-avatar>
                       <v-list-item-content>
@@ -59,77 +58,12 @@
                         </v-list-item-title>
                         <v-list-item-subtitle
                           >Nro. Documento:
-                          {{ data.item.numeroDocumento }}</v-list-item-subtitle
+                          {{ data.item.numerodocumento }}</v-list-item-subtitle
                         >
                       </v-list-item-content>
                     </template>
                   </template>
                 </v-autocomplete>
-
-                <v-autocomplete
-                  :items="listaeducadores"
-                  filled
-                  chips
-                  dense
-                  outlined
-                  v-model="informe.creadordocumento"
-                  color="#009900"
-                  label="Educador responsable"
-                  item-text="usuario"
-                  item-value="id"
-                  @input="$v.informe.creadordocumento.$touch()"
-                  @blur="$v.informe.creadordocumento.$touch()"
-                  :error-messages="errorCreador"
-                >
-                  <template v-slot:selection="data">
-                    <v-chip
-                      v-bind="data.attrs"
-                      :input-value="data.selected"
-                      style="margin-top:5px"
-                    >
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size:12px">RT</span>
-                      </v-avatar>
-                      {{ data.item.datos.nombre }}
-                    </v-chip>
-                  </template>
-                  <template v-slot:item="data">
-                    <template>
-                      <v-list-item-avatar>
-                        <v-avatar left color="#b3b3ff" size="24">
-                          <span style="font-size:12px">UC</span>
-                        </v-avatar>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          >Nombre completo: {{ data.item.datos.nombre }}
-                          {{ data.item.datos.apellido }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle
-                          >Nro. Documento:
-                          {{
-                            data.item.datos.numerodocumento
-                          }}</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </template>
-                  </template>
-                </v-autocomplete>
-
-                <v-textarea
-                  label="Lugar de Evaluación"
-                  v-model="informe.contenido.lugarevaluacion"
-                  auto-grow
-                  outlined
-                  rows="2"
-                  row-height="25"
-                  color="#009900"
-                  shaped
-                  @input="$v.informe.contenido.lugarevaluacion.$touch()"
-                  @blur="$v.informe.contenido.lugarevaluacion.$touch()"
-                  :error-messages="errorLugarEvaluacion"
-                ></v-textarea>
-
                 <v-menu
                   v-model="datemenu"
                   :close-on-content-click="false"
@@ -158,33 +92,44 @@
                     locale="es-es"
                   ></v-date-picker>
                 </v-menu>
-
                 <v-textarea
-                  label="Situación Académica"
-                  v-model="informe.contenido.situacionacademica"
+                  v-model="informe.contenido.antecedentes"
+                  label="Antecedentes"
                   auto-grow
                   outlined
+                  @input="$v.informe.contenido.antecedentes.$touch()"
+                  @blur="$v.informe.contenido.antecedentes.$touch()"
+                  :error-messages="errorAntecedentes"
                   rows="2"
                   row-height="40"
                   color="#009900"
                   shaped
-                  @input="$v.informe.contenido.situacionacademica.$touch()"
-                  @blur="$v.informe.contenido.situacionacademica.$touch()"
-                  :error-messages="errorSituacionAcademica"
                 ></v-textarea>
-
                 <v-textarea
-                  label="Análisis Académico y de comportamiento"
-                  v-model="informe.contenido.analisisacademico"
+                  v-model="informe.contenido.situacionactual"
+                  label="Situación Social Actual"
                   auto-grow
                   outlined
+                  @input="$v.informe.contenido.situacionactual.$touch()"
+                  @blur="$v.informe.contenido.situacionactual.$touch()"
+                  :error-messages="errorSituacionSocial"
                   rows="2"
                   row-height="40"
                   color="#009900"
                   shaped
-                  @input="$v.informe.contenido.analisisacademico.$touch()"
-                  @blur="$v.informe.contenido.analisisacademico.$touch()"
-                  :error-messages="errorAnalisisAcademico"
+                ></v-textarea>
+                <v-textarea
+                  v-model="informe.contenido.diagnosticosocial"
+                  label="Diagnostico Social"
+                  auto-grow
+                  outlined
+                  @input="$v.informe.contenido.diagnosticosocial.$touch()"
+                  @blur="$v.informe.contenido.diagnosticosocial.$touch()"
+                  :error-messages="errorDiagnosticoSocial"
+                  rows="2"
+                  row-height="40"
+                  color="#009900"
+                  shaped
                 ></v-textarea>
                 <v-row>
                   <v-col>
@@ -194,7 +139,7 @@
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block @click="show = false" color="primary">
+                    <v-btn block @click="cerrarDialogo()" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
                     </v-btn>
@@ -217,8 +162,8 @@
                     <v-row style="margin:1%;heigh:100%" align="center">
                       <v-col :cols="8" align="left">
                         <v-text-field
-                          v-model="conclusion"
-                          label="Conclusiones y recomendaciones"
+                          v-model="recomendacion"
+                          label="Recomendaciones"
                           color="#009900"
                         ></v-text-field>
                       </v-col>
@@ -228,7 +173,7 @@
                           small
                           dark
                           color="green"
-                          @click="agregarConclusion"
+                          @click="agregarRecomendaciones"
                         >
                           <v-icon dark>
                             mdi-plus
@@ -244,12 +189,12 @@
                     color="#FAFAFA"
                     style="margin:5px"
                     height="60"
-                    v-for="conclusion in conclusiones"
-                    :key="conclusion"
+                    v-for="recomendacion in recomendaciones"
+                    :key="recomendacion"
                   >
                     <v-row style="margin-left:10px;heigh:100%" align="center">
                       <v-col :cols="8" align="left">
-                        <span>{{ conclusion }}</span>
+                        <span>{{ recomendacion }}</span>
                       </v-col>
                       <v-col :cols="4" align="right">
                         <div style="margin-right:20px">
@@ -258,7 +203,7 @@
                             x-small
                             dark
                             color="red"
-                            @click="eliminarConclusion(conclusion)"
+                            @click="eliminarRecomendaciones(recomendacion)"
                           >
                             <v-icon dark>
                               mdi-minus
@@ -422,7 +367,7 @@
                 <v-row>
                   <v-col>
                     <v-btn block @click="registrarInforme" color="success">
-                      <v-icon left>mdi-content-save-all-outline</v-icon>
+                      <v-icon left>mdi-page-next-outline</v-icon>
                       <span>Registrar Informe</span>
                     </v-btn>
                   </v-col>
@@ -450,17 +395,15 @@ import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 
 export default {
-  props: ["listaresidentes", "listaeducadores", "visible"],
+  props: ["listaresidentes", "visible", "titulo"],
   components: {
     vueDropzone: vue2Dropzone,
   },
   data() {
     return {
-      //para probar
       fileList: [],
-      ///
-      dialogVistaPreviaFirma: false,
       datemenu: false,
+      dialogVistaPreviaFirma: false,
       step: 1,
       dropzoneOptions: {
         url: "https://httpbin.org/post",
@@ -482,38 +425,38 @@ export default {
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
         dictDefaultMessage:
-          "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
+          "Seleccione la imagen de la firma de su dispositivo o arrástrela aquí",
       },
-      conclusion: "",
-      conclusiones: [],
+      recomendacion: "",
+      recomendaciones: [],
       urlfirma: "",
       firmas: { urlfirma: "", nombre: "", cargo: "" },
+      imagen: "",
       informe: {
         id: "",
-        tipo: "InformeEducativoInicial",
+        tipo: "",
         historialcontenido: [],
         creadordocumento: "",
         fechacreacion: "",
-        area: "educativa",
+        area: "social",
         fase: "acogida",
         idresidente: "",
         estado: "creado",
         contenido: {
-          situacionacademica: "",
-          analisisacademico: "",
-          conclusiones: [],
+          antecedentes: "",
+          situacionactual: "",
+          diagnosticosocial: "",
+          recomendaciones: [],
           anexos: [],
           firmas: [],
           codigodocumento: "",
-          lugarevaluacion: "",
         },
       },
-      imagen: "",
     };
   },
   async created() {
-    this.conclusiones = "";
-    this.conclusion = "";
+    this.recomendaciones = "";
+    this.recomendacion = "";
   },
   methods: {
     ...mapMutations(["addInforme"]),
@@ -534,12 +477,17 @@ export default {
     },
     async registrarInforme() {
       await this.sendPDFFiles();
+      if (this.titulo === "Registrar Informe Educativo Evolutivo") {
+        this.informe.tipo = "InformeEducativoEvolutivo";
+      } else {
+        this.informe.tipo = "InformeEducativoFinal";
+      }
       console.log(this.informe);
       this.$v.$touch();
       if (this.$v.$invalid) {
         console.log("hay errores");
         this.mensaje(
-          "error",
+          "Error",
           "..Oops",
           "Se encontraron errores en el formulario",
           "<strong>Verifique los campos Ingresados<strong>"
@@ -548,7 +496,7 @@ export default {
         console.log("no hay errores");
         console.log(this.informe);
         await axios
-          .post("/informe/informeei", this.informe)
+          .post("/informe/informese", this.informe)
           .then((res) => {
             this.informe = res.data;
             console.log(this.listaresidentes);
@@ -563,6 +511,8 @@ export default {
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
+            console.log("HOLA");
+            console.log(info);
             this.addInforme(info);
             this.cerrarDialogo();
           })
@@ -575,16 +525,17 @@ export default {
         );
       }
     },
-    resetInformeValidationState() {
-      this.$refs.myVueDropzone.removeAllFiles();
-      this.$v.informe.$reset();
+    agregarRecomendaciones() {
+      let recomendaciones = this.recomendacion;
+      this.informe.contenido.recomendaciones.push(recomendaciones);
+      this.recomendaciones = this.informe.contenido.recomendaciones;
+      this.recomendacion = "";
     },
-    async mensaje(icono, titulo, texto, footer) {
-      await this.$swal({
-        icon: icono,
-        title: titulo,
-        text: texto,
-        footer: footer,
+    eliminarRecomendaciones(recomendacion) {
+      this.recomendaciones.forEach(function(car, index, object) {
+        if (car === recomendacion) {
+          object.splice(index, 1);
+        }
       });
     },
     cerrarDialogo() {
@@ -592,18 +543,12 @@ export default {
       this.step = 1;
       this.$emit("close");
     },
-    agregarConclusion() {
-      let conclusiones = this.conclusion;
-      this.informe.contenido.conclusiones.push(conclusiones);
-      this.conclusiones = this.informe.contenido.conclusiones;
-      this.conclusion = "";
-    },
-    eliminarConclusion(conclusion) {
-      // this.informe.contenido.conclusiones.splice(conclusion, 1);
-      this.conclusiones.forEach(function(car, index, object) {
-        if (car === conclusion) {
-          object.splice(index, 1);
-        }
+    async mensaje(icono, titulo, texto, footer) {
+      await this.$swal({
+        icon: icono,
+        title: titulo,
+        text: texto,
+        footer: footer,
       });
     },
     agregarFirma() {
@@ -631,65 +576,61 @@ export default {
       this.dialogVistaPreviaFirma = false;
     },
     afterSuccess(file, response) {
-      // console.log(file);
-      // console.log(file.dataURL);
-      // console.log(this.$refs.myVueDropzone);
-
+      console.log(file);
+      console.log(file.dataURL);
+      console.log(this.$refs.myVueDropzone);
       this.fileList.push(file);
     },
     afterRemoved(file, error, xhr) {
       this.informe.contenido.anexos = "";
-      this.$v.informe.contenido.anexos.$model = "";
+      //this.$v.informe.contenido.anexos.$model = "";
     },
     afterSuccess2(file, response) {
       this.urlfirma = file.dataURL.split(",")[1];
-      console.log(this.urlfirma);
     },
     afterRemoved2(file, error, xhr) {
       this.urlfirma = "";
-      //this.informe.contenido.firmas.urlfirma = "";
-      // this.$v.informe.contenido.firmas.urlfirma.$model = "";
     },
     limpiarInforme() {
       return {
-        informe: {
-          id: "",
-          tipo: "",
-          historialcontenido: [],
-          creadordocumento: "",
-          fechacreacion: "",
-          area: "",
-          fase: "",
-          idresidente: "",
-          estado: "",
-          contenido: {
-            situacionacademica: "",
-            analisisacademico: "",
-            conclusiones: [],
-            anexos: [],
-            firmas: [
-              {
-                urlfirma: "",
-                nombre: "",
-                cargo: "",
-              },
-            ],
-            codigodocumento: "",
-          },
+        tipo: "",
+        historialcontenido: [],
+        creadordocumento: "",
+        fechacreacion: "",
+        area: "social",
+        fase: "acogida",
+        idresidente: "",
+        estado: "creado",
+        contenido: {
+          antecedentes: "",
+          situacionactual: "",
+          diagnosticosocial: "",
+          recomendaciones: [],
+          anexos: [],
+          firmas: [],
+          codigodocumento: "",
         },
       };
     },
   },
   computed: {
-    show: {
-      get() {
-        return this.visible;
-      },
-      set(value) {
-        if (!value) {
-          this.$emit("close");
-        }
-      },
+    ...mapState(["informes"]),
+    verifyColor() {
+      return "red";
+    },
+    errorAntecedentes() {
+      const errors = [];
+      if (!this.$v.informe.contenido.antecedentes.$dirty) return errors;
+      !this.$v.informe.contenido.antecedentes.required &&
+        errors.push("Debe ingresar un antecedente");
+      return errors;
+    },
+    errorSituacionSocial() {
+      const errors = [];
+      if (!this.$v.informe.contenido.situacionactual.$dirty) return errors;
+      !this.$v.informe.contenido.situacionactual.required &&
+        errors.push("Debe ingresar la situación actual");
+      return errors;
     },
     errorResidente() {
       const errors = [];
@@ -698,20 +639,11 @@ export default {
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
     },
-    errorCreador() {
+    errorDiagnosticoSocial(){
       const errors = [];
-      if (!this.$v.informe.creadordocumento.$dirty) return errors;
-      !this.$v.informe.creadordocumento.required &&
-        errors.push("Debe seleccionar un educador obligatoriamente");
-      return errors;
-    },
-    errorLugarEvaluacion() {
-      const errors = [];
-      if (!this.$v.informe.contenido.lugarevaluacion.$dirty) return errors;
-      !this.$v.informe.contenido.lugarevaluacion.required &&
-        errors.push("Debe ingresar un lugar de evaluación obligatoriamente");
-      !this.$v.informe.contenido.lugarevaluacion.minLength &&
-        errors.push("El lugar de evaluación debe tener al menos 10 caracteres");
+      if (!this.$v.informe.contenido.diagnosticosocial.$dirty) return errors;
+      !this.$v.informe.contenido.diagnosticosocial.required &&
+        errors.push("Debe ingresar un diagnostico");
       return errors;
     },
     errorFechaEvaluacion() {
@@ -727,25 +659,15 @@ export default {
 
       return errors;
     },
-    errorSituacionAcademica() {
-      const errors = [];
-      if (!this.$v.informe.contenido.situacionacademica.$dirty) return errors;
-      !this.$v.informe.contenido.situacionacademica.required &&
-        errors.push("Debe ingresar la situación académica obligatoriamente");
-      !this.$v.informe.contenido.situacionacademica.minLength &&
-        errors.push(
-          "La situación académica debe tener al menos 100 caracteres"
-        );
-      return errors;
-    },
-    errorAnalisisAcademico() {
-      const errors = [];
-      if (!this.$v.informe.contenido.analisisacademico.$dirty) return errors;
-      !this.$v.informe.contenido.analisisacademico.required &&
-        errors.push("Debe ingresar el análisis académico obligatoriamente");
-      !this.$v.informe.contenido.analisisacademico.minLength &&
-        errors.push("El análisis académico debe tener al menos 100 caracteres");
-      return errors;
+    show: {
+      get() {
+        return this.visible;
+      },
+      set(value) {
+        if (!value) {
+          this.$emit("close");
+        }
+      },
     },
   },
   validations() {
@@ -754,24 +676,18 @@ export default {
         idresidente: {
           required,
         },
-        creadordocumento: {
-          required,
-        },
         fechacreacion: {
           required,
         },
         contenido: {
-          lugarevaluacion: {
+          antecedentes: {
             required,
-            minLength: minLength(10),
           },
-          situacionacademica: {
+          situacionactual: {
             required,
-            minLength: minLength(100),
           },
-          analisisacademico: {
+          diagnosticosocial: {
             required,
-            minLength: minLength(100),
           },
         },
       },
@@ -779,7 +695,12 @@ export default {
   },
 };
 </script>
+
 <style scoped>
+.container-user {
+  margin: 15px;
+}
+
 .dropzone-custom-content {
   position: absolute;
   top: 50%;
@@ -791,5 +712,17 @@ export default {
 .dropzone-custom-title {
   margin-top: 0;
   color: #00b782;
+}
+
+.subtitle {
+  color: #314b5f;
+}
+.divider-custom {
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+
+.inputTextField {
+  border-color: green;
 }
 </style>
