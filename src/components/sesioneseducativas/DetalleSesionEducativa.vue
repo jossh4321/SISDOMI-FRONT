@@ -82,9 +82,12 @@
             <v-row>
               <v-col>
                 <v-select
-                  v-model="items.value"
+                  v-model="select"
                   :items="items"
+                  item-text="text"
+                  item-value="value"
                   label="Filtrar por:"
+                  return-object
                   outlined
                   dense
                 ></v-select> 
@@ -100,7 +103,7 @@
                 ></v-text-field>
               </v-col>
               <v-col>
-                <v-btn @click="filtradoSearch(datoSesion.contenido.participantes, search)" small fab dark color="blue">
+                <v-btn @click="filtradoSearch(datoSesion.contenido.participantes, select)" small fab dark color="blue">
                   <v-icon center>mdi-magnify</v-icon>
                 </v-btn>
               </v-col>
@@ -112,7 +115,18 @@
                 :key="i"
               >
                 <v-card outlined tile>
-                  <v-expansion-panel-header>{{item.datosresidente.nombre + " " + item.datosresidente.apellido }}</v-expansion-panel-header>
+                  <v-expansion-panel-header>
+                    <v-row no-gutters>
+                      <v-col cols="6">
+                        <v-avatar left color="#81C3F8" size="24" style="margin-right:8px">
+                          <span style="font-size:10px">PR</span>
+                        </v-avatar>
+                        <span :class="[(select.value==='1') ? 'resaltado' : '']">{{item.datosresidente.nombre + " "}}</span>
+                        <span :class="[(select.value==='2') ? 'resaltado' : '']">{{item.datosresidente.apellido}}</span>
+                      </v-col>
+                      <v-col cols="6">No. Doc:<span :class="[(select.value==='3') ? 'resaltado' : '']">{{" "+ item.datosresidente.numerodocumento}}</span></v-col>
+                    </v-row>
+                  </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <form>
                       <v-card elevation="0">
@@ -153,7 +167,7 @@
                   </v-expansion-panel-content>
                 </v-card>
               </v-expansion-panel>
-              <p style="margin-top:2%;margin-bottom:0%" >Encontrados: {{numeroEcontrados(participantesFiltrados)}}</p>
+              <p style="color:grey;margin-top:2%;margin-bottom:0%" >Encontrados: {{numeroEcontrados(participantesFiltrados)}}</p>
             </v-expansion-panels>
             <v-card-actions v-if="!edicion" style="margin-top:2%">
               <v-btn @click="activarEdicionSesionEducativa()" color="warning">
@@ -191,6 +205,7 @@ export default {
   props: ["sesioneducativa"],
   data(){
     return{
+      select: { value: "1", text: "Nombre" },
       items: [
         { value: "1", text: 'Nombre'},
         { value: "2", text: 'Apellido'},
@@ -220,6 +235,8 @@ export default {
       this.$emit("close-dialog-detail");
       this.step=1;
       this.participantesFiltrados = this.datoSesion.contenido.participantes;
+      this.select= { value: "1", text: "Nombre" };
+      this.search="";
     },
     activarEdicionSesionEducativa(){
       this.edicion = true;
@@ -234,13 +251,13 @@ export default {
     },
 
     filtradoSearch(array, string){
-      if(this.items.value==="1"){
+      if(this.select.value==="1"){
         this.participantesFiltrados = array.filter(partic => partic.datosresidente.nombre.includes(string));
       }
-      else if(this.items.value==="2"){
+      else if(this.select.value==="2"){
         this.participantesFiltrados = array.filter(partic => partic.datosresidente.apellido.includes(string));
       }
-      else if(this.items.value==="3"){
+      else if(this.select.value==="3"){
         this.participantesFiltrados = array.filter(partic => partic.datosresidente.numerodocumento.includes(string));
       }
       if(this.participantesFiltrados.length===0){
@@ -277,5 +294,7 @@ export default {
 </script>
 
 <style scoped>
-
+.resaltado{
+  font-weight: 600;
+}
 </style>
