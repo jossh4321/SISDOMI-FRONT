@@ -190,18 +190,43 @@
                                       <span style="font-size:16px">{{item.nombre}}</span>
                                     </article>
                                   </v-col>
-                                  <v-col :cols="4">
-                                    <article>
-                                          <v-img style="display:block"
-                                            height="70"
-                                          width="170"
-                                            :src="'data:image/jpeg;base64,' +  item.urlfirma"
-                                          ></v-img>
-                                    </article>
-                                  </v-col>
-                                  <v-col align="right">
+                    <v-col :cols="2" align="center">
+                        <template>
+                            <v-btn
+                              fab
+                              icon=""
+                              x-small
+                              dark
+                              color="#EAEAEA"
+                              @click="verFirma(index)"
+                            >
+                              <img
+                                style="width:25% "
+                                src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
+                                alt="firma"
+                              />
+                            </v-btn>
+                          </template>
+                      </v-col>
+                      <v-col :cols="2" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarFirma(index)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                                  
+                                 <!--  <v-col align="right">
                                     <div style="margin-right:20px">
-                                 <!--  <v-btn
+                                  <v-btn
                                         style="margin-right:10px"
                                         fab
                                         x-small
@@ -211,10 +236,10 @@
                                         <v-icon dark>
                                           mdi-pencil
                                         </v-icon>
-                                      </v-btn>  -->
+                                      </v-btn>  
                                       
                                     </div>
-                                  </v-col>
+                                  </v-col>-->
                                 </v-row>
                               </v-card>
                             </v-card>
@@ -236,7 +261,35 @@
                                 </v-card>
                               </v-dialog>
                             </v-row>
-                          
+                           <v-dialog
+                          v-model="dialogVistaPreviaFirma"
+                          persistent
+                          max-width="600px"
+                        >
+                          <v-card align="center">
+                            <v-card-title>
+                              <span class="headline">Vista previa</span>
+                            </v-card-title>
+                            <v-card-text>
+                              <img
+                                width="100%"
+                                height="100%"
+                                :src="'data:image/jpeg;base64,' + imagen"
+                                alt=""
+                              />
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="cerrarVistaPreviaFirma()"
+                              >
+                                Cerrar
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                </v-dialog>
               
                     <!--Botones de card -->
                       <v-row>
@@ -332,6 +385,7 @@ data(){
 
 
       //separacion
+        imagen: "",
          firma:{urlfirma:"",nombre:"",cargo:""},
     seguimiento:{
       id:"",
@@ -361,6 +415,9 @@ methods:{
         this.$emit("close-dialog-save");
        
       },
+      cerrarVistaPreviaFirma() {
+      this.dialogVistaPreviaFirma = false;
+    },
       
     afterSuccess(file, response) {
       console.log(file);
@@ -393,6 +450,14 @@ methods:{
    this.firma.urlfirma="";
    this.firma.nombre="";
    this.firma.cargo="";
+    },
+    eliminarFirma(index) {
+      this.seguimiento.contenido.firmas.splice(index, 1);
+    },
+    verFirma(index) {
+      console.log(this.seguimiento.contenido.firmas[index].urlfirma);
+      this.imagen = this.seguimiento.contenido.firmas[index].urlfirma;
+      this.dialogVistaPreviaFirma = true;
     },
     
      
