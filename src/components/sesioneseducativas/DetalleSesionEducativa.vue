@@ -9,7 +9,6 @@
       </v-stepper-header>
       <v-stepper-items>
         <v-stepper-content step="1">
-
           <!--Div que contendrá todos los datos de una sola sesion educativa-->
           <v-card class="container-user">
             <div style="margin-top:5px">
@@ -80,60 +79,89 @@
         </v-stepper-content>
         <v-stepper-content step="2">
           <v-card>
+            <v-row>
+              <v-col>
+                <v-select
+                  v-model="items.value"
+                  :items="items"
+                  label="Filtrar por:"
+                  outlined
+                  dense
+                ></v-select> 
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="search"
+                  label="Buscar..."
+                  outlined
+                  clearable
+                  type="text"
+                  dense
+                ></v-text-field>
+              </v-col>
+              <v-col>
+                <v-btn @click="filtradoSearch(datoSesion.contenido.participantes, search)" small fab dark color="blue">
+                  <v-icon center>mdi-magnify</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+
             <v-expansion-panels focusable>
               <v-expansion-panel
-                v-for="(item,i) in datoSesion.contenido.participantes"
+                v-for="(item,i) in participantesFiltrados"
                 :key="i"
               >
-                <v-expansion-panel-header>{{item.datosresidente.nombre + " " + item.datosresidente.apellido }}</v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <form>
-                    <v-card elevation="0">
-                      <v-text-field
-                          v-model="item.grado"
-                          style="margin-top_5px"
-                          :readonly="!edicion"
-                          color="#009900"
-                          label="Grado"
-                      ></v-text-field>
-                      <v-text-field
-                          v-model="item.firma"
-                          style="margin-top_5px"
-                          :readonly="!edicion"
-                          color="#009900"
-                          label="Firma (enlace)"
-                      ></v-text-field>
-                      <v-text-field
-                          v-model="item.observaciones"
-                          style="margin-top_5px"
-                          :readonly="!edicion"
-                          color="#009900"
-                          label="Observaciones"
-                      ></v-text-field>
-                      <v-card-actions v-if="edicion" align="right">
-                        <v-row
-                          align="center"
-                          justify="end"
-                        >
-                          <v-btn dark color="red">
-                            <v-icon left>mdi-delete</v-icon>
-                            <span>Eliminar Participante</span>
-                          </v-btn>
-                        </v-row>
-                      </v-card-actions>
-                      
-                    </v-card>
-                  </form>
-                </v-expansion-panel-content>
+                <v-card outlined tile>
+                  <v-expansion-panel-header>{{item.datosresidente.nombre + " " + item.datosresidente.apellido }}</v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <form>
+                      <v-card elevation="0">
+                        <v-text-field
+                            v-model="item.grado"
+                            style="margin-top_5px"
+                            :readonly="!edicion"
+                            color="#009900"
+                            label="Grado"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="item.firma"
+                            style="margin-top_5px"
+                            :readonly="!edicion"
+                            color="#009900"
+                            label="Firma (enlace)"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="item.observaciones"
+                            style="margin-top_5px"
+                            :readonly="!edicion"
+                            color="#009900"
+                            label="Observaciones"
+                        ></v-text-field>
+                        <v-card-actions v-if="edicion" align="right">
+                          <v-row
+                            align="center"
+                            justify="end"
+                          >
+                            <v-btn dark color="red">
+                              <v-icon left>mdi-delete</v-icon>
+                              <span>Eliminar Participante</span>
+                            </v-btn>
+                          </v-row>
+                        </v-card-actions>
+                      </v-card>
+                    </form>
+                  </v-expansion-panel-content>
+                </v-card>
               </v-expansion-panel>
+              <p style="margin-top:2%;margin-bottom:0%" >Encontrados: {{numeroEcontrados(participantesFiltrados)}}</p>
             </v-expansion-panels>
-            <v-card-actions v-if="!edicion" style="margin-top:3%">
+            <v-card-actions v-if="!edicion" style="margin-top:2%">
               <v-btn @click="activarEdicionSesionEducativa()" color="warning">
                 <v-icon left>mdi-book-outline</v-icon>
                 <span>Modificar</span>
               </v-btn>
             </v-card-actions >
-            <v-card-actions v-else style="margin-top:3%">
+            <v-card-actions v-else style="margin-top:2%">
               <v-btn @click="GuardarEdicionSesionEducativa()" color="success">
                 <v-icon left>mdi-page-next-outline</v-icon>
                 <span>Guardar</span>
@@ -163,6 +191,13 @@ export default {
   props: ["sesioneducativa"],
   data(){
     return{
+      items: [
+        { value: "1", text: 'Nombre'},
+        { value: "2", text: 'Apellido'},
+        { value: "3", text: 'Numero Documento'},
+      ],
+      participantesFiltrados: [],
+      search:"",
       edicion:false,
       botonGuardarSesionEducativa:false,
       step:1,
@@ -170,10 +205,21 @@ export default {
       datoSesion:{}
     }
   },
+  watch:{
+    search: function(search){
+        this.filtradoSearch(this.datoSesion.contenido.participantes, search)
+    },
+    participantesFiltrados:async function(){
+        if(this.numeroEcontrados(this.participantesFiltrados)===0){
+          this.participantesFiltrados = await this.datoSesion.contenido.participantes;
+        }
+    }
+  },
   methods:{
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
       this.step=1;
+      this.participantesFiltrados = this.datoSesion.contenido.participantes;
     },
     activarEdicionSesionEducativa(){
       this.edicion = true;
@@ -186,6 +232,26 @@ export default {
       this.edicion = false;
       //Cancelar edicion de Reforzamiento
     },
+
+    filtradoSearch(array, string){
+      if(this.items.value==="1"){
+        this.participantesFiltrados = array.filter(partic => partic.datosresidente.nombre.includes(string));
+      }
+      else if(this.items.value==="2"){
+        this.participantesFiltrados = array.filter(partic => partic.datosresidente.apellido.includes(string));
+      }
+      else if(this.items.value==="3"){
+        this.participantesFiltrados = array.filter(partic => partic.datosresidente.numerodocumento.includes(string));
+      }
+      if(this.participantesFiltrados.length===0){
+        console.log("No se encontró al participante")
+      }
+
+    },
+    numeroEcontrados(array){
+      return array.length;
+    },
+
     //Obtener datos de una sesión por id
     async obtenerSesionEducativaDTO(idsesion) {
       var user = {};
@@ -203,10 +269,13 @@ export default {
   },
   async created() {
     this.datoSesion= await this.obtenerSesionEducativaDTO(this.sesioneducativa.id);
-  },
+    this.participantesFiltrados = await this.datoSesion.contenido.participantes;
+    
+  }
+
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>
