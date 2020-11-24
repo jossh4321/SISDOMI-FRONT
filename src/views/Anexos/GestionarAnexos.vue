@@ -51,10 +51,7 @@
           {{ item.fechacreacion | moment("DD/MM/YYYY") }}
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn
-            color="warning"
-            @click="updateAnexo(item)"
-          >
+          <v-btn color="warning" @click="updateAnexo(item)">
             <v-icon left class="ml-auto ml-sm-0 mr-auto mr-sm-1"
               >mdi-pencil</v-icon
             >
@@ -87,20 +84,21 @@
       <component
         :is="ismodifier"
         :anexo="selectedanexo"
+        :residente="selectedresidente"
         @close-dialog="closeDialogModify"
         @modifier-complete="modifierComplete"
       ></component>
-    </v-dialog> 
+    </v-dialog>
 
     <!--Visualizar Model-->
-    <!--  <v-dialog v-model="dialogoPlanDetail" persistent max-width="880">
+    <v-dialog v-model="dialogDetail" persistent max-width="880">
       <component
-        :is="typeDetailPlanSelected"
-        :Anexo="AnexoDetail"
+        :is="isvisualizer"
+        :anexo="selectedanexo"
         @close-dialog-detail="closeDialogDetail"
       >
       </component>
-    </v-dialog> -->
+    </v-dialog>
   </v-card>
 </template>
 
@@ -108,18 +106,22 @@
 import axios from "axios";
 import RegistrarAnexo from "@/components/anexos/RegistrarAnexo.vue";
 import ModificarAnexo from "@/components/anexos/ModificarAnexo.vue";
+import VisualizarAnexo from "@/components/anexos/VisualizarAnexo.vue";
 
 export default {
   components: {
     RegistrarAnexo,
-    ModificarAnexo
+    ModificarAnexo,
+    VisualizarAnexo,
   },
   name: "app-gestion-anexos",
   data() {
     return {
       isregister: "RegistrarAnexo",
       ismodifier: "ModificarAnexo",
+      isvisualizer: "VisualizarAnexo",
       selectedanexo: {},
+      selectedresidente: {},
       search: "",
       page: 1,
       pageCount: 0,
@@ -163,7 +165,7 @@ export default {
           descripcion: "Soy guapo, lo sé",
           enlaces: [
             {
-              link: "www.twitch.tv/fede_3012",
+              link: "https://www.twitch.tv/fede_3012",
               descripcion: "Enlace 1",
             },
           ],
@@ -191,16 +193,44 @@ export default {
     closeDialogModify() {
       this.dialogModify = false;
     },
+    closeDialogDetail() {
+      this.dialogDetail = false;
+    },
     async updateAnexo(item) {
-      await axios
+      /*await axios
         .get("/Anexo/" + item.id)
         .then((res) => {
           this.selectedanexo = res.data;
-          this.dialogPlanModify = true;
+          this.dialogModify = true;
         })
         .catch((err) => {
           console.error(err);
-        });
+        });*/
+      this.selectedanexo = this.anexos[0];
+      await axios
+      .get("/residente/all")
+      .then((res) => {
+        let selected = res.data.find(
+          (element) => element.id == this.selectedanexo.idresidente
+        );
+        this.selectedresidente.id = selected.id;
+        this.selectedresidente.residente = selected.apellido + " " + selected.nombre;
+      })
+      .catch((err) => console.log(err));
+      this.dialogModify = true;
+    },
+    async detailAnexo(item) {
+      /*await axios
+        .get("/Anexo/" + item.id)
+        .then((res) => {
+          this.selectedanexo = res.data;
+          this.dialogDetail = true;
+        })
+        .catch((err) => {
+          console.error(err);
+        });*/
+      this.selectedanexo = this.anexos[0];
+      this.dialogDetail = true;
     },
   },
 };

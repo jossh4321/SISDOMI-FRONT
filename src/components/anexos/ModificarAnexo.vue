@@ -101,7 +101,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, between } from "vuelidate/lib/validators";
 export default {
-  props: ["anexo"],
+  props: ["anexo","residente"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -119,10 +119,6 @@ export default {
         dictDefaultMessage: "Seleccione el anexo respectivo o arrástrelo aquí",
       },
       anexosAux: [],
-      residente: {
-        residente: "",
-        id: "",
-      },
       searchResidente: null,
       loadingSearch: false,
     };
@@ -206,23 +202,6 @@ export default {
           this.$emit("modifier-complete");
         }
       });
-    },
-    limpiarAnexo() {
-      return {
-        id: "",
-        titulo: "",
-        descripcion: "",
-        enlaces: [
-          {
-            link: "",
-            descripcion: "",
-          },
-        ],
-        idresidente: "",
-        idcreador: "",
-        fechacreacion: new Date(),
-        area: "",
-      };
     },
     closeDialog() {
       this.$emit("close-dialog");
