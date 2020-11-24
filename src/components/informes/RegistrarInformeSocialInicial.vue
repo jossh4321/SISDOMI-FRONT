@@ -213,19 +213,39 @@
                                   </v-textarea>
                                 </v-col>
                               </v-row>
-                              <v-textarea
-                                label="Ocupación"
-                                v-model="familiar.ocupacion"
-                                outlined
-                                color="#009900"
-                                rows="1"
-                                auto-grow
-                                :readonly="isDisabled"
-                                @input="$v.familiar.ocupacion.$touch()"
-                                @blur="$v.familiar.ocupacion.$touch()"
-                                :error-messages="errorOcupacionFamiliar"
-                              >
-                              </v-textarea>
+                              <v-row>
+                                <v-col>
+                                  <v-textarea
+                                    label="Ocupación"
+                                    v-model="familiar.ocupacion"
+                                    outlined
+                                    color="#009900"
+                                    rows="1"
+                                    auto-grow
+                                    :readonly="isDisabled"
+                                    @input="$v.familiar.ocupacion.$touch()"
+                                    @blur="$v.familiar.ocupacion.$touch()"
+                                    :error-messages="errorOcupacionFamiliar"
+                                  >
+                                  </v-textarea>
+                                </v-col>
+                                <v-col>
+                                  <v-textarea
+                                    label="Estado civil"
+                                    v-model="familiar.estadocivil"
+                                    outlined
+                                    color="#009900"
+                                    rows="1"
+                                    auto-grow
+                                    :readonly="isDisabled"
+                                    @input="$v.familiar.estadocivil.$touch()"
+                                    @blur="$v.familiar.estadocivil.$touch()"
+                                    :error-messages="errorEstadoCivil"
+                                  >
+                                  </v-textarea>
+                                </v-col>
+                              </v-row>
+
                               <v-textarea
                                 label="Observaciones"
                                 v-model="familiar.observaciones"
@@ -714,7 +734,7 @@ export default {
         tipo: "InformeSocialInicial",
         historialcontenido: [],
         creadordocumento: "",
-        fechacreacion: "",
+        fechacreacion: "2020-08-13T09:35:12.748+00:00",
         area: "social",
         fase: "acogida",
         idresidente: "",
@@ -732,7 +752,7 @@ export default {
           recomendaciones: [],
           anexos: [],
           firmas: [],
-          codigodocumento: [],
+          codigodocumento: "",
         },
       },
       urlfirma: "",
@@ -755,19 +775,76 @@ export default {
       recomendacion: "",
       recomendaciones: [],
       dialogVistaPreviaFirma: false,
+      imagen: "",
+      fileList: [],
     };
   },
   created() {
     console.log("Siganme en twitch.tv/anderasdfg c:");
   },
   methods: {
-    async mensaje(icono, titulo, texto, footer) {
-      await this.$swal({
-        icon: icono,
-        title: titulo,
-        text: texto,
-        footer: footer,
-      });
+    ...mapMutations(["addInforme"]),
+    async sendPDFFiles() {
+      let listaanexos = this.fileList;
+      for (let index = 0; index < this.fileList.length; index++) {
+        let formData = new FormData();
+        formData.append("file", this.fileList[index]);
+        await axios
+          .post("/Media/archivos/pdf", formData)
+          .then((res) => {
+            listaanexos[index] = res.data;
+          })
+          .catch((err) => console.log(err));
+      }
+      this.informe.contenido.anexos = listaanexos;
+      console.log(listaanexos);
+    },
+    async registrarInforme() {
+      await this.sendPDFFiles();
+      console.log(this.informe);
+      this.$v.informe.$touch();
+      if (this.$v.informe.$invalid) {
+        console.log("Hay errores :c");
+        this.mensaje(
+          "Error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
+        console.log("no hay errores");
+        console.log(this.informe);
+        await axios
+          .post("/informe/informesi", this.informe)
+          .then((res) => {
+            this.informe = res.data;
+            console.log(this.listaresidentes);
+            var resi = this.listaresidentes.filter(function(residente) {
+              return residente.id == res.data.idresidente;
+            });
+            console.log(resi);
+            var info = {
+              id: res.data.id,
+              tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
+              fechacreacion: res.data.fechacreacion.split("T")[0],
+              codigodocumento: res.data.contenido.codigodocumento,
+              nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
+            };
+            this.addInforme(info);
+            this.cerrarDialogo();
+          })
+          .catch((err) => console.log(err));
+        await this.mensaje(
+          "success",
+          "Listo",
+          "Informe registrado Satisfactoriamente",
+          "<strong>Se redirigira a la interfaz de gestión<strong>"
+        );
+      }
+    },
+    resetInformeValidationState() {
+      this.$refs.myVueDropzone.removeAllFiles();
+      this.$v.informe.$reset();
     },
     agregarFamiliar() {
       let familiar = {
@@ -809,9 +886,6 @@ export default {
       this.familiar.ocupacion = "";
       this.familiar.observaciones = "";
       this.familiar.numerodocumento = "";
-    },
-    registrarInforme() {
-      console.log(this.informe);
     },
     modalRegistrar() {
       this.accion = "registrar";
@@ -956,6 +1030,14 @@ export default {
     afterRemoved2(file, error, xhr) {
       this.urlfirma = "";
     },
+    async mensaje(icono, titulo, texto, footer) {
+      await this.$swal({
+        icon: icono,
+        title: titulo,
+        text: texto,
+        footer: footer,
+      });
+    },
   },
   computed: {
     show: {
@@ -1019,7 +1101,7 @@ export default {
         errors.push("Debe escribir la edad del familiar obligatoriamente");
       return errors;
     },
-    errorEstadoCivilFamiliar() {
+    errorEstadoCivil() {
       const errors = [];
       if (!this.$v.familiar.estadocivil.$dirty) return errors;
       !this.$v.familiar.estadocivil.required &&
@@ -1099,9 +1181,6 @@ export default {
           antecedentes: {
             required,
           },
-          situacionfamiliar: {
-            required,
-          },
           situacionvivienda: {
             required,
           },
@@ -1112,9 +1191,6 @@ export default {
             required,
           },
           educacion: {
-            required,
-          },
-          diagnosticosocial: {
             required,
           },
           situacionactual: {
@@ -1147,7 +1223,6 @@ export default {
         ocupacion: {
           required,
         },
-        observaciones: {},
       },
     };
   },

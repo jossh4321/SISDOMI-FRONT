@@ -107,6 +107,15 @@
           @close-dialog-detail="closeDialogDetalle()">
         </DetalleInformeEducativoEvolutivo>
       </v-dialog>
+      <v-dialog persistent
+                v-model="dialogoISIdetalle" 
+                max-width="880px">
+        <DetalleInformeSocialInicial
+          :informe="informe"
+          v-if="dialogoISIdetalle"          
+          @close-dialog-detail="closeDialogDetalle()">
+        </DetalleInformeSocialInicial>
+      </v-dialog>
       <!----->
     </v-card>
   </div>
@@ -119,6 +128,7 @@ import ActualizarInformeEducativoInicial from "@/components/informes/ActualizarI
 import ActualizarInformeEducativoEvolutivo from "@/components/informes/ActualizarInformeEducativoEvolutivo.vue";
 import DetalleInformeEducativoInicial from "@/components/informes/DetalleInformeEducativoInicial.vue";
 import DetalleInformeEducativoEvolutivo from "@/components/informes/DetalleInformeEducativoEvolutivo.vue";
+import DetalleInformeSocialInicial from "@/components/informes/DetalleInformeSocialInicial.vue";
 import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarInforme",
@@ -127,7 +137,8 @@ export default {
     ActualizarInformeEducativoInicial,
     ActualizarInformeEducativoEvolutivo,
     DetalleInformeEducativoInicial,
-    DetalleInformeEducativoEvolutivo
+    DetalleInformeEducativoEvolutivo,
+    DetalleInformeSocialInicial
   },
   data() {
     return {
@@ -153,6 +164,7 @@ export default {
       dialogoIEEactualizacion: false,
       dialogoIEIdetalle:false,
       dialogoIEEdetalle:false,
+      dialogoISIdetalle:false,
       listaresidentes: [],
     };
   },
@@ -173,6 +185,7 @@ export default {
     closeDialogDetalle() {
       this.dialogoIEIdetalle = false;
       this.dialogoIEEdetalle = false;
+      this.dialogoISIdetalle = false;
     },
     async obtenerInformes() {
       await axios
@@ -213,7 +226,11 @@ export default {
         }else if(tipo === "Informe Educativo Final"){
             this.titulo = "Detalle del Informe Educativo Final";
             this.dialogoIEEdetalle = !this.dialogoIEEdetalle;
-        }else{
+        }else if(tipo === "Informe Social Inicial"){
+            this.titulo = "Detalle del Informe Social Inicial";
+            this.dialogoISIdetalle = !this.dialogoISIdetalle;
+        }
+        else{
           console.log("Ayuda mi codigo no funciona :c")
         }
     },
