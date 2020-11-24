@@ -218,21 +218,26 @@ export default {
     },
     async abrirDialogoDetalle(idinforme, tipo){
         this.informe = await this.loadInformeModificacion(idinforme);
-        if(tipo === "Informe Educativo Inicial"){
-            this.dialogoIEIdetalle = !this.dialogoIEIdetalle;
-        }else if(tipo === "Informe Educativo Evolutivo"){
-            this.titulo = "Detalle del Informe Educativo Evolutivo";
-            this.dialogoIEEdetalle = !this.dialogoIEEdetalle; 
-        }else if(tipo === "Informe Educativo Final"){
-            this.titulo = "Detalle del Informe Educativo Final";
-            this.dialogoIEEdetalle = !this.dialogoIEEdetalle;
-        }else if(tipo === "Informe Social Inicial"){
-            this.titulo = "Detalle del Informe Social Inicial";
-            this.dialogoISIdetalle = !this.dialogoISIdetalle;
-        }
-        else{
-          console.log("Ayuda mi codigo no funciona :c")
-        }
+
+        switch(tipo){
+                case "Informe Educativo Inicial":
+                     this.dialogoIEIdetalle = !this.dialogoIEIdetalle;
+                    break;
+                case "Informe Educativo Evolutivo":
+                    this.titulo = "Detalle del Informe Educativo Evolutivo";
+                    this.dialogoIEEdetalle = !this.dialogoIEEdetalle;
+                    break;
+                case "Informe Educativo Final":
+                    this.titulo = "Detalle del Informe Educativo Final";
+                    this.dialogoIEEdetalle = !this.dialogoIEEdetalle;
+                    break;
+                case "Informe Social Inicial":
+                    this.titulo = "Detalle del Informe Social Inicial";
+                    this.dialogoISIdetalle = !this.dialogoISIdetalle;
+                    break;                
+                default: 
+                   console.log("Ayuda mi codigo no funciona :c")
+            }   
     },
     async loadInformeModificacion(idinforme){
       var info = {};
