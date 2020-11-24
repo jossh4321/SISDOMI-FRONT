@@ -12,6 +12,7 @@ import GestionarInforme from '../views/Informe/GestionarInforme.vue';
 import GestionarResidentes from '../views/Residentes/GestionarResidentes.vue';
 import GestionarSeguimientoEducativo from '../views/SeguimientoEducativo/GestionarSeguimientoEducativo.vue';
 import GestionarSesionesEducativas from '../views/SesionesEducativas/GestionarSesionesEducativas.vue';
+import GestionarIncidencias from "../views/Incidencias/GestionarIncidencias.vue"
 import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 
 
@@ -78,6 +79,10 @@ const routes = [{
                 path: 'planIntervencionR',
                 name: 'plandeIntervencion',
                 component: GestionarPlanes
+            },{
+                path: 'incidencias',
+                name: 'GestionarIncidencias',
+                component: GestionarIncidencias
             },
             {
                 path: 'anexos',
