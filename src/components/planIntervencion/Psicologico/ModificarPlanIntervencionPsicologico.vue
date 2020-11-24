@@ -425,7 +425,7 @@
 <script>
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import RegistroMultiple from "@/components/planIntervencion/Psicologico/RegistroMultiple.vue";
+import RegistroMultiple from "@/components/planIntervencion/General/RegistroMultiple.vue";
 import axios from "axios";
 
 import {
