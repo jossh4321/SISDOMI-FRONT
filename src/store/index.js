@@ -22,7 +22,8 @@ export default new Vuex.Store({
         informes: [],
         fichaingreso: [],
         seguimientoEducativo: [],
-        sesionesEducativas: []
+        sesionesEducativas: [],
+        incidencias:[]
     },
     mutations: {
         toggleDrawer(state) {
@@ -91,6 +92,15 @@ export default new Vuex.Store({
         replaceSeguimiento(state, value) {
             var index = state.seguimientoEducativo.findIndex(x => x.id == value.id);
             state.seguimientoEducativo.splice(index, 1, value);
+        },
+        //INCIDENCIAS
+        setIncidencias(state,value){
+            state.incidencias = value;
+        },addIncidencia(state,value){
+            state.incidencias.push(value);
+        },replaceIncidencia(state, value) {
+            var index = state.incidencias.findIndex(x => x.id == value.id);
+            state.incidencias.splice(index, 1, value);
         },
     },
     modules: {
