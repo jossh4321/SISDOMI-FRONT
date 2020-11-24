@@ -15,7 +15,7 @@
         <v-stepper-items>
           <v-stepper-content step="1">
             <v-row>
-              <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+              <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                 <v-text-field
                   :value="planIntervencion.contenido.titulo"
                   label="Nombre del Plan de Intervención"
@@ -24,7 +24,7 @@
                   readonly
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+              <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                 <v-text-field
                   :value="
                     planIntervencion.residente.nombre +
@@ -38,7 +38,7 @@
                 >
                 </v-text-field>
               </v-col>
-              <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+              <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                 <v-text-field
                   :value="planIntervencion.contenido.edad"
                   label="Edad del Residente"
@@ -48,7 +48,7 @@
                 >
                 </v-text-field>
               </v-col>
-              <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+              <v-col cols="12" sm="6" md="6" lg="6" xl="6">
                 <v-textarea
                   :value="planIntervencion.contenido.diagnostico"
                   label="Diagnóstico"
@@ -57,7 +57,7 @@
                   color="success"
                 ></v-textarea>
               </v-col>
-              <v-col cols="12" sm="12" md="12" lg="12" xl="12" class="pt-0">
+              <v-col cols="12" sm="6" md="6" lg="6" xl="6" class="pt-0">
                 <visualizacion-multiple
                   name="Objetivos del Plan"
                   :items="planIntervencion.contenido.objetivos"

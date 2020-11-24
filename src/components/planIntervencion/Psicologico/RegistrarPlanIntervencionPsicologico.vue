@@ -9,9 +9,11 @@
           <v-stepper-step editable step="1">
             Datos del Residente
           </v-stepper-step>
+          <v-divider></v-divider>
           <v-stepper-step editable step="2">
             Aspectos de Intervención
           </v-stepper-step>
+          <v-divider></v-divider>
           <v-stepper-step editable step="3">
             Datos del Psicólogo
           </v-stepper-step>
@@ -460,7 +462,7 @@
 <script>
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import RegistroMultiple from "@/components/planIntervencion/Psicologico/RegistroMultiple.vue";
+import RegistroMultiple from "@/components/planIntervencion/General/RegistroMultiple.vue";
 import axios from "axios";
 
 import {
@@ -624,7 +626,7 @@ export default {
       this.loadingSearch = true;
 
       axios
-        .get("/Residente/all")
+        .get("/residente/planes/area/psicologico")
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
             return {
@@ -740,7 +742,7 @@ export default {
             this.messageSweet(
               "success",
               "Registro del Plan de Intervencion",
-              "Se registro el plan de intervencion de manera satisfactoria",
+              "Se registró el plan de intervencion de manera satisfactoria",
               true
             );
           })
