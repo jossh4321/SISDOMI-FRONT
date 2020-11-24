@@ -40,7 +40,13 @@
                             v-if="showRegistrarInformeSI"
                             :listaresidentes="listaresidentes" 
                             :visible="showRegistrarInformeSI"  
-                            @close="showRegistrarInformeSI=false"/>                  
+                            @close="showRegistrarInformeSI=false"/>
+                        <RegistrarInformeSocialEvolutivo                 
+                            v-if="showRegistrarInformeSE"
+                            :listaresidentes="listaresidentes" 
+                            :visible="showRegistrarInformeSE"
+                            :titulo="titulo"  
+                            @close="showRegistrarInformeSE=false"/>                   
                     </v-col>
                 </template>
             </v-row>
@@ -53,14 +59,15 @@ import axios from 'axios';
 import RegistrarInformeEducativoInicial from '@/components/informes/RegistrarInformeEducativoInicial.vue'
 import RegistrarInformeEducativoEvolutivo from '@/components/informes/RegistrarInformeEducativoEvolutivo.vue'
 import RegistrarInformeSocialInicial from '@/components/informes/RegistrarInformeSocialInicial.vue'
+import RegistrarInformeSocialEvolutivo from '@/components/informes/RegistrarInformeSocialEvolutivo.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
     props:["listaresidentes", "listaeducadores"],
     components: {
         RegistrarInformeEducativoInicial,
         RegistrarInformeEducativoEvolutivo,
-        RegistrarInformeSocialInicial
-        
+        RegistrarInformeSocialInicial,
+        RegistrarInformeSocialEvolutivo
     },
     data () {
       return {                
@@ -79,6 +86,7 @@ export default {
         showRegistrarInformeEI: false,
         showRegistrarInformeEE: false,
         showRegistrarInformeSI: false,
+        showRegistrarInformeSE: false,
       }
     },
      methods:{
@@ -101,6 +109,14 @@ export default {
                     break;
                 case "4":
                     this.showRegistrarInformeSI = true;
+                    break;
+                case "5":
+                    this.titulo = "Registrar Informe Social Evolutivo"
+                    this.showRegistrarInformeSE = true;
+                    break;
+                case "6":
+                    this.titulo = "Registrar Informe Social Final"
+                    this.showRegistrarInformeSE = true;
                     break;
                 default: 
                     console.log("no encontre ni pincho");

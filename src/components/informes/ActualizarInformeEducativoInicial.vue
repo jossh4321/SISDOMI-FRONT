@@ -382,14 +382,8 @@
                       </article>
                     </v-col>
                     <v-col :cols="2" align="center">
-                      <v-dialog
-                        v-model="dialogVistaPreviaFirma"
-                        persistent
-                        max-width="600px"
-                      >
-                        <template v-slot:activator="{ on }">
+                      <template>
                           <v-btn
-                            v-on="on"
                             fab
                             icon=""
                             x-small
@@ -404,6 +398,29 @@
                             />
                           </v-btn>
                         </template>
+                    </v-col>
+                    <v-col :cols="2" align="right">
+                      <div style="margin-right: 20px">
+                        <v-btn
+                          fab
+                          x-small
+                          dark
+                          color="red"
+                          @click="eliminarFirma(index)"
+                        >
+                          <v-icon dark> mdi-minus </v-icon>
+                        </v-btn>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-card>
+
+              <v-dialog
+                        v-model="dialogVistaPreviaFirma"
+                        persistent
+                        max-width="600px"
+                      >
                         <v-card align="center">
                           <v-card-title>
                             <span class="headline">Vista previa</span>
@@ -436,23 +453,6 @@
                           </v-card-actions>
                         </v-card>
                       </v-dialog>
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <div style="margin-right: 20px">
-                        <v-btn
-                          fab
-                          x-small
-                          dark
-                          color="red"
-                          @click="eliminarFirma(index)"
-                        >
-                          <v-icon dark> mdi-minus </v-icon>
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-card>
 
               <v-row>
                 <v-col>
@@ -625,6 +625,7 @@ export default {
     verFirma(index) {
       console.log(this.informe.contenido.firmas[index].urlfirma);
       this.imagen = this.informe.contenido.firmas[index].urlfirma;
+      this.dialogVistaPreviaFirma = true;
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;

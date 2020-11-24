@@ -360,15 +360,7 @@ export default {
         });
 
       this.loading = true;
-      axios
-        .get("/PlanIntervencion/all")
-        .then((res) => {
-          this.loading = false;
-          this.planesIntervencion = res.data;
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      this.listInterventionsPlan();
     },
     selectedRegister() {
       this.dialogRegister = false;
@@ -384,15 +376,7 @@ export default {
     registerComplete() {
       this.closeDialog();
       this.loading = true;
-      axios
-        .get("/PlanIntervencion/all")
-        .then((res) => {
-          this.loading = false;
-          this.planesIntervencion = res.data;
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      this.listInterventionsPlan();
     },
     closeDialogModify() {
       this.dialogPlanModify = false;
@@ -411,6 +395,17 @@ export default {
         this.dialogoPlanState = false;
       });
     },
+    listInterventionsPlan() {
+      axios
+        .get("/PlanIntervencion/all")
+        .then((res) => {
+          this.loading = false;
+          this.planesIntervencion = res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
   },
   computed: {
     planStateCss() {
@@ -418,15 +413,7 @@ export default {
     },
   },
   created() {
-    axios
-      .get("/PlanIntervencion/all")
-      .then((res) => {
-        this.loading = false;
-        this.planesIntervencion = res.data;
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    this.listInterventionsPlan();
   },
   components: {
     RegistrarPlanIntervencion,
