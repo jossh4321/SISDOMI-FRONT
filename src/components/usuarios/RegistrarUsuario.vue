@@ -298,6 +298,7 @@ export default {
         await axios
           .post("/usuario", this.usuario)
           .then((res) => {
+            console.log(this.usuario)
             this.usuario = res.data;
             this.addUsuario(this.usuario);
             this.cerrarDialogo();

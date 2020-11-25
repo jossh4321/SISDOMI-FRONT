@@ -116,6 +116,7 @@ export default {
   },
   async created(){
  this.obtenerSeguimiento();
+ this.obtenerResidentes();
   },
   methods: {
     ...mapMutations(["setSeguimiento"]),
@@ -136,7 +137,6 @@ export default {
    async abrirDialogoDetalle(idseguimiento) {
       this.seguimiento = await this.loadSeguimientoDetalle(idseguimiento);
       this.residente = await this.loadResidente(this.seguimiento.idresidente);// traelos datos del residnete
-       this.listaresidentes = await this.obtenerResidentes();
       this.dialogodetalle = !this.dialogodetalle;
       },
   /////////////////Consumo de  apis 
@@ -184,21 +184,13 @@ export default {
       return user;
     },
     //obtener todos los residentes
-    async obtenerResidentes() {
-      await axios
-        .get("/residente/all")
-        .then((res) => {
-          var info = {};
-          info = res.data;
-          console.log(res.data)
-          for (var x=0;x<res.data.length;x++){
-              info[x].fechaIngreso = res.data[x].fechaIngreso.split("T")[0];
-          }
-          
-         
-        })
-        .catch((err) => console.log(err));
-    },
+    async obtenerResidentes(){
+          await axios.get("/residente/all")
+                  .then( x => {
+                            this.listaresidentes = x.data;
+                            console.log(this.listaresidentes);
+                  }).catch(err => console.log(err));
+        },
   },
   
    computed:{

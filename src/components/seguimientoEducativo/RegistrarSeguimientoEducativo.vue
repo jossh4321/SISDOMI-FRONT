@@ -59,7 +59,7 @@
                                   </v-list-item-title>
                                   <v-list-item-subtitle
                                     >Nro. Documento:
-                                    {{ data.item.numerodocumento }}</v-list-item-subtitle
+                                    {{ data.item.numeroDocumento }}</v-list-item-subtitle
                                   >
                                 </v-list-item-content>
                               </template>
@@ -69,35 +69,228 @@
                         v-model="seguimiento.contenido.modalidad"
                         label="Modalidad"
                         outlined
-                        readonly
+                        
                         color="#009900"
                       ></v-text-field>
                       <v-text-field
                         v-model="seguimiento.contenido.nivel"
                         label="Nivel"
                         outlined
-                        readonly
+                        
                         color="#009900"
                       ></v-text-field>
                       <v-text-field
                         v-model="seguimiento.contenido.grado"
                         label="Grado"
                         outlined
-                        readonly
+                        
                         color="#009900"
                       ></v-text-field>
                       <v-text-field
                         v-model="seguimiento.contenido.añoescolar"
                         label="Año Escolar"
                         outlined
-                        readonly
                         color="#009900"
                       ></v-text-field>
+                <!--Comienza el cuadro de Fima -->
+                            <v-row justify="center">
+                              <v-dialog v-model="dialog" persistent max-width="850px">
+                                <template v-slot:activator="{ on }">
+                                  <v-btn color="primary" v-on="on">
+                                    Ver Firma de creador(es) de documento
+                                  </v-btn>
+                                </template>
+                                <v-card>
+                                  <v-card-title>
+                                    <span class="headline"> Firma</span>
+                                  </v-card-title>
+                                  <v-card-text>
+                            <!-- cuadros de texto para añadir firma-->
+                              <v-text-field
+                               v-model="firma.cargo"
+                                label="Cargo"
+                                outlined  
+                                color="#009900"
+                                ></v-text-field>
+                                <v-text-field
+                               v-model="firma.nombre"
+                                label="Nombre"
+                                outlined  
+                                color="#009900"
+                                ></v-text-field>
+                        <div>
+                                <vue-dropzone
+                                  ref="myVueDropzone"
+                                  @vdropzone-success="afterSuccess"
+                                  @vdropzone-removed-file="afterRemoved"
+                                  id="dropzone"
+                                  :options="dropzoneOptions"
+                                >
+                                </vue-dropzone>
+                       </div>
+                              <v-btn color="success" @click="guardarFirma">
+                                      añadir
+                              </v-btn>
+                             
+                              <v-divider class="divider-custom"></v-divider>
+                              <!-- cuadros de textofin -->
 
+                          <v-card
+                              style="margin-top:30px;left-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                            >
+                              <v-card-title style="font-size:22px;padding: 10px 10px;"
+                                >Firma de creador(es) de documento</v-card-title
+                              >
+                              <!-- Cabecera -->
+                              <v-card
+                              elevation="0"
+                              color="#EAEAEA"
+                              style="margin-top:5px; margin-bottom:15px"
+                              height="30"
+                              >
+                              
+                                <v-row style="margin-left:10px;heigh:100%" align="center">
+                                  <v-col cols="4">
+                                    <article>
+                                      <span style="font-size:16px">Cargo</span>
+                                    </article>
+                                  </v-col>
+                                  <v-col cols="4">
+                                    <article>
+                                      <span style="font-size:16px">Nombre</span>
+                                    </article>
+                                  </v-col>
+                                  <v-col>
+                                    <article cols="4">
+                                      <span style="font-size:16px">Firma</span>
+                                    </article>
+                                  </v-col>
+                                  <v-col align="right">
+                                  </v-col>
+                                </v-row>
+                              </v-card>
+                              <!-- Cuerpo -->
+                              <v-card
+                                tile
+                                elevation="0"
+                                color="#FAFAFA"
+                                style="margin-top:5px"
+                                height="80"
+                                v-for="(item, index) in seguimiento.contenido.firmas"
+                                :key="index"
+                              >
+                                <v-row style="margin-left:10px;heigh:100%;" align="center">
+                                  <v-col :cols="4">
+                                    <article>
+                                      <span style="font-size:16px">{{item.cargo}}</span>
+                                    </article>
+                                  </v-col>
+                                  <v-col :cols="4">
+                                    <article>
+                                      <span style="font-size:16px">{{item.nombre}}</span>
+                                    </article>
+                                  </v-col>
+                    <v-col :cols="2" align="center">
+                        <template>
+                            <v-btn
+                              fab
+                              icon=""
+                              x-small
+                              dark
+                              color="#EAEAEA"
+                              @click="verFirma(index)"
+                            >
+                              <img
+                                style="width:25% "
+                                src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
+                                alt="firma"
+                              />
+                            </v-btn>
+                          </template>
+                      </v-col>
+                      <v-col :cols="2" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarFirma(index)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                                  
+                                 <!--  <v-col align="right">
+                                    <div style="margin-right:20px">
+                                  <v-btn
+                                        style="margin-right:10px"
+                                        fab
+                                        x-small
+                                        dark
+                                        color="#126BB5"
+                                      >
+                                        <v-icon dark>
+                                          mdi-pencil
+                                        </v-icon>
+                                      </v-btn>  
+                                      
+                                    </div>
+                                  </v-col>-->
+                                </v-row>
+                              </v-card>
+                            </v-card>
+              <!--fin-->
+                            <!-- -->
 
-
-
-
+                                  </v-card-text>
+                                  <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn
+                                      color="blue darken-1"
+                                      text
+                                      @click="dialog = false"
+                                    >
+                                      Cerrar
+                                    </v-btn>
+                                
+                                  </v-card-actions>
+                                </v-card>
+                              </v-dialog>
+                            </v-row>
+                           <v-dialog
+                          v-model="dialogVistaPreviaFirma"
+                          persistent
+                          max-width="600px"
+                        >
+                          <v-card align="center">
+                            <v-card-title>
+                              <span class="headline">Vista previa</span>
+                            </v-card-title>
+                            <v-card-text>
+                              <img
+                                width="100%"
+                                height="100%"
+                                :src="'data:image/jpeg;base64,' + imagen"
+                                alt=""
+                              />
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="cerrarVistaPreviaFirma()"
+                              >
+                                Cerrar
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                </v-dialog>
+              
                     <!--Botones de card -->
                       <v-row>
                         <v-col>
@@ -120,12 +313,8 @@
             <v-stepper-content step="2">
               <div class="container-user">
                   <form>
-
-
-
-
-
-
+                     <!--IMAGENES DE  FIRMA -->
+                    
                     <!--Botones de card -->
                       <v-row>
                         <v-col>
@@ -153,14 +342,51 @@
 
 
 import axios from "axios";
+import Vue from 'vue'
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
+import vue2Dropzone from "vue2-dropzone";
+import "vue2-dropzone/dist/vue2Dropzone.min.css";
+import { mapMutations, mapState } from "vuex";
+import { required, minLength, email, helpers } from "vuelidate/lib/validators";
+import moment from "moment";
 export default {
 name:'RegistrarSeguimientoEducativo',
 props:["listaresidentes"],
+components:{
+    vueDropzone: vue2Dropzone,
+},
 data(){
   return{
-    residente:{},
+    dialog:false, // dialogo firma
+    dialogVistaPreviaFirma: false,
     step: 1,
+    dropzoneOptions: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFilesize: 3.0,
+        maxFiles: 1,
+        acceptedFiles: ".jpg, .png, jpeg",
+        headers: { "My-Awesome-Header": "header value" },
+        addRemoveLinks: true,
+        dictDefaultMessage:
+          "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
+      }, dropzoneOptions2: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFilesize: 5.0,
+        maxFiles: 1,
+        acceptedFiles: ".jpg, .png, jpeg",
+        headers: { "My-Awesome-Header": "header value" },
+        addRemoveLinks: true,
+        dictDefaultMessage:
+          "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
+      },
 
+
+      //separacion
+        imagen: "",
+         firma:{urlfirma:"",nombre:"",cargo:""},
     seguimiento:{
       id:"",
       tipo:"",
@@ -171,40 +397,78 @@ data(){
       fase:"",
       idresidente:"",
       estado:"",
-      contenido:{},
+      contenido:{
+           modalidad:"",
+           nivel:"",
+           grado:"",
+           añoescolar:"",
+           trimestre:[],
+           firmas:[],
+           codigodocumento:""
+      },
     }
   }
 },
 methods:{
       cerrarDialogo(){
+         this.step = 1;
         this.$emit("close-dialog-save");
+       
       },
-      //guarda los residentes en un objeto
-      async guardarResidente(){
-      this.residente= await this.obtenerResidentes();
-      },
-      //obtener todos los residentes
-    async obtenerResidentes() {
-      await axios
-        .get("/residente/all")
-        .then((res) => {
-          var info = {};
-          info = res.data;
-          console.log(res.data)
-          for (var x=0;x<res.data.length;x++){
-              info[x].fechaIngreso = res.data[x].fechaIngreso.split("T")[0];
-          }
-          
-         
-        })
-        .catch((err) => console.log(err));
+      cerrarVistaPreviaFirma() {
+      this.dialogVistaPreviaFirma = false;
     },
+      
+    afterSuccess(file, response) {
+      console.log(file);
+      this.firma.urlfirma = file.dataURL.split(",")[1];
+      //this.$v.firma.urlfirma.$model = file.dataURL.split(",")[1];
+      //console.log(file.dataURL.split(",")[1]);
+    },
+    
+    afterRemoved(file, error, xhr) {
+      this.firma.urlfirma = "";
+      
+    },
+   
+    async mensaje(icono, titulo, texto, footer) {
+      await this.$swal({
+        icon: icono,
+        title: titulo,
+        text: texto,
+        footer: footer,
+      });
+    },
+    ///metodo para agregar firma residente
+    guardarFirma(){
+   let firmad = {urlfirma:this.firma.urlfirma,nombre:this.firma.nombre,cargo:this.firma.cargo};
+
+   this.seguimiento.contenido.firmas.push(firmad);
+   console.log(this.seguimiento.contenido.firmad);
+   this.$refs.myVueDropzone.removeAllFiles();
+
+   this.firma.urlfirma="";
+   this.firma.nombre="";
+   this.firma.cargo="";
+    },
+    eliminarFirma(index) {
+      this.seguimiento.contenido.firmas.splice(index, 1);
+    },
+    verFirma(index) {
+      console.log(this.seguimiento.contenido.firmas[index].urlfirma);
+      this.imagen = this.seguimiento.contenido.firmas[index].urlfirma;
+      this.dialogVistaPreviaFirma = true;
+    },
+    
+     
+    
+    
   },
-  async created(){
-    this.guardarResidente();
-  }
   
-}
+  }
+ 
+  
+
 </script>
 
 <style>

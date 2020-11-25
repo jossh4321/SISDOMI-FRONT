@@ -1,5 +1,4 @@
 <template>
-  <v-dialog v-model="show" max-width="880px">
     <v-card>
       <v-card-title class="justify-center">{{ titulo }}</v-card-title>
       <v-stepper v-model="step">
@@ -370,13 +369,13 @@
 
                 <v-row>
                   <v-col>
-                    <v-btn block @click="registrarInforme" color="success">
-                      <v-icon left>mdi-page-next-outline</v-icon>
-                      <span>Registrar Informe</span>
-                    </v-btn>
-                  </v-col>
+                  <v-btn color="warning" block>
+                    <v-icon left>mdi-briefcase-edit</v-icon>
+                    <span>Actualizar Informe</span>
+                  </v-btn>
+                </v-col>
                   <v-col>
-                    <v-btn block @click="show = false" color="primary">
+                    <v-btn block @click="cerrarDialogo()" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
                     </v-btn>
@@ -388,7 +387,6 @@
         </v-stepper-items>
       </v-stepper>
     </v-card>
-  </v-dialog>
 </template>
 <script>
 import axios from "axios";
@@ -399,7 +397,7 @@ import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 
 export default {
-  props: ["listaresidentes", "visible", "titulo"],
+  props: ["listaresidentes", "informe", "titulo"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -436,31 +434,10 @@ export default {
       urlfirma: "",
       firmas: { urlfirma: "", nombre: "", cargo: "" },
       imagen: "",
-      informe: {
-        id: "",
-        tipo: "",
-        historialcontenido: [],
-        creadordocumento: "5f9e4cdae4655cf92eaa4d5b",
-        fechacreacion: "",
-        area: "social",
-        fase: "acogida",
-        idresidente: "",
-        estado: "creado",
-        contenido: {
-          antecedentes: "",
-          situacionactual: "",
-          diagnosticosocial: "",
-          recomendaciones: [],
-          anexos: [],
-          firmas: [],
-          codigodocumento: "",
-        },
-      },
     };
   },
   async created() {
-    this.recomendaciones = "";
-    this.recomendacion = "";
+    this.cargarRecomendaciones()
   },
   methods: {
     ...mapMutations(["addInforme"]),
@@ -551,10 +528,11 @@ export default {
         }
       });
     },
+    cargarRecomendaciones() {
+      this.recomendaciones = this.informe.contenido.recomendaciones;
+    },
     cerrarDialogo() {
-      this.informe = this.limpiarInforme();
-      this.step = 1;
-      this.$emit("close");
+      this.$emit("close-dialog-update");
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -673,16 +651,6 @@ export default {
         errors.push("La fecha no debe ser mayor a la actual");
 
       return errors;
-    },
-    show: {
-      get() {
-        return this.visible;
-      },
-      set(value) {
-        if (!value) {
-          this.$emit("close");
-        }
-      },
     },
   },
   validations() {
