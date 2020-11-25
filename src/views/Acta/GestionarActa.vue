@@ -89,7 +89,7 @@ export default {
       planA: [],
       headers: [
         {
-          text: "Nombre Plan Intervención",
+          text: "Nombre Acta Intervención",
           align: "start",
           sortable: false,
           value: "nombre",

@@ -188,6 +188,13 @@ export default {
           icon: "dashboard",
           name: "GestionarSesionesEducativas",
           href: "/dashboard/sesioneseducativas"
+        },
+        {
+          title: "Gestion Acta de externamiento",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarActaExternamiento",
+          href: "/dashboard/Actas"
         }
       ],
       scrollSettings: {
