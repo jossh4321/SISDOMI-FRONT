@@ -361,7 +361,7 @@
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, between } from "vuelidate/lib/validators";
 import RegistroMultiple from "@/components/planIntervencion/General/RegistroMultiple.vue";
 
@@ -381,7 +381,7 @@ export default {
         idresidente: "",
         fase: "",
         estado: "creado",
-        creadordocumento: "5f9e4cdae4655cf92eaa4d5b",
+        creadordocumento: "",
         contenido: {
           car: "",
           edad: 0,
@@ -395,8 +395,8 @@ export default {
           firmas: [
             {
               urlfirma: "",
-              nombre: "Piero Erickson Lavado Cervantes",
-              cargo: "Educador",
+              nombre: "",
+              cargo: "",
             },
           ],
           codigoDocumento: "",
@@ -563,11 +563,15 @@ export default {
             .post("/Media", formData)
             .then((res) => {
               this.planI.contenido.firmas[index].urlfirma = res.data;
+              this.planI.contenido.firmas[index].nombre = this.user.usuario;
+              this.planI.contenido.firmas[index].cargo = this.user.rol;
             })
             .catch((err) => {
               console.error(err);
             });
         }
+
+        this.planI.creadordocumento = this.user.id;
 
         this.planI.idresidente = this.residente.id;
         this.planI.fase = this.residente.faseActual;
@@ -655,6 +659,7 @@ export default {
   },
   computed: {
     ...mapState(["residentes"]),
+    ...mapGetters(["user"]),
     verifyColor() {
       return "red";
     },

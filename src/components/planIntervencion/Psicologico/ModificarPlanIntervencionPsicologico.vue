@@ -34,7 +34,7 @@
                     color="success"
                   ></v-text-field>
                 </v-col>
-                <!-- <v-col cols="12" sm="6" md="6">
+                <v-col cols="12" sm="6" md="6">
                   <v-autocomplete
                     v-model="residente"
                     :loading="loadingSearch"
@@ -70,12 +70,12 @@
                       </v-list-item-content>
                     </template>
                   </v-autocomplete>
-                </v-col> -->
+                </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
                     label="DNI del Residente"
                     outlined
-                    :value="planI.residente.numeroDocumento != null ? planI.residente.numeroDocumento : ''"
+                    :value="residente != null ? residente.numeroDocumento : ''"
                     readonly
                   >
                   </v-text-field>
@@ -93,7 +93,7 @@
                   <v-text-field
                     label="Sexo"
                     outlined
-                    :value="planI.residente != null ? planI.residente.sexo : ''"
+                    :value="residente != null ? residente.sexo : ''"
                     readonly
                   >
                   </v-text-field>
@@ -102,7 +102,7 @@
                   <v-text-field
                     label="Motivo de ingreso"
                     outlined
-                    :value="planI.residente != null ? planI.residente.motivoIngreso : ''"
+                    :value="residente != null ? residente.motivoIngreso : ''"
                     readonly
                   >
                   </v-text-field
@@ -111,7 +111,7 @@
                   <v-text-field
                     label="Estado"
                     outlined
-                    :value="planI.residente != null ? planI.residente.estado : ''"
+                    :value="residente != null ? residente.estado : ''"
                     readonly
                   >
                   </v-text-field>
@@ -394,11 +394,7 @@
                   </v-alert>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
-                  <v-btn
-                    color="success"
-                    elevation="2"
-                    width="100%"
-                  >
+                  <v-btn color="success" elevation="2" width="100%">
                     <v-icon left>mdi-check</v-icon>
                     Finalizar
                   </v-btn>
@@ -463,6 +459,7 @@ export default {
       residente: {
         residente: "",
         id: "",
+        numeroDocumento: "",
         fechaNacimiento: "",
         sexo: "",
         motivoIngreso: "",
@@ -541,6 +538,69 @@ export default {
       },
     },
   },
+  watch: {
+    searchResidente(value) {
+      if (value == null) {
+        this.residente = {
+          residente: "",
+          id: "",
+          numeroDocumento: "",
+          fechaNacimiento: "",
+          sexo: "",
+          motivoIngreso: "",
+          estado: "",
+          faseActual: "",
+        };
+      }
+
+      if (this.residente.length > 0) {
+        return;
+      }
+
+      if (this.loadingSearch) {
+        return;
+      }
+
+      this.loadingSearch = true;
+
+      axios
+        .get("/residente/planes/area/psicologico")
+        .then((res) => {
+          let residentesMap = res.data.map(function (res) {
+            return {
+              residente: res.nombre + " " + res.apellido,
+              id: res.id,
+              numeroDocumento: res.numeroDocumento,
+              fechaNacimiento: res.fechaNacimiento,
+              sexo: res.sexo,
+              motivoIngreso: res.motivoIngreso,
+              estado: res.estado,
+              faseActual: res.progreso[res.progreso.length - 1].nombre,
+            };
+          });
+
+          this.residentes = residentesMap;
+
+          const residentePlan = {
+            residente: this.planI.residente.nombre + " " + this.planI.residente.apellido,
+            id: this.planI.residente.id,
+            numeroDocumento: this.planI.residente.numeroDocumento,
+            fechaNacimiento: this.planI.residente.fechaNacimiento,
+            sexo: this.planI.residente.sexo,
+            motivoIngreso: this.planI.residente.motivoIngreso,
+            estado: this.planI.residente.estado,
+            faseActual: this.planI.residente.progreso[this.planI.residente.progreso.length - 1].nombre,
+          };
+
+          this.residentes.push(residentePlan);
+
+          this.loadingSearch = false;
+        })
+        .catch((error) => {
+          console.log("error");
+        });
+    },
+  },
   methods: {
     closeDialog() {
       this.$emit("close-dialog");
@@ -605,10 +665,10 @@ export default {
   },
   computed: {
     formatDateBorn() {
-      return this.planI.residente != null
-        ? this.planI.residente.fechaNacimiento == ""
+      return this.residente != null
+        ? this.residente.fechaNacimiento == ""
           ? ""
-          : this.$moment(this.planI.residente.fechaNacimiento).format("DD/MM/YYYY")
+          : this.$moment(this.residente.fechaNacimiento).format("DD/MM/YYYY")
         : "";
     },
     objetivoEspecificoErrors() {
@@ -843,13 +903,30 @@ export default {
       return errors;
     },
   },
+  created() {
+    this.residente.residente =
+      this.planI.residente.nombre + " " + this.planI.residente.apellido;
+    this.residente.id = this.planI.residente.id;
+    this.residente.numeroDocumento = this.planI.residente.numeroDocumento;
+    this.residente.fechaNacimiento = this.planI.residente.fechaNacimiento;
+    this.residente.sexo = this.planI.residente.sexo;
+    this.residente.motivoIngreso = this.planI.residente.motivoIngreso;
+    this.residente.estado = this.planI.residente.estado;
+    this.residente.faseActual = this.planI.residente.progreso[
+      this.planI.residente.progreso.length - 1
+    ].nombre;
+
+    this.residentes.push(this.residente);
+  },
   mounted() {
-      var file = { size: 250, name: "firma_trabajador", type: "image/jpg" };
-      var url = this.planI.contenido.firmas[0].urlfirma;
+    var file = { size: 250, name: "firma_trabajador", type: "image/jpg" };
+    var url = this.planI.contenido.firmas[0].urlfirma;
 
-      this.$refs.myVueDropzone.manuallyAddFile(file, url);
+    this.$refs.myVueDropzone.manuallyAddFile(file, url);
 
-      this.listImages.push(this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[0]);
+    this.listImages.push(
+      this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[0]
+    );
   },
   components: {
     vueDropzone: vue2Dropzone,
