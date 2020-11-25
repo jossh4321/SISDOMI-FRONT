@@ -12,10 +12,9 @@ import GestionarInforme from '../views/Informe/GestionarInforme.vue';
 import GestionarResidentes from '../views/Residentes/GestionarResidentes.vue';
 import GestionarSeguimientoEducativo from '../views/SeguimientoEducativo/GestionarSeguimientoEducativo.vue';
 import GestionarSesionesEducativas from '../views/SesionesEducativas/GestionarSesionesEducativas.vue';
-import GestionarIncidencias from "../views/Incidencias/GestionarIncidencias.vue"
+import GestionarIncidencias from "../views/Incidencias/GestionarIncidencias.vue";
 import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
-
-import GestionarActa from '../views/Acta/GestionarActa.vue';
+import GestionActa from '../views/Acta/GestionarActa.vue';
 
 
 /* Rutas de sebas, fede, jaime y angello */
@@ -94,7 +93,7 @@ const routes = [{
             {
                 path: 'actas',
                 name: 'GestionarActa',
-                component: GestionarActa
+                component: GestionActa
             },
         ],
         
