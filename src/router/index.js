@@ -15,6 +15,8 @@ import GestionarSesionesEducativas from '../views/SesionesEducativas/GestionarSe
 import GestionarIncidencias from "../views/Incidencias/GestionarIncidencias.vue"
 import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 
+import GestionarActa from '../views/Acta/GestionarActa.vue';
+
 
 /* Rutas de sebas, fede, jaime y angello */
 import GestionarPlanes from '@/views/PlanIntervencion/GestionarPlanes.vue';
@@ -88,8 +90,14 @@ const routes = [{
                 path: 'anexos',
                 name: 'anexos',
                 component: GestionarAnexos
-            }
+            },
+            {
+                path: 'actas',
+                name: 'GestionarActa',
+                component: GestionarActa
+            },
         ],
+        
         component: () =>
             import ( /* webpackChunkName: "about" */ '../views/Layout/Principal.vue')
     },
