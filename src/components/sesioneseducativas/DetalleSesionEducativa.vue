@@ -132,7 +132,7 @@
                       <v-card elevation="0">
                         <v-text-field
                             v-model="item.grado"
-                            style="margin-top_5px"
+                            style="margin-top:2%"
                             :readonly="!edicion"
                             color="#009900"
                             label="Grado"
@@ -165,21 +165,22 @@
                           ></v-date-picker>
                         </v-menu>
                         <!-- empieza firmas -->
-                        <v-card
-                          style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                        <v-card v-if="edicion"
+                          style="margin-top:10px;padding:5px 5px;background-color:#EAEAEA"
                         >
-                          <v-btn
-                            small
-                            dark
-                            color="green"
-                            @click="agregarFirma(item.idparticipante)"
-                          >
-                            <span v-if="item.firma!=''">Cambiar Firma</span>
-                            <span v-else>Añadir Firma</span>
-                          </v-btn>
+                          <v-card-actions>
+                            <v-btn
+                              dark
+                              color="green"
+                              @click="agregarFirma(item.idparticipante)"
+                            >
+                              <span v-if="item.firma!=''">Cambiar Firma</span>
+                              <span v-else>Añadir Firma</span>
+                            </v-btn>
+                          </v-card-actions>
                           <v-row>
                             <v-col :cols="12" align="right">
-                              <div>
+                              <div style="padding:1%">
                                 <vue-dropzone
                                   ref="myVueDropzone"
                                   @vdropzone-success="afterSuccess2"
@@ -191,109 +192,52 @@
                               </div>
                             </v-col>
                           </v-row>
-                          <v-card
-                            color="#FAFAFA"
-                            style="margin-top:5px"
-                            height="60"
-                          >
-                            <v-row style="margin-left:10px;heigh:100%" align="center">
-                              <v-col :cols="8">
-                                <article>
-                                  <img
-                                    style="margin-right:5px;width:6% "
-                                    src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
-                                    alt="imagen usuario"
-                                  />
-                                  <span style="font-size:18px">
-                                    {{ item.datosresidente.nombre }} {{ item.datosresidente.apellido }}</span
-                                  >
-                                </article>
-                              </v-col>
-                              <v-col :cols="2" align="center">
-                                <template>
-                                    <v-btn
-                                      fab
-                                      icon=""
-                                      x-small
-                                      dark
-                                      color="#EAEAEA"
-                                      @click="verFirma(item.idparticipante)"
-                                    >
-                                      <img
-                                        style="width:25% "
-                                        src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
-                                        alt="firma"
-                                      />
-                                    </v-btn>
-                                  </template>
-                              </v-col>
-                              <v-col :cols="2" align="right">
-                                <div style="margin-right:20px">
-                                  <v-btn
-                                    fab
-                                    x-small
-                                    dark
-                                    color="red"
-                                    @click="eliminarFirma(item.idparticipante)"
-                                  >
-                                    <v-icon dark>
-                                      mdi-minus
-                                    </v-icon>
-                                  </v-btn>
-                                </div>
-                              </v-col>
-                            </v-row>
-                          </v-card>
+                          <v-card-actions>
+                            <v-btn
+                              dark
+                              color="blue"
+                              @click="verFirma(item.idparticipante)"
+                            >
+                              <v-icon dark>
+                                mdi-draw
+                              </v-icon>
+                              <span style="margin-left:2%">Visualizar Firma</span>
+                            </v-btn>
+                            <v-btn
+                              dark
+                              color="red"
+                              @click="eliminarFirma(item.idparticipante)"
+                            >
+                              <v-icon dark>
+                                mdi-delete
+                              </v-icon>
+                              <span style="margin-left:2%">Eliminar Firma</span>
+                            </v-btn>
+                          </v-card-actions>
                         </v-card>
-                        <v-dialog
-                          v-model="dialogVistaPreviaFirma"
-                          persistent
-                          max-width="600px"
-                        >
-                          <v-card align="center">
-                            <v-card-title>
-                              <span class="headline">Vista previa</span>
-                            </v-card-title>
-                            <v-card-text>
-                              <img
-                                v-if="imagen.includes('http')"
-                                width="100%"
-                                height="100%"
-                                :src="imagen"
-                                alt=""
-                              />
-                              <img
-                                v-else
-                                width="100%"
-                                height="100%"
-                                :src="'data:image/jpeg;base64,' + imagen"
-                                alt=""
-                              />
-                            </v-card-text>
-                            <v-card-actions>
-                              <v-spacer></v-spacer>
-                              <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="cerrarVistaPreviaFirma()"
-                              >
-                                Cerrar
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </v-dialog>
+                        <v-card elevation="0" style="margin-top:1%;margin-bottom:3%" v-else >
+                          <v-btn
+                            dark
+                            color="#4FA7EE"
+                            @click="verFirma(item.idparticipante)"
+                          >
+                            <v-icon dark>
+                              mdi-draw
+                            </v-icon>
+                            <span style="margin-left:2%">Visualizar Firma</span>
+                          </v-btn>
+                        </v-card>
                         <!-- acaba firmas -->
-
-                        <v-text-field
+                        <!-- <v-text-field
                             v-model="item.firma"
                             style="margin-top_5px"
                             :readonly="!edicion"
                             color="#009900"
                             label="Firma (enlace)"
-                        ></v-text-field>
+                        ></v-text-field> -->
                         <v-text-field
                             v-model="item.observaciones"
-                            style="margin-top_5px"
+                            style="margin-top:3%"
                             :readonly="!edicion"
                             color="#009900"
                             label="Observaciones"
@@ -341,6 +285,46 @@
         </v-card-actions>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog
+      v-model="dialogVistaPreviaFirma"
+      persistent
+      max-width="600px"
+    >
+      <v-card align="center">
+        <v-card-title>
+          <span class="headline">Vista previa</span>
+        </v-card-title >
+        <v-card-text v-if="imagen!=''">
+          <img
+            v-if="imagen.includes('http')"
+            width="100%"
+            height="100%"
+            :src="imagen"
+            alt=""
+          />
+          <img
+            v-else
+            width="100%"
+            height="100%"
+            :src="'data:image/jpeg;base64,' + imagen"
+            alt=""
+          />
+        </v-card-text>
+        <v-card-text v-else>
+          <v-card-text style="font-size:18px">No tiene firma registrada</v-card-text>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="cerrarVistaPreviaFirma()"
+          >
+            Cerrar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -352,7 +336,7 @@ import axios from "axios";
 import moment from "moment";
 export default {
   name: "DetalleSesionEducativa",
-  props: ["sesioneducativa"],
+  props: ["sesioneducativa","datoSesion","dialogodetalle"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -374,7 +358,6 @@ export default {
       imagen:"",
       datemenu: false,
       datemenu2: false,
-      datoSesion:{},
       sesioneducativaMod:{
         titulo:"",
         idCreador:"",
@@ -413,15 +396,20 @@ export default {
         if(this.numeroEcontrados(this.participantesFiltrados)===0){
           this.participantesFiltrados = await this.datoSesion.contenido.participantes;
         }
+    },
+    dialogodetalle: async function(dialogodetalle){
+      this.participantesFiltrados = await this.datoSesion.contenido.participantes;
+      console.log(dialogodetalle)
     }
   },
   methods:{
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
       this.step=1;
-      this.participantesFiltrados = this.datoSesion.contenido.participantes;
+      this.participantesFiltrados = [];
       this.select= { value: "1", text: "Nombre" };
       this.search="";
+      console.log(this.participantesFiltrados);
     },
     activarEdicionSesionEducativa(){
       this.edicion = true;
@@ -474,14 +462,14 @@ export default {
       this.participantesFiltrados.forEach((part)=>{
         if(part.idparticipante ===id){
           console.log(part.firma);
-          console.log(part.firma);
-          console.log(part.firma);
-          console.log(part.firma);
           this.imagen = part.firma;
           console.log("imagen: "  + this.imagen);
           this.dialogVistaPreviaFirma = true;
         }
       })
+    },
+    disableVisualizarFirma(firma){
+      if(firma === ""){return false}
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
@@ -496,29 +484,27 @@ export default {
     },
 
 
-    //Obtener datos de una sesión por id
-    async obtenerSesionEducativaDTO(idsesion) {
-      var user = {};
-      await axios
-        .get("/SesionesEducativas/allsesiondto/id?id=" + idsesion)
-        .then((res) => {
-          user = res.data;
-          user.fechacreacion = user.fechacreacion.split("T")[0];
-          for (var x=0;x<user.contenido.participantes.length;x++){
-              user.contenido.participantes[x].fecha = user.contenido.participantes[x].fecha.split("T")[0];
-          }
-        })
-        .catch((err) => console.log(err));
-      console.log("Sesion educativa DTO:");
-      console.log(user);
-      return user;
-    },
+    // //Obtener datos de una sesión por id
+    // async obtenerSesionEducativaDTO(idsesion) {
+    //   var user = {};
+    //   await axios
+    //     .get("/SesionesEducativas/allsesiondto/id?id=" + idsesion)
+    //     .then((res) => {
+    //       user = res.data;
+    //       user.fechacreacion = user.fechacreacion.split("T")[0];
+    //       for (var x=0;x<user.contenido.participantes.length;x++){
+    //           user.contenido.participantes[x].fecha = user.contenido.participantes[x].fecha.split("T")[0];
+    //       }
+    //     })
+    //     .catch((err) => console.log(err));
+    //   console.log("Sesion educativa DTO:");
+    //   console.log(user);
+    //   return user;
+    // },
   },
-  async created() {
-    this.datoSesion= await this.obtenerSesionEducativaDTO(this.sesioneducativa.id);
+  async mounted() {
     this.participantesFiltrados = await this.datoSesion.contenido.participantes;
-    
-  }
+  },
 
 }
 </script>
