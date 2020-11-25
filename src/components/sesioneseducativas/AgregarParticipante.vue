@@ -50,20 +50,6 @@
             </template>
           </template>
         </v-autocomplete>
-        <v-select
-          v-model="tipoSesion"
-          :items="sesiones"
-          item-text="state"
-          item-value="abbr"
-          label="Seleccione un tipo de Sesión"
-          return-object
-          single-line  
-          outlined
-          color="green"
-          @input="$v.tipoSesion.$touch()"
-          @blur="$v.tipoSesion.$touch()"
-          :error-messages="errorTipoSesion"
-        ></v-select>
         <v-row>
           <v-col>
             <v-btn block @click="cerrarDialogo()" color="primary">
@@ -72,13 +58,12 @@
             </v-btn>
           </v-col>
           <v-col>
-            <v-btn block @click="abrirDialogo(tipoSesion.state)" color="success">
+            <v-btn block color="success">
               <v-icon left>done</v-icon>
               <span >Continuar</span>
             </v-btn>
           </v-col>
         </v-row>
-        
       </form>
     </v-card>
   </v-card>
@@ -91,48 +76,23 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 export default {
-  props:["listaresidentes"],
-  components:{
-    
-  },
+  props:["sesioneducativa","listaresidentes"],
   data() {
     return{
       residente:{},
       sesion:{
         idresidente:"",
       },
-      tipoSesion: {},
-      select: { state: 'Seleccione un Residente'},
-      //Luego utilizar "residentes", items solo de prueba
-      items: [
-        { state: 'Florida', abbr: 'FL' },
-        { state: 'Georgia', abbr: 'GA' },
-        { state: 'Nebraska', abbr: 'NE' },
-        { state: 'California', abbr: 'CA' },
-        { state: 'New York', abbr: 'NY' }
-      ],
-      sesiones:[
-        { state: 'Sesion Aprendizaje', abbr: 'SA' },
-        { state: 'Sesion Reforzamiento', abbr: 'SR' }
-      ],
-      showRegistrarAprendizaje: false,
-      showRegistrarReforzamiento: false
-
     }
   },
   methods:{
     cerrarDialogo() {
-      this.$emit("close-dialog-save");
+      this.$emit("close-dialog-participantes");
     },
     async abrirDialogo(tipoSesion) {
       this.residente = await this.loadResidenteDetalle(this.sesion.idresidente)
       console.log(this.tipoSesion);
-      if(tipoSesion==="Sesion Aprendizaje"){
-        this.showRegistrarAprendizaje = !this.showRegistrarAprendizaje;
-      }
-      else if(tipoSesion==="Sesion Reforzamiento"){
-        this.showRegistrarReforzamiento = !this.showRegistrarReforzamiento;
-      }
+      console.log("Residente:"+residente);
       
     },
     async loadResidenteDetalle(idresidente) {
@@ -158,13 +118,6 @@ export default {
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
     },
-    errorTipoSesion() {
-      const errors = [];
-      if (!this.tipoSesion.$dirty) return errors;
-      !this.$v.tipoSesion.state.required &&
-        errors.push("Debe seleccionar un tipo de sesion obligatoriamente");
-      return errors;
-    },
   },
   validations(){
     return{
@@ -173,12 +126,10 @@ export default {
           required,
         }
       },
-      tipoSesion:{
-        state:{
-          required
-        }
-      }
     }
+  },
+  created(){
+    console.log("Componente Participante creado")
   }
 }
 </script>

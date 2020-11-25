@@ -19,26 +19,65 @@
               label="Search"
               single-line
               hide-details
+              class="mr-10"
             ></v-text-field>
+            <v-btn
+              class="mb-2"
+              @click="dialogRegister = true"
+              color="success"
+              dark
+            >
+              <v-icon left class="ml-auto ml-sm-0 mr-auto mr-sm-1"
+                >mdi-plus</v-icon
+              >
+              <span class="d-none d-sm-block">Registrar</span>
+            </v-btn>
             <v-spacer></v-spacer>
-            <v-dialog v-model="dialogoregistro" max-width="880px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="success"
-                  dark
-                  class="mb-2"
-                  v-bind="attrs"
-                  v-on="on"
+
+            <!--modal seleccionar taller-->
+            <v-dialog v-model="dialogRegister" persistent max-width="500">
+              <v-card>
+                <v-card-title>Selección del Taller</v-card-title>
+                <v-card-subtitle class="mt-1"
+                  >Seleccione el tipo del taller para el registro</v-card-subtitle
                 >
-                <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar nuevo taller</span>
-                </v-btn>
-              </template>
-                <RegistrarTaller></RegistrarTaller>
+                <v-card-text class="pr-2">
+                  <v-combobox
+                    filled
+                    label="Tipo de taller"
+                    :items="selectTallerRegister"
+                    v-model="selectedTaller"
+                    return-object
+                  ></v-combobox>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn @click="dialogRegister = false" color="error">
+                    <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>
+                    Cerrar
+                  </v-btn>
+                  <v-btn color="success" @click="selectedRegister">
+                    <v-icon left class="mr-0 icon-plan">mdi-check</v-icon>
+                    Registrar
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
             </v-dialog>
+
+            <!--Registrar Modal-->
+            <v-dialog v-model="dialogTallerRegister" persistent max-width="880">
+              <component
+                :is="selectedTaller.value"
+                @close-dialog="closeDialog"
+                @register-complete="registerComplete"
+              ></component>
+            </v-dialog>
+
           </v-toolbar>
         </template>
-
+        <template v-slot:[`item.fechacreacion`]="{ item }">
+          {{ item.fechacreacion | moment("DD/MM/YYYY") }}
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
             <v-btn color="warning" dark @click="editItem(item)">
@@ -57,44 +96,50 @@
   </div>
 </template>
 <script>
-import RegistrarTaller from '@/components/talleres/RegistrarTalleres.vue'
+import axios from "axios";
+import RegistrarTallerEscuelaPadres from "@/components/talleres/escuelapadres/RegistrarTallerEscuelaPadres.vue";
 export default {
   name: "GestionarTalleres",
   components: {
-     RegistrarTaller
+     RegistrarTallerEscuelaPadres
   },
   data() {
     return {
       search: "",
       headers: [
         {
-          text: "Nombre Taller",
+          text: "Titulo Taller",
           align: "start",
           sortable: false,
-          value: "nombre",
+          value: "titulo",
         },
-        { text: "Usuaria", value: "usuaria" },
-        { text: "Fecha registro", value: "fechaRegistro" },
+        { text: "Tipo", value: "tipo" },
+        { text: "Área", value: "area" },
+        { text: "Fase", value: "fase" },
+        { text: "Fecha registro", value: "fechacreacion" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-      talleres: [
+      talleres: [],
+      selectTallerRegister: [
         {
-          nombre: "Taller_Edu_Xiomara_1",
-          usuaria: "Xiomara Paredes Guerra",
-          fechaRegistro: "15/09/2019"
+          text: "Escuela para padres",
+          value: "RegistrarTallerEscuelaPadres",
         },
         {
-          nombre: "Taller_Psico_Xiomara_1",
-          usuaria: "Xiomara Paredes Guerra",
-          fechaRegistro: "16/09/2019"
+          text: "Educativa",
+          value: "RegistrarTallerEducativo",
         },
         {
-          nombre: "TallerI_Edu_Marlyn_1",
-          usuaria: "Marlyn Albido Candela",
-          fechaRegistro: "20/10/2019"
-        }
+          text: "Formativo para Egreso",
+          value: "RegistrarTallerFormativoEgreso",
+        },
       ],
-      dialogoregistro: false,
+      selectedTaller: {
+        text: "",
+        value: "",
+      },
+      dialogRegister: false,
+      dialogTallerRegister: false
     };
   },
   methods: {
@@ -104,7 +149,36 @@ export default {
     detailItem(item) {
       console.log(item);
     },
+    listTalleres() {
+      axios
+        .get("/Taller/all")
+        .then((res) => {
+          //this.loading = false;
+          this.talleres = res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    selectedRegister() {
+      this.dialogRegister = false;
+      this.dialogTallerRegister = true;
+    },
+    closeDialog() {
+      this.dialogTallerRegister = false;
+      this.selectedPlan = {
+          text: "",
+          value: "",
+      };
+    },
+    registerComplete() {
+      this.closeDialog();
+      this.listTalleres();
+    },
   },
+  created() {
+    this.listTalleres();
+  }
 };
 </script>
 <style scoped>
