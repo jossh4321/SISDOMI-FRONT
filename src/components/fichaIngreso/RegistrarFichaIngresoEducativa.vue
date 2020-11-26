@@ -15,7 +15,7 @@
           editable
           step="2"
         >
-        Datos Psicológicos
+        Datos Educativos
         </v-stepper-step>
       </v-stepper-header>    
       <v-stepper-items>
@@ -31,7 +31,7 @@
                   color="#009900"
                   label="Residente"
                   item-text="nombre"
-                  item-value="id"                            
+                  item-value="residenteSeleccionado"                            
                 >
 
                 <template v-slot:selection="data">
@@ -83,13 +83,13 @@
 
                 <v-row>
                     <v-col>
-                        <v-text-field
-                            label="Sexo"
-                            auto-grow
-                            outlined        
-                            color="#009900"
-                            shaped
-                        ></v-text-field>
+                        <v-select              
+                          :items="itemSexo"
+                          v-model="itemSexo.value"
+                          label="Sexo"
+                          outlined      
+                          dense       
+                        ></v-select>
                     </v-col>
                     <v-col>
                         <v-menu
@@ -294,20 +294,23 @@ import moment from 'moment'
 
 export default {
         
-    props:["listaresidentes","visible"],
+    props:["listaresidentes","visible","residenteSeleccionado"],
     ...mapMutations(["setFichaIngreso","addFichaIngreso"]),
     data() {
         return {
+          
           itemModalidad: [
             { value: '1', text: 'Público'},
             { value: '2', text: 'Privado'},
             { value: '3', text: 'Nacional'}
           ],
+
           itemNivel: [
             { value: '1', text: 'Primaria'},
             { value: '2', text: 'Secundaria'},
             { value: '3', text: 'Estudio Superior'}
           ],
+
           itemGrado: [
             { value: '1', text: '1'},
             { value: '2', text: '2'},
@@ -315,6 +318,12 @@ export default {
             { value: '4', text: '4'},
             { value: '5', text: '5'}
           ],
+
+          itemSexo: [
+            { value: '1', text: 'Femenino'},
+            { value: '2', text: 'Masculino'}
+          ],
+          
           datemenu: false,
           step: 1
         }

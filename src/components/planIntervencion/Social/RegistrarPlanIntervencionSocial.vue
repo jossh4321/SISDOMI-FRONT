@@ -552,31 +552,31 @@ export default {
       }
     },
     addObjetivos() {
-      if (this.objetivosAux != "") {
+      if (this.objetivosAux != "" && !this.$v.objetivosAux.$invalid) {
         this.planI.contenido.objetivos.push(this.objetivosAux);
         this.objetivosAux = "";
       }
     },
     addAvance() {
-      if (this.avanceAux != "") {
+      if (this.avanceAux != "" && !this.$v.avanceAux.$invalid) {
         this.planI.contenido.avances.push(this.avanceAux);
         this.avanceAux = "";
       }
     },
     addActividad() {
-      if (this.actividadAux != "") {
+      if (this.actividadAux != "" && !this.$v.actividadAux.$invalid) {
         this.planI.contenido.estrategias.push(this.actividadAux);
         this.actividadAux = "";
       }
     },
     addIndicador() {
-      if (this.indicadorAux != "") {
+      if (this.indicadorAux != "" && !this.$v.indicadorAux.$invalid) {
         this.planI.contenido.indicadores.push(this.indicadorAux);
         this.indicadorAux = "";
       }
     },
     addMeta() {
-      if (this.metaAux != "") {
+      if (this.metaAux != "" && !this.$v.metaAux.$invalid) {
         this.planI.contenido.metas.push(this.metaAux);
         this.metaAux = "";
       }
@@ -725,45 +725,65 @@ export default {
     errorObjetivos() {
       const errors = [];
       if (!this.$v.planI.contenido.objetivos.$dirty) return errors;
-      !this.$v.planI.contenido.objetivos.required &&
-        errors.push(
-          "Debe ingresar al menos un objetivo específico obligatoriamente"
-        );
+      if (!this.$v.planI.contenido.objetivos.required) {
+        errors.push("Los objetivos son requeridos");
+      }
+      if (!this.$v.planI.contenido.objetivos.minLength) {
+        errors.push("Se debe registrar un objetivo como mínimo");
+      }
+
       return errors;
     },
     errorAvances() {
       const errors = [];
       if (!this.$v.planI.contenido.avances.$dirty) return errors;
-      !this.$v.planI.contenido.avances.required &&
-        errors.push("Debe ingresar al menos un avance obligatoriamente");
+      if (!this.$v.planI.contenido.avances.required) {
+        errors.push("Los avances son requeridos");
+      }
+      if (!this.$v.planI.contenido.avances.minLength) {
+        errors.push("Se debe registrar un avance como mínimo");
+      }
+
       return errors;
     },
     errorEstrategias() {
       const errors = [];
       if (!this.$v.planI.contenido.estrategias.$dirty) return errors;
-      !this.$v.planI.contenido.estrategias.required &&
-        errors.push("Debe ingresar al menos una estrategia obligatoriamente");
+
+      if (!this.$v.planI.contenido.estrategias.required) {
+        errors.push("Las estrategias son requeridas");
+      }
+      if (!this.$v.planI.contenido.estrategias.minLength) {
+        errors.push("Se debe registrar una estrategias como mínimo");
+      }
+
       return errors;
     },
     errorIndicadores() {
       const errors = [];
       if (!this.$v.planI.contenido.indicadores.$dirty) return errors;
-      !this.$v.planI.contenido.indicadores.required &&
-        errors.push("Debe ingresar al menos un indicador obligatoriamente");
+
+      if (!this.$v.planI.contenido.indicadores.required) {
+        errors.push("Los indicadores son requeridos");
+      }
+      if (!this.$v.planI.contenido.indicadores.minLength) {
+        errors.push("Se debe registrar un indicador como mínimo");
+      }
+
       return errors;
     },
     errorMetas() {
       const errors = [];
       if (!this.$v.planI.contenido.metas.$dirty) return errors;
-      !this.$v.planI.contenido.metas.required &&
-        errors.push("Debe ingresar al menos una meta obligatoriamente");
+
+      if (!this.$v.planI.contenido.metas.required) {
+        errors.push("Las metas son requeridas");
+      }
+      if (!this.$v.planI.contenido.metas.minLength) {
+        errors.push("Se debe registrar una meta como mínimo");
+      }
+
       return errors;
-    },
-    errorImagen() {
-      return this.$v.firmaAux.required == false &&
-        this.$v.firmaAux.$dirty == true
-        ? true
-        : false;
     },
   },
 };
