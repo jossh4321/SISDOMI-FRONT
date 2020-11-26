@@ -42,39 +42,50 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
-                  <v-autocomplete
-                    label="Nombres y apellidos del residente"
-                    outlined
-                    v-model="residente"
-                    :loading="loadingSearch"
-                    :search-input.sync="searchResidente"
-                    :items="listResidentes"
-                    item-text="residente"
-                    item-value="id"
-                    hide-no-data
-                    hide-selected
-                    return-object
-                    @input="$v.residente.id.$touch()"
-                    @blur="$v.residente.id.$touch()"
-                    :error-messages="errorResidente"
-                  >
-                    <template v-slot:item="item">
-                      <v-list-item-avatar
-                        color="primary"
-                        class="headline font-weight-light white--text"
-                      >
-                        {{ item.item.residente.charAt(0) }}
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          {{ item.item.residente }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle>
-                          DNI: {{ item.item.numeroDocumento }}
-                        </v-list-item-subtitle>
-                      </v-list-item-content>
-                    </template>
-                  </v-autocomplete>
+                  <template v-if="planI.documentos.length > 0">
+                    <v-text-field
+                      :value="residente.residente"
+                      outlined
+                      readonly
+                      color="success"
+                    >
+                    </v-text-field>
+                  </template>
+                  <template v-else>
+                    <v-autocomplete
+                      label="Nombres y apellidos del residente"
+                      outlined
+                      v-model="residente"
+                      :loading="loadingSearch"
+                      :search-input.sync="searchResidente"
+                      :items="listResidentes"
+                      item-text="residente"
+                      item-value="id"
+                      hide-no-data
+                      hide-selected
+                      return-object
+                      @input="$v.residente.id.$touch()"
+                      @blur="$v.residente.id.$touch()"
+                      :error-messages="errorResidente"
+                    >
+                      <template v-slot:item="item">
+                        <v-list-item-avatar
+                          color="primary"
+                          class="headline font-weight-light white--text"
+                        >
+                          {{ item.item.residente.charAt(0) }}
+                        </v-list-item-avatar>
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            {{ item.item.residente }}
+                          </v-list-item-title>
+                          <v-list-item-subtitle>
+                            DNI: {{ item.item.numeroDocumento }}
+                          </v-list-item-subtitle>
+                        </v-list-item-content>
+                      </template>
+                    </v-autocomplete>
+                  </template>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
@@ -516,7 +527,7 @@ export default {
     this.listResidentes.push(this.residente);
   },
   mounted() {
-    var file = { size: 250, name: "icon", type: "image/jpg" };
+    var file = { size: 250, name: "firmatrabajador.jpg", type: "image/jpg" };
     var url = this.planI.contenido.firmas[0].urlfirma;
 
     this.$refs.myVueDropzone.manuallyAddFile(file, url);
@@ -530,6 +541,7 @@ export default {
     async editPlan() {
       this.$v.$touch();
       if (this.$v.$invalid) {
+        
         this.mensaje(
           "error",
           "..Oops",
