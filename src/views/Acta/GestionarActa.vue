@@ -34,16 +34,17 @@
                   <span>Registrar nueva Acta</span>
                 </v-btn>
               </template>
-             <RegistrarPlanIntervencion v-if="dialogoregistro" :actaIntervencion="actaIntervencion" @close-dialog-detail="closeDialogRegistrar()">
-                </RegistrarPlanIntervencion> </v-dialog>
-                
+             <RegistrarPlanIntervencion v-if="dialogoregistro" :actaI="actaI" @close-dialog-detail="closeDialogRegistrar()">
+                @close-dialog="closeDialog"
+              ></RegistrarPlanIntervencion>
+            </v-dialog>
           </v-toolbar>
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
              <v-dialog v-model="dialogoactualizacion" max-width="880px">
-               <ActualizarActaIntervencion v-if="dialogoactualizacion" :actaIntervencion="actaIntervencion" @close-dialog-detail="closeDialogActualizar()">
+               <ActualizarActaIntervencion v-if="dialogoactualizacion" :actaI="actaI" @close-dialog-detail="closeDialogActualizar()">
           </ActualizarActaIntervencion></v-dialog> -->
             <v-btn color="warning" dark @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
