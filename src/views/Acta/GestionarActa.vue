@@ -25,7 +25,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
-                  dark
+                  darkdark @click="editItem(item)"
                   class="mb-2"
                   v-bind="attrs"
                   v-on="on"
@@ -35,9 +35,8 @@
                 </v-btn>
               </template>
              <RegistrarPlanIntervencion v-if="dialogoregistro" :actaIntervencion="actaIntervencion" @close-dialog-detail="closeDialogRegistrar()">
-                @close-dialog="closeDialog"
-              ></RegistrarPlanIntervencion>
-            </v-dialog>
+                </RegistrarPlanIntervencion> </v-dialog>
+                
           </v-toolbar>
         </template>
 
@@ -124,6 +123,7 @@ export default {
       Visualizarplan: false,
       dialogoactualizacion: false
     };
+    
   },
 
 
