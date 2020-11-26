@@ -28,6 +28,40 @@
                 readonly
                 color="#009900"
               ></v-text-field>
+               <v-text-field
+                    v-model="educador"
+                    label="Educador Responsable"
+                    outlined
+                    readonly
+                    color="#009900"
+                ></v-text-field>  
+                 <v-menu
+                  v-model="datemenu"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="seguimiento.fechacreacion"
+                      label="Fecha de Evaluación"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      color="#009900"
+                      disabled
+                      
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="seguimiento.fechacreacion"
+                    @input="menu2 = false"
+                    locale="es-es"
+                  ></v-date-picker>
+                </v-menu>       
               <v-text-field
                 v-model="seguimiento.contenido.modalidad"
                 label="Modalidad"
@@ -124,14 +158,24 @@
                         <span style="font-size:16px">{{item.nombre}}</span>
                       </article>
                     </v-col>
-                    <v-col :cols="4">
-                      <article>
-                            <v-img style="display:block"
-                              height="70"
-                            width="170"
-                              :src="item.urlfirma"
-                            ></v-img>
-                      </article>
+                    <v-col :cols="2" align="center">
+                        <template>
+                            <v-btn
+                              fab
+                              icon=""
+                              x-small
+                              dark
+                              color="#EAEAEA"
+                              @click="verFirma(index)"
+                            >
+                              <img
+                                style="width:25% "
+                                src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
+                                alt="firma"
+                              />
+                            </v-btn>
+                          </template>
+                      
                     </v-col>
                     <v-col align="right">
                       <div style="margin-right:20px">
@@ -381,7 +425,35 @@
                   </v-row>
                 </v-card>
               </v-card>
-
+                        <v-dialog
+                                  v-model="dialogVistaPreviaFirma"
+                                  persistent
+                                  max-width="600px"
+                                >
+                                  <v-card align="center">
+                                    <v-card-title>
+                                      <span class="headline">Vista previa</span>
+                                    </v-card-title>
+                                    <v-card-text>
+                                      <img
+                                        width="100%"
+                                        height="100%"
+                                        :src="imagen"
+                                        alt=""
+                                      />
+                                    </v-card-text>
+                                    <v-card-actions>
+                                      <v-spacer></v-spacer>
+                                      <v-btn
+                                        color="blue darken-1"
+                                        text
+                                        @click="cerrarVistaPreviaFirma()"
+                                      >
+                                        Cerrar
+                                      </v-btn>
+                                    </v-card-actions>
+                                  </v-card>
+                        </v-dialog>
 
 
               <!--Botones de card -->
@@ -418,13 +490,20 @@ data(){
   return{
     dialog: false,//dialogo de ver firma
     dialog1:false,//dialogo de ver notas
+    datemenu: false,
+     imagen: "",
     step: 1,
     notas:[],
+    educador:"",
+    dialogVistaPreviaFirma: false,
     nombrecompleto: this.residente.nombre +" " + this.residente.apellido
     
-        }
+  }
   },
-  
+  async created() {
+     
+      this.obtenerEducador();
+    },
   methods:{
       cerrarDialogo(){
         this.$emit("close-dialog-detail");
@@ -433,7 +512,22 @@ data(){
         this.notas=notas;
         this.dialog1=true;
         console.log(this.notas)
-      }
+      },
+       async obtenerEducador(){
+          await axios.get("/usuario/id?id="+this.seguimiento.creadordocumento)
+            .then(res => {
+                    this.educador = res.data.datos.nombre + " "+res.data.datos.apellido;
+                    console.log(this.educador)
+            }).catch(err => console.log(err));
+       },
+       verFirma(index) {
+      console.log(this.seguimiento.contenido.firmas[index].urlfirma);
+      this.imagen = this.seguimiento.contenido.firmas[index].urlfirma;
+      this.dialogVistaPreviaFirma = true;
+    },
+    cerrarVistaPreviaFirma() {
+      this.dialogVistaPreviaFirma = false;
+    },
       
 
 
