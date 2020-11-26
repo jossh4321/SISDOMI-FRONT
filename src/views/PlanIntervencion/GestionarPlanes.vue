@@ -145,6 +145,7 @@
         :is="typePlanSelected"
         :planI="planI"
         @close-dialog="closeDialogModify"
+        @edit-complete="editComplete"
       ></component>
     </v-dialog>
 
@@ -375,6 +376,11 @@ export default {
     },
     registerComplete() {
       this.closeDialog();
+      this.loading = true;
+      this.listInterventionsPlan();
+    },
+    editComplete() {
+      this.closeDialogModify();
       this.loading = true;
       this.listInterventionsPlan();
     },

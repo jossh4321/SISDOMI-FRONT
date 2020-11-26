@@ -115,7 +115,7 @@
                     <div class="w-100 d-flex">
                       <v-text-field
                         v-model.trim="objetivoespecificoAux"
-                        label="Ingrese los objetivos específicos"
+                        label="Objetivo específico"
                         @input="$v.objetivoespecificoAux.$touch()"
                         @blur="$v.objetivoespecificoAux.$touch()"
                         :error-messages="errorObjetivoEspecifico"
@@ -426,6 +426,7 @@ export default {
         residente: "",
         id: "",
         faseActual: "",
+        numeroDocumento: ""
       },
       searchResidente: null,
       loadingSearch: false,
@@ -507,6 +508,7 @@ export default {
         this.residente = {
           residente: "",
           id: "",
+          numeroDocumento: "",
           faseActual: ""
         };
       }
@@ -622,7 +624,7 @@ export default {
       });
     },
     addObjEspecifico() {
-      if (this.objetivoespecificoAux != "") {
+      if (this.objetivoespecificoAux != "" && !this.$v.objetivoespecificoAux.$invalid) {
         this.planI.contenido.objetivoEspecificos.push(
           this.objetivoespecificoAux
         );
@@ -630,25 +632,25 @@ export default {
       }
     },
     addAspecto() {
-      if (this.aspectoAux != "") {
+      if (this.aspectoAux != "" && !this.$v.aspectoAux.$invalid) {
         this.planI.contenido.aspectosIntervencion.push(this.aspectoAux);
         this.aspectoAux = "";
       }
     },
     addActividad() {
-      if (this.actividadAux != "") {
+      if (this.actividadAux != "" && !this.$v.actividadAux.$invalid) {
         this.planI.contenido.estrategias.push(this.actividadAux);
         this.actividadAux = "";
       }
     },
     addIndicador() {
-      if (this.indicadorAux != "") {
+      if (this.indicadorAux != "" && !this.$v.indicadorAux.$invalid) {
         this.planI.contenido.indicadores.push(this.indicadorAux);
         this.indicadorAux = "";
       }
     },
     addMeta() {
-      if (this.metaAux != "") {
+      if (this.metaAux != "" && !this.$v.metaAux.$invalid) {
         this.planI.contenido.metas.push(this.metaAux);
         this.metaAux = "";
       }
