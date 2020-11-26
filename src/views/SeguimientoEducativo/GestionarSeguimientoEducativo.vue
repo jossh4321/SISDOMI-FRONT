@@ -69,6 +69,7 @@
           :seguimiento="seguimiento"
           :residente ="residente"
           :listaresidentes ="listaresidentes"
+          :dialogodetalle ="dialogodetalle"
           @close-dialog-detail="closeDialogDetalle()"
         >
         </DetalleSeguimientoEducativo>

@@ -485,7 +485,7 @@ import axios from 'axios';
 export default {
   
 name:'DetalleSeguimientoEducativo',
-props: ["seguimiento","residente","listaresidentes"],
+props: ["seguimiento","residente","listaresidentes","dialogodetalle"],
 data(){
   return{
     dialog: false,//dialogo de ver firma
@@ -506,6 +506,7 @@ data(){
     },
   methods:{
       cerrarDialogo(){
+        this.step=1;
         this.$emit("close-dialog-detail");
       },
       abrirDialogoNotas(notas){
@@ -528,9 +529,12 @@ data(){
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
     },
-      
-
-
+},
+watch:{
+   dialogodetalle: async function(dialogodetalle){
+      this.seguimiento = await this.seguimiento;
+      console.log(dialogodetalle)
+    }
 }
 }
 
