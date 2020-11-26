@@ -908,9 +908,11 @@ methods:{
       this.dialogVistaPreviaFirma = true;
     },
     guardarTrimestre(){
-      let trimestred={orden:this.trimestre.orden,puntajes:this.trimestre.puntajes,analisiseducativo:this.trimestre.analisiseducativo,recomendaciones:this.trimestre.recomendaciones};
+      let trimestred={orden:this.trimestre.orden,puntajes:[],analisiseducativo:this.trimestre.
+      analisiseducativo,recomendaciones:this.trimestre.recomendaciones};
+      this.seguimiento.contenido.trimestre[0].puntajes.push({area:"mate",promedio:"24"});
       this.seguimiento.contenido.trimestre.push(trimestred);
-      guardarNotas
+      
       console.log(this.seguimiento.contenido.trimestre)
 
       this.trimestre.orden="";
