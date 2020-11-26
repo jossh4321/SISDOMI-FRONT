@@ -37,6 +37,7 @@
              <RegistrarSeguimientoEducativo
              
              :listaresidentes ="listaresidentes"
+             :listaeducadores="listaeducadores"
              @close-dialog-save="closeDialogRegistrar()"
              >
              </RegistrarSeguimientoEducativo>
@@ -96,6 +97,8 @@ export default {
       seguimiento: {},
       residente:{},
       listaresidentes: [],
+      listaeducadores:[],
+
       headers: [
         {
           text: "Nombre Documento",
@@ -117,6 +120,7 @@ export default {
   async created(){
  this.obtenerSeguimiento();
  this.obtenerResidentes();
+ this.obtenerEducadores();
   },
   methods: {
     ...mapMutations(["setSeguimiento"]),
@@ -177,7 +181,7 @@ export default {
         .then((res) => {
           console.log(res);
           user = res.data;
-          user.fechacreacion = user.fechacreacion.split("T")[0];
+         
         })
         .catch((err) => console.log(err));
       console.log(user);
@@ -191,6 +195,14 @@ export default {
                             console.log(this.listaresidentes);
                   }).catch(err => console.log(err));
         },
+        ////obtener todos los eduacatoderes
+         async obtenerEducadores(){
+          await axios.get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
+            .then(res => {
+                    this.listaeducadores = res.data;
+                    console.log(this.listaeducadores);
+            }).catch(err => console.log(err));
+    }
   },
   
    computed:{

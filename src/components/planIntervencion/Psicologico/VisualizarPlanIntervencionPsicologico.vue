@@ -55,7 +55,7 @@
               <v-col cols="12" sm="6" md="6">
                 <v-text-field
                   label="Fecha de Nacimiento"
-                  :value="planIntervencion.residente.fechaNacimiento"
+                  :value="$moment(planIntervencion.residente.fechaNacimiento).format('DD/MM/YYYY')"
                   outlined
                   color="success"
                   readonly

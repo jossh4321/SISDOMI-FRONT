@@ -22,10 +22,8 @@
             ></v-text-field>
             <v-spacer></v-spacer>
             <!-- Dialogo de Registro-->
-            <v-dialog
-            persistent
-            v-model="dialogDialogNuevaFichaIngreso"
-            max-width="350px">
+            <v-dialog  v-model="dialogDialogNuevaFichaIngreso"
+            max-width="880px">
 
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -39,29 +37,30 @@
                   <span>Registrar Ficha Ingreso</span>
                 </v-btn>
               </template>
-                <SeleccionarFichaIngreso @close-dialog-initial="closeDialogNuevaFichaIngreso()"/>
-                
+                <SeleccionarFichaIngreso 
+                :residente ="residente"
+                :listaresidentes="listaresidentes"
+                @close-dialog-initial="closeDialogNuevaFichaIngreso()"
+                ></SeleccionarFichaIngreso >
             </v-dialog>
           </v-toolbar>
         </template>
-         <template v-slot:[`item.fechacreacion`]="{ item }">
-          {{ item.fechacreacion | moment("DD-MM-YYYY") }}
+        <template v-slot:[`item.fechacreacion`]="{ item }">
+          {{ item.fechacreacion | moment("DD/MM/YYYY") }}
         </template>
-        <template ><!-- v-slot:[`item.actions`]="{ item }"-->
+         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
-            <!--<v-btn color="warning"
+          <v-btn  color="warning"
              dark 
-             @click="abrirDialogoModificar(item.id)"
-             >
-            <v-icon left> mdi-pencil </v-icon>
-              <span>ModificarFichaIngreso</span>
+             @click="editItem(item)">
+            <v-icon left> mdi-pencil</v-icon>
+              <span>Actualizar</span>
             </v-btn>
-            <v-btn ,
-            color="info" dark
+            <v-btn color="info" dark
              @click="abrirDialogoConsultar(item.id)">
-              <v-icon left> mdi-briefcase-edit </v-icon>
-              <span>ConsultarFichaIngreso</span>
-            </v-btn> -->
+              <v-icon left> mdi-file-eye </v-icon>
+              <span>Consultar</span>
+            </v-btn> 
           </v-row>
         </template>
       </v-data-table>
@@ -121,11 +120,21 @@ export default {
   },
       async created(){
       this.obtenerfichasIngresos();
-     
+      this.obtenerResidentes();
   },
 
   methods: {
     ...mapMutations(["setFichaIngreso"]),
+    editItem(item) {
+    },
+    detailItem(item) {
+    },
+    closeDialogDetalle() {
+      this.dialogodetalle = false;
+    },
+    closeDialogModificar() {
+      this.dialogoactualizacion = false;
+    },
 
     closeDialogNuevaFichaIngreso()
     {
@@ -140,6 +149,21 @@ export default {
               this.setFichaIngreso(res.data);
             }).catch(err => console.log(err));            
     },
+    ///Obtener residente
+     async loadResidente(idresidente) {
+      var user = {};
+      await axios
+        .get("/Residente/id?id=" + idresidente)
+        .then((res) => {
+          console.log(res);
+          user = res.data;
+          user.fechacreacion = user.fechacreacion.split("T")[0];
+        })
+        .catch((err) => console.log(err));
+      console.log(user);
+      return user;
+    },
+    //obtener todos los residentes
     async obtenerResidentes(){
           await axios.get("/residente/all")
                   .then( x => {
