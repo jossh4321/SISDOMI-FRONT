@@ -180,11 +180,21 @@
                       <v-select              
                         :items="itemModalidad"
                         v-model="itemModalidad.value"
-                        label="Modalidad"            
+                        label="Tipo"            
                         outlined      
                         dense       
                       ></v-select>
                     </v-col>
+                    <v-col>
+                      <v-autocomplete
+                        label="Modalidad"            
+                        outlined      
+                        dense       
+                      ></v-autocomplete>
+                    </v-col>
+                </v-row>
+
+                 <v-row>
                     <v-col>
                       <v-select              
                         :items="itemNivel"
