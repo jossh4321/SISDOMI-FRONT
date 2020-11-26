@@ -15,7 +15,7 @@
           editable
           step="2"
         >
-        Datos Psicológicos
+        Datos Sociales
         </v-stepper-step>
       </v-stepper-header>    
       <v-stepper-items>
@@ -83,13 +83,13 @@
 
                 <v-row>
                     <v-col>
-                        <v-text-field
+                         <v-select              
+                            :items="itemSexo"
+                            v-model="itemSexo.value"
                             label="Sexo"
-                            auto-grow
-                            outlined        
-                            color="#009900"
-                            shaped
-                        ></v-text-field>
+                            outlined      
+                            dense       
+                        ></v-select>
                     </v-col>
                     <v-col>
                         <v-menu
@@ -266,6 +266,11 @@ export default {
     ...mapMutations(["setFichaIngreso","addFichaIngreso"]),
     data() {
         return {
+            itemSexo: [
+                { value: '1', text: 'Femenino'},
+                { value: '2', text: 'Masculino'}
+            ],
+
             datemenu: false,
             step: 1
         }

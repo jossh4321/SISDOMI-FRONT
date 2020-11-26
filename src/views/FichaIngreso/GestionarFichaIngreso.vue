@@ -25,7 +25,7 @@
             <v-dialog
             persistent
             v-model="dialogDialogNuevaFichaIngreso"
-            max-width="880px">
+            max-width="350px">
 
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
