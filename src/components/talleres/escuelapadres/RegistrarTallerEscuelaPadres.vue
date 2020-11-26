@@ -94,17 +94,6 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="6">
                     <v-btn
-                      color="success"
-                      elevation="2"
-                      @click="step = 2"
-                      block
-                    >
-                      <v-icon left>mdi-page-next-outline</v-icon>
-                      <span>Continuar</span>
-                    </v-btn>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-btn
                       color="error"
                       elevation="2"
                       block
@@ -112,6 +101,17 @@
                     >
                       <v-icon left>mdi-close-outline</v-icon>
                       Cerrar
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-btn
+                      color="success"
+                      elevation="2"
+                      @click="step = 2"
+                      block
+                    >
+                      <v-icon left>mdi-page-next-outline</v-icon>
+                      <span>Continuar</span>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -174,7 +174,7 @@
                                     {{ item.item.residente }}
                                 </v-list-item-title>
                                 <v-list-item-subtitle>
-                                    DNI: {{ item.item.numeroDocumento }}
+                                    {{ item.item.numeroDocumento }}
                                 </v-list-item-subtitle>
                                 </v-list-item-content>
                             </template>
@@ -186,6 +186,112 @@
                                 label="Ingrese el parentesco con la residente"
                                 color="#009900"
                             ></v-text-field>
+                        </v-col>
+
+                        <v-col cols="12" sm="6" md="12">
+                          <v-btn color="success" @click="guardarTutores()">
+                            Agregar
+                          </v-btn>
+                        </v-col>
+
+                        <v-col cols="12" sm="12" md="12">
+                          <!--Lista de Tutores-->
+                              <v-card style="width:100%;padding:5px 5px;background-color:#EAEAEA">
+                                <v-card-title style="font-size:22px;padding: 10px 10px;">Lista de Tutores</v-card-title>
+                                <!-- Cabecera -->
+                                <v-card
+                                  elevation="0"
+                                  color="#EAEAEA"
+                                  style="margin-top:5px; margin-bottom:15px"
+                                  height="30"
+                                  >
+                                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                                    <v-col cols="3">
+                                      <article>
+                                        <span style="font-size:16px">Nombre tutor</span>
+                                      </article>
+                                    </v-col>
+                                    <v-col cols="2">
+                                      <article>
+                                        <span style="font-size:16px">N° doc</span>
+                                      </article>
+                                    </v-col>
+                                    <v-col cols="5">
+                                      <article>
+                                        <span style="font-size:16px">Relación con residente</span>
+                                      </article>
+                                    </v-col>
+                                    <v-col align="right">
+                                    </v-col>
+                                  </v-row>
+                                </v-card>
+                                <!-- Cuerpo -->
+                                <template v-if="tallerescuelapadres.contenido.tutores.length > 0">
+                                    <v-card
+                                      tile
+                                      elevation="0"
+                                      color="#FAFAFA"
+                                      style="margin-top:5px"
+                                      height="60"
+                                      v-for="(item, index) in tallerescuelapadres.contenido.tutores"
+                                      :key="index"
+                                      >
+                                      <v-row style="margin-left:10px;heigh:100%;" align="center">
+                                        <v-col :cols="3">
+                                          <article>
+                                            <span style="font-size:16px">{{item.nombre}}</span>
+                                          </article>
+                                        </v-col>
+                                        <v-col :cols="2">
+                                          <article>
+                                            <span style="font-size:16px">{{item.numeroDocumento}}</span>
+                                          </article>
+                                        </v-col>
+                                        <v-col :cols="5">
+                                          <article>
+                                            <span style="font-size:16px">{{item.parentesco}} de {{item.nombreusuaria}}</span>
+                                          </article>
+                                        </v-col>
+                                        <v-col align="right">
+                                          <div style="margin-right:20px">
+                                            <v-btn
+                                            @click="eliminarTutores(item.index)"
+                                            fab x-small 
+                                            dark
+                                            color="red"  > 
+                                              <v-icon dark>
+                                                mdi-minus
+                                              </v-icon>
+                                            </v-btn>
+                                          </div>
+                                        </v-col>
+                                      </v-row>
+                                    </v-card>
+                                </template>
+                              </v-card>
+                        </v-col>
+
+                        <v-col cols="12" sm="6" md="6">
+                          <v-btn
+                            color="error"
+                            elevation="2"
+                            block
+                            @click="closeDialog"
+                          >
+                            <v-icon left>mdi-close-outline</v-icon>
+                            Cerrar
+                          </v-btn>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6">
+                          <v-btn
+                            block
+                            color="success"
+                            elevation="2"
+                            
+                          >
+                            <v-icon left>mdi-content-save-all-outline</v-icon>
+                            <span>Finalizar</span>
+                          </v-btn>
                         </v-col>
                     </v-row>
                 </form>
@@ -205,7 +311,6 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 
 export default {
-  props:["residente","visible"],
   data(){
     return {
       tallerescuelapadres:{
@@ -217,13 +322,7 @@ export default {
         titulo: "",
         descripcion: "",
         contenido:{
-          tutores:[{
-            nombre: "",
-            tipoDocumento: "",
-            numeroDocumento: "",
-            parentesco: "",
-            usuariaid: ""
-          }],
+          tutores:[],
           fechainicio: "",
           fechafin: ""
         }
@@ -235,12 +334,60 @@ export default {
           parentesco: "",
           usuariaid: ""
       },
+      //recordar borrar al programar delete myObject.regex;
       step:1,
       editable:true,
       complete:false,
       datemenuinicio: false,
       datemenufin: false,
+      listResidentes: [],
+      residente: {
+        residente: "",
+        id: "",
+        numeroDocumento: "",
+      },
+      searchResidente: null,
+      loadingSearch: false,
     }
+  },
+  watch: {
+    searchResidente(value) {
+      if (value == null) {
+        this.residente = {
+          residente: "",
+          id: "",
+          numeroDocumento: ""
+        };
+      }
+
+      if (this.listResidentes.length > 0) {
+        return;
+      }
+      if (this.loadingSearch) {
+        return;
+      }
+
+      this.loadingSearch = true;
+
+      axios
+        .get("/residente/all/fase/2")
+        .then((res) => {
+          let residentesMap = res.data.map(function (res) {
+            return {
+              residente: res.nombre + " " + res.apellido,
+              id: res.id,
+              numeroDocumento: res.tipoDocumento + ": " + res.numeroDocumento,
+            };
+          });
+
+          this.listResidentes = residentesMap;
+
+          this.loadingSearch = false;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
   },
   methods:{
     limpiar(){
@@ -249,14 +396,6 @@ export default {
       this.tallerescuelapadres.fechainicio="";
       this.tallerescuelapadres.fechafin="";
     },
-
-    /*
-    //Funcion para cerrar solo el presente modal.
-    //No utilizado
-    cerrarModal() {
-      this.show = false;
-      this.limpiar();
-    },*/
     cerrarTodo() {
       this.$emit("close-dialog-dontsave");
       this.limpiar();
@@ -269,6 +408,36 @@ export default {
     },
     closeDialog() {
       this.$emit("close-dialog");
+    },
+    eliminarTutores(index) {
+      this.tallerescuelapadres.contenido.tutores.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
+    },
+    guardarTutores() {
+      //this.$v.tutor.$touch();
+      //if(!this.$v.tutor.$invalid){
+        let tutorA = { 
+         nombre: this.tutor.nombre,
+         tipoDocumento:this.tutor.tipoDocumento,
+         numeroDocumento:this.tutor.numeroDocumento,
+         parentesco:this.tutor.parentesco,
+         usuariaid:this.residente.id,
+         nombreusuaria:this.residente.residente
+        }//crear tutor variable
+        
+        this.tallerescuelapadres.contenido.tutores.push(tutorA); //añadimos al arreglo principal
+        
+        //limpiar
+        this.tutor.nombre = "";
+        this.tutor.tipoDocumento = "";
+        this.tutor.numeroDocumento = "";
+        this.tutor.parentesco = "";
+        this.residente = null;
+
+        //reiniciamos el estado de la validacion
+        //this.$v.progreso.$reset();
+      //}else{
+      //  console.log("no se guardo el tutor");
+      //}
     },
   },
   computed:{

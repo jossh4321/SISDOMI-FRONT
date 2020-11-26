@@ -26,50 +26,64 @@
                   <v-text-field
                     label="Título"
                     outlined
-                    v-model.trim="planI.contenido.titulo"
+                    v-model.trim="getTitleByFaseResident"
                     required
                     :error-messages="planTituloErrors"
                     @input="$v.planI.contenido.titulo.$touch()"
                     @blur="$v.planI.contenido.titulo.$touch()"
+                    readonly
                     color="success"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
-                  <v-autocomplete
-                    v-model="residente"
-                    :loading="loadingSearch"
-                    :items="residentes"
-                    item-text="residente"
-                    item-value="id"
-                    :search-input.sync="searchResidente"
-                    hide-no-data
-                    hide-selected
-                    label="Nombres y apellidos del residente"
-                    return-object
-                    outlined
-                    :error-messages="residenteIdErrors"
-                    @input="$v.residente.id.$touch()"
-                    @blur="$v.residente.id.$touch()"
-                    color="success"
-                  >
-                    <template v-slot:item="item">
-                      <v-list-item-avatar
-                        color="primary"
-                        class="headline font-weight-light white--text"
-                      >
-                        {{ item.item.residente.charAt(0) }}
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title>{{
-                          item.item.residente
-                        }}</v-list-item-title>
-                        <v-list-item-subtitle
-                          >DNI:
-                          {{ item.item.numeroDocumento }}</v-list-item-subtitle
+                  <template v-if="planI.documentos.length > 0">
+                    <v-text-field
+                      :value="residente.residente"
+                      outlined
+                      readonly
+                      color="success"
+                    >
+                    </v-text-field>
+                  </template>
+                  <template v-else>
+                    <v-autocomplete
+                      v-model="residente"
+                      :loading="loadingSearch"
+                      :items="residentes"
+                      item-text="residente"
+                      item-value="id"
+                      :search-input.sync="searchResidente"
+                      hide-no-data
+                      hide-selected
+                      label="Nombres y apellidos del residente"
+                      return-object
+                      outlined
+                      :error-messages="residenteIdErrors"
+                      @input="$v.residente.id.$touch()"
+                      @blur="$v.residente.id.$touch()"
+                      color="success"
+                    >
+                      <template v-slot:item="item">
+                        <v-list-item-avatar
+                          color="primary"
+                          class="headline font-weight-light white--text"
                         >
-                      </v-list-item-content>
-                    </template>
-                  </v-autocomplete>
+                          {{ item.item.residente.charAt(0) }}
+                        </v-list-item-avatar>
+                        <v-list-item-content>
+                          <v-list-item-title>{{
+                            item.item.residente
+                          }}</v-list-item-title>
+                          <v-list-item-subtitle
+                            >DNI:
+                            {{
+                              item.item.numeroDocumento
+                            }}</v-list-item-subtitle
+                          >
+                        </v-list-item-content>
+                      </template>
+                    </v-autocomplete>
+                  </template>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
@@ -394,7 +408,12 @@
                   </v-alert>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
-                  <v-btn color="success" elevation="2" width="100%">
+                  <v-btn
+                    color="success"
+                    elevation="2"
+                    width="100%"
+                    @click="editPlan"
+                  >
                     <v-icon left>mdi-check</v-icon>
                     Finalizar
                   </v-btn>
@@ -553,7 +572,7 @@ export default {
         };
       }
 
-      if (this.residente.length > 0) {
+      if (this.residentes.length > 1) {
         return;
       }
 
@@ -564,7 +583,7 @@ export default {
       this.loadingSearch = true;
 
       axios
-        .get("/residente/planes/area/psicologico")
+        .get("/residente/planes/area/psicologica")
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
             return {
@@ -582,14 +601,17 @@ export default {
           this.residentes = residentesMap;
 
           const residentePlan = {
-            residente: this.planI.residente.nombre + " " + this.planI.residente.apellido,
+            residente:
+              this.planI.residente.nombre + " " + this.planI.residente.apellido,
             id: this.planI.residente.id,
             numeroDocumento: this.planI.residente.numeroDocumento,
             fechaNacimiento: this.planI.residente.fechaNacimiento,
             sexo: this.planI.residente.sexo,
             motivoIngreso: this.planI.residente.motivoIngreso,
             estado: this.planI.residente.estado,
-            faseActual: this.planI.residente.progreso[this.planI.residente.progreso.length - 1].nombre,
+            faseActual: this.planI.residente.progreso[
+              this.planI.residente.progreso.length - 1
+            ].nombre,
           };
 
           this.residentes.push(residentePlan);
@@ -658,9 +680,64 @@ export default {
         text: text,
       }).then((res) => {
         if (valid) {
-          //this.$emit('register-complete');
+          this.$emit("edit-complete");
         }
       });
+    },
+    async editPlan() {
+      this.$v.$touch();
+
+      if (this.$v.$invalid) {
+        this.messageSweet(
+          "error",
+          "Error al intentar modificar",
+          "Se ha presentado errores en los campos para el registro del plan de Intervención",
+          false
+        );
+      } else {
+        for (let index = 0; index < this.listImages.length; index++) {
+
+          if (
+            this.listImages[index] != null &&
+            (this.listImages[index].dataURL != undefined)
+          ) {
+            let formData = new FormData();
+
+            formData.append("file", this.listImages[index]);
+
+            await axios
+              .post("/media", formData)
+              .then((res) => {
+                this.planI.contenido.firmas[index].urlfirma = res.data;
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+          }
+        }
+
+        let planI = {
+          id: this.planI.id,
+          historialcontenido: [],
+          tipo: this.planI.tipo,
+          contenido: this.planI.contenido,
+          idresidente: this.residente.id,
+        };
+
+        axios
+          .put("/planIntervencion/psicologico", planI)
+          .then((res) => {
+            this.messageSweet(
+              "success",
+              "Actualización del Plan de Intervención",
+              "Se actualizó los datos del plan de intervención de manera satisfactoria",
+              true
+            );
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
   },
   computed: {
@@ -670,6 +747,25 @@ export default {
           ? ""
           : this.$moment(this.residente.fechaNacimiento).format("DD/MM/YYYY")
         : "";
+    },
+    getTitleByFaseResident() {
+      if (this.residente != null) {
+        if (this.residente.faseActual != "") {
+          if (this.residente.faseActual == "acogida") {
+            this.planI.contenido.titulo =
+              "Plan de Intervención psicológica";
+          } else {
+            this.planI.contenido.titulo =
+              "Plan de Intervención Individual " + this.residente.residente;
+          }
+
+          return this.planI.contenido.titulo;
+        } else {
+          return "";
+        }
+      } else {
+        return "";
+      }
     },
     objetivoEspecificoErrors() {
       const errors = [];
