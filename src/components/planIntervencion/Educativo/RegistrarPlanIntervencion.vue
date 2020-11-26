@@ -115,7 +115,7 @@
                     <div class="w-100 d-flex">
                       <v-text-field
                         v-model.trim="objetivoespecificoAux"
-                        label="Ingrese los objetivos específicos"
+                        label="Objetivo específico"
                         @input="$v.objetivoespecificoAux.$touch()"
                         @blur="$v.objetivoespecificoAux.$touch()"
                         :error-messages="errorObjetivoEspecifico"
@@ -361,7 +361,7 @@
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, between } from "vuelidate/lib/validators";
 import RegistroMultiple from "@/components/planIntervencion/General/RegistroMultiple.vue";
 
@@ -381,7 +381,7 @@ export default {
         idresidente: "",
         fase: "",
         estado: "creado",
-        creadordocumento: "5f9e4cdae4655cf92eaa4d5b",
+        creadordocumento: "",
         contenido: {
           car: "",
           edad: 0,
@@ -395,8 +395,8 @@ export default {
           firmas: [
             {
               urlfirma: "",
-              nombre: "Piero Erickson Lavado Cervantes",
-              cargo: "Educador",
+              nombre: "",
+              cargo: "",
             },
           ],
           codigoDocumento: "",
@@ -426,6 +426,7 @@ export default {
         residente: "",
         id: "",
         faseActual: "",
+        numeroDocumento: ""
       },
       searchResidente: null,
       loadingSearch: false,
@@ -507,6 +508,7 @@ export default {
         this.residente = {
           residente: "",
           id: "",
+          numeroDocumento: "",
           faseActual: ""
         };
       }
@@ -563,11 +565,15 @@ export default {
             .post("/Media", formData)
             .then((res) => {
               this.planI.contenido.firmas[index].urlfirma = res.data;
+              this.planI.contenido.firmas[index].nombre = this.user.usuario;
+              this.planI.contenido.firmas[index].cargo = this.user.rol;
             })
             .catch((err) => {
               console.error(err);
             });
         }
+
+        this.planI.creadordocumento = this.user.id;
 
         this.planI.idresidente = this.residente.id;
         this.planI.fase = this.residente.faseActual;
@@ -618,7 +624,7 @@ export default {
       });
     },
     addObjEspecifico() {
-      if (this.objetivoespecificoAux != "") {
+      if (this.objetivoespecificoAux != "" && !this.$v.objetivoespecificoAux.$invalid) {
         this.planI.contenido.objetivoEspecificos.push(
           this.objetivoespecificoAux
         );
@@ -626,25 +632,25 @@ export default {
       }
     },
     addAspecto() {
-      if (this.aspectoAux != "") {
+      if (this.aspectoAux != "" && !this.$v.aspectoAux.$invalid) {
         this.planI.contenido.aspectosIntervencion.push(this.aspectoAux);
         this.aspectoAux = "";
       }
     },
     addActividad() {
-      if (this.actividadAux != "") {
+      if (this.actividadAux != "" && !this.$v.actividadAux.$invalid) {
         this.planI.contenido.estrategias.push(this.actividadAux);
         this.actividadAux = "";
       }
     },
     addIndicador() {
-      if (this.indicadorAux != "") {
+      if (this.indicadorAux != "" && !this.$v.indicadorAux.$invalid) {
         this.planI.contenido.indicadores.push(this.indicadorAux);
         this.indicadorAux = "";
       }
     },
     addMeta() {
-      if (this.metaAux != "") {
+      if (this.metaAux != "" && !this.$v.metaAux.$invalid) {
         this.planI.contenido.metas.push(this.metaAux);
         this.metaAux = "";
       }
@@ -655,6 +661,7 @@ export default {
   },
   computed: {
     ...mapState(["residentes"]),
+    ...mapGetters(["user"]),
     verifyColor() {
       return "red";
     },

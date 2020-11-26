@@ -472,6 +472,8 @@ import {
   maxLength,
 } from "vuelidate/lib/validators";
 
+import { mapGetters } from "vuex";
+
 export default {
   name: "registrar-plan-intervencion-psicologico",
   data() {
@@ -498,9 +500,9 @@ export default {
       planResidentePsicologico: {
         tipo: "PlanIntervencionIndividual",
         historialcontenido: [],
-        creadordocumento: "5f9e4cdae4655cf92eaa4d5b",
+        creadordocumento: "",
         fechacreacion: new Date(),
-        area: "psicologico",
+        area: "psicologica",
         fase: "",
         estado: "creado",
         idresidente: "",
@@ -518,8 +520,8 @@ export default {
           firmas: [
             {
               urlfirma: "",
-              nombre: "Piero Lavado Cervantes",
-              cargo: "director",
+              nombre: "",
+              cargo: "",
             },
           ],
         },
@@ -529,6 +531,7 @@ export default {
       residente: {
         residente: "",
         id: "",
+        numeroDocumento: "",
         fechaNacimiento: "",
         sexo: "",
         motivoIngreso: "",
@@ -608,6 +611,7 @@ export default {
         this.residente = {
           residente: "",
           id: "",
+          numeroDocumento: "",
           fechaNacimiento: "",
           sexo: "",
           motivoIngreso: "",
@@ -626,7 +630,7 @@ export default {
       this.loadingSearch = true;
 
       axios
-        .get("/residente/planes/area/psicologico")
+        .get("/residente/planes/area/psicologica")
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
             return {
@@ -725,11 +729,16 @@ export default {
             .then((res) => {
               this.planResidentePsicologico.contenido.firmas[index].urlfirma =
                 res.data;
+              this.planResidentePsicologico.contenido.firmas[index].nombre = this.user.usuario;
+              this.planResidentePsicologico.contenido.firmas[index].cargo = this.user.rol;
+              
             })
             .catch((err) => {
               console.error(err);
             });
         }
+
+        this.planResidentePsicologico.creadordocumento = this.user.id;
         this.planResidentePsicologico.idresidente = this.residente.id;
         this.planResidentePsicologico.fase = this.residente.faseActual;
         let planResidentePsicologico = {
@@ -764,6 +773,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(["user"]),
     formatDateBorn() {
       return this.residente != null
         ? this.residente.fechaNacimiento == ""
@@ -772,26 +782,23 @@ export default {
         : "";
     },
     getTitleByFaseResident() {
-        if(this.residente != null) {
-            if(this.residente.faseActual != "") {
+      if (this.residente != null) {
+        if (this.residente.faseActual != "") {
+          if (this.residente.faseActual == "acogida") {
+            this.planResidentePsicologico.contenido.titulo =
+              "Plan de Intervención psicológica";
+          } else {
+            this.planResidentePsicologico.contenido.titulo =
+              "Plan de Intervención Individual " + this.residente.residente;
+          }
 
-              if(this.residente.faseActual == "acogida") {
-                this.planResidentePsicologico.contenido.titulo = "Plan de Intervención psicológica";
-              }
-              else {
-                this.planResidentePsicologico.contenido.titulo = "Plan de Intervención Individual " + this.residente.residente;
-              }
-
-              return this.planResidentePsicologico.contenido.titulo;
-              
-            }
-            else {
-              return "";
-            }
-        }
-        else {
+          return this.planResidentePsicologico.contenido.titulo;
+        } else {
           return "";
         }
+      } else {
+        return "";
+      }
     },
     objetivoEspecificoErrors() {
       const errors = [];

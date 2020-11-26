@@ -89,6 +89,17 @@
         </ActualizarInformeEducativoEvolutivo>
       </v-dialog>
       <v-dialog persistent
+                v-model="dialogoISEactualizacion" 
+                max-width="880px">
+        <ActualizarInformeSocialEvolutivo
+          v-if="dialogoISEactualizacion"
+          :informe="informe"
+          :titulo="titulo"
+          :listaresidentes="listaresidentes"
+          @close-dialog-update="closeDialogActualizar()">
+        </ActualizarInformeSocialEvolutivo>
+      </v-dialog>
+      <v-dialog persistent
                 v-model="dialogoIEIdetalle" 
                 max-width="880px">
         <DetalleInformeEducativoInicial
@@ -126,6 +137,7 @@ import axios from "axios";
 import SeleccionarInforme from "@/components/informes/SeleccionarInforme.vue";
 import ActualizarInformeEducativoInicial from "@/components/informes/ActualizarInformeEducativoInicial.vue";
 import ActualizarInformeEducativoEvolutivo from "@/components/informes/ActualizarInformeEducativoEvolutivo.vue";
+import ActualizarInformeSocialEvolutivo from "@/components/informes/ActualizarInformeSocialEvolutivo.vue";
 import DetalleInformeEducativoInicial from "@/components/informes/DetalleInformeEducativoInicial.vue";
 import DetalleInformeEducativoEvolutivo from "@/components/informes/DetalleInformeEducativoEvolutivo.vue";
 import DetalleInformeSocialInicial from "@/components/informes/DetalleInformeSocialInicial.vue";
@@ -136,6 +148,7 @@ export default {
     SeleccionarInforme,
     ActualizarInformeEducativoInicial,
     ActualizarInformeEducativoEvolutivo,
+    ActualizarInformeSocialEvolutivo,
     DetalleInformeEducativoInicial,
     DetalleInformeEducativoEvolutivo,
     DetalleInformeSocialInicial
@@ -162,6 +175,7 @@ export default {
       dialogoregistro: false,
       dialogoIEIactualizacion: false,
       dialogoIEEactualizacion: false,
+      dialogoISEactualizacion: false,
       dialogoIEIdetalle:false,
       dialogoIEEdetalle:false,
       dialogoISIdetalle:false,
@@ -181,6 +195,7 @@ export default {
     closeDialogActualizar() {
       this.dialogoIEIactualizacion = false;
       this.dialogoIEEactualizacion = false;
+      this.dialogoISEactualizacion = false;
     },
     closeDialogDetalle() {
       this.dialogoIEIdetalle = false;
@@ -204,16 +219,28 @@ export default {
     },async abrirDialogoActualizar(idinforme, tipo){
         console.log("El resultado de esta cagada es:"+ idinforme + "  "+ tipo);
         this.informe = await this.loadInformeModificacion(idinforme);
-        if(tipo === "Informe Educativo Inicial"){
-            this.dialogoIEIactualizacion = !this.dialogoIEIactualizacion;
-        }else if(tipo === "Informe Educativo Evolutivo"){
-            this.titulo = "Modificar Informe Educativo Evolutivo";
-            this.dialogoIEEactualizacion = !this.dialogoIEEactualizacion; 
-        }else if(tipo === "Informe Educativo Final"){
-            this.titulo = "Modificar Informe Educativo Final";
-            this.dialogoIEEactualizacion = !this.dialogoIEEactualizacion;
-        }else{
-          console.log("Ayuda mi codigo no funciona :c")
+        switch(tipo){
+                case "Informe Educativo Inicial":
+                    this.dialogoIEIactualizacion = !this.dialogoIEIactualizacion;
+                    break;
+                case "Informe Educativo Evolutivo":
+                    this.titulo = "Modificar Informe Educativo Evolutivo";
+                    this.dialogoIEEactualizacion = !this.dialogoIEEactualizacion; 
+                    break;
+                case "Informe Educativo Final":
+                    this.titulo = "Modificar Informe Educativo Final";
+                    this.dialogoIEEactualizacion = !this.dialogoIEEactualizacion;
+                    break;
+                case "Informe Social Evolutivo":
+                    this.titulo = "Modificar Informe Social Evolutivo";
+                    this.dialogoISEactualizacion = !this.dialogoISEactualizacion;
+                    break;
+                case "Informe Social Final":
+                    this.titulo = "Modificar Informe Social Final";
+                    this.dialogoISEactualizacion = !this.dialogoISEactualizacion;
+                    break;                
+                default: 
+                   console.log("Ayuda mi codigo no funciona :c")
         }
     },
     async abrirDialogoDetalle(idinforme, tipo){
