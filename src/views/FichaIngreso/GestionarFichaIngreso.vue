@@ -40,6 +40,7 @@
                 <SeleccionarFichaIngreso 
                 :residente ="residente"
                 :listaresidentes="listaresidentes"
+                :listaeducadores="listaeducadores"
                 @close-dialog-initial="closeDialogNuevaFichaIngreso()"
                 ></SeleccionarFichaIngreso >
             </v-dialog>
@@ -116,11 +117,13 @@ export default {
       fichaIngreso: [],
       dialogDialogNuevaFichaIngreso :false,
        listaresidentes: [],
+       listaeducadores:[],
     };
   },
       async created(){
       this.obtenerfichasIngresos();
       this.obtenerResidentes();
+      this.obtenerEducadores();
   },
 
   methods: {
@@ -171,6 +174,14 @@ export default {
                             console.log(this.listaresidentes);
                   }).catch(err => console.log(err));
         },
+        ////obtener todos los eduacatoderes
+         async obtenerEducadores(){
+          await axios.get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
+            .then(res => {
+                    this.listaeducadores = res.data;
+                    console.log(this.listaeducadores);
+            }).catch(err => console.log(err));
+    }
 
   },computed:{
     ...mapState(["fichaingreso"]),

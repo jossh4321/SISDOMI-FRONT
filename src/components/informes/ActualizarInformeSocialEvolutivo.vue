@@ -227,7 +227,89 @@
                         >
                         </vue-dropzone>
                       </div>
+                    <v-card
+                      color="#FAFAFA"
+                      style="margin-top:5px"
+                      height="60"
+                      v-for="(item, index) in informe.contenido.anexos"
+                      :key="index"
+                    >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8">
+                        <article>
+                          <img
+                            style="margin-right:5px;width:6% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/2991/2991112.svg"
+                            alt="imagen documento"
+                          />
+                          <span style="font-size:18px">
+                            {{ item.titulo }}</span
+                          >
+                        </article>
+                      </v-col>
+                      <v-col :cols="2" align="center">
+                        <template>
+                            <v-btn
+                              fab
+                              icon=""
+                              x-small
+                              dark
+                              color="#EAEAEA"
+                              @click="verAnexo(index)"
+                            >
+                              <img
+                                style="width:25% "
+                                src="https://www.flaticon.es/svg/static/icons/svg/709/709612.svg"
+                                alt="visualizar"
+                              />
+                            </v-btn>
+                          </template>
+                      </v-col>
+                      <v-col :cols="2" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarAnexo(index)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
                 </v-card>
+
+                <v-dialog
+                          v-model="dialogVistaPreviaAnexos"
+                          persistent
+                          max-width="600px"
+                        >
+                          <v-card align="center">
+                            <v-card-title>
+                              <span class="headline">Vista previa</span>
+                            </v-card-title>
+                            <v-card-text>
+                              <iframe
+                              :src= pdf
+                              width=100% height=600></iframe>
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="cerrarVistaPreviaAnexo()"
+                              >
+                                Cerrar
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                </v-dialog>
 
                 <v-card
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
@@ -348,11 +430,19 @@
                             </v-card-title>
                             <v-card-text>
                               <img
-                                width="100%"
-                                height="100%"
-                                :src="'data:image/jpeg;base64,' + imagen"
-                                alt=""
-                              />
+                              v-if="imagen.includes('http')"
+                              width="100%"
+                              height="100%"
+                              :src="imagen"
+                              alt=""
+                            />
+                            <img
+                              v-else
+                              width="100%"
+                              height="100%"
+                              :src="'data:image/jpeg;base64,' + imagen"
+                              alt=""
+                            />
                             </v-card-text>
                             <v-card-actions>
                               <v-spacer></v-spacer>
@@ -369,7 +459,7 @@
 
                 <v-row>
                   <v-col>
-                  <v-btn color="warning" block>
+                  <v-btn color="warning" block @click="actualizarInforme()">
                     <v-icon left>mdi-briefcase-edit</v-icon>
                     <span>Actualizar Informe</span>
                   </v-btn>
@@ -406,6 +496,7 @@ export default {
       fileList: [],
       datemenu: false,
       dialogVistaPreviaFirma: false,
+      dialogVistaPreviaAnexos: false,
       step: 1,
       dropzoneOptions: {
         url: "https://httpbin.org/post",
@@ -434,13 +525,14 @@ export default {
       urlfirma: "",
       firmas: { urlfirma: "", nombre: "", cargo: "" },
       imagen: "",
+      pdf: "",
     };
   },
   async created() {
     this.cargarRecomendaciones()
   },
   methods: {
-    ...mapMutations(["addInforme"]),
+    ...mapMutations(["replaceInforme"]),
     async sendPDFFiles() {
       let listaTitulos = [];
       let listaanexos = this.fileList;
@@ -465,28 +557,21 @@ export default {
       }
       console.log(this.informe.contenido.anexos);
     },
-    async registrarInforme() {
+    async actualizarInforme() {
       await this.sendPDFFiles();
-      if (this.titulo === "Registrar Informe Social Evolutivo") {
-        this.informe.tipo = "InformeSocialEvolutivo";
-      } else {
-        this.informe.tipo = "InformeSocialFinal";
-      }
-      console.log(this.informe);
       this.$v.$touch();
       if (this.$v.$invalid) {
         console.log("hay errores");
         this.mensaje(
-          "Error",
+          "error",
           "..Oops",
           "Se encontraron errores en el formulario",
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
         console.log("no hay errores");
-        console.log(this.informe);
         await axios
-          .post("/informe/informese", this.informe)
+          .put("/informe/informese", this.informe)
           .then((res) => {
             this.informe = res.data;
             console.log(this.listaresidentes);
@@ -501,17 +586,15 @@ export default {
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
-            console.log("HOLA");
-            console.log(info);
-            this.addInforme(info);
+            this.replaceInforme(info);
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
         await this.mensaje(
           "success",
-          "Listo",
-          "Informe registrado Satisfactoriamente",
-          "<strong>Se redirigira a la interfaz de gestión<strong>"
+          "listo",
+          "Informe Actualizado Satisfactoriamente",
+          "<strong>Se redirigira a la Interfaz de Gestión<strong>"
         );
       }
     },
@@ -565,6 +648,17 @@ export default {
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
+    },
+    eliminarAnexo(index) {
+      this.informe.contenido.anexos.splice(index, 1);
+    },
+    verAnexo(index) {
+      this.pdf = this.informe.contenido.anexos[index].url;
+      console.log(this.pdf),
+      this.dialogVistaPreviaAnexos = true;
+    },
+    cerrarVistaPreviaAnexo() {
+      this.dialogVistaPreviaAnexos = false;
     },
     afterSuccess(file, response) {
       this.fileList.push(file);

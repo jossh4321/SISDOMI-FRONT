@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="card">
-      <v-card-title> Gestionar Acta de Intervención </v-card-title>
+      <v-card-title> Gestionar Acta de Externamiento </v-card-title>
       <v-data-table
         :headers="headers"
         :items="actaI"
@@ -10,7 +10,7 @@
       >
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>Actas de Intervención actuales</v-toolbar-title>
+            <v-toolbar-title>Actas de Externamiento actuales</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-text-field
@@ -34,9 +34,9 @@
                   <span>Registrar nueva Acta</span>
                 </v-btn>
               </template>
-           <!--   <RegistrarPlanIntervencion
+             <RegistrarPlanIntervencion v-if="dialogoregistro" :actaI="actaI" @close-dialog-detail="closeDialogRegistrar()">
                 @close-dialog="closeDialog"
-              ></RegistrarPlanIntervencion>-->
+              ></RegistrarPlanIntervencion>
             </v-dialog>
           </v-toolbar>
         </template>
@@ -44,7 +44,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
              <v-dialog v-model="dialogoactualizacion" max-width="880px">
-               <ActualizarActaIntervencion v-if="dialogoactualizacion" :actaIntervencion="actaIntervencion" @close-dialog-detail="closeDialogActualizar()">
+               <ActualizarActaIntervencion v-if="dialogoactualizacion" :actaI="actaI" @close-dialog-detail="closeDialogActualizar()">
           </ActualizarActaIntervencion></v-dialog> -->
             <v-btn color="warning" dark @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
@@ -89,7 +89,7 @@ export default {
       planA: [],
       headers: [
         {
-          text: "Nombre Acta Intervención",
+          text: "Nombre Acta Externamiento",
           align: "start",
           sortable: false,
           value: "nombre",
@@ -98,22 +98,22 @@ export default {
         { text: "Fecha registro", value: "fechaRegistro" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-     planesI: [
+      actaI: [
         {
-          nombre: "PlanI_Edu_Xiomara_1",
+          nombre: "ActaI_Edu_Xiomara_1",
           usuaria: "Xiomara Paredes Guerra",
           fechaRegistro: "15/09/2019",
           id: "5facd2e1bd5f87ed3632aa12",
         },
         {
-          nombre: "PlanI_Psico_Xiomara_1",
+          nombre: "ActaI_Psico_Xiomara_1",
           usuaria: "Xiomara Paredes Guerra",
           fechaRegistro: "16/09/2019",
           id:2
 
         },
         {
-          nombre: "PlanI_Edu_Marlyn_1",
+          nombre: "ActaI_Edu_Marlyn_1",
           usuaria: "Marlyn Candela Peña",
           fechaRegistro: "20/10/2019",
           id:3
@@ -125,9 +125,7 @@ export default {
       dialogoactualizacion: false
     };
   },
- async created(){
-    this.obtenerPlanInterve()
- },
+
 
   methods: {
      ...mapMutations(["setPlanInterve"]),

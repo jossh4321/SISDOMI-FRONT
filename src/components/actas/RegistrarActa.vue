@@ -1,6 +1,6 @@
 <template>
     <v-card>
-    <v-card-title class="justify-center">Visualizar Acta de intervención</v-card-title>
+    <v-card-title class="justify-center">Visualizar Acta de externamiento</v-card-title>
 
     <v-stepper v-model="step">
     <v-stepper-header>
@@ -23,7 +23,7 @@
 
     <v-stepper-items>
       <v-stepper-content step="1">
-        <div class="container-planI">
+        <div class="container-actaI">
       <form>
         <v-text-field
           v-model="planI.nombreplan"
@@ -73,7 +73,7 @@
       <form>
         <br />
         <v-textarea
-          v-model="planI.casos_problemas"
+          v-model="actaI.casos_problemas"
           label="Ingrese nuevo nombre de Plan"
           auto-grow
           outlined
@@ -85,7 +85,7 @@
         ></v-textarea>
 
         <v-textarea
-         v-model="planI.actividades_estrategias"
+         v-model="actaI.actividades_estrategias"
           label="Ingrese nuevo nombre-dni de Usuario"
           auto-grow
           outlined
@@ -96,7 +96,7 @@
         ></v-textarea>
 
         <v-textarea
-          v-model="planI.indicadores"
+          v-model="actaI.indicadores"
           label="Ingrese nuevo objetivo general"
           auto-grow
           outlined
@@ -107,7 +107,7 @@
         ></v-textarea>
 
         <v-textarea
-         v-model="planI.meta"
+         v-model="actaI.meta"
           label="Ingrese nuevos objetivos especificos"
           auto-grow
           outlined
@@ -193,7 +193,7 @@ export default {
 }
 </script>
 <style  scoped>
-.container-planI {
+.container-actaI {
   margin: 15px;
 }
 

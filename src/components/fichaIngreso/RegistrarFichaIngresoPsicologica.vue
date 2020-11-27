@@ -1,7 +1,7 @@
 <template>
 <v-dialog v-model="show" max-width="65%">
     <v-card >
-      <v-card-title class="justify-center">Resgistrar Ficha de Ingreso Psicológica</v-card-title>
+      <v-card-title class="justify-center">Registrar Ficha de Ingreso Psicológica</v-card-title>
       <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step 
