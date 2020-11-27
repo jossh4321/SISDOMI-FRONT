@@ -34,8 +34,7 @@
                   filled
                   chips
                   dense
-                  outlined  
-                  v-model="fichasSocial.idresidente"        
+                  outlined          
                   color="#009900"
                   label="Residente"
                   item-text="nombre"
@@ -67,53 +66,6 @@
                     </v-list-item-content>
                 </template>
                 </v-autocomplete> 
-                <v-autocomplete
-                  :items="listaeducadores"
-                  filled
-                  chips
-                  dense
-                  outlined
-                  v-model="fichasSocial.creadordocumento"
-                  color="#009900"
-                  label="Educador responsable"
-                  item-text="usuario"
-                  item-value="id"
-                  
-                >
-                  <template v-slot:selection="data">
-                    <v-chip
-                      v-bind="data.attrs"
-                      :input-value="data.selected"
-                      style="margin-top:5px"
-                    >
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size:12px">RT</span>
-                      </v-avatar>
-                      {{ data.item.datos.nombre }}
-                    </v-chip>
-                  </template>
-                  <template v-slot:item="data">
-                    <template>
-                      <v-list-item-avatar>
-                        <v-avatar left color="#b3b3ff" size="24">
-                          <span style="font-size:12px">UC</span>
-                        </v-avatar>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          >Nombre completo: {{ data.item.datos.nombre }}
-                          {{ data.item.datos.apellido }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle
-                          >Nro. Documento:
-                          {{
-                            data.item.datos.numerodocumento
-                          }}</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </template>
-                  </template>
-                </v-autocomplete>
 
                 <v-row>
                     <v-col>
@@ -509,7 +461,10 @@ import moment from 'moment'
 
 export default {
         
-    props:["listaresidentes","visible","residenteSeleccionado","listaeducadores"],
+    props:["listaresidentes","visible","residenteSeleccionado"],
+    components: {
+      vueDropzone: vue2Dropzone,
+    },
     ...mapMutations(["setFichaIngreso","addFichaIngreso"]),
     data() {
         return {
