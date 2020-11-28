@@ -4,12 +4,16 @@
     <v-card>
       <v-stepper v-model="step">
         <v-stepper-header>
-          <v-stepper-step :complete="complete" :editable="editable" step="1">
+          <v-stepper-step editable step="1">
             Datos generales de taller
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step editable step="2">
             Participantes
+          </v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step editable step="3">
+            Firma
           </v-stepper-step>
         </v-stepper-header>
         <v-stepper-items>
@@ -46,7 +50,7 @@
                     >
                     <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                        v-model="tallerescuelapadres.fechainicio"
+                        v-model="tallerescuelapadres.contenido.fechainicio"
                         style="margin-top_5px"
                         color="#009900"
                         prepend-icon="mdi-calendar"
@@ -56,7 +60,7 @@
                         ></v-text-field>
                     </template>
                     <v-date-picker
-                        v-model="tallerescuelapadres.fechainicio"
+                        v-model="tallerescuelapadres.contenido.fechainicio"
                         @input="menu1 = false"
                         locale="es-es"
                     ></v-date-picker>
@@ -123,179 +127,271 @@
             <!--COMPONENTE PARA AGREGAR TUTORES-->
             <div class="container-user">
                 <form>
-                    <v-row>
-                        <v-col cols="12" sm="12" md="12">
-                            <v-text-field
-                                v-model="tutor.nombre"
-                                label="Ingrese los nombres y apellidos del tutor"
-                                color="#009900"
-                            ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="6">
-                            <v-select
-                                :items="['DNI', 'Pasaporte', 'Carnet Extranjeria']"
-                                label="Ingrese el Tipo de Documento"
-                                dense
-                                outlined
-                                v-model="tutor.tipoDocumento"
-                                color="#009900"
-                            ></v-select>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="6">
-                            <v-text-field
-                                v-model="tutor.numeroDocumento"
-                                label="Ingrese el  N°documento"
-                                color="#009900"
-                            ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="6">
-                            <v-autocomplete
-                            label="Nombres y apellidos del residente"
-                            outlined
-                            v-model="residente"
-                            :loading="loadingSearch"
-                            :search-input.sync="searchResidente"
-                            :items="listResidentes"
-                            item-text="residente"
-                            item-value="id"
-                            hide-no-data
-                            hide-selected
-                            return-object
-                            >
-                            <template v-slot:item="item">
-                                <v-list-item-avatar
-                                color="primary"
-                                class="headline font-weight-light white--text"
+                        <!--Lista de Tutores-->
+                        <v-card style="padding:5px 5px;background-color:#EAEAEA">
+                          <v-card-title>
+                            <v-col :cols="8">
+                              Lista de Tutores
+                            </v-col>
+                            <v-col :cols="4" align="right">
+                              <v-btn
+                                fab
+                                small
+                                dark
+                                color="green"
+                                @click="modalRegistrarTutores()"
+                              >
+                                <v-icon dark>
+                                  mdi-plus
+                                </v-icon>
+                              </v-btn>
+                              <v-dialog
+                                  v-model="dialogAgregarTutores"
+                                  persistent
+                                  max-width="600px"
                                 >
-                                {{ item.item.residente.charAt(0) }}
-                                </v-list-item-avatar>
-                                <v-list-item-content>
-                                <v-list-item-title>
-                                    {{ item.item.residente }}
-                                </v-list-item-title>
-                                <v-list-item-subtitle>
-                                    {{ item.item.numeroDocumento }}
-                                </v-list-item-subtitle>
-                                </v-list-item-content>
-                            </template>
-                            </v-autocomplete>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="6">
-                            <v-text-field
-                                v-model="tutor.parentesco"
-                                label="Ingrese el parentesco con la residente"
-                                color="#009900"
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="6" md="12">
-                          <v-btn color="success" @click="guardarTutores()">
-                            Agregar
-                          </v-btn>
-                        </v-col>
-
-                        <v-col cols="12" sm="12" md="12">
-                          <!--Lista de Tutores-->
-                              <v-card style="width:100%;padding:5px 5px;background-color:#EAEAEA">
-                                <v-card-title style="font-size:22px;padding: 10px 10px;">Lista de Tutores</v-card-title>
-                                <!-- Cabecera -->
-                                <v-card
-                                  elevation="0"
-                                  color="#EAEAEA"
-                                  style="margin-top:5px; margin-bottom:15px"
-                                  height="30"
-                                  >
-                                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                                    <v-col cols="3">
-                                      <article>
-                                        <span style="font-size:16px">Nombre tutor</span>
-                                      </article>
-                                    </v-col>
-                                    <v-col cols="2">
-                                      <article>
-                                        <span style="font-size:16px">N° doc</span>
-                                      </article>
-                                    </v-col>
-                                    <v-col cols="5">
-                                      <article>
-                                        <span style="font-size:16px">Relación con residente</span>
-                                      </article>
-                                    </v-col>
-                                    <v-col align="right">
-                                    </v-col>
-                                  </v-row>
-                                </v-card>
-                                <!-- Cuerpo -->
-                                <template v-if="tallerescuelapadres.contenido.tutores.length > 0">
-                                    <v-card
-                                      tile
-                                      elevation="0"
-                                      color="#FAFAFA"
-                                      style="margin-top:5px"
-                                      height="60"
-                                      v-for="(item, index) in tallerescuelapadres.contenido.tutores"
-                                      :key="index"
-                                      >
-                                      <v-row style="margin-left:10px;heigh:100%;" align="center">
-                                        <v-col :cols="3">
-                                          <article>
-                                            <span style="font-size:16px">{{item.nombre}}</span>
-                                          </article>
+                                  <v-card align="center">
+                                    <v-card-title>
+                                      <span class="headline">Datos Tutores</span>
+                                    </v-card-title>
+                                    <v-card-text>
+                                      <v-textarea
+                                        label="Nombres y apellidos del tutor"
+                                        v-model="tutor.nombre"
+                                        outlined
+                                        color="#009900"
+                                        rows="1"
+                                        auto-grow
+                                        :readonly="isDisabled"
+                                      ></v-textarea>
+                                      
+                                      <v-row>
+                                        <v-col>
+                                          <v-select
+                                            :items="['DNI', 'Pasaporte', 'Carnet Extranjeria']"
+                                            label="Ingrese el Tipo de Documento"
+                                            dense
+                                            outlined
+                                            v-model="tutor.tipoDocumento"
+                                            :readonly="isDisabled"
+                                            color="#009900"
+                                          ></v-select>
                                         </v-col>
-                                        <v-col :cols="2">
-                                          <article>
-                                            <span style="font-size:16px">{{item.numeroDocumento}}</span>
-                                          </article>
-                                        </v-col>
-                                        <v-col :cols="5">
-                                          <article>
-                                            <span style="font-size:16px">{{item.parentesco}} de {{item.nombreusuaria}}</span>
-                                          </article>
-                                        </v-col>
-                                        <v-col align="right">
-                                          <div style="margin-right:20px">
-                                            <v-btn
-                                            @click="eliminarTutores(item.index)"
-                                            fab x-small 
-                                            dark
-                                            color="red"  > 
-                                              <v-icon dark>
-                                                mdi-minus
-                                              </v-icon>
-                                            </v-btn>
-                                          </div>
+                                        <v-col>
+                                          <v-textarea
+                                            label=" N° documento"
+                                            v-model="tutor.numeroDocumento"
+                                            outlined
+                                            color="#009900"
+                                            rows="1"
+                                            auto-grow
+                                            :readonly="isDisabled"
+                                          ></v-textarea>
                                         </v-col>
                                       </v-row>
-                                    </v-card>
-                                </template>
-                              </v-card>
-                        </v-col>
 
-                        <v-col cols="12" sm="6" md="6">
-                          <v-btn
-                            color="error"
-                            elevation="2"
-                            block
-                            @click="closeDialog"
-                          >
-                            <v-icon left>mdi-close-outline</v-icon>
-                            Cerrar
-                          </v-btn>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="6">
-                          <v-btn
-                            block
-                            color="success"
-                            elevation="2"
-                            
-                          >
-                            <v-icon left>mdi-content-save-all-outline</v-icon>
-                            <span>Finalizar</span>
-                          </v-btn>
-                        </v-col>
-                    </v-row>
+                                      <v-autocomplete
+                                        label="Nombres y apellidos del residente"
+                                        outlined
+                                        v-model="residente"
+                                        :loading="loadingSearch"
+                                        :search-input.sync="searchResidente"
+                                        :items="listResidentes"
+                                        item-text="residente"
+                                        item-value="id"
+                                        hide-no-data
+                                        hide-selected
+                                        return-object
+                                        >
+                                        <template v-slot:item="item">
+                                            <v-list-item-avatar
+                                            color="primary"
+                                            class="headline font-weight-light white--text"
+                                            >
+                                            {{ item.item.residente.charAt(0) }}
+                                            </v-list-item-avatar>
+                                            <v-list-item-content>
+                                            <v-list-item-title>
+                                                {{ item.item.residente }}
+                                            </v-list-item-title>
+                                            <v-list-item-subtitle>
+                                                {{ item.item.numeroDocumento }}
+                                            </v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </template>
+                                      </v-autocomplete>
+
+                                      <v-textarea
+                                        label="Parentesco con la residente"
+                                        v-model="tutor.parentesco"
+                                        outlined
+                                        color="#009900"
+                                        rows="1"
+                                        auto-grow
+                                        :readonly="isDisabled"
+                                      ></v-textarea>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                      <v-spacer></v-spacer>
+                                      <v-btn 
+                                        v-if="accion == 'registrar'"
+                                        color="success" @click="guardarTutores()"
+                                        >
+                                        Agregar
+                                      </v-btn>
+                                      <v-btn 
+                                        v-if="accion == 'actualizar'"
+                                        color="yellow" @click="actualizarTutores(indice)"
+                                        >
+                                        Actualizar
+                                      </v-btn>
+                                      <v-btn
+                                        color="red" @click="cerrarAgregarTutores()"
+                                      >
+                                        Cerrar
+                                      </v-btn>
+                                    </v-card-actions>
+                                  </v-card>
+                                </v-dialog>
+                            </v-col>
+                          </v-card-title>
+
+                          <!-- Cuerpo -->
+                          <v-card-text style="background-color:#FAFAFA">
+                            <v-row>
+                              <v-col><h3>Nombre</h3></v-col>
+                              <v-col><h3>Nro. Documento</h3></v-col>
+                              <v-col><h3>Parentesco</h3></v-col>
+                              <v-col><h3>Acciones</h3></v-col>
+                            </v-row>
+                            <div
+                              v-for="(item, index) in tallerescuelapadres.contenido.tutores"
+                              :key="index"
+                            >
+                              <v-row>
+                                <v-col>{{item.nombre}}</v-col>
+                                <v-col>{{ item.numeroDocumento }}</v-col>
+                                <v-col>{{item.parentesco}} - {{item.usuaria.residente}}</v-col>
+                                <v-col>
+                                  <v-row style="padding:0;margin:0">
+                                    <v-col style="padding:0;margin:0">
+                                      <v-btn
+                                        fab
+                                        x-small
+                                        dark
+                                        color="yellow"
+                                        @click="modalActualizar(index)"
+                                      >
+                                        <v-icon dark>
+                                          mdi-pen
+                                        </v-icon>
+                                      </v-btn>
+                                    </v-col>
+                                    <v-col style="padding:0;margin:0">
+                                      <v-btn
+                                        fab
+                                        x-small
+                                        dark
+                                        color="blue"
+                                        @click="modalConsultar(index)"
+                                      >
+                                        <v-icon dark>
+                                          mdi-eye
+                                        </v-icon>
+                                      </v-btn>
+                                    </v-col>
+                                    <v-col style="padding:0;margin:0">
+                                      <v-btn
+                                        fab
+                                        x-small
+                                        dark
+                                        color="red"
+                                        @click="eliminarTutores(index)"
+                                      >
+                                        <v-icon dark>
+                                          mdi-minus
+                                        </v-icon>
+                                      </v-btn>
+                                    </v-col>
+                                  </v-row>
+                                </v-col>
+                              </v-row>
+                            </div>
+                          </v-card-text>
+
+                        </v-card>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-btn
+                        color="error"
+                        elevation="2"
+                        block
+                        @click="closeDialog"
+                        >
+                        <v-icon left>mdi-close-outline</v-icon>
+                        Cerrar
+                      </v-btn>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-btn
+                        color="success"
+                        elevation="2"
+                        @click="step = 3"
+                        block
+                      >
+                        <v-icon left>mdi-page-next-outline</v-icon>
+                        <span>Continuar</span>
+                      </v-btn>
+                  </v-col>
+                  </v-row>
                 </form>
             </div>
+          </v-stepper-content>
+          <v-stepper-content step="3">
+            <form>
+              <v-row>
+                <v-col cols="12" sm="12">
+                  <vue-dropzone
+                    ref="myVueDropzone"
+                    :options="dropzoneOptions"
+                    id="dropzone"
+                    @vdropzone-success="registerFile"
+                    @vdropzone-removed-file="removedFile"
+                  ></vue-dropzone>
+                  <v-alert
+                    type="error"
+                    
+                    class="mt-2"
+                  >
+                    Debe ingresar una firma para el registro
+                  </v-alert>
+                </v-col>
+                
+                <v-col cols="12" sm="6" md="6">
+                  <v-btn
+                    color="error"
+                    elevation="2"
+                    @click="closeDialog"
+                    width="100%"
+                  >
+                    <v-icon left>mdi-close-outline</v-icon>
+                    Cerrar
+                  </v-btn>
+                </v-col>
+
+                <v-col cols="12" sm="6" md="6">
+                  <v-btn
+                    color="success"
+                    elevation="2"
+                    width="100%"
+                    @click="sendTallerEscuelaPadres"
+                  >
+                    <v-icon left>mdi-check</v-icon>
+                    Finalizar
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
@@ -310,13 +406,16 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 
+import { mapGetters } from "vuex";
+
 export default {
   data(){
     return {
+      startStteper: 1,
       tallerescuelapadres:{
         creadordocumento: "",
         tipo: "TallerEscuelaPadres",
-        fechacreacion: "",
+        fechacreacion: new Date(),
         area: "social",
         fase: "convivencia",
         titulo: "",
@@ -324,7 +423,12 @@ export default {
         contenido:{
           tutores:[],
           fechainicio: "",
-          fechafin: ""
+          fechafin: "",
+        },
+        firma: {
+          urlfirma: "",
+          nombre: "",
+          cargo: ""
         }
       },
       tutor: {
@@ -332,7 +436,7 @@ export default {
           tipoDocumento: "",
           numeroDocumento: "",
           parentesco: "",
-          usuariaid: ""
+          usuaria: {}
       },
       //recordar borrar al programar delete myObject.regex;
       step:1,
@@ -348,6 +452,21 @@ export default {
       },
       searchResidente: null,
       loadingSearch: false,
+      dialogAgregarTutores: false,
+      accion: "registrar",
+      indice: "",
+      listImages: [],
+      dropzoneOptions: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFiles: 1,
+        addRemoveLinks: true,
+        dictDefaultMessage: "Ingrese su firma para el registro",
+        acceptedFiles: "image/*",
+        headers: { "My-Awesome-Header": "header value" },
+        dictRemoveFile: "Remover firma",
+        dictMaxFilesExceeded: "Tamaño excedido",
+      },
     }
   },
   watch: {
@@ -393,13 +512,10 @@ export default {
     limpiar(){
       this.tallerescuelapadres.titulo="";
       this.tallerescuelapadres.descripcion="";
-      this.tallerescuelapadres.fechainicio="";
-      this.tallerescuelapadres.fechafin="";
-    },
-    cerrarTodo() {
-      this.$emit("close-dialog-dontsave");
-      this.limpiar();
-      this.show = false
+      this.tallerescuelapadres.contenido.fechainicio="";
+      this.tallerescuelapadres.contenido.fechafin="";
+      this.tallerescuelapadres.contenido.tutores=[];
+      this.step = 1;
     },
     fechaActual(){
       //Retorna la fecha actual en formato YYYY/MM/DD
@@ -408,9 +524,26 @@ export default {
     },
     closeDialog() {
       this.$emit("close-dialog");
+      this.limpiar();
+      this.show = false
+      this.$refs.myVueDropzone.removeAllFiles()
+    },
+    modalRegistrarTutores() {
+      this.accion = "registrar";
+      this.dialogAgregarTutores = true;
     },
     eliminarTutores(index) {
       this.tallerescuelapadres.contenido.tutores.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
+    },
+    cerrarAgregarTutores() {
+      this.dialogAgregarTutores = false;
+
+      //limpiarTodo
+      this.tutor.nombre = "";
+      this.tutor.tipoDocumento = "";
+      this.tutor.numeroDocumento = "";
+      this.tutor.parentesco = "";
+      this.residente = null;
     },
     guardarTutores() {
       //this.$v.tutor.$touch();
@@ -420,8 +553,7 @@ export default {
          tipoDocumento:this.tutor.tipoDocumento,
          numeroDocumento:this.tutor.numeroDocumento,
          parentesco:this.tutor.parentesco,
-         usuariaid:this.residente.id,
-         nombreusuaria:this.residente.residente
+         usuaria:this.residente,
         }//crear tutor variable
         
         this.tallerescuelapadres.contenido.tutores.push(tutorA); //añadimos al arreglo principal
@@ -433,14 +565,117 @@ export default {
         this.tutor.parentesco = "";
         this.residente = null;
 
+        this.dialogAgregarTutores = false;
         //reiniciamos el estado de la validacion
         //this.$v.progreso.$reset();
       //}else{
       //  console.log("no se guardo el tutor");
       //}
     },
+    actualizarTutores(index) {
+      this.tallerescuelapadres.contenido.tutores[index].nombre = this.tutor.nombre;
+      this.tallerescuelapadres.contenido.tutores[index].tipoDocumento = this.tutor.tipoDocumento;
+      this.tallerescuelapadres.contenido.tutores[index].numeroDocumento = this.tutor.numeroDocumento;
+      this.tallerescuelapadres.contenido.tutores[index].parentesco = this.tutor.parentesco;
+      this.tallerescuelapadres.contenido.tutores[index].usuaria = this.residente;
+
+      this.dialogAgregarTutores = false;
+    },
+    modalActualizar(index) {
+      this.accion = "actualizar";
+      this.dialogAgregarTutores = true;
+      this.tutor.nombre = this.tallerescuelapadres.contenido.tutores[index].nombre;
+      this.tutor.tipoDocumento = this.tallerescuelapadres.contenido.tutores[index].tipoDocumento;
+      this.tutor.numeroDocumento = this.tallerescuelapadres.contenido.tutores[index].numeroDocumento;
+      this.tutor.parentesco = this.tallerescuelapadres.contenido.tutores[index].parentesco;
+      this.residente = this.tallerescuelapadres.contenido.tutores[index].usuaria;
+      
+      this.indice = index;
+    },
+    modalConsultar(index) {
+      this.accion = "consultar";
+      this.dialogAgregarTutores = true;
+
+      this.tutor.nombre = this.tallerescuelapadres.contenido.tutores[index].nombre;
+      this.tutor.tipoDocumento = this.tallerescuelapadres.contenido.tutores[index].tipoDocumento;
+      this.tutor.numeroDocumento = this.tallerescuelapadres.contenido.tutores[index].numeroDocumento;
+      this.tutor.parentesco = this.tallerescuelapadres.contenido.tutores[index].parentesco;
+      this.residente = this.tallerescuelapadres.contenido.tutores[index].usuaria;
+    },
+    registerFile(file, response) {
+      this.listImages.push(file);
+    },
+    removedFile(file, error, xhr) {
+      let indexFile = this.listImages.findIndex((image) => image == file);
+
+      if (indexFile != -1) {
+        this.listImages.splice(indexFile, 1);
+      }
+    },
+    async sendTallerEscuelaPadres() {
+      //this.$v.$touch();
+
+      //if (this.$v.$invalid) {
+      //  this.messageSweet(
+      //    "error",
+      //    "Errores al intentar registrar",
+      //    "Se ha presentado errores en los campos para el registro del Plan de Intervención",
+      //    false
+      //  );
+      //} else {
+        for (let index = 0; index < this.listImages.length; index++) {
+          let formData = new FormData();
+          formData.append("file", this.listImages[index]);
+          await axios
+            .post("/Media", formData)
+            .then((res) => {
+              this.tallerescuelapadres.firma.urlfirma = res.data;
+              this.tallerescuelapadres.firma.nombre = this.user.usuario;
+              this.tallerescuelapadres.firma.cargo = this.user.rol;
+              
+              console.log(this.tallerescuelapadres.firma.urlfirma);
+              console.log(this.tallerescuelapadres.firma.nombre);
+              console.log(this.tallerescuelapadres.firma.cargo);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+        //Añadimos el id del usuario actual
+        this.tallerescuelapadres.creadordocumento = this.user.id;
+
+        this.tallerescuelapadres.contenido.tutores.forEach((element) => { element.usuariaid = element.usuaria.id; delete element.usuaria; });
+        let tallerescuelapadres = this.tallerescuelapadres;
+        
+        axios
+          .post("/Taller/crearTEP", tallerescuelapadres)
+          .then((res) => {
+            this.messageSweet(
+              "success",
+              "Registro del Taller de escuela para padres",
+              "Se registró el Taller de escuela para padres de manera satisfactoria",
+              true
+            );
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      //}
+    },
+    messageSweet(icon, title, text, valid) {
+      this.$swal({
+        icon: icon,
+        title: title,
+        text: text,
+      }).then((res) => {
+        if (valid) {
+          //this.$emit("register-complete");
+        }
+      });
+    },
   },
   computed:{
+    ...mapGetters(["user"]),
     show: {
       get() {
         return this.visible;
@@ -451,7 +686,17 @@ export default {
         }
       },
     },
-  }
+    isDisabled() {
+      if (this.accion == "consultar") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
+  components: {
+    vueDropzone: vue2Dropzone
+  },
 }
 </script>
 
