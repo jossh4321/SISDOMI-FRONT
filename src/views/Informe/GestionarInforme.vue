@@ -7,6 +7,8 @@
         :items="informes"
         :search="search"
         class="elevation-1"
+        :loading="loading"
+        loading-text="Cargando informes"        
       >
         <template v-slot:top>
           <v-toolbar flat>
@@ -193,6 +195,7 @@ export default {
       dialogoISIdetalle:false,
       dialogoISEdetalle:false,
       listaresidentes: [],
+      loading:true
     };
   },
   async created() {
@@ -220,6 +223,7 @@ export default {
       await axios
         .get("/informe/all")
         .then((res) => {
+          this.loading = false;
           var info = {};
           info = res.data;
           for (var x=0;x<res.data.length;x++){
