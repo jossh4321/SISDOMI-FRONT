@@ -470,6 +470,9 @@
                           v-model="recomendacion"
                           label="Recomendaciones"
                           color="#009900"
+                          @input="$v.recomendacion.$touch()"
+                          @blur="$v.recomendacion.$touch()"
+                          :error-messages="errorRecomendacion"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -544,6 +547,9 @@
                           v-model="firmas.nombre"
                           label="Nombre"
                           color="#009900"
+                          @input="$v.firma.nombre.$touch()"
+                          @blur="$v.firma.nombre.$touch()"
+                          :error-messages="errorNombreFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="left">
@@ -551,6 +557,9 @@
                           v-model="firmas.cargo"
                           label="Cargo"
                           color="#009900"
+                          @input="$v.firma.cargo.$touch()"
+                          @blur="$v.firma.cargo.$touch()"
+                          :error-messages="errorCargoFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -696,7 +705,7 @@ import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import { required, minLength, email, helpers } from "vuelidate/lib/validators";
+import { required, minLength, email, helpers,numeric } from "vuelidate/lib/validators";
 import moment from "moment";
 
 export default {
@@ -806,7 +815,7 @@ export default {
       if (this.$v.informe.$invalid) {
         console.log("Hay errores :c");
         this.mensaje(
-          "Error",
+          "error",
           "..Oops",
           "Se encontraron errores en el formulario",
           "<strong>Verifique los campos Ingresados<strong>"
@@ -847,31 +856,44 @@ export default {
       this.$v.informe.$reset();
     },
     agregarFamiliar() {
-      let familiar = {
-        nombre: this.familiar.nombre,
-        apellido: this.familiar.apellido,
-        numerodocumento: this.familiar.numerodocumento,
-        parentesco: this.familiar.parentesco,
-        edad: this.familiar.edad,
-        estadocivil: this.familiar.estadocivil,
-        gradoinstruccion: this.familiar.gradoinstruccion,
-        ocupacion: this.familiar.ocupacion,
-        observaciones: this.familiar.observaciones,
-      };
+      console.log(this.familiar);
+      this.$v.familiar.$touch();
+      if (this.$v.familiar.$invalid) {
+        console.log("Hay errores :c");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Debe completar los datos del familiar",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
+        
+        let familiar = {
+          nombre: this.familiar.nombre,
+          apellido: this.familiar.apellido,
+          numerodocumento: this.familiar.numerodocumento,
+          parentesco: this.familiar.parentesco,
+          edad: this.familiar.edad,
+          estadocivil: this.familiar.estadocivil,
+          gradoinstruccion: this.familiar.gradoinstruccion,
+          ocupacion: this.familiar.ocupacion,
+          observaciones: this.familiar.observaciones,
+        };
 
-      this.informe.contenido.familiares.push(familiar);
+        this.informe.contenido.familiares.push(familiar);
 
-      this.familiar.nombre = "";
-      this.familiar.apellido = "";
-      this.familiar.parentesco = "";
-      this.familiar.edad = "";
-      this.familiar.estadocivil = "";
-      this.familiar.gradoinstruccion = "";
-      this.familiar.ocupacion = "";
-      this.familiar.observaciones = "";
-      this.familiar.numerodocumento = "";
+        this.familiar.nombre = "";
+        this.familiar.apellido = "";
+        this.familiar.parentesco = "";
+        this.familiar.edad = "";
+        this.familiar.estadocivil = "";
+        this.familiar.gradoinstruccion = "";
+        this.familiar.ocupacion = "";
+        this.familiar.observaciones = "";
+        this.familiar.numerodocumento = "";
 
-      this.dialogAgregarFamiliar = false;
+        this.dialogAgregarFamiliar = false;
+      }
     },
     cerrarAgregarFamiliar() {
       this.dialogAgregarFamiliar = false;
@@ -979,11 +1001,15 @@ export default {
       ].numerodocumento;
     },
     agregarRecomendaciones() {
+      this.$v.recomendacion.$touch();
+      console.log(this.$v.recomendacion.$invalid);
+      if (!this.$v.recomendacion.$invalid) {
       console.log("recomendaciones");
       let recomendaciones = this.recomendacion;
       this.informe.contenido.recomendaciones.push(recomendaciones);
       this.recomendaciones = this.informe.contenido.recomendaciones;
       this.recomendacion = "";
+      }
     },
     eliminarRecomendaciones(recomendacion) {
       this.recomendaciones.forEach(function(car, index, object) {
@@ -1099,6 +1125,10 @@ export default {
       if (!this.$v.familiar.edad.$dirty) return errors;
       !this.$v.familiar.edad.required &&
         errors.push("Debe escribir la edad del familiar obligatoriamente");
+      !this.$v.familiar.edad.numeric &&
+        errors.push(
+          "Debe Ingresar valores Numericos"
+        );
       return errors;
     },
     errorEstadoCivil() {
@@ -1163,6 +1193,27 @@ export default {
         errors.push("Debe registrar la situación social obligatoriamente");
       return errors;
     },
+    errorRecomendacion() {
+      const errors = [];
+      if (!this.$v.recomendacion.$dirty) return errors;
+      !this.$v.recomendacion.required &&
+        errors.push("Debe registrar la recomendación obligatoriamente");
+      return errors;
+    },
+    errorNombreFirma() {
+      const errors = [];
+      if (!this.$v.firma.nombre.$dirty) return errors;
+      !this.$v.recomendacion.required &&
+        errors.push("Debe registrar el nombre obligatoriamente");
+      return errors;
+    },
+    errorCargoFirma() {
+      const errors = [];
+      if (!this.$v.firma.cargo.$dirty) return errors;
+      !this.$v.firma.cargo.required &&
+        errors.push("Debe registrar el cargo obligatoriamente");
+      return errors;
+    },
     isDisabled() {
       if (this.accion == "consultar") {
         return true;
@@ -1213,6 +1264,7 @@ export default {
         },
         edad: {
           required,
+          numeric,
         },
         estadocivil: {
           required,
@@ -1222,8 +1274,22 @@ export default {
         },
         ocupacion: {
           required,
-        },
+        },        
       },
+      recomendacion : {
+        required,
+      },
+      firma:{
+        urlfirma:{
+          required,
+        },
+        nombre:{
+          required,
+        },
+        cargo:{
+          required,
+        }
+      }
     };
   },
 };
