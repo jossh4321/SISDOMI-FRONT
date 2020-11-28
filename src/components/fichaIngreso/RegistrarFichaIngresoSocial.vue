@@ -1,7 +1,7 @@
 <template>
 <v-dialog v-model="show" max-width="65%">
     <v-card >
-      <v-card-title class="justify-center">Resgistrar Ficha de Ingreso Social</v-card-title>
+      <v-card-title class="justify-center">Registrar Ficha de Ingreso Social</v-card-title>
       <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step 
@@ -15,7 +15,7 @@
           editable
           step="2"
         >
-        Datos Psicológicos
+        Datos Sociales
         </v-stepper-step>
       </v-stepper-header>    
       <v-stepper-items>
@@ -27,7 +27,8 @@
                   filled
                   chips
                   dense
-                  outlined          
+                  outlined        
+                  v-model="fichaSocial.idresidente"  
                   color="#009900"
                   label="Residente"
                   item-text="nombre"
@@ -55,10 +56,57 @@
                     </v-list-item-avatar>
                     <v-list-item-content>
                         <v-list-item-title>Nombre completo: {{ data.item.nombre }} {{data.item.apellido}} </v-list-item-title>
-                        <v-list-item-subtitle>Nro. Documento: {{data.item.numerodocumento}}</v-list-item-subtitle>                    
+                        <v-list-item-subtitle>Nro. Documento: {{data.item.numeroDocumento}}</v-list-item-subtitle>                    
                     </v-list-item-content>
                 </template>
                 </v-autocomplete> 
+                <v-autocomplete
+                  :items="listaeducadores"
+                  filled
+                  chips
+                  dense
+                  outlined
+                  v-model="fichaSocial.creadordocumento"
+                  color="#009900"
+                  label="Educador responsable"
+                  item-text="usuario"
+                  item-value="id"
+                  
+                >
+                  <template v-slot:selection="data">
+                    <v-chip
+                      v-bind="data.attrs"
+                      :input-value="data.selected"
+                      style="margin-top:5px"
+                    >
+                      <v-avatar left color="#b3b3ff" size="24">
+                        <span style="font-size:12px">RT</span>
+                      </v-avatar>
+                      {{ data.item.datos.nombre }}
+                    </v-chip>
+                  </template>
+                  <template v-slot:item="data">
+                    <template>
+                      <v-list-item-avatar>
+                        <v-avatar left color="#b3b3ff" size="24">
+                          <span style="font-size:12px">UC</span>
+                        </v-avatar>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          >Nombre completo: {{ data.item.datos.nombre }}
+                          {{ data.item.datos.apellido }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle
+                          >Nro. Documento:
+                          {{
+                            data.item.datos.numeroDocumento
+                          }}</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </template>
+                  </template>
+                </v-autocomplete>
 
                 <v-row>
                     <v-col>
@@ -83,13 +131,13 @@
 
                 <v-row>
                     <v-col>
-                        <v-text-field
+                         <v-select              
+                            :items="itemSexo"
+                            v-model="itemSexo.value"
                             label="Sexo"
-                            auto-grow
-                            outlined        
-                            color="#009900"
-                            shaped
-                        ></v-text-field>
+                            outlined      
+                            dense       
+                        ></v-select>
                     </v-col>
                     <v-col>
                         <v-menu
@@ -262,13 +310,67 @@ import moment from 'moment'
 
 export default {
         
-    props:["listaresidentes","visible"],
+    props:["listaresidentes","visible","listaeducadores"],
     ...mapMutations(["setFichaIngreso","addFichaIngreso"]),
     data() {
         return {
+            itemSexo: [
+                { value: '1', text: 'Femenino'},
+                { value: '2', text: 'Masculino'}
+            ],
+
             datemenu: false,
-            step: 1
-        }
+            step: 1,
+
+            fichaSocial:{
+                id:"",
+                tipo:"FichaSocialIngreso",
+                historialcontenido:[],
+                creadordocumento:"",
+                fechacreacion:"",
+                area:"Social",
+                fase:"acogida",
+                idresidente:"",
+                estado:"creado",
+                contenido:{
+                    familiar:{
+                        motivoingreso:[],
+                        familiares:[],
+                        tipofamilia:"",
+                        problematicafam:"" 
+                    },
+                    vivienda:{
+                        ubicacion:"",
+                        descripcionubicacion:"",
+                        habitantes:[],
+                        habitacionesdormir:"",
+                        tipopropiedad:"",
+                        tipo:"",
+                        material:"",
+                        tipopiso:"",
+                        tipotecho:"",
+                        servicios:[], 
+                    },
+                    economico:{
+                        condicionlaboral:"",
+                        ocupacion:"",
+                        ingresos:[],
+                        egresos:[],
+                        observacion:""
+                    },
+                    salud:"",
+                    legal:{
+                        penales:[],
+                        apoyolocal:"",
+                    },
+                    diagnosticosocial:"",
+                    planintervencion:"",
+                    firmas:[],
+                    codigodocumento:""
+                    
+                    }
+            }
+    }
     },
     methods:{
         cerrarDialogo(){     

@@ -3,7 +3,8 @@
         <v-card-title class="justify-center">Nueva Ficha de Ingreso</v-card-title>               
          <div  class="container-user">
                 <v-card-text>
-                    <v-select              
+                    <!--
+                    <v-autocomplete              
                         :items="listaresidentes"
                         filled
                         chips
@@ -38,7 +39,8 @@
                             <v-list-item-subtitle>Nro. Documento: {{data.item.numerodocumento}}</v-list-item-subtitle>                    
                         </v-list-item-content>
                     </template>
-                </v-select>
+                    </v-autocomplete>
+                    -->
                 <v-select              
                     :items="items"
                     v-model="items.value"

@@ -69,6 +69,7 @@
           :seguimiento="seguimiento"
           :residente ="residente"
           :listaresidentes ="listaresidentes"
+          :dialogodetalle ="dialogodetalle"
           @close-dialog-detail="closeDialogDetalle()"
         >
         </DetalleSeguimientoEducativo>
@@ -181,7 +182,7 @@ export default {
         .then((res) => {
           console.log(res);
           user = res.data;
-          user.fechacreacion = user.fechacreacion.split("T")[0];
+         
         })
         .catch((err) => console.log(err));
       console.log(user);

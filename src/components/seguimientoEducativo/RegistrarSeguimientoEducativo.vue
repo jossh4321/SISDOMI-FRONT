@@ -335,7 +335,7 @@
                                 </v-card>
                               </v-dialog>
                             </v-row>
-                           <v-dialog
+                <v-dialog
                           v-model="dialogVistaPreviaFirma"
                           persistent
                           max-width="600px"
@@ -828,14 +828,14 @@ data(){
 
     seguimiento:{
       id:"",
-      tipo:"",
+      tipo:"InformeSeguimientoEducativo",
       historialcontenido:[],
       creadordocumento:"",
       fechacreacion:"",
       area:"Educativa",
-      fase:"",
+      fase:"acogida",
       idresidente:"",
-      estado:"",
+      estado:"creado",
       contenido:{
            modalidad:"",
            nivel:"",
@@ -908,8 +908,11 @@ methods:{
       this.dialogVistaPreviaFirma = true;
     },
     guardarTrimestre(){
-      let trimestred={orden:this.trimestre.orden,puntajes:this.trimestre.puntajes,analisiseducativo:this.trimestre.analisiseducativo,recomendaciones:this.trimestre.recomendaciones};
+      let trimestred={orden:this.trimestre.orden,puntajes:[],analisiseducativo:this.trimestre.
+      analisiseducativo,recomendaciones:this.trimestre.recomendaciones};
+      this.seguimiento.contenido.trimestre[0].puntajes.push({area:"mate",promedio:"24"});
       this.seguimiento.contenido.trimestre.push(trimestred);
+      
       console.log(this.seguimiento.contenido.trimestre)
 
       this.trimestre.orden="";
