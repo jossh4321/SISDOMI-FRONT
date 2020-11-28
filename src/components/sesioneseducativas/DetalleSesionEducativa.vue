@@ -42,7 +42,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="sesioneducativa.fechaCreacion"
-                      style="margin-top_5px"
+                      style="margin-top:5px"
                       :readonly="!edicion"
                       color="#009900"
                       prepend-icon="mdi-calendar"
@@ -54,7 +54,7 @@
                   <v-date-picker
                     v-model="sesioneducativa.fechaCreacion"
                     :readonly="!edicion"
-                    @input="menu2 = false"
+                    @input="menu = false"
                     locale="es-es"
                   ></v-date-picker>
                 </v-menu>
@@ -138,7 +138,7 @@
                             label="Grado"
                         ></v-text-field>
                         <v-menu
-                          v-model="datemenu2"
+                          v-model="item.datemenu"
                           :close-on-content-click="false"
                           :nudge-right="40"
                           transition="scale-transition"
@@ -148,7 +148,7 @@
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
                               v-model="item.fecha"
-                              style="margin-top_5px"
+                              style="margin-top:5px"
                               :readonly="!edicion"
                               color="#009900"
                               prepend-icon="mdi-calendar"
@@ -170,7 +170,8 @@
                         >
                           <v-card-actions>
                             <v-btn
-                              dark
+                              :disabled="botonCambiarFirma"
+                              :dark="!botonCambiarFirma"
                               color="green"
                               @click="agregarFirma(item.idparticipante)"
                             >
@@ -182,7 +183,7 @@
                             <v-col :cols="12" align="right">
                               <div style="padding:1%">
                                 <vue-dropzone
-                                  ref="myVueDropzone"
+                                  :ref="'myVueDropzone'+item.idparticipante"
                                   @vdropzone-success="afterSuccess2"
                                   @vdropzone-removed-file="afterRemoved2"
                                   id="dropzone2"
@@ -353,15 +354,15 @@ export default {
       urlfirma:"",
       edicion:false,
       botonGuardarSesionEducativa:false,
+      botonCambiarFirma:true,
       step:1,
       dialogVistaPreviaFirma:false,
       imagen:"",
       datemenu: false,
-      datemenu2: false,
       sesioneducativaMod:{
         titulo:"",
         idCreador:"",
-        fechaCreacion: new Date(),
+        fechaCreacion: "",
         area:"",
         contenido:{
           participantes:[]
@@ -371,7 +372,7 @@ export default {
       participanteMod:{
         idparticipante:"",
         grado:"",
-        fecha: new Date(),
+        fecha: "",
         firma:"",
         observaciones:""
       },
@@ -390,12 +391,17 @@ export default {
   },
   watch:{
     search: function(search){
-        this.filtradoSearch(this.datoSesion.contenido.participantes, search)
+      this.filtradoSearch(this.datoSesion.contenido.participantes, search)
+      
+        
     },
     participantesFiltrados:async function(){
-        if(this.numeroEcontrados(this.participantesFiltrados)===0){
-          this.participantesFiltrados = await this.datoSesion.contenido.participantes;
-        }
+      if(this.numeroEcontrados(this.participantesFiltrados)===0){
+        this.participantesFiltrados = await this.datoSesion.contenido.participantes;
+        this.participantesFiltrados.forEach((part)=>{
+          part.datemenu=false;
+        })
+      }
     },
     dialogodetalle: async function(dialogodetalle){
       this.participantesFiltrados = await this.datoSesion.contenido.participantes;
@@ -446,8 +452,9 @@ export default {
       this.participantesFiltrados.forEach((part)=>{
         if(part.idparticipante ===id){
           part.firma= this.urlfirma;
-          //this.$refs.myVueDropzone.removeAllFiles();
           this.urlfirma = "";
+          this.botonCambiarFirma = true;
+          this.$refs["myVueDropzone"+id][0].removeAllFiles();
         }
       })
     },
@@ -468,9 +475,6 @@ export default {
         }
       })
     },
-    disableVisualizarFirma(firma){
-      if(firma === ""){return false}
-    },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
     },
@@ -478,6 +482,7 @@ export default {
       this.urlfirma = file.dataURL.split(",")[1];
       console.log(this.urlfirma);
       console.log("urlfirma llenada");
+      this.botonCambiarFirma = false;
     },
     afterRemoved2(file, error, xhr) {
       this.urlfirma = "";
