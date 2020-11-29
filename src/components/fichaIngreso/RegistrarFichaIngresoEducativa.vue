@@ -34,7 +34,8 @@
                   filled
                   chips
                   dense
-                  outlined          
+                  outlined  
+                  v-model="fichaIngreso.idresidente"        
                   color="#009900"
                   label="Residente"
                   item-text="nombre"
@@ -92,7 +93,8 @@
                     <v-textarea
                             label="Situación Académica"
                             auto-grow
-                            outlined       
+                            outlined    
+                            v-model="fichaIngreso.situacionescolar"   
                             color="#009900"
                             shaped
                         ></v-textarea>
@@ -102,7 +104,8 @@
                     <v-textarea
                             label="Observacion"
                             auto-grow
-                            outlined        
+                            outlined       
+                            
                             color="#009900"
                             shaped
                         ></v-textarea>

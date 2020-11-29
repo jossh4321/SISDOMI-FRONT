@@ -77,9 +77,6 @@
           </v-stepper-content>
           <v-stepper-content step="2">
             <!--COMPONENTE PARA AGREGAR PARTICIPANTES-->
-            <v-card>
-              <v-card-title>Pinga</v-card-title>
-            </v-card>
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
@@ -94,7 +91,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 export default {
-  props:["residente","visible"],
+  props:["residente","visible","listaresidentes"],
   data(){
     return{
       sesioneducativa:{

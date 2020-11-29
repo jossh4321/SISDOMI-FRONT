@@ -25,7 +25,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
-                  dark
+                  darkdark @click="regitem(item)"
                   class="mb-2"
                   v-bind="attrs"
                   v-on="on"
@@ -35,7 +35,7 @@
                 </v-btn>
               </template>
              <RegistrarPlanIntervencion v-if="dialogoregistro" :actaI="actaI" @close-dialog-detail="closeDialogRegistrar()">
-                @close-dialog="closeDialog"
+                
               ></RegistrarPlanIntervencion>
             </v-dialog>
           </v-toolbar>
@@ -124,11 +124,20 @@ export default {
       Visualizarplan: false,
       dialogoactualizacion: false
     };
+    
   },
 
 
   methods: {
      ...mapMutations(["setPlanInterve"]),
+    async regitem(item){
+      this.planA = await this.actu(item);
+      this.dialogoregistro=!this.dialogoregistro;
+      console.log(item);
+
+    },
+   
+
     async editItem(item) {
       this.planA =  await this.actu(item); 
       this.dialogoactualizacion=!this.dialogoactualizacion;

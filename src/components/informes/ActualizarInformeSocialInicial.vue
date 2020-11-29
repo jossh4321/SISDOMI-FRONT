@@ -1,5 +1,4 @@
-<template>
-  <v-dialog v-model="show" max-width="50%">
+<template>  
     <v-card>
       <v-card-title class="justify-center"
         >Registro de Informe Social Inicial</v-card-title
@@ -373,7 +372,7 @@
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block @click="show = false" color="primary">
+                    <v-btn block @click="cerrarDialogo()" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
                     </v-btn>
@@ -448,7 +447,7 @@
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block @click="show = false" color="primary">
+                    <v-btn block @click="cerrarDialogo()" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
                     </v-btn>
@@ -706,7 +705,7 @@
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block @click="show = false" color="primary">
+                    <v-btn block @click="cerrarDialogo()" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
                     </v-btn>
@@ -717,8 +716,7 @@
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
-    </v-card>
-  </v-dialog>
+    </v-card>  
 </template>
 <script>
 import axios from "axios";
@@ -729,7 +727,7 @@ import { required, minLength, email, helpers,numeric } from "vuelidate/lib/valid
 import moment from "moment";
 
 export default {
-  props: ["listaresidentes", "visible"],
+  props: ["listaresidentes", "visible", "informe"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -757,32 +755,6 @@ export default {
         addRemoveLinks: true,
         dictDefaultMessage:
           "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
-      },
-      informe: {
-        id: "",
-        tipo: "InformeSocialInicial",
-        historialcontenido: [],
-        creadordocumento: "",
-        fechacreacion: "2020-08-13T09:35:12.748+00:00",
-        area: "social",
-        fase: "acogida",
-        idresidente: "",
-        estado: "creado",
-        contenido: {
-          antecedentes: "",
-          familiares: [],
-          situacionfamiliar: "",
-          situacionvivienda: "",
-          situacioneconomica: "",
-          situacionsalud: "",
-          educacion: "",
-          situacionactual: "",
-          diagnosticosocial: "",
-          recomendaciones: [],
-          anexos: [],
-          firmas: [],
-          codigodocumento: "",
-        },
       },
       urlfirma: "",
       firmas: { urlfirma: "", nombre: "", cargo: "" },
@@ -857,7 +829,7 @@ export default {
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
             this.addInforme(info);
-            this.show = false
+            this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
         await this.mensaje(
@@ -1079,6 +1051,9 @@ export default {
         text: texto,
         footer: footer,
       });
+    },
+     cerrarDialogo() {
+      this.$emit("close-dialog-update");
     },
   },
   computed: {
