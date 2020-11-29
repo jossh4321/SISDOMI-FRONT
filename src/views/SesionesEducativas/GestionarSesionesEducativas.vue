@@ -114,6 +114,8 @@ export default {
   },
   async created() {
     this.obtenerSesionesEducativas();
+    this.obtenerResidentes();
+    this.obtenerEducadores();
   },
   methods:{
     ...mapMutations(["setSesionesEducativas","setResidentes"]),
