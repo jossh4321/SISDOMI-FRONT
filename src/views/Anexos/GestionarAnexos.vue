@@ -180,7 +180,7 @@ export default {
       this.dialogDetail = false;
     },
     async updateAnexo(item) {
-      /*await axios
+      await axios
         .get("/Anexo/" + item.id)
         .then((res) => {
           this.selectedanexo = res.data;
@@ -188,8 +188,8 @@ export default {
         })
         .catch((err) => {
           console.error(err);
-        });*/
-      this.selectedanexo = this.anexos[0];
+        });
+     
       await axios
       .get("/residente/all")
       .then((res) => {
@@ -203,7 +203,7 @@ export default {
       this.dialogModify = true;
     },
     async detailAnexo(item) {
-      /*await axios
+      await axios
         .get("/Anexo/" + item.id)
         .then((res) => {
           this.selectedanexo = res.data;
@@ -211,8 +211,7 @@ export default {
         })
         .catch((err) => {
           console.error(err);
-        });*/
-      this.selectedanexo = this.anexos[0];
+        });
       this.dialogDetail = true;
     },
     listAnexos() {
