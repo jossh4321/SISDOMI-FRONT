@@ -818,8 +818,8 @@ methods:{
        this.puntajes.promedio="";
     },
     eliminarNotas(index){
+     this.seguimiento.contenido.trimestre[0].puntajes.splice(index)
      
-     this.seguimiento.contenido.trimestre[0].puntajes.split(index)
     },
    
 
