@@ -165,10 +165,12 @@ export default {
     registerComplete() {
       this.closeDialog();
       this.loading = true;
+      this.listAnexos();
     },
     modifierComplete() {
       this.closeDialogModify();
       this.loading = true;
+      this.listAnexos();
     },
     closeDialog() {
       this.dialogRegister = false;
