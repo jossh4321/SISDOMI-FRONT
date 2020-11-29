@@ -183,7 +183,7 @@
           <v-col>
             <v-btn @click="modificarSesionEducativa()" block color="success">
               <v-icon left>done</v-icon>
-              <span>Agregar Participantes</span>
+              <span>Guardar Participantes agregados</span>
             </v-btn>
           </v-col>
         </v-row>
@@ -249,7 +249,6 @@ export default {
       dialogVistaPreviaFirma:false,
       imagen:"",
       residente:{},
-      urlfirma:"",
       participantes:[],
       ParticipanteSesion:{
         idparticipante:"",

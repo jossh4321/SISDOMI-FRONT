@@ -47,6 +47,11 @@
         <template v-slot:[`item.actions`]="{ item }">
           <!--BOTONES-->
           <v-row align="center" justify="space-around">
+            <!--Abrir dialogo Modificar -->
+            <v-btn color="warning" dark @click="abrirDialogoModificar(item.id)">
+              <v-icon left> mdi-pencil </v-icon>
+              <span>Modificar Sesion</span>
+            </v-btn>
             <!--Abrir dialogo Ver Sesiones -->
             <v-btn color="info" dark @click="abrirDialogoDetalle(item.id)">
               <v-icon left> info </v-icon>
@@ -60,6 +65,15 @@
           </v-row>
         </template>
       </v-data-table>
+      <!--Dialogo de Modificacion-->
+      <v-dialog persistent v-model="dialogomodificar" max-width="880px">
+        <ModificarSesionEducativa
+          :sesioneducativa="sesioneducativa"
+          :datoSesion="datoSesion"
+          :dialogomodificar="dialogomodificar"
+          @close-dialog-edit="closeDialogModificar()"
+        ></ModificarSesionEducativa>
+      </v-dialog>
       <!--Dialogo de Detalle-->
       <v-dialog persistent v-model="dialogodetalle" max-width="880px">
         <DetalleSesionEducativa
@@ -84,13 +98,14 @@
 <script>
 import axios from "axios";
 import AgregarParticipante from "@/components/sesioneseducativas/AgregarParticipante.vue";
+import ModificarSesionEducativa from "@/components/sesioneseducativas/ModificarSesionEducativa.vue";
 import RegistrarSesionEducativa from "@/components/sesioneseducativas/RegistrarSesionEducativa.vue";
 import DetalleSesionEducativa from "@/components/sesioneseducativas/DetalleSesionEducativa.vue";
 import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarSesionesEducativas",
   components:{
-    AgregarParticipante, RegistrarSesionEducativa, DetalleSesionEducativa
+    AgregarParticipante, RegistrarSesionEducativa, DetalleSesionEducativa, ModificarSesionEducativa
   },
   data(){
     return{
@@ -107,6 +122,7 @@ export default {
       ],
       listaresidentes:[],
       dialogoregistro: false,
+      dialogomodificar:false,
       dialogodetalle: false,
       dialogoparticipante:false,
       loading:true
@@ -114,13 +130,16 @@ export default {
   },
   async created() {
     this.obtenerSesionesEducativas();
-    this.obtenerResidentes();
-    this.obtenerEducadores();
+    //this.obtenerResidentes();
+    //this.obtenerEducadores();
   },
   methods:{
     ...mapMutations(["setSesionesEducativas","setResidentes"]),
     closeDialogDetalle() {
       this.dialogodetalle = false;
+    },
+    closeDialogModificar() {
+      this.dialogomodificar = false;
     },
     closeDialogRegistrar() {
       this.dialogoregistro = false;
@@ -141,11 +160,15 @@ export default {
       this.datoSesion= await this.obtenerSesionEducativaDTO(idsesion);
       this.dialogodetalle = !this.dialogodetalle;
     },
+    async abrirDialogoModificar(idsesion) {
+      this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion);
+      this.datoSesion= await this.obtenerSesionEducativaDTO(idsesion);
+      this.dialogomodificar = !this.dialogomodificar;
+      
+    },
     async abrirDialogoParticipante(idsesion) {
       await this.obtenerResidentes();
       this.listaresidentes = this.residentes;
-      console.log("Lista de Residentes:")
-      console.log(this.listaresidentes)
       this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion);
       this.dialogoparticipante = !this.dialogoparticipante;
     },
