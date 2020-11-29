@@ -149,7 +149,7 @@ export default {
         },
         {
           text: "Creador",
-          value: "usuario",
+          value: "creador",
         },
         {
           text: "Acciones",
@@ -158,24 +158,7 @@ export default {
           align: "center",
         },
       ],
-      anexos: [
-        {
-          id: "5f8f78f3076924e34c9613d0",
-          titulo: "Pepinardo",
-          descripcion: "Soy guapo, lo sé",
-          enlaces: [
-            {
-              link: "https://www.twitch.tv/fede_3012",
-              descripcion: "Enlace 1",
-            },
-          ],
-          idresidente: "5f9f182cba5ac935cc3fe6f5",
-          idcreador: "5f9e4cdae4655cf92eaa4d5b",
-          usuario: "Renzo Guerra",
-          fechacreacion: "20/11/2020",
-          area: "psicologica",
-        },
-      ],
+      anexos: [],
     };
   },
   methods: {
@@ -232,6 +215,20 @@ export default {
       this.selectedanexo = this.anexos[0];
       this.dialogDetail = true;
     },
+    listAnexos() {
+      axios
+        .get("/Anexo/all")
+        .then((res) => {
+          this.loading = false;
+          this.anexos = res.data;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+  },
+  created() {
+    this.listAnexos();
   },
 };
 </script>
