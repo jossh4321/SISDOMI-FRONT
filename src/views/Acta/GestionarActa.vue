@@ -25,7 +25,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
-                  darkdark @click="editItem(item)"
+                  darkdark @click="regitem(item)"
                   class="mb-2"
                   v-bind="attrs"
                   v-on="on"
