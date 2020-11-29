@@ -530,12 +530,8 @@ data(){
       this.dialogVistaPreviaFirma = false;
     },
 },
-watch:{
-   dialogodetalle: async function(dialogodetalle){
-      this.seguimiento = await this.seguimiento;
-      console.log(dialogodetalle)
-    }
-}
+
+
 }
 
 </script>
