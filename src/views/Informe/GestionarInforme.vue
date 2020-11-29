@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="card">
-      <v-card-title> Gestionar Informe </v-card-title>
+      <v-card-title> Gestionar Informes </v-card-title>
       <v-data-table
         :headers="headers"
         :items="informes"
@@ -79,6 +79,16 @@
         </ActualizarInformeEducativoInicial>
       </v-dialog>
       <v-dialog persistent
+                v-model="dialogoISIactualizacion" 
+                max-width="880px">
+        <ActualizarInformeSocialInicial
+          v-if="dialogoISIactualizacion"
+          :listaresidentes="listaresidentes"
+          :informe="informe" 
+          @close-dialog-update="closeDialogActualizar()">
+        </ActualizarInformeSocialInicial>
+      </v-dialog>
+      <v-dialog persistent
                 v-model="dialogoIEEactualizacion" 
                 max-width="880px">
         <ActualizarInformeEducativoEvolutivo
@@ -149,6 +159,7 @@ import axios from "axios";
 import SeleccionarInforme from "@/components/informes/SeleccionarInforme.vue";
 import ActualizarInformeEducativoInicial from "@/components/informes/ActualizarInformeEducativoInicial.vue";
 import ActualizarInformeEducativoEvolutivo from "@/components/informes/ActualizarInformeEducativoEvolutivo.vue";
+import ActualizarInformeSocialInicial from "@/components/informes/ActualizarInformeSocialInicial.vue";
 import ActualizarInformeSocialEvolutivo from "@/components/informes/ActualizarInformeSocialEvolutivo.vue";
 import DetalleInformeEducativoInicial from "@/components/informes/DetalleInformeEducativoInicial.vue";
 import DetalleInformeEducativoEvolutivo from "@/components/informes/DetalleInformeEducativoEvolutivo.vue";
@@ -161,6 +172,7 @@ export default {
     SeleccionarInforme,
     ActualizarInformeEducativoInicial,
     ActualizarInformeEducativoEvolutivo,
+    ActualizarInformeSocialInicial,
     ActualizarInformeSocialEvolutivo,
     DetalleInformeEducativoInicial,
     DetalleInformeEducativoEvolutivo,
@@ -189,6 +201,7 @@ export default {
       dialogoregistro: false,
       dialogoIEIactualizacion: false,
       dialogoIEEactualizacion: false,
+      dialogoISIactualizacion: false,
       dialogoISEactualizacion: false,
       dialogoIEIdetalle:false,
       dialogoIEEdetalle:false,
@@ -212,12 +225,13 @@ export default {
       this.dialogoIEIactualizacion = false;
       this.dialogoIEEactualizacion = false;
       this.dialogoISEactualizacion = false;
+      this.dialogoISIactualizacion = false;
     },
     closeDialogDetalle() {
       this.dialogoIEIdetalle = false;
       this.dialogoIEEdetalle = false;
       this.dialogoISIdetalle = false;
-      this.dialogoISEdetalle = false;
+      this.dialogoISEdetalle = false;      
     },
     async obtenerInformes() {
       await axios
@@ -248,6 +262,9 @@ export default {
                 case "Informe Educativo Final":
                     this.titulo = "Modificar Informe Educativo Final";
                     this.dialogoIEEactualizacion = !this.dialogoIEEactualizacion;
+                    break;
+                case "Informe Social Inicial":                    
+                    this.dialogoISIactualizacion = !this.dialogoISIactualizacion;
                     break;
                 case "Informe Social Evolutivo":
                     this.titulo = "Modificar Informe Social Evolutivo";

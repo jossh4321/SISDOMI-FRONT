@@ -171,7 +171,7 @@ export default {
           href: "/dashboard/talleres"
         },
         {
-          title: "Gestionar Informe",
+          title: "Gestionar Informes",
           group: "admin",
           icon: "dashboard",
           name: "GestionInforme",
