@@ -35,7 +35,7 @@
                 </v-btn>
               </template>
              <RegistrarPlanIntervencion v-if="dialogoregistro" :actaI="actaI" @close-dialog-detail="closeDialogRegistrar()">
-                @close-dialog="closeDialog"
+                
               ></RegistrarPlanIntervencion>
             </v-dialog>
           </v-toolbar>
@@ -130,6 +130,14 @@ export default {
 
   methods: {
      ...mapMutations(["setPlanInterve"]),
+    async regitem(item){
+      this.planA = await this.actu(item);
+      this.dialogoregistro=!this.dialogoregistro;
+      console.log(item);
+
+    },
+   
+
     async editItem(item) {
       this.planA =  await this.actu(item); 
       this.dialogoactualizacion=!this.dialogoactualizacion;
