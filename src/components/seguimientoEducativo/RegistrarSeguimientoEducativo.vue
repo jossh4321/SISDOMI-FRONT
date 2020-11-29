@@ -573,7 +573,7 @@
                             x-small
                             dark
                             color="red"
-                            @click="eliminarTrimestre(index)"
+                            @click="eliminarNotas(index)"
                           >
                             <v-icon dark>
                               mdi-minus
@@ -818,6 +818,7 @@ methods:{
        this.puntajes.promedio="";
     },
     eliminarNotas(index){
+     
      this.seguimiento.contenido.trimestre[0].puntajes.split(index)
     },
    
