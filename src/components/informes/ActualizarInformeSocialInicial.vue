@@ -1,539 +1,540 @@
-<template>  
-    <v-card>
-      <v-card-title class="justify-center"
-        >Registro de Informe Social Inicial</v-card-title
-      >
-      <v-stepper v-model="step">
-        <v-stepper-header>
-          <v-stepper-step editable step="1">
-            Datos Generales
-          </v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step editable step="2">
-            Descripción de la situación
-          </v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step editable step="3">
-            Análisis y diagnóstico
-          </v-stepper-step>
-        </v-stepper-header>
-        <v-stepper-items>
-          <v-stepper-content step="1">
-            <div class="container-user">
-              <form>
-                <v-autocomplete
-                  :items="listaresidentes"
-                  v-model="informe.idresidente"
-                  filled
-                  chips
-                  dense
-                  outlined
-                  color="#009900"
-                  label="Usuaria CAR"
-                  item-text="nombre"
-                  item-value="id"
-                  @input="$v.informe.idresidente.$touch()"
-                  @blur="$v.informe.idresidente.$touch()"
-                  :error-messages="errorResidente"
-                >
-                  <template v-slot:selection="data">
-                    <v-chip
-                      v-bind="data.attrs"
-                      :input-value="data.selected"
-                      style="margin-top:5px"
-                    >
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size:12px">RT</span>
-                      </v-avatar>
-                      {{ data.item.nombre }} {{ data.item.apellido }}
-                    </v-chip>
-                  </template>
-                  <template v-slot:item="data">
-                    <template>
-                      <v-list-item-avatar>
-                        <v-avatar left color="#b3b3ff" size="24">
-                          <span style="font-size:12px">UC</span>
-                        </v-avatar>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          >Nombre completo: {{ data.item.nombre }}
-                          {{ data.item.apellido }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle
-                          >Nro. Documento:
-                          {{ data.item.numeroDocumento }}</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </template>
-                  </template>
-                </v-autocomplete>
-                <div :key="residente.id" v-for="residente in listaresidentes">
-                  <v-textarea
-                    v-if="residente.id == informe.idresidente"
-                    v-model="residente.motivoIngreso"
-                    label="Motivo de ingreso"
-                    outlined
-                    readonly
-                    color="#009900"
-                    rows="1"
-                    auto-grow
+<template>
+  <v-card>
+    <v-card-title class="justify-center"
+      >Actualización de Informe Social Inicial</v-card-title
+    >
+    <v-stepper v-model="step">
+      <v-stepper-header>
+        <v-stepper-step editable step="1">
+          Datos Generales
+        </v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step editable step="2">
+          Descripción de la situación
+        </v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step editable step="3">
+          Análisis y diagnóstico
+        </v-stepper-step>
+      </v-stepper-header>
+      <v-stepper-items>
+        <v-stepper-content step="1">
+          <div class="container-user">
+            <form>
+              <v-autocomplete
+                :items="listaresidentes"
+                v-model="informe.idresidente"
+                filled
+                chips
+                dense
+                outlined
+                color="#009900"
+                label="Usuaria CAR"
+                item-text="nombre"
+                item-value="id"
+                @input="$v.informe.idresidente.$touch()"
+                @blur="$v.informe.idresidente.$touch()"
+                :error-messages="errorResidente"
+              >
+                <template v-slot:selection="data">
+                  <v-chip
+                    v-bind="data.attrs"
+                    :input-value="data.selected"
                     style="margin-top:5px"
-                  ></v-textarea>
-                </div>
+                  >
+                    <v-avatar left color="#b3b3ff" size="24">
+                      <span style="font-size:12px">RT</span>
+                    </v-avatar>
+                    {{ data.item.nombre }} {{ data.item.apellido }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <template>
+                    <v-list-item-avatar>
+                      <v-avatar left color="#b3b3ff" size="24">
+                        <span style="font-size:12px">UC</span>
+                      </v-avatar>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        >Nombre completo: {{ data.item.nombre }}
+                        {{ data.item.apellido }}
+                      </v-list-item-title>
+                      <v-list-item-subtitle
+                        >Nro. Documento:
+                        {{ data.item.numeroDocumento }}</v-list-item-subtitle
+                      >
+                    </v-list-item-content>
+                  </template>
+                </template>
+              </v-autocomplete>
+              <div :key="residente.id" v-for="residente in listaresidentes">
                 <v-textarea
-                  v-model="informe.contenido.antecedentes"
-                  label="Antecedentes"
+                  v-if="residente.id == informe.idresidente"
+                  v-model="residente.motivoIngreso"
+                  label="Motivo de ingreso"
                   outlined
+                  readonly
                   color="#009900"
                   rows="1"
                   auto-grow
-                  @input="$v.informe.contenido.antecedentes.$touch()"
-                  @blur="$v.informe.contenido.antecedentes.$touch()"
-                  :error-messages="errorAntecedentes"
+                  style="margin-top:5px"
                 ></v-textarea>
+              </div>
+              <v-textarea
+                v-model="informe.contenido.antecedentes"
+                label="Antecedentes"
+                outlined
+                color="#009900"
+                rows="1"
+                auto-grow
+                @input="$v.informe.contenido.antecedentes.$touch()"
+                @blur="$v.informe.contenido.antecedentes.$touch()"
+                :error-messages="errorAntecedentes"
+              ></v-textarea>
 
-                <v-card style="padding:5px;margin:0 0 18px 0;background-color:#EAEAEA">
-                  <v-card-title>
+              <v-card
+                style="padding:5px;margin:0 0 18px 0;background-color:#EAEAEA"
+              >
+                <v-card-title>
+                  <v-row>
+                    <v-col :cols="8">
+                      Composición Familiar
+                    </v-col>
+                    <v-col :cols="4" align="right">
+                      <v-btn
+                        fab
+                        small
+                        dark
+                        color="green"
+                        @click="modalRegistrar()"
+                      >
+                        <v-icon dark>
+                          mdi-plus
+                        </v-icon>
+                      </v-btn>
+                      <v-dialog
+                        v-model="dialogAgregarFamiliar"
+                        persistent
+                        max-width="600px"
+                      >
+                        <v-card align="center">
+                          <v-card-title>
+                            <span class="headline">Datos familiar</span>
+                          </v-card-title>
+                          <v-card-text>
+                            <v-textarea
+                              label="Nro. Documento"
+                              v-model="familiar.numerodocumento"
+                              outlined
+                              color="#009900"
+                              rows="1"
+                              auto-grow
+                              :readonly="isDisabled"
+                              @input="$v.familiar.numerodocumento.$touch()"
+                              @blur="$v.familiar.numerodocumento.$touch()"
+                              :error-messages="errorNumeroDocumentoFamiliar"
+                            >
+                            </v-textarea>
+                            <v-textarea
+                              label="Nombres"
+                              v-model="familiar.nombre"
+                              outlined
+                              color="#009900"
+                              rows="1"
+                              auto-grow
+                              :readonly="isDisabled"
+                              @input="$v.familiar.nombre.$touch()"
+                              @blur="$v.familiar.nombre.$touch()"
+                              :error-messages="errorNombreFamiliar"
+                            >
+                            </v-textarea>
+                            <v-textarea
+                              label="Apellidos"
+                              v-model="familiar.apellido"
+                              outlined
+                              color="#009900"
+                              rows="1"
+                              auto-grow
+                              :readonly="isDisabled"
+                              @input="$v.familiar.apellido.$touch()"
+                              @blur="$v.familiar.apellido.$touch()"
+                              :error-messages="errorApellidoFamiliar"
+                            >
+                            </v-textarea>
+                            <v-row>
+                              <v-col>
+                                <v-textarea
+                                  label="Parentesco"
+                                  v-model="familiar.parentesco"
+                                  outlined
+                                  color="#009900"
+                                  rows="1"
+                                  auto-grow
+                                  :readonly="isDisabled"
+                                  @input="$v.familiar.parentesco.$touch()"
+                                  @blur="$v.familiar.parentesco.$touch()"
+                                  :error-messages="errorParentescoFamiliar"
+                                >
+                                </v-textarea>
+                              </v-col>
+                              <v-col>
+                                <v-textarea
+                                  label="Edad"
+                                  v-model="familiar.edad"
+                                  outlined
+                                  color="#009900"
+                                  rows="1"
+                                  auto-grow
+                                  :readonly="isDisabled"
+                                  @input="$v.familiar.edad.$touch()"
+                                  @blur="$v.familiar.edad.$touch()"
+                                  :error-messages="errorEdadFamiliar"
+                                >
+                                </v-textarea>
+                              </v-col>
+                              <v-col>
+                                <v-textarea
+                                  label="Grado instrucción"
+                                  v-model="familiar.gradoinstruccion"
+                                  outlined
+                                  color="#009900"
+                                  rows="1"
+                                  auto-grow
+                                  :readonly="isDisabled"
+                                  @input="$v.familiar.gradoinstruccion.$touch()"
+                                  @blur="$v.familiar.gradoinstruccion.$touch()"
+                                  :error-messages="
+                                    errorGradoInstruccionFamiliar
+                                  "
+                                >
+                                </v-textarea>
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col>
+                                <v-textarea
+                                  label="Ocupación"
+                                  v-model="familiar.ocupacion"
+                                  outlined
+                                  color="#009900"
+                                  rows="1"
+                                  auto-grow
+                                  :readonly="isDisabled"
+                                  @input="$v.familiar.ocupacion.$touch()"
+                                  @blur="$v.familiar.ocupacion.$touch()"
+                                  :error-messages="errorOcupacionFamiliar"
+                                >
+                                </v-textarea>
+                              </v-col>
+                              <v-col>
+                                <v-textarea
+                                  label="Estado civil"
+                                  v-model="familiar.estadocivil"
+                                  outlined
+                                  color="#009900"
+                                  rows="1"
+                                  auto-grow
+                                  :readonly="isDisabled"
+                                  @input="$v.familiar.estadocivil.$touch()"
+                                  @blur="$v.familiar.estadocivil.$touch()"
+                                  :error-messages="errorEstadoCivil"
+                                >
+                                </v-textarea>
+                              </v-col>
+                            </v-row>
+
+                            <v-textarea
+                              label="Observaciones"
+                              v-model="familiar.observaciones"
+                              outlined
+                              color="#009900"
+                              rows="1"
+                              auto-grow
+                              :readonly="isDisabled"
+                            >
+                            </v-textarea>
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              v-if="accion == 'registrar'"
+                              color="blue darken-1"
+                              text
+                              @click="agregarFamiliar()"
+                            >
+                              Agregar
+                            </v-btn>
+                            <v-btn
+                              v-if="accion == 'actualizar'"
+                              color="blue darken-1"
+                              text
+                              @click="actualizarFamiliar(indice)"
+                            >
+                              Actualizar
+                            </v-btn>
+                            <v-btn
+                              color="blue darken-1"
+                              text
+                              @click="cerrarAgregarFamiliar()"
+                            >
+                              Cerrar
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </v-col>
+                  </v-row>
+                </v-card-title>
+
+                <v-card-text style="background-color:#FAFAFA">
+                  <v-row>
+                    <v-col><h3>Nombre</h3></v-col>
+                    <v-col><h3>Parentesco</h3></v-col>
+                    <v-col><h3>Nro. Documento</h3></v-col>
+                    <v-col><h3>Acciones</h3></v-col>
+                  </v-row>
+                  <div
+                    v-for="(item, index) in informe.contenido.familiares"
+                    :key="index"
+                  >
                     <v-row>
-                      <v-col :cols="8">
-                        Composición Familiar
-                      </v-col>
-                      <v-col :cols="4" align="right">
-                        <v-btn
-                          fab
-                          small
-                          dark
-                          color="green"
-                          @click="modalRegistrar()"
-                        >
-                          <v-icon dark>
-                            mdi-plus
-                          </v-icon>
-                        </v-btn>
-                        <v-dialog
-                          v-model="dialogAgregarFamiliar"
-                          persistent
-                          max-width="600px"
-                        >
-                          <v-card align="center">
-                            <v-card-title>
-                              <span class="headline">Datos familiar</span>
-                            </v-card-title>
-                            <v-card-text>
-                              <v-textarea
-                                label="Nro. Documento"
-                                v-model="familiar.numerodocumento"
-                                outlined
-                                color="#009900"
-                                rows="1"
-                                auto-grow
-                                :readonly="isDisabled"
-                                @input="$v.familiar.numerodocumento.$touch()"
-                                @blur="$v.familiar.numerodocumento.$touch()"
-                                :error-messages="errorNumeroDocumentoFamiliar"
-                              >
-                              </v-textarea>
-                              <v-textarea
-                                label="Nombres"
-                                v-model="familiar.nombre"
-                                outlined
-                                color="#009900"
-                                rows="1"
-                                auto-grow
-                                :readonly="isDisabled"
-                                @input="$v.familiar.nombre.$touch()"
-                                @blur="$v.familiar.nombre.$touch()"
-                                :error-messages="errorNombreFamiliar"
-                              >
-                              </v-textarea>
-                              <v-textarea
-                                label="Apellidos"
-                                v-model="familiar.apellido"
-                                outlined
-                                color="#009900"
-                                rows="1"
-                                auto-grow
-                                :readonly="isDisabled"
-                                @input="$v.familiar.apellido.$touch()"
-                                @blur="$v.familiar.apellido.$touch()"
-                                :error-messages="errorApellidoFamiliar"
-                              >
-                              </v-textarea>
-                              <v-row>
-                                <v-col>
-                                  <v-textarea
-                                    label="Parentesco"
-                                    v-model="familiar.parentesco"
-                                    outlined
-                                    color="#009900"
-                                    rows="1"
-                                    auto-grow
-                                    :readonly="isDisabled"
-                                    @input="$v.familiar.parentesco.$touch()"
-                                    @blur="$v.familiar.parentesco.$touch()"
-                                    :error-messages="errorParentescoFamiliar"
-                                  >
-                                  </v-textarea>
-                                </v-col>
-                                <v-col>
-                                  <v-textarea
-                                    label="Edad"
-                                    v-model="familiar.edad"
-                                    outlined
-                                    color="#009900"
-                                    rows="1"
-                                    auto-grow
-                                    :readonly="isDisabled"
-                                    @input="$v.familiar.edad.$touch()"
-                                    @blur="$v.familiar.edad.$touch()"
-                                    :error-messages="errorEdadFamiliar"
-                                  >
-                                  </v-textarea>
-                                </v-col>
-                                <v-col>
-                                  <v-textarea
-                                    label="Grado instrucción"
-                                    v-model="familiar.gradoinstruccion"
-                                    outlined
-                                    color="#009900"
-                                    rows="1"
-                                    auto-grow
-                                    :readonly="isDisabled"
-                                    @input="
-                                      $v.familiar.gradoinstruccion.$touch()
-                                    "
-                                    @blur="
-                                      $v.familiar.gradoinstruccion.$touch()
-                                    "
-                                    :error-messages="
-                                      errorGradoInstruccionFamiliar
-                                    "
-                                  >
-                                  </v-textarea>
-                                </v-col>
-                              </v-row>
-                              <v-row>
-                                <v-col>
-                                  <v-textarea
-                                    label="Ocupación"
-                                    v-model="familiar.ocupacion"
-                                    outlined
-                                    color="#009900"
-                                    rows="1"
-                                    auto-grow
-                                    :readonly="isDisabled"
-                                    @input="$v.familiar.ocupacion.$touch()"
-                                    @blur="$v.familiar.ocupacion.$touch()"
-                                    :error-messages="errorOcupacionFamiliar"
-                                  >
-                                  </v-textarea>
-                                </v-col>
-                                <v-col>
-                                  <v-textarea
-                                    label="Estado civil"
-                                    v-model="familiar.estadocivil"
-                                    outlined
-                                    color="#009900"
-                                    rows="1"
-                                    auto-grow
-                                    :readonly="isDisabled"
-                                    @input="$v.familiar.estadocivil.$touch()"
-                                    @blur="$v.familiar.estadocivil.$touch()"
-                                    :error-messages="errorEstadoCivil"
-                                  >
-                                  </v-textarea>
-                                </v-col>
-                              </v-row>
-
-                              <v-textarea
-                                label="Observaciones"
-                                v-model="familiar.observaciones"
-                                outlined
-                                color="#009900"
-                                rows="1"
-                                auto-grow
-                                :readonly="isDisabled"
-                              >
-                              </v-textarea>
-                            </v-card-text>
-                            <v-card-actions>
-                              <v-spacer></v-spacer>
-                              <v-btn
-                                v-if="accion == 'registrar'"
-                                color="blue darken-1"
-                                text
-                                @click="agregarFamiliar()"
-                              >
-                                Agregar
-                              </v-btn>
-                              <v-btn
-                                v-if="accion == 'actualizar'"
-                                color="blue darken-1"
-                                text
-                                @click="actualizarFamiliar(indice)"
-                              >
-                                Actualizar
-                              </v-btn>
-                              <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="cerrarAgregarFamiliar()"
-                              >
-                                Cerrar
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </v-dialog>
+                      <v-col>{{ item.nombre }} {{ item.apellido }}</v-col>
+                      <v-col>{{ item.parentesco }}</v-col>
+                      <v-col>{{ item.numerodocumento }}</v-col>
+                      <v-col>
+                        <v-row style="padding:0;margin:0">
+                          <v-col style="padding:0;margin:0">
+                            <v-btn
+                              fab
+                              x-small
+                              dark
+                              color="yellow"
+                              @click="modalActualizar(index)"
+                            >
+                              <v-icon dark>
+                                mdi-pen
+                              </v-icon>
+                            </v-btn>
+                          </v-col>
+                          <v-col style="padding:0;margin:0">
+                            <v-btn
+                              fab
+                              x-small
+                              dark
+                              color="blue"
+                              @click="modalConsultar(index)"
+                            >
+                              <v-icon dark>
+                                mdi-eye
+                              </v-icon>
+                            </v-btn>
+                          </v-col>
+                          <v-col style="padding:0;margin:0">
+                            <v-btn
+                              fab
+                              x-small
+                              dark
+                              color="red"
+                              @click="eliminarFamiliar(index)"
+                            >
+                              <v-icon dark>
+                                mdi-minus
+                              </v-icon>
+                            </v-btn>
+                          </v-col>
+                        </v-row>
                       </v-col>
                     </v-row>
-                  </v-card-title>
+                  </div>
+                </v-card-text>
+              </v-card>
 
-                  <v-card-text style="background-color:#FAFAFA">
-                    <v-row>
-                      <v-col><h3>Nombre</h3></v-col>
-                      <v-col><h3>Parentesco</h3></v-col>
-                      <v-col><h3>Nro. Documento</h3></v-col>
-                      <v-col><h3>Acciones</h3></v-col>
-                    </v-row>
-                    <div
-                      v-for="(item, index) in informe.contenido.familiares"
-                      :key="index"
-                    >
-                      <v-row>
-                        <v-col>{{ item.nombre }} {{ item.apellido }}</v-col>
-                        <v-col>{{ item.parentesco }}</v-col>
-                        <v-col>{{ item.numerodocumento }}</v-col>
-                        <v-col>
-                          <v-row style="padding:0;margin:0">
-                            <v-col style="padding:0;margin:0">
-                              <v-btn
-                                fab
-                                x-small
-                                dark
-                                color="yellow"
-                                @click="modalActualizar(index)"
-                              >
-                                <v-icon dark>
-                                  mdi-pen
-                                </v-icon>
-                              </v-btn>
-                            </v-col>
-                            <v-col style="padding:0;margin:0">
-                              <v-btn
-                                fab
-                                x-small
-                                dark
-                                color="blue"
-                                @click="modalConsultar(index)"
-                              >
-                                <v-icon dark>
-                                  mdi-eye
-                                </v-icon>
-                              </v-btn>
-                            </v-col>
-                            <v-col style="padding:0;margin:0">
-                              <v-btn
-                                fab
-                                x-small
-                                dark
-                                color="red"
-                                @click="eliminarFamiliar(index)"
-                              >
-                                <v-icon dark>
-                                  mdi-minus
-                                </v-icon>
-                              </v-btn>
-                            </v-col>
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                    </div>
-                  </v-card-text>
+              <v-textarea
+                v-model="informe.contenido.situacionfamiliar"
+                label="Descripción de la situación familiar"
+                outlined
+                color="#009900"
+                rows="1"
+                auto-grow
+                @input="$v.informe.contenido.situacionfamiliar.$touch()"
+                @blur="$v.informe.contenido.situacionfamiliar.$touch()"
+                :error-messages="errorSituacionFamiliar"
+              ></v-textarea>
+
+              <v-row>
+                <v-col>
+                  <v-btn block @click="step = 2" color="success">
+                    <v-icon left>mdi-page-next-outline</v-icon>
+                    <span>Continuar</span>
+                  </v-btn>
+                </v-col>
+                <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </div>
+        </v-stepper-content>
+        <v-stepper-content step="2">
+          <div class="container-user">
+            <form>
+              <v-textarea
+                v-model="informe.contenido.situacionvivienda"
+                label="Descripción de la vivienda"
+                outlined
+                color="#009900"
+                rows="1"
+                auto-grow
+                @input="$v.informe.contenido.situacionvivienda.$touch()"
+                @blur="$v.informe.contenido.situacionvivienda.$touch()"
+                :error-messages="errorSituacionVivienda"
+              ></v-textarea>
+              <v-textarea
+                v-model="informe.contenido.situacioneconomica"
+                label="Descripción de la situacion económica"
+                outlined
+                color="#009900"
+                rows="1"
+                auto-grow
+                @input="$v.informe.contenido.situacioneconomica.$touch()"
+                @blur="$v.informe.contenido.situacioneconomica.$touch()"
+                :error-messages="errorSituacionEconomica"
+              ></v-textarea>
+              <v-textarea
+                v-model="informe.contenido.situacionsalud"
+                label="Descripción de la situacion de salud"
+                outlined
+                color="#009900"
+                rows="1"
+                auto-grow
+                @input="$v.informe.contenido.situacionsalud.$touch()"
+                @blur="$v.informe.contenido.situacionsalud.$touch()"
+                :error-messages="errorSituacionSalud"
+              ></v-textarea>
+              <v-textarea
+                v-model="informe.contenido.educacion"
+                label="Descripción de la situacion educativa"
+                outlined
+                color="#009900"
+                rows="1"
+                auto-grow
+                @input="$v.informe.contenido.educacion.$touch()"
+                @blur="$v.informe.contenido.educacion.$touch()"
+                :error-messages="errorSituacionEducativa"
+              ></v-textarea>
+              <v-textarea
+                v-model="informe.contenido.situacionactual"
+                label="Descripción de la situacion social"
+                outlined
+                color="#009900"
+                rows="1"
+                auto-grow
+                @input="$v.informe.contenido.situacionactual.$touch()"
+                @blur="$v.informe.contenido.situacionactual.$touch()"
+                :error-messages="errorSituacionActual"
+              ></v-textarea>
+              <v-row>
+                <v-col>
+                  <v-btn block @click="step = 3" color="success">
+                    <v-icon left>mdi-page-next-outline</v-icon>
+                    <span>Continuar</span>
+                  </v-btn>
+                </v-col>
+                <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </div>
+        </v-stepper-content>
+        <v-stepper-content step="3">
+          <div class="container-user">
+            <form>
+              <v-textarea
+                v-model="informe.contenido.diagnosticosocial"
+                label="Diagnóstico social"
+                outlined
+                color="#009900"
+                rows="1"
+                auto-grow
+              ></v-textarea>
+
+              <v-card
+                style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+              >
+                <v-card
+                  elevation="0"
+                  style="background-color:#EAEAEA"
+                  height="70"
+                >
+                  <v-row style="margin:1%;heigh:100%" align="center">
+                    <v-col :cols="8" align="left">
+                      <v-text-field
+                        v-model="recomendacion"
+                        label="Recomendaciones"
+                        color="#009900"
+                        @input="$v.recomendacion.$touch()"
+                        @blur="$v.recomendacion.$touch()"
+                        :error-messages="errorRecomendacion"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col :cols="4" align="right">
+                      <v-btn
+                        fab
+                        small
+                        dark
+                        color="green"
+                        @click="agregarRecomendaciones"
+                      >
+                        <v-icon dark>
+                          mdi-plus
+                        </v-icon>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
                 </v-card>
-
-                <v-textarea
-                  v-model="informe.contenido.situacionfamiliar"
-                  label="Descripción de la situación familiar"
-                  outlined
-                  color="#009900"
-                  rows="1"
-                  auto-grow  
-                  @input="$v.informe.contenido.situacionfamiliar.$touch()"
-                  @blur="$v.informe.contenido.situacionfamiliar.$touch()"
-                  :error-messages="errorSituacionFamiliar"                                  
-                ></v-textarea>
-
-                <v-row>
-                  <v-col>
-                    <v-btn block @click="step = 2" color="success">
-                      <v-icon left>mdi-page-next-outline</v-icon>
-                      <span>Continuar</span>
-                    </v-btn>
-                  </v-col>
-                  <v-col>
-                    <v-btn block @click="cerrarDialogo()" color="primary">
-                      <v-icon left>mdi-close-outline</v-icon>
-                      <span>Cerrar</span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </form>
-            </div>
-          </v-stepper-content>
-          <v-stepper-content step="2">
-            <div class="container-user">
-              <form>
-                <v-textarea
-                  v-model="informe.contenido.situacionvivienda"
-                  label="Descripción de la vivienda"
-                  outlined
-                  color="#009900"
-                  rows="1"
-                  auto-grow
-                  @input="$v.informe.contenido.situacionvivienda.$touch()"
-                  @blur="$v.informe.contenido.situacionvivienda.$touch()"
-                  :error-messages="errorSituacionVivienda"
-                ></v-textarea>
-                <v-textarea
-                  v-model="informe.contenido.situacioneconomica"
-                  label="Descripción de la situacion económica"
-                  outlined
-                  color="#009900"
-                  rows="1"
-                  auto-grow
-                  @input="$v.informe.contenido.situacioneconomica.$touch()"
-                  @blur="$v.informe.contenido.situacioneconomica.$touch()"
-                  :error-messages="errorSituacionEconomica"
-                ></v-textarea>
-                <v-textarea
-                  v-model="informe.contenido.situacionsalud"
-                  label="Descripción de la situacion de salud"
-                  outlined
-                  color="#009900"
-                  rows="1"
-                  auto-grow
-                  @input="$v.informe.contenido.situacionsalud.$touch()"
-                  @blur="$v.informe.contenido.situacionsalud.$touch()"
-                  :error-messages="errorSituacionSalud"
-                ></v-textarea>
-                <v-textarea
-                  v-model="informe.contenido.educacion"
-                  label="Descripción de la situacion educativa"
-                  outlined
-                  color="#009900"
-                  rows="1"
-                  auto-grow
-                  @input="$v.informe.contenido.educacion.$touch()"
-                  @blur="$v.informe.contenido.educacion.$touch()"
-                  :error-messages="errorSituacionEducativa"
-                ></v-textarea>
-                <v-textarea
-                  v-model="informe.contenido.situacionactual"
-                  label="Descripción de la situacion social"
-                  outlined
-                  color="#009900"
-                  rows="1"
-                  auto-grow
-                  @input="$v.informe.contenido.situacionactual.$touch()"
-                  @blur="$v.informe.contenido.situacionactual.$touch()"
-                  :error-messages="errorSituacionActual"
-                ></v-textarea>
-                <v-row>
-                  <v-col>
-                    <v-btn block @click="step = 3" color="success">
-                      <v-icon left>mdi-page-next-outline</v-icon>
-                      <span>Continuar</span>
-                    </v-btn>
-                  </v-col>
-                  <v-col>
-                    <v-btn block @click="cerrarDialogo()" color="primary">
-                      <v-icon left>mdi-close-outline</v-icon>
-                      <span>Cerrar</span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </form>
-            </div>
-          </v-stepper-content>
-          <v-stepper-content step="3">
-            <div class="container-user">
-              <form>
-                <v-textarea
-                  v-model="informe.contenido.diagnosticosocial"
-                  label="Diagnóstico social"
-                  outlined
-                  color="#009900"
-                  rows="1"
-                  auto-grow
-                ></v-textarea>
 
                 <v-card
-                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                  tile
+                  elevation="0"
+                  color="#FAFAFA"
+                  style="margin:5px"
+                  height="60"
+                  v-for="recomendacion in informe.contenido.recomendaciones"
+                  :key="recomendacion"
                 >
-                  <v-card
-                    elevation="0"
-                    style="background-color:#EAEAEA"
-                    height="70"
-                  >
-                    <v-row style="margin:1%;heigh:100%" align="center">
-                      <v-col :cols="8" align="left">
-                        <v-text-field
-                          v-model="recomendacion"
-                          label="Recomendaciones"
-                          color="#009900"
-                          @input="$v.recomendacion.$touch()"
-                          @blur="$v.recomendacion.$touch()"
-                          :error-messages="errorRecomendacion"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col :cols="4" align="right">
+                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                    <v-col :cols="8" align="left">
+                      <span>{{ recomendacion }}</span>
+                    </v-col>
+                    <v-col :cols="4" align="right">
+                      <div style="margin-right:20px">
                         <v-btn
                           fab
-                          small
+                          x-small
                           dark
-                          color="green"
-                          @click="agregarRecomendaciones"
+                          color="red"
+                          @click="eliminarRecomendaciones(recomendacion)"
                         >
                           <v-icon dark>
-                            mdi-plus
+                            mdi-minus
                           </v-icon>
                         </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-card>
-
-                  <v-card
-                    tile
-                    elevation="0"
-                    color="#FAFAFA"
-                    style="margin:5px"
-                    height="60"
-                    v-for="recomendacion in recomendaciones"
-                    :key="recomendacion"
-                  >
-                    <v-row style="margin-left:10px;heigh:100%" align="center">
-                      <v-col :cols="8" align="left">
-                        <span>{{ recomendacion }}</span>
-                      </v-col>
-                      <v-col :cols="4" align="right">
-                        <div style="margin-right:20px">
-                          <v-btn
-                            fab
-                            x-small
-                            dark
-                            color="red"
-                            @click="eliminarRecomendaciones(recomendacion)"
-                          >
-                            <v-icon dark>
-                              mdi-minus
-                            </v-icon>
-                          </v-btn>
-                        </div>
-                      </v-col>
-                    </v-row>
-                  </v-card>
+                      </div>
+                    </v-col>
+                  </v-row>
                 </v-card>
+              </v-card>
+              <v-card
+                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+              >
                 <div>
                   <vue-dropzone
                     ref="myVueDropzone"
@@ -544,186 +545,272 @@
                   >
                   </vue-dropzone>
                 </div>
-
                 <v-card
-                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                  color="#FAFAFA"
+                  style="margin-top:5px"
+                  height="60"
+                  v-for="(item, index) in informe.contenido.anexos"
+                  :key="index"
                 >
-                  <v-card
-                    elevation="0"
-                    style="background-color:#EAEAEA"
-                    height="70"
-                  >
-                    <v-row style="margin:1%;heigh:100%" align="center">
-                      <v-col :cols="4" align="left">
-                        <v-text-field
-                          v-model="firmas.nombre"
-                          label="Nombre"
-                          color="#009900"
-                          @input="$v.firmas.nombre.$touch()"
-                          @blur="$v.firmas.nombre.$touch()"
-                          :error-messages="errorNombreFirma"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col :cols="4" align="left">
-                        <v-text-field
-                          v-model="firmas.cargo"
-                          label="Cargo"
-                          color="#009900"
-                          @input="$v.firmas.cargo.$touch()"
-                          @blur="$v.firmas.cargo.$touch()"
-                          :error-messages="errorCargoFirma"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col :cols="4" align="right">
+                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                    <v-col :cols="8">
+                      <article>
+                        <img
+                          style="margin-right:5px;width:6% "
+                          src="https://www.flaticon.es/svg/static/icons/svg/2991/2991112.svg"
+                          alt="imagen documento"
+                        />
+                        <span style="font-size:18px"> {{ item.titulo }}</span>
+                      </article>
+                    </v-col>
+                    <v-col :cols="2" align="center">
+                      <template>
                         <v-btn
                           fab
-                          small
+                          icon=""
+                          x-small
                           dark
-                          color="green"
-                          @click="agregarFirma"
+                          color="#EAEAEA"
+                          @click="verAnexo(index)"
+                        >
+                          <img
+                            style="width:25% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/709/709612.svg"
+                            alt="visualizar"
+                          />
+                        </v-btn>
+                      </template>
+                    </v-col>
+                    <v-col :cols="2" align="right">
+                      <div style="margin-right:20px">
+                        <v-btn
+                          fab
+                          x-small
+                          dark
+                          color="red"
+                          @click="eliminarAnexo(index)"
                         >
                           <v-icon dark>
-                            mdi-plus
+                            mdi-minus
                           </v-icon>
                         </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-card>
-                  <v-row>
-                    <v-col :cols="12" align="right">
-                      <div>
-                        <vue-dropzone
-                          ref="myVueDropzone"
-                          @vdropzone-success="afterSuccess2"
-                          @vdropzone-removed-file="afterRemoved2"
-                          id="dropzone2"
-                          :options="dropzoneOptions2"
-                        >
-                        </vue-dropzone>
                       </div>
-                          <v-card v-if="errorUrlFirma" color="red">
-                    <v-card-text class="text-center" style="color: white"
-                      >Debe Subir una imagen del usuario
-                      Obligatoriamente</v-card-text
-                    >
-                  </v-card>
-                  <v-divider class="divider-custom"></v-divider>
                     </v-col>
                   </v-row>
-                  <v-card
-                    color="#FAFAFA"
-                    style="margin-top:5px"
-                    height="60"
-                    v-for="(item, index) in informe.contenido.firmas"
-                    :key="index"
-                  >
-                    <v-row style="margin-left:10px;heigh:100%" align="center">
-                      <v-col :cols="8">
-                        <article>
-                          <img
-                            style="margin-right:5px;width:6% "
-                            src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
-                            alt="imagen usuario"
-                          />
-                          <span style="font-size:18px">
-                            {{ item.nombre }} {{ item.cargo }}</span
-                          >
-                        </article>
-                      </v-col>
-                      <v-col :cols="2" align="center">
-                        <v-dialog
-                          v-model="dialogVistaPreviaFirma"
-                          persistent
-                          max-width="600px"
-                        >
-                          <template v-slot:activator="{ on }">
-                            <v-btn
-                              v-on="on"
-                              fab
-                              icon=""
-                              x-small
-                              dark
-                              color="#EAEAEA"
-                              @click="verFirma(index)"
-                            >
-                              <img
-                                style="width:25% "
-                                src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
-                                alt="firma"
-                              />
-                            </v-btn>
-                          </template>
-                          <v-card align="center">
-                            <v-card-title>
-                              <span class="headline">Vista previa</span>
-                            </v-card-title>
-                            <v-card-text>
-                              <img
-                                width="100%"
-                                height="100%"
-                                :src="'data:image/jpeg;base64,' + imagen"
-                                alt=""
-                              />
-                            </v-card-text>
-                            <v-card-actions>
-                              <v-spacer></v-spacer>
-                              <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="cerrarVistaPreviaFirma()"
-                              >
-                                Cerrar
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </v-dialog>
-                      </v-col>
-                      <v-col :cols="2" align="right">
-                        <div style="margin-right:20px">
-                          <v-btn
-                            fab
-                            x-small
-                            dark
-                            color="red"
-                            @click="eliminarFirma(index)"
-                          >
-                            <v-icon dark>
-                              mdi-minus
-                            </v-icon>
-                          </v-btn>
-                        </div>
-                      </v-col>
-                    </v-row>
-                  </v-card>
                 </v-card>
+              </v-card>
 
+              <v-dialog
+                v-model="dialogVistaPreviaAnexos"
+                persistent
+                max-width="600px"
+              >
+                <v-card align="center">
+                  <v-card-title>
+                    <span class="headline">Vista previa</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <iframe :src="pdf" width="100%" height="600"></iframe>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="cerrarVistaPreviaAnexo()"
+                    >
+                      Cerrar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-card
+                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+              >
+                <v-card
+                  elevation="0"
+                  style="background-color:#EAEAEA"
+                  height="70"
+                >
+                  <v-row style="margin:1%;heigh:100%" align="center">
+                    <v-col :cols="4" align="left">
+                      <v-text-field
+                        v-model="firmas.nombre"
+                        label="Nombre"
+                        color="#009900"
+                        @input="$v.firmas.nombre.$touch()"
+                        @blur="$v.firmas.nombre.$touch()"
+                        :error-messages="errorNombreFirma"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col :cols="4" align="left">
+                      <v-text-field
+                        v-model="firmas.cargo"
+                        label="Cargo"
+                        color="#009900"
+                        @input="$v.firmas.cargo.$touch()"
+                        @blur="$v.firmas.cargo.$touch()"
+                        :error-messages="errorCargoFirma"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col :cols="4" align="right">
+                      <v-btn fab small dark color="green" @click="agregarFirma">
+                        <v-icon dark>
+                          mdi-plus
+                        </v-icon>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-card>
                 <v-row>
-                  <v-col>
-                    <v-btn block color="success" @click="registrarInforme">
-                      <v-icon left>mdi-content-save-all-outline</v-icon>
-                      <span>Registrar Informe</span>
-                    </v-btn>
-                  </v-col>
-                  <v-col>
-                    <v-btn block @click="cerrarDialogo()" color="primary">
-                      <v-icon left>mdi-close-outline</v-icon>
-                      <span>Cerrar</span>
-                    </v-btn>
+                  <v-col :cols="12" align="right">
+                    <div>
+                      <vue-dropzone
+                        ref="myVueDropzone"
+                        @vdropzone-success="afterSuccess2"
+                        @vdropzone-removed-file="afterRemoved2"
+                        id="dropzone2"
+                        :options="dropzoneOptions2"
+                      >
+                      </vue-dropzone>
+                    </div>
+                    <v-card v-if="errorUrlFirma" color="red">
+                      <v-card-text class="text-center" style="color: white"
+                        >Debe Subir una imagen del usuario
+                        Obligatoriamente</v-card-text
+                      >
+                    </v-card>
+                    <v-divider class="divider-custom"></v-divider>
                   </v-col>
                 </v-row>
-              </form>
-            </div>
-          </v-stepper-content>
-        </v-stepper-items>
-      </v-stepper>
-    </v-card>  
+                <v-card
+                  color="#FAFAFA"
+                  style="margin-top:5px"
+                  height="60"
+                  v-for="(item, index) in informe.contenido.firmas"
+                  :key="index"
+                >
+                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                    <v-col :cols="8">
+                      <article>
+                        <img
+                          style="margin-right:5px;width:6% "
+                          src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
+                          alt="imagen usuario"
+                        />
+                        <span style="font-size:18px">
+                          {{ item.nombre }} {{ item.cargo }}</span
+                        >
+                      </article>
+                    </v-col>
+                    <v-col :cols="2" align="center">
+                      <v-dialog
+                        v-model="dialogVistaPreviaFirma"
+                        persistent
+                        max-width="600px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            v-on="on"
+                            fab
+                            icon=""
+                            x-small
+                            dark
+                            color="#EAEAEA"
+                            @click="verFirma(index)"
+                          >
+                            <img
+                              style="width:25% "
+                              src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
+                              alt="firma"
+                            />
+                          </v-btn>
+                        </template>
+                        <v-card align="center">
+                          <v-card-title>
+                            <span class="headline">Vista previa</span>
+                          </v-card-title>
+                          <v-card-text>
+                            <img
+                              v-if="imagen.includes('http')"
+                              width="100%"
+                              height="100%"
+                              :src="imagen"
+                              alt=""
+                            />
+                            <img
+                              v-else
+                              width="100%"
+                              height="100%"
+                              :src="'data:image/jpeg;base64,' + imagen"
+                              alt=""
+                            />
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              color="blue darken-1"
+                              text
+                              @click="cerrarVistaPreviaFirma()"
+                            >
+                              Cerrar
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </v-col>
+                    <v-col :cols="2" align="right">
+                      <div style="margin-right:20px">
+                        <v-btn
+                          fab
+                          x-small
+                          dark
+                          color="red"
+                          @click="eliminarFirma(index)"
+                        >
+                          <v-icon dark>
+                            mdi-minus
+                          </v-icon>
+                        </v-btn>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-card>
+
+              <v-row>
+                <v-col>
+                  <v-btn block color="success" @click="actualizarInforme">
+                    <v-icon left>mdi-content-save-all-outline</v-icon>
+                    <span>Actualizar Informe</span>
+                  </v-btn>
+                </v-col>
+                <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </div>
+        </v-stepper-content>
+      </v-stepper-items>
+    </v-stepper>
+  </v-card>
 </template>
 <script>
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import { required, minLength, email, helpers,numeric } from "vuelidate/lib/validators";
+import {
+  required,
+  minLength,
+  email,
+  helpers,
+  numeric,
+} from "vuelidate/lib/validators";
 import moment from "moment";
 
 export default {
@@ -773,11 +860,13 @@ export default {
       dialogAgregarFamiliar: false,
       accion: "registrar",
       indice: "",
-      recomendacion: "",      
+      recomendacion: "",
       recomendaciones: [],
       dialogVistaPreviaFirma: false,
+      dialogVistaPreviaAnexos: false,
       imagen: "",
       fileList: [],
+      pdf: "",
     };
   },
   created() {
@@ -786,9 +875,11 @@ export default {
   methods: {
     ...mapMutations(["addInforme"]),
     async sendPDFFiles() {
+      let listaTitulos = [];
       let listaanexos = this.fileList;
       for (let index = 0; index < this.fileList.length; index++) {
         let formData = new FormData();
+        listaTitulos.push(this.fileList[index].name);
         formData.append("file", this.fileList[index]);
         await axios
           .post("/Media/archivos/pdf", formData)
@@ -797,15 +888,20 @@ export default {
           })
           .catch((err) => console.log(err));
       }
-      this.informe.contenido.anexos = listaanexos;
-      console.log(listaanexos);
+      for (let index = 0; index < this.fileList.length; index++) {
+        this.informe.contenido.anexos.push({
+          url: listaanexos[index],
+          titulo: listaTitulos[index],
+        });
+      }
+      console.log(this.informe.contenido.anexos);
     },
-    async registrarInforme() {
+    async actualizarInforme() {
       await this.sendPDFFiles();
       console.log(this.informe);
       this.$v.informe.$touch();
       if (this.$v.informe.$invalid) {
-        console.log("Hay errores :c");        
+        console.log("Hay errores :c");
         this.mensaje(
           "error",
           "..Oops",
@@ -813,14 +909,14 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        console.log("no hay errores");        
+        console.log("no hay errores");
         await axios
-          .post("/informe/informesi", this.informe)
+          .put("/informe/informesi", this.informe)
           .then((res) => {
-            this.informe = res.data;            
+            this.informe = res.data;
             var resi = this.listaresidentes.filter(function(residente) {
               return residente.id == res.data.idresidente;
-            });            
+            });
             var info = {
               id: res.data.id,
               tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
@@ -836,7 +932,7 @@ export default {
           "success",
           "Listo",
           "Informe registrado Satisfactoriamente",
-          "<strong>Se redirigira a la interfaz de gestión<strong>"
+          "<strong>Se redirigirá a la interfaz de gestión<strong>"
         );
       }
     },
@@ -857,7 +953,6 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        
         let familiar = {
           nombre: this.familiar.nombre,
           apellido: this.familiar.apellido,
@@ -887,7 +982,7 @@ export default {
     },
     cerrarAgregarFamiliar() {
       this.dialogAgregarFamiliar = false;
-      
+
       this.familiar.nombre = "";
       this.familiar.apellido = "";
       this.familiar.parentesco = "";
@@ -990,12 +1085,12 @@ export default {
       ].numerodocumento;
     },
     agregarRecomendaciones() {
-      this.$v.recomendacion.$touch();      
+      this.$v.recomendacion.$touch();
       if (!this.$v.recomendacion.$invalid) {
-      let recomendaciones = this.recomendacion;
-      this.informe.contenido.recomendaciones.push(recomendaciones);
-      this.recomendaciones = this.informe.contenido.recomendaciones;
-      this.recomendacion = "";
+        let recomendaciones = this.recomendacion;
+        this.informe.contenido.recomendaciones.push(recomendaciones);
+        this.recomendaciones = this.informe.contenido.recomendaciones;
+        this.recomendacion = "";
       }
     },
     eliminarRecomendaciones(recomendacion) {
@@ -1005,28 +1100,28 @@ export default {
         }
       });
     },
-    agregarFirma() {      
+    agregarFirma() {
       this.$v.firmas.$touch();
       this.$v.urlfirma.$touch();
 
       if (!this.$v.firmas.$invalid && !this.errorUrlFirma) {
-      let firmas = {
-        urlfirma: this.urlfirma,
-        nombre: this.firmas.nombre,
-        cargo: this.firmas.cargo,
-      };
-      this.informe.contenido.firmas.push(firmas);
-      this.$refs.myVueDropzone.removeAllFiles();
+        let firmas = {
+          urlfirma: this.urlfirma,
+          nombre: this.firmas.nombre,
+          cargo: this.firmas.cargo,
+        };
+        this.informe.contenido.firmas.push(firmas);
+        this.$refs.myVueDropzone.removeAllFiles();
 
-      this.urlfirma = "";
-      this.firmas.nombre = "";
-      this.firmas.cargo = "";
+        this.urlfirma = "";
+        this.firmas.nombre = "";
+        this.firmas.cargo = "";
       }
     },
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
     },
-    verFirma(index) {      
+    verFirma(index) {
       this.imagen = this.informe.contenido.firmas[index].urlfirma;
     },
     cerrarVistaPreviaFirma() {
@@ -1034,6 +1129,10 @@ export default {
     },
     afterSuccess(file, response) {      
       this.fileList.push(file);
+      console.log(this.informe.contenido.anexos);
+      console.log("asdasdasasdasd");
+      console.log(file);
+
     },
     afterRemoved(file, error, xhr) {
       this.informe.contenido.anexos = "";
@@ -1052,8 +1151,18 @@ export default {
         footer: footer,
       });
     },
-     cerrarDialogo() {
+    cerrarDialogo() {
       this.$emit("close-dialog-update");
+    },
+    eliminarAnexo(index) {
+      this.informe.contenido.anexos.splice(index, 1);
+    },
+    verAnexo(index) {
+      this.pdf = this.informe.contenido.anexos[index].url;
+      console.log(this.pdf), (this.dialogVistaPreviaAnexos = true);
+    },
+    cerrarVistaPreviaAnexo() {
+      this.dialogVistaPreviaAnexos = false;
     },
   },
   computed: {
@@ -1117,9 +1226,7 @@ export default {
       !this.$v.familiar.edad.required &&
         errors.push("Debe escribir la edad del familiar obligatoriamente");
       !this.$v.familiar.edad.numeric &&
-        errors.push(
-          "Debe Ingresar valores Numericos"
-        );
+        errors.push("Debe Ingresar valores Numericos");
       return errors;
     },
     errorEstadoCivil() {
@@ -1281,21 +1388,21 @@ export default {
         },
         ocupacion: {
           required,
-        },        
+        },
       },
-      recomendacion : {
+      recomendacion: {
         required,
       },
-      urlfirma:{
-        required
+      urlfirma: {
+        required,
       },
-      firmas:{
-        nombre:{
+      firmas: {
+        nombre: {
           required,
         },
-        cargo:{
+        cargo: {
           required,
-        }
+        },
       },
     };
   },
