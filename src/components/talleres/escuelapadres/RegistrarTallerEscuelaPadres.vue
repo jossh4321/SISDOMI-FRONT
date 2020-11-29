@@ -19,51 +19,68 @@
         <v-stepper-items>
           <v-stepper-content step="1">
             <div class="container-user">
-              <form>
-
+              <form style="margin-top: 10px;">
                 <v-row>
                   <v-col>
-                    <v-text-field
-                      v-model="tallerescuelapadres.titulo"
+                    <v-textarea
                       label="Titulo del Taller"
+                      v-model.trim="tallerescuelapadres.titulo"
+                      outlined
                       color="#009900"
-                    ></v-text-field>
+                      rows="1"
+                      auto-grow
+                      :readonly="isDisabled"
+                      :error-messages="tituloErrors"
+                      @input="$v.tallerescuelapadres.titulo.$touch()"
+                      @blur="$v.tallerescuelapadres.titulo.$touch()"
+                    ></v-textarea>
                   </v-col>
                   <v-col>
-                    <v-text-field
+                    <v-textarea
+                      label="Descripción del Taller"
                       v-model="tallerescuelapadres.descripcion"
-                      label="Descripción"
+                      outlined
                       color="#009900"
-                    ></v-text-field>
+                      rows="1"
+                      auto-grow
+                      :readonly="isDisabled"
+                      :error-messages="descripcionErrors"
+                      @input="$v.tallerescuelapadres.descripcion.$touch()"
+                      @blur="$v.tallerescuelapadres.descripcion.$touch()"
+                    ></v-textarea>
                   </v-col>
                 </v-row>
 
                 <v-row>
                   <v-col>
                     <v-menu
-                    v-model="datemenuinicio"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="290px"
-                    >
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                        v-model="tallerescuelapadres.contenido.fechainicio"
-                        style="margin-top_5px"
-                        color="#009900"
-                        prepend-icon="mdi-calendar"
-                        v-bind="attrs"
-                        v-on="on"
-                        label="Fecha del inicio del taller"
-                        ></v-text-field>
-                    </template>
-                    <v-date-picker
-                        v-model="tallerescuelapadres.contenido.fechainicio"
-                        @input="menu1 = false"
-                        locale="es-es"
-                    ></v-date-picker>
+                      v-model="datemenuinicio"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="290px"
+                      >
+                      <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                          v-model="tallerescuelapadres.contenido.fechaInicio"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          color="#009900"
+                          outlined
+                          label="Fecha del inicio del taller"
+                          @input="$v.tallerescuelapadres.contenido.fechaInicio.$touch()"
+                            @blur="$v.tallerescuelapadres.contenido.fechaInicio.$touch()"
+                            :error-messages="fechainicioErrors"
+                          ></v-text-field>
+                      </template>
+                      <v-date-picker
+                          v-model="tallerescuelapadres.contenido.fechaInicio"
+                          @input="menu1 = false"
+                          locale="es-es"
+                      ></v-date-picker>
                     </v-menu>
                   </v-col>
                   <v-col>
@@ -77,17 +94,21 @@
                         >
                         <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                            v-model="tallerescuelapadres.fechafin"
-                            style="margin-top_5px"
-                            color="#009900"
+                            v-model="tallerescuelapadres.contenido.fechaFin"
                             prepend-icon="mdi-calendar"
+                            readonly
                             v-bind="attrs"
                             v-on="on"
+                            color="#009900"
+                            outlined
                             label="Fecha fin del taller"
+                            @input="$v.tallerescuelapadres.contenido.fechaFin.$touch()"
+                            @blur="$v.tallerescuelapadres.contenido.fechaFin.$touch()"
+                            :error-messages="fechafinErrors"
                             ></v-text-field>
                         </template>
                         <v-date-picker
-                            v-model="tallerescuelapadres.fechafin"
+                            v-model="tallerescuelapadres.contenido.fechaFin"
                             @input="menu2 = false"
                             locale="es-es"
                         ></v-date-picker>
@@ -163,6 +184,9 @@
                                         rows="1"
                                         auto-grow
                                         :readonly="isDisabled"
+                                        @input="$v.tutor.nombre.$touch()"
+                                        @blur="$v.tutor.nombre.$touch()"
+                                        :error-messages="tutornombreErrors"
                                       ></v-textarea>
                                       
                                       <v-row>
@@ -175,6 +199,9 @@
                                             v-model="tutor.tipoDocumento"
                                             :readonly="isDisabled"
                                             color="#009900"
+                                            @input="$v.tutor.tipoDocumento.$touch()"
+                                            @blur="$v.tutor.tipoDocumento.$touch()"
+                                            :error-messages="tipoDocumentoErrors"
                                           ></v-select>
                                         </v-col>
                                         <v-col>
@@ -186,6 +213,9 @@
                                             rows="1"
                                             auto-grow
                                             :readonly="isDisabled"
+                                            @input="$v.tutor.numeroDocumento.$touch()"
+                                            @blur="$v.tutor.numeroDocumento.$touch()"
+                                            :error-messages="tutornumerodocumentoErrors"
                                           ></v-textarea>
                                         </v-col>
                                       </v-row>
@@ -202,6 +232,9 @@
                                         hide-no-data
                                         hide-selected
                                         return-object
+                                        @input="$v.residente.id.$touch()"
+                                        @blur="$v.residente.id.$touch()"
+                                        :error-messages="errorResidente"
                                         >
                                         <template v-slot:item="item">
                                             <v-list-item-avatar
@@ -229,6 +262,9 @@
                                         rows="1"
                                         auto-grow
                                         :readonly="isDisabled"
+                                        @input="$v.tutor.parentesco.$touch()"
+                                        @blur="$v.tutor.parentesco.$touch()"
+                                        :error-messages="parentescoErrors"
                                       ></v-textarea>
                                     </v-card-text>
                                     <v-card-actions>
@@ -237,17 +273,20 @@
                                         v-if="accion == 'registrar'"
                                         color="success" @click="guardarTutores()"
                                         >
+                                        <v-icon left class="mr-0 icon-plan">mdi-check</v-icon>
                                         Agregar
                                       </v-btn>
-                                      <v-btn 
+                                      <v-btn
                                         v-if="accion == 'actualizar'"
                                         color="yellow" @click="actualizarTutores(indice)"
                                         >
+                                        <v-icon left class="mr-0 icon-plan">mdi-pencil</v-icon>
                                         Actualizar
                                       </v-btn>
                                       <v-btn
-                                        color="red" @click="cerrarAgregarTutores()"
+                                        color="error" @click="cerrarAgregarTutores()"
                                       >
+                                       <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>
                                         Cerrar
                                       </v-btn>
                                     </v-card-actions>
@@ -320,6 +359,14 @@
                           </v-card-text>
 
                         </v-card>
+                        <div>
+                          <h4
+                            class="red--text mt-5 mb-10"
+                            v-if="$v.tallerescuelapadres.contenido.tutores.$error"
+                          >
+                            Debe tener como mínimo un tutor registrado
+                          </h4>
+                        </div>
                   <v-row>
                     <v-col cols="12" sm="6" md="6">
                       <v-btn
@@ -360,7 +407,7 @@
                   ></vue-dropzone>
                   <v-alert
                     type="error"
-                    
+                    v-if="!$v.listImages.required"
                     class="mt-2"
                   >
                     Debe ingresar una firma para el registro
@@ -422,8 +469,8 @@ export default {
         descripcion: "",
         contenido:{
           tutores:[],
-          fechainicio: "",
-          fechafin: "",
+          fechaInicio: "",
+          fechaFin: "",
         },
         firma: {
           urlfirma: "",
@@ -512,8 +559,8 @@ export default {
     limpiar(){
       this.tallerescuelapadres.titulo="";
       this.tallerescuelapadres.descripcion="";
-      this.tallerescuelapadres.contenido.fechainicio="";
-      this.tallerescuelapadres.contenido.fechafin="";
+      this.tallerescuelapadres.contenido.fechaInicio="";
+      this.tallerescuelapadres.contenido.fechaFin="";
       this.tallerescuelapadres.contenido.tutores=[];
       this.step = 1;
     },
@@ -543,11 +590,14 @@ export default {
       this.tutor.tipoDocumento = "";
       this.tutor.numeroDocumento = "";
       this.tutor.parentesco = "";
-      this.residente = null;
+      this.residente = {};
+
+      this.$v.tutor.$reset();
+      this.$v.residente.$reset();
     },
     guardarTutores() {
-      //this.$v.tutor.$touch();
-      //if(!this.$v.tutor.$invalid){
+      this.$v.tutor.$touch();
+      if(!this.$v.tutor.$invalid){
         let tutorA = { 
          nombre: this.tutor.nombre,
          tipoDocumento:this.tutor.tipoDocumento,
@@ -563,23 +613,38 @@ export default {
         this.tutor.tipoDocumento = "";
         this.tutor.numeroDocumento = "";
         this.tutor.parentesco = "";
-        this.residente = null;
+        this.residente = {};
 
         this.dialogAgregarTutores = false;
         //reiniciamos el estado de la validacion
-        //this.$v.progreso.$reset();
-      //}else{
-      //  console.log("no se guardo el tutor");
-      //}
+        this.$v.tutor.$reset();
+      }else{
+        console.log("no se guardo el tutor");
+      }
     },
     actualizarTutores(index) {
-      this.tallerescuelapadres.contenido.tutores[index].nombre = this.tutor.nombre;
-      this.tallerescuelapadres.contenido.tutores[index].tipoDocumento = this.tutor.tipoDocumento;
-      this.tallerescuelapadres.contenido.tutores[index].numeroDocumento = this.tutor.numeroDocumento;
-      this.tallerescuelapadres.contenido.tutores[index].parentesco = this.tutor.parentesco;
-      this.tallerescuelapadres.contenido.tutores[index].usuaria = this.residente;
+      this.$v.tutor.$touch();
+      if(!this.$v.tutor.$invalid){
+        this.tallerescuelapadres.contenido.tutores[index].nombre = this.tutor.nombre;
+        this.tallerescuelapadres.contenido.tutores[index].tipoDocumento = this.tutor.tipoDocumento;
+        this.tallerescuelapadres.contenido.tutores[index].numeroDocumento = this.tutor.numeroDocumento;
+        this.tallerescuelapadres.contenido.tutores[index].parentesco = this.tutor.parentesco;
+        this.tallerescuelapadres.contenido.tutores[index].usuaria = this.residente;
 
-      this.dialogAgregarTutores = false;
+        //limpiar
+        this.tutor.nombre = "";
+        this.tutor.tipoDocumento = "";
+        this.tutor.numeroDocumento = "";
+        this.tutor.parentesco = "";
+        this.residente = {};
+
+        this.dialogAgregarTutores = false;
+
+        this.$v.tutor.$reset();
+      }
+      else{
+        console.log("no se actualizo el tutor");
+      }
     },
     modalActualizar(index) {
       this.accion = "actualizar";
@@ -613,16 +678,16 @@ export default {
       }
     },
     async sendTallerEscuelaPadres() {
-      //this.$v.$touch();
+      this.$v.tallerescuelapadres.$touch();
 
-      //if (this.$v.$invalid) {
-      //  this.messageSweet(
-      //    "error",
-      //    "Errores al intentar registrar",
-      //    "Se ha presentado errores en los campos para el registro del Plan de Intervención",
-      //    false
-      //  );
-      //} else {
+      if (this.$v.tallerescuelapadres.$invalid) {
+        this.messageSweet(
+          "error",
+          "Errores al intentar registrar",
+          "Se ha presentado errores en los campos para el registro del Plan de Intervención",
+          false
+        );
+      } else {
         for (let index = 0; index < this.listImages.length; index++) {
           let formData = new FormData();
           formData.append("file", this.listImages[index]);
@@ -633,20 +698,21 @@ export default {
               this.tallerescuelapadres.firma.nombre = this.user.usuario;
               this.tallerescuelapadres.firma.cargo = this.user.rol;
               
-              console.log(this.tallerescuelapadres.firma.urlfirma);
-              console.log(this.tallerescuelapadres.firma.nombre);
-              console.log(this.tallerescuelapadres.firma.cargo);
             })
             .catch((err) => {
               console.error(err);
             });
         }
+
+        //borrar despues de probar el guardado
+        //this.tallerescuelapadres.firma.urlfirma = "https://siscarfileserver2.blob.core.windows.net/planes/8189c988-be54-4d02-84a0-610a65166ac8.jpg";
+
         //Añadimos el id del usuario actual
         this.tallerescuelapadres.creadordocumento = this.user.id;
 
         this.tallerescuelapadres.contenido.tutores.forEach((element) => { element.usuariaid = element.usuaria.id; delete element.usuaria; });
         let tallerescuelapadres = this.tallerescuelapadres;
-        
+
         axios
           .post("/Taller/crearTEP", tallerescuelapadres)
           .then((res) => {
@@ -660,7 +726,27 @@ export default {
           .catch((err) => {
             console.error(err);
           });
-      //}
+      }
+
+      /*Para probar algo sin registrar
+      this.$v.tallerescuelapadres.$touch();
+
+      if (this.$v.tallerescuelapadres.$invalid) {
+        this.messageSweet(
+          "error",
+          "Errores al intentar registrar",
+          "Se ha presentado errores en los campos para el registro del Plan de Intervención",
+          false
+        );
+      }
+      else{
+        this.messageSweet(
+          "success",
+          "Registro del Taller de escuela para padres",
+          "Se registró el Taller de escuela para padres de manera satisfactoria",
+          true
+        );
+      }*/
     },
     messageSweet(icon, title, text, valid) {
       this.$swal({
@@ -669,7 +755,8 @@ export default {
         text: text,
       }).then((res) => {
         if (valid) {
-          //this.$emit("register-complete");
+          this.closeDialog();
+          this.$emit("register-complete");
         }
       });
     },
@@ -693,6 +780,176 @@ export default {
         return false;
       }
     },
+    //validaciones
+    tituloErrors() {
+      const errors = [];
+
+      if (!this.$v.tallerescuelapadres.titulo.$dirty) {
+        return errors;
+      }
+
+      if (!this.$v.tallerescuelapadres.titulo.required) {
+        errors.push("El titulo es requerido");
+      }
+
+      if (!this.$v.tallerescuelapadres.titulo.minLength) {
+        errors.push("Debe ingresar como mínimo 10 caracteres");
+      }
+
+      return errors;
+    },
+    descripcionErrors() {
+      const errors = [];
+
+      if (!this.$v.tallerescuelapadres.descripcion.$dirty) {
+        return errors;
+      }
+
+      if (!this.$v.tallerescuelapadres.descripcion.required) {
+        errors.push("La descripción es requerida");
+      }
+
+      if (!this.$v.tallerescuelapadres.descripcion.minLength) {
+        errors.push("Debe ingresar como mínimo 10 caracteres");
+      }
+
+      return errors;
+    },
+    fechainicioErrors() {
+      const errors = [];
+
+      if (!this.$v.tallerescuelapadres.contenido.fechaInicio.$dirty) return errors;
+
+      !this.$v.tallerescuelapadres.contenido.fechaInicio.required && errors.push("Debe Ingresar una Fecha de inicio obligatoriamente");
+
+      if(this.$moment(this.tallerescuelapadres.contenido.fechaInicio) > this.$moment(this.tallerescuelapadres.contenido.fechaFin)) {
+        errors.push("La fecha inicio debe ser menor a la fecha fin");
+      }
+
+      return errors;
+    },
+    fechafinErrors() {
+      const errors = [];
+
+      if (!this.$v.tallerescuelapadres.contenido.fechaFin.$dirty) return errors;
+
+      !this.$v.tallerescuelapadres.contenido.fechaFin.required && errors.push("Debe Ingresar una Fecha de fin obligatoriamente");
+
+      if(this.$moment(this.tallerescuelapadres.contenido.fechaFin) < this.$moment(this.tallerescuelapadres.contenido.fechaInicio)) {
+        errors.push("La fecha fin debe ser mayor a la fecha inicio");
+      }
+      
+      return errors;
+    },
+    tutoresErrors(){
+      const errors = [];
+      if (!this.$v.tallerescuelapadres.contenido.tutores.$dirty) return errors;
+      !this.$v.tallerescuelapadres.contenido.tutores.required && errors.push("Debe ingresar un tutor obligatoriamente");
+      
+      return errors;
+    },
+    tutornombreErrors() {
+      const errors = [];
+
+      if (!this.$v.tutor.nombre.$dirty) return errors;
+
+      !this.$v.tutor.nombre.required && errors.push("Debe ingresar un nombre");
+      
+      return errors;
+    },
+    tutornumerodocumentoErrors() {
+      const errors = [];
+      if (!this.$v.tutor.numeroDocumento.$dirty) return errors;
+      !this.$v.tutor.numeroDocumento.required &&
+        errors.push("Debe ingresar el Numero de Documento Obligatoriamente");
+      !this.tutor.tipoDocumento != "" &&
+        errors.push("Debe seleccionar el Tipo de Documento Inicialmente");
+      if (this.tutor.tipoDocumento == "DNI") {
+        !/^[0-9]{8}$/.test(this.tutor.numeroDocumento) != false &&
+          errors.push("El Numero de DNI debe poseer 8 digitos numericos");
+      }
+      if (this.tutor.tipoDocumento == "Pasaporte") {
+        !/^(?!^0+$)[a-zA-Z0-9]{3,20}$/.test(this.tutor.numeroDocumento) !=
+          false &&
+          errors.push(
+            "El Numero de Pasaporte debe poseer de 3 a 20 caracteres alfanumericos"
+          );
+      }
+      if (this.tutor.tipoDocumento == "Carnet Extranjeria") {
+        !/^[0-9]{9}$/.test(this.tutor.numeroDocumento) != false &&
+          errors.push(
+            "El Numero del Carnet de Extranjeria debe poseer 9 digitos numericos"
+          );
+      }
+      return errors;
+    },
+    tipoDocumentoErrors() {
+      const errors = [];
+      if (!this.$v.tutor.tipoDocumento.$dirty) return errors;
+      !this.$v.tutor.tipoDocumento.required &&
+        errors.push("Debe seleccionar el Tipo de Documento Obligatoriamente");
+      return errors;
+    },
+    parentescoErrors() {
+      const errors = [];
+
+      if (!this.$v.tutor.parentesco.$dirty) return errors;
+
+      !this.$v.tutor.parentesco.required && errors.push("Debe ingresar el parentesco");
+      
+      return errors;
+    },
+    errorResidente() {
+      const errors = [];
+      if (!this.$v.residente.id.$dirty) return errors;
+      !this.$v.residente.id.required &&
+        errors.push("Debe ingresar un residente obligatoriamente");
+
+      /*if (this.tallerescuelapadres.contenido.tutores.length > 0) {
+        this.tallerescuelapadres.contenido.tutores.forEach(tutor => {
+            if(tutor.usuaria.id == this.residente.id) {
+              errors.push("Ya ha registrado un tutor para este residente.");
+            }
+        });
+      }*/
+      
+      return errors;
+    },
+  },
+  validations: {
+    listImages: {
+      required,
+    },
+    residente:  {
+      id: { required },
+    },
+    tallerescuelapadres:{
+        titulo: {
+          required,
+          minLength: minLength(10),
+        },
+        descripcion: {
+          required,
+          minLength: minLength(10),
+        },
+        contenido:{
+          fechaInicio:{
+            required,
+          },
+          fechaFin:{
+            required,
+          },
+          tutores:{
+            required,
+          }
+        },
+      },
+      tutor: {
+          nombre: { required },
+          tipoDocumento: { required },
+          numeroDocumento: { required },
+          parentesco: { required },
+      }
   },
   components: {
     vueDropzone: vue2Dropzone

@@ -166,13 +166,14 @@ export default {
     },
     closeDialog() {
       this.dialogTallerRegister = false;
-      this.selectedPlan = {
+      this.selectedTaller = {
           text: "",
           value: "",
       };
     },
     registerComplete() {
       this.closeDialog();
+      this.loading = true;
       this.listTalleres();
     },
   },
