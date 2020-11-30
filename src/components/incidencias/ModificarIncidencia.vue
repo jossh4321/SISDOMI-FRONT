@@ -1,6 +1,6 @@
 <template>
     <v-card style="width:inherit">
-    <v-card-title class="justify-center">Registro de Incidencias</v-card-title>
+    <v-card-title class="justify-center">Modificacion de Incedencias</v-card-title>
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step editable step="1"> Introduccion </v-stepper-step>
@@ -71,7 +71,8 @@
                     :return-value.sync="incidencia.hora"
                     transition="scale-transition"
                     offset-y
-                    min-width="290px">
+                    min-width="290px"
+                >
                     <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                         v-model="incidencia.hora"
@@ -120,6 +121,7 @@
                             <v-container grid-list-md text-xs-center>
                             <v-layout row wrap>
                             <v-flex xs10>
+
                                  <v-textarea
                                     v-model="observacionesAux"
                                     label="Ingrese la observacion"
@@ -132,6 +134,7 @@
                                     @blur="$v.observacionesAux.$touch()"
                                     :error-messages="errorObservacionAux"
                                     ></v-textarea>
+
                             </v-flex>
                             <v-flex xs2>
                                  <v-btn
@@ -227,10 +230,10 @@
                                 
                                 </v-list-item>
                             </v-list>
-                                <v-card v-if="errorIncidencias" color="red">
-                                    <v-card-text class="text-center" style="color: white"
-                                      >Debe Ingresar 1 Incidencia como minimo</v-card-text>
-                                </v-card>
+                            <v-card v-if="errorIncidencias" color="red">
+                                <v-card-text class="text-center" style="color: white"
+                                    >Debe Ingresar 1 Incidencia como minimo</v-card-text>
+                            </v-card>
                         </v-card>
                         <!---->
 
@@ -369,43 +372,27 @@ import moment from "moment";
 export default {
    components: {
     vueDropzone: vue2Dropzone,
-    },
+    },props:["incidencia"],
     data(){
         return{
-        timemenu:false,
-        datemenu: false,
-        step: 1,
-         dropzoneOptions: {
-          url: "https://httpbin.org/post",
-          thumbnailWidth: 250,
-          maxFilesize: 3.0,
-          maxFiles: 1,
-          acceptedFiles: ".jpg, .png, .jpeg",
-          headers: { "My-Awesome-Header": "header value" },
-          addRemoveLinks: true,
-          dictDefaultMessage:
-            "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
-      },
-        incidencia: {
-             fecha:"",
-             hora:"",
-             titulo:"",
-             usuario:"",
-             descripcion:"",
-             incidencias:[],
-             observaciones:[],
-             residentes:[],
-             firma:{
-               urlfirma:"",
-               nombre:"Jose Alejandro Paredes Masias",
-               cargo:"Director del Area Educativa"
-             }
-            },
-        observacionesAux:"",
-        incidenciasAux:"",
-        searchResidente:null,
-        loadingSearch:false,
-        listResidentes:[]
+            timemenu:false,
+            datemenu: false,
+            step: 1,
+            dropzoneOptions: {
+            url: "https://httpbin.org/post",
+            thumbnailWidth: 250,
+            maxFilesize: 3.0,
+            maxFiles: 1,
+            acceptedFiles: ".jpg, .png, .jpeg",
+            headers: { "My-Awesome-Header": "header value" },
+            addRemoveLinks: true,
+            dictDefaultMessage:
+                "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
+            },observacionesAux:"",
+            incidenciasAux:"",
+            searchResidente:null,
+            loadingSearch:false,
+            listResidentes:[]
       }
     },watch:{
         async searchResidente(value){
@@ -429,8 +416,10 @@ export default {
                     console.error(error);
                   });
         }
+    },created(){
+        this.listResidentes = this.incidencia.residentes;
     },methods:{
-        ...mapMutations(["addIncidencia"]),
+        ...mapMutations(["replaceIncidencia"]),
         clearAfterSelect(){
           this.searchResidente = "";
         },
@@ -475,17 +464,11 @@ export default {
             var urlfirma = await this.registrarFirma(this.incidencia.firma.urlfirma);
             this.incidencia.firma.urlfirma = urlfirma;
             this.incidencia.usuario = this.user.id;
-            var fecha = new Date(this.incidencia.fecha);
-            fecha.setHours(this.incidencia.hora.split(":")[0]);
-            fecha.setMinutes(this.incidencia.hora.split(":")[1]);
-            var incidenciaPost = JSON.parse(JSON.stringify(this.incidencia));
-            incidenciaPost.fecha = fecha.toISOString();
             await axios
-              .post("/incidencia",incidenciaPost)
+              .post("/incidencia",this.incidencia)
               .then((res) =>{
-                 console.log(this.incidencias);
+                 this.incidencia = res.data;
                  this.addIncidencia(res.data);
-                 console.log(this.incidencias);
                  this.cerrarDialogo();
               }).catch(err => console.log(err));
                await this.mensaje(
@@ -504,8 +487,7 @@ export default {
                         urlFile = res.data;
                       });
             return urlFile;
-        }
-        ,cerrarDialogo(){
+        },cerrarDialogo(){
           this.$emit("close-dialog-save-incidencia");
           this.reiniciarCampos();
           this.reiniciarValidaciones();
