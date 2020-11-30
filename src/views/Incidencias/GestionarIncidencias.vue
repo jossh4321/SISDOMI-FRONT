@@ -3,12 +3,11 @@
          <v-data-table
     :headers="headers"
     :items="incidencias"
-
+    item-key="id"
     :page.sync="page"
     :items-per-page="itemsPerPage"
     hide-default-footer  
     @page-count="pageCount = $event"
-
     sort-by="calories"
     class="elevation-1"
   >
@@ -49,6 +48,9 @@
         </v-dialog>
         <!---->
       </v-toolbar>
+    </template>
+     <template v-slot:[`item.autor`]="{ item }">
+        {{ item.autor.datos.nombre | getNombreUsuario(item.autor.datos.apellido) }} 
     </template>
     <template v-slot:[`item.fecha`]="{ item }">
       <v-chip
@@ -102,24 +104,29 @@
     </div>
   <!---->
     <!--DIALOGO DE CONSULTA DE INCIDENCIA-->
-        <v-dialog v-model="dialogoConsultarIncidencia" max-width="500px">
+        <v-dialog v-model="dialogoConsultarIncidencia" max-width="650px">
           <v-card>
             <v-card-title class="headline">CONSULTA DE UNA INCIDENCIA</v-card-title>
           </v-card>
         </v-dialog>
         <!---->
     <!--DIALOGO DE MODIFICACION DE INCIDENCIA-->
-        <v-dialog v-model="dialogoModificarIncidencia" max-width="500px">
+        <v-dialog v-model="dialogoModificarIncidencia" max-width="650px">
           <v-card>
-            <v-card-title class="headline">MODIFICACION DE UNA INCIDENCIA</v-card-title>
+              <ModificarIncidencia 
+                :incidencia="incidencia"></ModificarIncidencia>
           </v-card>
         </v-dialog>
         <!---->
     </div>
 </template>
 <script>
+import axios from "axios";
 import RegistrarIncidencia from '@/components/incidencias/RegistrarIncidencia.vue'
+import ModificarIncidencia from '@/components/incidencias/ModificarIncidencia.vue'
+//import ConsultarIncidencia from '@/components/incidencias/ConsultarIncidencia.vue'
 import moment from "moment";
+import { mapState, mapMutations } from "vuex";
 moment.locale("es")
 export default {
     data(){
@@ -130,25 +137,6 @@ export default {
                 dialogoConsultarIncidencia:false,
                 dialogoModificarIncidencia:false,
                 dialogoRegistrarIncidencia:false,
-                incidencias:[
-                {id:"000000001",
-                usuario:"Usuario1",
-                fecharegistro:new Date(),
-                fecha: new Date(),
-                titulo:"Titulo1",
-                descripcion:"Descripcion1",
-                observaciones:["Obs1","Obs2","Obs3"],
-                incidencias:["Inc1","Inc2","Inc3"],
-                residentes:["Res1","Res2","Res3"]},
-                {id:"000000002",
-                usuario:"Usuario2",
-                fecharegistro:new Date(),
-                fecha: new Date(),
-                titulo:"Titulo2",
-                descripcion:"Descripcion2",
-                observaciones:["Obs1","Obs2","Obs3"],
-                incidencias:["Inc1","Inc2","Inc3"],
-                residentes:["Res1","Res2","Res3"]}],
                 headers: [
                             {
                             text: 'Titulo',
@@ -157,33 +145,52 @@ export default {
                             value: 'titulo',
                             },
                             { text: 'Fecha/Hora', value: 'fecha' },
-                            { text: 'Responsable', value: 'usuario' },
+                            { text: 'Responsable', value: 'autor' },
                             { text: 'N° Involucrados', value: 'residentes' },
                             { text: 'Opciones', value: 'actions', sortable: false }
                         ],
+                incidencia:{}
         }
         
+    },async created(){
+        await axios.get("/incidencia/all/detalle")
+          .then((res)=>{
+                this.setIncidencias(res.data);
+          }).catch(error => console.error(error));
     },components:{
-        RegistrarIncidencia
-
+        RegistrarIncidencia,
+        ModificarIncidencia
     },methods:{
-        consultarIncidencia(id){
+        ...mapMutations(["setIncidencias"]),
+        async loadIncidenciaDetalle(id){
+          await axios.get(`/incidencia/detalle/${id}`)
+                      .then(res=>{
+                          console.log(res.data);
+                          var fecha = res.data
+                          this.incidencia = res.data
+                          this.incidencia["hora"]
+                      }).catch(err => console.error());
+        },consultarIncidencia(id){
             this.dialogoConsultarIncidencia = !this.dialogoConsultarIncidencia;
-        },modificarIncidencia(id){
+        },async modificarIncidencia(id){
+            await this.loadIncidenciaDetalle(id);
             this.dialogoModificarIncidencia = !this.dialogoModificarIncidencia;
         },closeDialogRegistrar(){
             this.dialogoRegistrarIncidencia = !this.dialogoRegistrarIncidencia;
         }
     },computed:{
+        ...mapState(["incidencias"]),
         
     },filters:{
         numResidentes: (residentes) => {
       return residentes.length + " Residentes";
-    },
-        fomatoFecha: (fecha) =>{
+    },fomatoFecha: (fecha) =>{
             var formato = moment(fecha);
             return formato.format("llll");
-        }
+    },getNombreUsuario: (nombre,apellido)=>{
+      return `${nombre} ${apellido}`;
+    }
+        
     }
 }
 </script>
