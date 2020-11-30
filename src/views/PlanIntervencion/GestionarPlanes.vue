@@ -145,6 +145,7 @@
         :is="typePlanSelected"
         :planI="planI"
         @close-dialog="closeDialogModify"
+        @edit-complete="editComplete"
       ></component>
     </v-dialog>
 
@@ -284,7 +285,7 @@ export default {
 
           if (res.data.area == "educativa") {
             this.typeDetailPlanSelected = "VisualizarPlanIntervencion";
-          } else if (res.data.area == "psicologico") {
+          } else if (res.data.area == "psicologica") {
             this.typeDetailPlanSelected =
               "VisualizarPlanIntervencionPsicologico";
           } else if (res.data.area == "social") {
@@ -307,7 +308,7 @@ export default {
             this.typePlanSelected = "ModificarPlanIntervencion";
           } else if (res.data.area == "social") {
             this.typePlanSelected = "ModificarPlanIntervencionSocial";
-          } else if (res.data.area == "psicologico") {
+          } else if (res.data.area == "psicologica") {
             this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
           }
 
@@ -375,6 +376,11 @@ export default {
     },
     registerComplete() {
       this.closeDialog();
+      this.loading = true;
+      this.listInterventionsPlan();
+    },
+    editComplete() {
+      this.closeDialogModify();
       this.loading = true;
       this.listInterventionsPlan();
     },

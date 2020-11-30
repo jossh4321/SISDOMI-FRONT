@@ -79,6 +79,7 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    style="margin-top:5px"
                   ></v-textarea>
                 </div>
                 <v-textarea
@@ -93,7 +94,7 @@
                   :error-messages="errorAntecedentes"
                 ></v-textarea>
 
-                <v-card style="padding:5px 5px;background-color:#EAEAEA">
+                <v-card style="padding:5px;margin:0 0 18px 0;background-color:#EAEAEA">
                   <v-card-title>
                     <v-row>
                       <v-col :cols="8">
@@ -352,6 +353,18 @@
                   </v-card-text>
                 </v-card>
 
+                <v-textarea
+                  v-model="informe.contenido.situacionfamiliar"
+                  label="Descripción de la situación familiar"
+                  outlined
+                  color="#009900"
+                  rows="1"
+                  auto-grow  
+                  @input="$v.informe.contenido.situacionfamiliar.$touch()"
+                  @blur="$v.informe.contenido.situacionfamiliar.$touch()"
+                  :error-messages="errorSituacionFamiliar"                                  
+                ></v-textarea>
+
                 <v-row>
                   <v-col>
                     <v-btn block @click="step = 2" color="success">
@@ -470,6 +483,9 @@
                           v-model="recomendacion"
                           label="Recomendaciones"
                           color="#009900"
+                          @input="$v.recomendacion.$touch()"
+                          @blur="$v.recomendacion.$touch()"
+                          :error-messages="errorRecomendacion"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -544,6 +560,9 @@
                           v-model="firmas.nombre"
                           label="Nombre"
                           color="#009900"
+                          @input="$v.firmas.nombre.$touch()"
+                          @blur="$v.firmas.nombre.$touch()"
+                          :error-messages="errorNombreFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="left">
@@ -551,6 +570,9 @@
                           v-model="firmas.cargo"
                           label="Cargo"
                           color="#009900"
+                          @input="$v.firmas.cargo.$touch()"
+                          @blur="$v.firmas.cargo.$touch()"
+                          :error-messages="errorCargoFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -580,6 +602,13 @@
                         >
                         </vue-dropzone>
                       </div>
+                          <v-card v-if="errorUrlFirma" color="red">
+                    <v-card-text class="text-center" style="color: white"
+                      >Debe Subir una imagen del usuario
+                      Obligatoriamente</v-card-text
+                    >
+                  </v-card>
+                  <v-divider class="divider-custom"></v-divider>
                     </v-col>
                   </v-row>
                   <v-card
@@ -696,7 +725,7 @@ import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import { required, minLength, email, helpers } from "vuelidate/lib/validators";
+import { required, minLength, email, helpers,numeric } from "vuelidate/lib/validators";
 import moment from "moment";
 
 export default {
@@ -772,7 +801,7 @@ export default {
       dialogAgregarFamiliar: false,
       accion: "registrar",
       indice: "",
-      recomendacion: "",
+      recomendacion: "",      
       recomendaciones: [],
       dialogVistaPreviaFirma: false,
       imagen: "",
@@ -804,25 +833,22 @@ export default {
       console.log(this.informe);
       this.$v.informe.$touch();
       if (this.$v.informe.$invalid) {
-        console.log("Hay errores :c");
+        console.log("Hay errores :c");        
         this.mensaje(
-          "Error",
+          "error",
           "..Oops",
           "Se encontraron errores en el formulario",
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        console.log("no hay errores");
-        console.log(this.informe);
+        console.log("no hay errores");        
         await axios
           .post("/informe/informesi", this.informe)
           .then((res) => {
-            this.informe = res.data;
-            console.log(this.listaresidentes);
+            this.informe = res.data;            
             var resi = this.listaresidentes.filter(function(residente) {
               return residente.id == res.data.idresidente;
-            });
-            console.log(resi);
+            });            
             var info = {
               id: res.data.id,
               tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
@@ -831,13 +857,13 @@ export default {
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
             this.addInforme(info);
-            this.cerrarDialogo();
+            this.show = false
           })
           .catch((err) => console.log(err));
         await this.mensaje(
           "success",
           "Listo",
-          "Informe registrado Satisfactoriamente",
+          "Informe registrado satisfactoriamente",
           "<strong>Se redirigira a la interfaz de gestión<strong>"
         );
       }
@@ -845,38 +871,50 @@ export default {
     resetInformeValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
       this.$v.informe.$reset();
+      this.$v.firmas.$reset();
     },
     agregarFamiliar() {
-      let familiar = {
-        nombre: this.familiar.nombre,
-        apellido: this.familiar.apellido,
-        numerodocumento: this.familiar.numerodocumento,
-        parentesco: this.familiar.parentesco,
-        edad: this.familiar.edad,
-        estadocivil: this.familiar.estadocivil,
-        gradoinstruccion: this.familiar.gradoinstruccion,
-        ocupacion: this.familiar.ocupacion,
-        observaciones: this.familiar.observaciones,
-      };
+      this.$v.familiar.$touch();
+      if (this.$v.familiar.$invalid) {
+        console.log("Hay errores :c");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Debe completar los datos del familiar",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
+        
+        let familiar = {
+          nombre: this.familiar.nombre,
+          apellido: this.familiar.apellido,
+          numerodocumento: this.familiar.numerodocumento,
+          parentesco: this.familiar.parentesco,
+          edad: this.familiar.edad,
+          estadocivil: this.familiar.estadocivil,
+          gradoinstruccion: this.familiar.gradoinstruccion,
+          ocupacion: this.familiar.ocupacion,
+          observaciones: this.familiar.observaciones,
+        };
 
-      this.informe.contenido.familiares.push(familiar);
+        this.informe.contenido.familiares.push(familiar);
 
-      this.familiar.nombre = "";
-      this.familiar.apellido = "";
-      this.familiar.parentesco = "";
-      this.familiar.edad = "";
-      this.familiar.estadocivil = "";
-      this.familiar.gradoinstruccion = "";
-      this.familiar.ocupacion = "";
-      this.familiar.observaciones = "";
-      this.familiar.numerodocumento = "";
+        this.familiar.nombre = "";
+        this.familiar.apellido = "";
+        this.familiar.parentesco = "";
+        this.familiar.edad = "";
+        this.familiar.estadocivil = "";
+        this.familiar.gradoinstruccion = "";
+        this.familiar.ocupacion = "";
+        this.familiar.observaciones = "";
+        this.familiar.numerodocumento = "";
 
-      this.dialogAgregarFamiliar = false;
+        this.dialogAgregarFamiliar = false;
+      }
     },
     cerrarAgregarFamiliar() {
       this.dialogAgregarFamiliar = false;
-
-      //limpiarTodo
+      
       this.familiar.nombre = "";
       this.familiar.apellido = "";
       this.familiar.parentesco = "";
@@ -979,11 +1017,13 @@ export default {
       ].numerodocumento;
     },
     agregarRecomendaciones() {
-      console.log("recomendaciones");
+      this.$v.recomendacion.$touch();      
+      if (!this.$v.recomendacion.$invalid) {
       let recomendaciones = this.recomendacion;
       this.informe.contenido.recomendaciones.push(recomendaciones);
       this.recomendaciones = this.informe.contenido.recomendaciones;
       this.recomendacion = "";
+      }
     },
     eliminarRecomendaciones(recomendacion) {
       this.recomendaciones.forEach(function(car, index, object) {
@@ -992,7 +1032,11 @@ export default {
         }
       });
     },
-    agregarFirma() {
+    agregarFirma() {      
+      this.$v.firmas.$touch();
+      this.$v.urlfirma.$touch();
+
+      if (!this.$v.firmas.$invalid && !this.errorUrlFirma) {
       let firmas = {
         urlfirma: this.urlfirma,
         nombre: this.firmas.nombre,
@@ -1004,21 +1048,18 @@ export default {
       this.urlfirma = "";
       this.firmas.nombre = "";
       this.firmas.cargo = "";
+      }
     },
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
     },
-    verFirma(index) {
-      console.log(this.informe.contenido.firmas[index].urlfirma);
+    verFirma(index) {      
       this.imagen = this.informe.contenido.firmas[index].urlfirma;
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
     },
-    afterSuccess(file, response) {
-      console.log(file);
-      console.log(file.dataURL);
-      console.log(this.$refs.myVueDropzone);
+    afterSuccess(file, response) {      
       this.fileList.push(file);
     },
     afterRemoved(file, error, xhr) {
@@ -1099,6 +1140,10 @@ export default {
       if (!this.$v.familiar.edad.$dirty) return errors;
       !this.$v.familiar.edad.required &&
         errors.push("Debe escribir la edad del familiar obligatoriamente");
+      !this.$v.familiar.edad.numeric &&
+        errors.push(
+          "Debe Ingresar valores Numericos"
+        );
       return errors;
     },
     errorEstadoCivil() {
@@ -1163,6 +1208,40 @@ export default {
         errors.push("Debe registrar la situación social obligatoriamente");
       return errors;
     },
+    errorSituacionFamiliar() {
+      const errors = [];
+      if (!this.$v.informe.contenido.situacionfamiliar.$dirty) return errors;
+      !this.$v.informe.contenido.situacionfamiliar.required &&
+        errors.push("Debe registrar la situación familiar obligatoriamente");
+      return errors;
+    },
+    errorRecomendacion() {
+      const errors = [];
+      if (!this.$v.recomendacion.$dirty) return errors;
+      !this.$v.recomendacion.required &&
+        errors.push("Debe registrar la recomendación obligatoriamente");
+      return errors;
+    },
+    errorNombreFirma() {
+      const errors = [];
+      if (!this.$v.firmas.nombre.$dirty) return errors;
+      !this.$v.firmas.nombre.required &&
+        errors.push("Debe registrar el nombre obligatoriamente");
+      return errors;
+    },
+    errorCargoFirma() {
+      const errors = [];
+      if (!this.$v.firmas.cargo.$dirty) return errors;
+      !this.$v.firmas.cargo.required &&
+        errors.push("Debe registrar el cargo obligatoriamente");
+      return errors;
+    },
+    errorUrlFirma() {
+      return this.$v.urlfirma.required == false &&
+        this.$v.urlfirma.$dirty == true
+        ? true
+        : false;
+    },
     isDisabled() {
       if (this.accion == "consultar") {
         return true;
@@ -1190,6 +1269,9 @@ export default {
           situacionsalud: {
             required,
           },
+          situacionfamiliar: {
+            required,
+          },
           educacion: {
             required,
           },
@@ -1213,6 +1295,7 @@ export default {
         },
         edad: {
           required,
+          numeric,
         },
         estadocivil: {
           required,
@@ -1222,7 +1305,21 @@ export default {
         },
         ocupacion: {
           required,
+        },        
+      },
+      recomendacion : {
+        required,
+      },
+      urlfirma:{
+        required
+      },
+      firmas:{
+        nombre:{
+          required,
         },
+        cargo:{
+          required,
+        }
       },
     };
   },

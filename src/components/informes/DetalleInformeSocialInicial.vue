@@ -89,7 +89,7 @@
                               color="#009900"
                               rows="1"
                               auto-grow
-                             readonly
+                              readonly
                             >
                             </v-textarea>
                             <v-row>
@@ -169,7 +169,7 @@
                             </v-textarea>
                           </v-card-text>
                           <v-card-actions>
-                            <v-spacer></v-spacer>                            
+                            <v-spacer></v-spacer>
                             <v-btn
                               color="blue darken-1"
                               text
@@ -340,6 +340,76 @@
               <v-card
                 style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
               >
+                <v-card-title>Anexos</v-card-title>
+                <v-card
+                  color="#FAFAFA"
+                  style="margin-top:5px"
+                  height="60"
+                  v-for="(item, index) in informe.contenido.anexos"
+                  :key="index"
+                >
+                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                    <v-col :cols="8">
+                      <article>
+                        <img
+                          style="margin-right:5px;width:6% "
+                          src="https://www.flaticon.es/svg/static/icons/svg/2991/2991112.svg"
+                          alt="imagen documento"
+                        />
+                        <span style="font-size:18px"> {{ item.titulo }}</span>
+                      </article>
+                    </v-col>
+                    <v-col :cols="2" align="center">
+                      <template>
+                        <v-btn
+                          fab
+                          icon=""
+                          x-small
+                          dark
+                          color="#EAEAEA"
+                          @click="verAnexo(index)"
+                        >
+                          <img
+                            style="width:25% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/709/709612.svg"
+                            alt="visualizar"
+                          />
+                        </v-btn>
+                      </template>
+                    </v-col>                   
+                  </v-row>
+                </v-card>
+              </v-card>
+
+              <v-dialog
+                v-model="dialogVistaPreviaAnexos"
+                persistent
+                max-width="600px"
+              >
+                <v-card align="center">
+                  <v-card-title>
+                    <span class="headline">Vista previa</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <iframe :src="pdf" width="100%" height="600"></iframe>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="cerrarVistaPreviaAnexo()"
+                    >
+                      Cerrar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+
+
+              <v-card
+                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+              >
                 <v-card
                   elevation="0"
                   style="background-color:#EAEAEA"
@@ -427,7 +497,6 @@
                   </v-row>
                 </v-card>
               </v-card>
-
               <v-row>
                 <v-col>
                   <v-btn block @click="cerrarDialogo()" color="primary">
@@ -481,8 +550,10 @@ export default {
       recomendacion: "",
       recomendaciones: [],
       dialogVistaPreviaFirma: false,
+      dialogVistaPreviaAnexos: false,
       imagen: "",
       fileList: [],
+      pdf: "",
     };
   },
   created() {
@@ -496,7 +567,7 @@ export default {
         .get("/residente/id?id=" + this.informe.idresidente)
         .then((x) => {
           this.residente = x.data.nombre + " " + x.data.apellido;
-          this.motivoIngreso = x.data.motivoIngreso
+          this.motivoIngreso = x.data.motivoIngreso;
         })
         .catch((err) => console.log(err));
     },
@@ -514,49 +585,6 @@ export default {
       }
       this.informe.contenido.anexos = listaanexos;
       console.log(listaanexos);
-    },
-    async registrarInforme() {
-      await this.sendPDFFiles();
-      console.log(this.informe);
-      this.$v.informe.$touch();
-      if (this.$v.informe.$invalid) {
-        console.log("Hay errores :c");
-        this.mensaje(
-          "Error",
-          "..Oops",
-          "Se encontraron errores en el formulario",
-          "<strong>Verifique los campos Ingresados<strong>"
-        );
-      } else {
-        console.log("no hay errores");
-        console.log(this.informe);
-        await axios
-          .post("/informe/informesi", this.informe)
-          .then((res) => {
-            this.informe = res.data;
-            console.log(this.listaresidentes);
-            var resi = this.listaresidentes.filter(function(residente) {
-              return residente.id == res.data.idresidente;
-            });
-            console.log(resi);
-            var info = {
-              id: res.data.id,
-              tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-              fechacreacion: res.data.fechacreacion.split("T")[0],
-              codigodocumento: res.data.contenido.codigodocumento,
-              nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
-            };
-            this.addInforme(info);
-            this.cerrarDialogo();
-          })
-          .catch((err) => console.log(err));
-        await this.mensaje(
-          "success",
-          "Listo",
-          "Informe registrado Satisfactoriamente",
-          "<strong>Se redirigira a la interfaz de gestión<strong>"
-        );
-      }
     },
     resetInformeValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
@@ -678,6 +706,13 @@ export default {
     },
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
+    },
+    verAnexo(index) {
+      this.pdf = this.informe.contenido.anexos[index].url;
+      console.log(this.pdf), (this.dialogVistaPreviaAnexos = true);
+    },
+    cerrarVistaPreviaAnexo() {
+      this.dialogVistaPreviaAnexos = false;
     },
   },
   computed: {
