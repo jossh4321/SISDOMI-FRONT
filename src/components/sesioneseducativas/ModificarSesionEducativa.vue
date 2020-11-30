@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Sesiones Educativas</v-card-title>
+    <v-card-title class="justify-center">Modificar Sesiones Educativas</v-card-title>
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step editable step="1">Datos de la Sesión Educativa</v-stepper-step>
@@ -17,7 +17,6 @@
                   <v-col>
                     <v-text-field
                       v-model="sesioneducativa.titulo"
-                      readonly
                       color="#009900"
                       label="Titulo de Sesión"
                     ></v-text-field>
@@ -25,7 +24,6 @@
                   <v-col>
                     <v-text-field
                       v-model="sesioneducativa.area"
-                      readonly
                       color="#009900"
                       label="Area correspondiente"
                     ></v-text-field>
@@ -43,7 +41,6 @@
                     <v-text-field
                       v-model="sesioneducativa.fechaCreacion"
                       style="margin-top:5px"
-                      readonly
                       color="#009900"
                       prepend-icon="mdi-calendar"
                       v-bind="attrs"
@@ -53,7 +50,6 @@
                   </template>
                   <v-date-picker
                     v-model="sesioneducativa.fechaCreacion"
-                    readonly
                     @input="menu = false"
                     locale="es-es"
                   ></v-date-picker>
@@ -118,7 +114,6 @@
                         <v-text-field
                             v-model="item.grado"
                             style="margin-top:2%"
-                            readonly
                             color="#009900"
                             label="Grado"
                         ></v-text-field>
@@ -134,7 +129,6 @@
                             <v-text-field
                               v-model="item.fecha"
                               style="margin-top:5px"
-                              readonly
                               color="#009900"
                               prepend-icon="mdi-calendar"
                               v-bind="attrs"
@@ -144,23 +138,75 @@
                           </template>
                           <v-date-picker
                             v-model="item.fecha"
-                            readonly
                             @input="menu2 = false"
                             locale="es-es"
                           ></v-date-picker>
                         </v-menu>
                         <!-- empieza firmas -->
-                        <v-card elevation="0" style="margin-top:1%;margin-bottom:3%">
+                        <!-- Boton todavía sin funcionar -->
+                        <!-- Boton todavía sin funcionar -->
+                        <!-- Boton todavía sin funcionar -->
+                        <!-- Boton todavía sin funcionar -->
+                        <!-- Boton todavía sin funcionar -->
+                        <!-- Boton todavía sin funcionar -->
+                        <v-card-actions v-if="!item.EdicionFirmas">
                           <v-btn
                             dark
-                            color="#4FA7EE"
-                            @click="verFirma(item.idparticipante)"
+                            color="blue"
+                            @click="item.EdicionFirmas===true"
                           >
-                            <v-icon dark>
-                              mdi-draw
-                            </v-icon>
-                            <span style="margin-left:2%">Visualizar Firma</span>
+                            <span>Opciones de firma</span>
                           </v-btn>
+                        </v-card-actions>
+                        <!-- <v-card v-if="item.EdicionFirmas" style="margin-top:10px;padding:5px 5px;background-color:#EAEAEA"> -->
+                        <v-card style="margin-top:10px;padding:5px 5px;background-color:#EAEAEA">
+                          <v-card-actions>
+                            <v-btn
+                              :disabled="botonCambiarFirma"
+                              :dark="!botonCambiarFirma"
+                              color="green"
+                              @click="agregarFirma(item.idparticipante)"
+                            >
+                              <span v-if="item.firma!=''">Cambiar Firma</span>
+                              <span v-else>Añadir Firma</span>
+                            </v-btn>
+                          </v-card-actions>
+                          <v-row>
+                            <v-col :cols="12" align="right">
+                              <div style="padding:1%">
+                                <vue-dropzone
+                                  :ref="'myVueDropzone'+item.idparticipante"
+                                  @vdropzone-success="afterSuccess2"
+                                  @vdropzone-removed-file="afterRemoved2"
+                                  id="dropzone2"
+                                  :options="dropzoneOptions2"
+                                >
+                                </vue-dropzone>
+                              </div>
+                            </v-col>
+                          </v-row>
+                          <v-card-actions>
+                            <v-btn
+                              dark
+                              color="blue"
+                              @click="verFirma(item.idparticipante)"
+                            >
+                              <v-icon dark>
+                                mdi-draw
+                              </v-icon>
+                              <span style="margin-left:2%">Visualizar Firma</span>
+                            </v-btn>
+                            <v-btn
+                              dark
+                              color="red"
+                              @click="eliminarFirma(item.idparticipante)"
+                            >
+                              <v-icon dark>
+                                mdi-delete
+                              </v-icon>
+                              <span style="margin-left:2%">Eliminar Firma</span>
+                            </v-btn>
+                          </v-card-actions>
                         </v-card>
                         <!-- acaba firmas -->
                         <!-- <v-text-field
@@ -173,10 +219,20 @@
                         <v-text-field
                             v-model="item.observaciones"
                             style="margin-top:3%"
-                            readonly
                             color="#009900"
                             label="Observaciones"
                         ></v-text-field>
+                        <v-card-actions align="right">
+                          <v-row
+                            align="center"
+                            justify="end"
+                          >
+                            <v-btn @click="eliminarParticipante(item.idparticipante)" dark color="red">
+                              <v-icon left>mdi-delete</v-icon>
+                              <span>Eliminar Participante</span>
+                            </v-btn>
+                          </v-row>
+                        </v-card-actions>
                       </v-card>
                     </form>
                   </v-expansion-panel-content>
@@ -187,10 +243,20 @@
           </v-card>
         </v-stepper-content>  
         <v-spacer></v-spacer>
-        <v-card-actions style="padding:2% 3%">
-          <v-btn block color="red" dark @click="cerrarDialogo()">
-            Cerrar
-          </v-btn>
+        <v-card-actions style="padding:1% 3%">
+          <v-row>
+            <v-col>
+              <v-btn block color="red"  dark @click="cerrarDialogo()">
+                Cerrar
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn @click="modificarSesionEducativa()" block color="success">
+                <v-icon left>done</v-icon>
+                <span>Modificar Sesion Educativa</span>
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-actions>
       </v-stepper-items>
     </v-stepper>
@@ -240,12 +306,13 @@
 <script>
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { required, minLength, email, helpers } from "vuelidate/lib/validators";
+import { mapMutations, mapState } from "vuex";
+import { required, minLength, maxLength, email, helpers,numeric } from "vuelidate/lib/validators";
 import axios from "axios";
 import moment from "moment";
 export default {
-  name: "DetalleSesionEducativa",
-  props: ["sesioneducativa","datoSesion","dialogodetalle"],
+  name: "ModificarSesionEducativa",
+  props: ["sesioneducativa","datoSesion","dialogomodificar"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -259,10 +326,23 @@ export default {
       ],
       participantesFiltrados: [],
       search:"",
+      urlfirma:"",
+      botonCambiarFirma:true,
       step:1,
       dialogVistaPreviaFirma:false,
       imagen:"",
       datemenu: false,
+      dropzoneOptions2: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFilesize: 5.0,
+        maxFiles: 1,
+        acceptedFiles: ".png",
+        headers: { "My-Awesome-Header": "header value" },
+        addRemoveLinks: true,
+        dictDefaultMessage:
+          "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
+      },
     }
   },
   watch:{
@@ -276,17 +356,19 @@ export default {
         this.participantesFiltrados = await this.datoSesion.contenido.participantes;
         this.participantesFiltrados.forEach((part)=>{
           part.datemenu=false;
+          part.EdicionFirmas=false;
         })
       }
     },
-    dialogodetalle: async function(dialogodetalle){
+    dialogomodificar: async function(dialogomodificar){
       this.participantesFiltrados = await this.datoSesion.contenido.participantes;
-      console.log(dialogodetalle)
+      console.log(dialogomodificar)
     }
   },
   methods:{
+    ...mapMutations(["replaceSesionesEducativas"]),
     cerrarDialogo() {
-      this.$emit("close-dialog-detail");
+      this.$emit("close-dialog-edit");
       this.step=1;
       this.participantesFiltrados = [];
       this.select= { value: "1", text: "Nombre" };
@@ -311,6 +393,33 @@ export default {
     numeroEcontrados(array){
       return array.length;
     },
+    eliminarParticipante(id){
+      
+      
+      var index =  this.datoSesion.contenido.participantes.findIndex(function(o){
+        return o.idparticipante === id;
+      })
+      if (index !== -1) { this.datoSesion.contenido.participantes.splice(index, 1);}
+      this.sesioneducativa.contenido.participantes= this.datoSesion.contenido.participantes
+      this.participantesFiltrados=[] //Referencial, seteado a vacio para que el watcher actue
+    },
+    agregarFirma(id) {
+      this.participantesFiltrados.forEach((part)=>{
+        if(part.idparticipante ===id){
+          part.firma= this.urlfirma;
+          this.urlfirma = "";
+          this.botonCambiarFirma = true;
+          this.$refs["myVueDropzone"+id][0].removeAllFiles();
+        }
+      })
+    },
+    eliminarFirma(id) {
+      this.participantesFiltrados.forEach((part)=>{
+        if(part.idparticipante ===id){
+          part.firma= "";
+        }
+      })
+    },
     verFirma(id) {
       this.participantesFiltrados.forEach((part)=>{
         if(part.idparticipante ===id){
@@ -324,9 +433,44 @@ export default {
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
     },
+    afterSuccess2(file, response) {
+      this.urlfirma = file.dataURL.split(",")[1];
+      console.log(this.urlfirma);
+      console.log("urlfirma llenada");
+      this.botonCambiarFirma = false;
+    },
+    afterRemoved2(file, error, xhr) {
+      this.urlfirma = "";
+    },
+    async modificarSesionEducativa(){
+      this.participantesFiltrados.forEach((participanteFiltrado)=>{
+        this.sesioneducativa.contenido.participantes.forEach((participante)=>{
+          if(participante.idparticipante === participanteFiltrado.idparticipante){
+            participante.grado = participanteFiltrado.grado
+            participante.fecha = participanteFiltrado.fecha
+            participante.firma = participanteFiltrado.firma
+            participante.observaciones = participanteFiltrado.observaciones
+          }
+        })
+      })
+      //console.log(this.sesioneducativa.contenido.participantes)
+      console.log(this.sesioneducativa);
+      await axios
+        .put("/SesionesEducativas", this.sesioneducativa)
+        .then((res) => {
+          var info = res.data
+          info.fechaCreacion = info.fechaCreacion.split("T")[0];
+          this.replaceSesionesEducativas(info);
+          this.cerrarDialogo();
+        })
+        .catch((err) => {console.log(info);console.log(err)});
+    },
   },
   async mounted() {
     this.participantesFiltrados = await this.datoSesion.contenido.participantes;
+    this.participantesFiltrados.forEach((part)=>{
+      part.EdicionFirmas=false;
+    })
   },
 
 }

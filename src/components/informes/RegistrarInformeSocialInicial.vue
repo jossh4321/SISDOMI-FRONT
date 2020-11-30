@@ -863,7 +863,7 @@ export default {
         await this.mensaje(
           "success",
           "Listo",
-          "Informe registrado Satisfactoriamente",
+          "Informe registrado satisfactoriamente",
           "<strong>Se redirigira a la interfaz de gestión<strong>"
         );
       }
@@ -874,7 +874,6 @@ export default {
       this.$v.firmas.$reset();
     },
     agregarFamiliar() {
-      console.log(this.familiar);
       this.$v.familiar.$touch();
       if (this.$v.familiar.$invalid) {
         console.log("Hay errores :c");

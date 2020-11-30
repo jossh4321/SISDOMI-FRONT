@@ -1,58 +1,75 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Registro de Sesion Educativa</v-card-title>
+    <v-card-title class="justify-center">Agregar Participantes</v-card-title>
     <v-card style="padding: 15px 20px">
       <form>
         <v-row>
           <v-col cols="7">
-            <v-autocomplete
-              style="margin-top:2%"
-              :items="listaresidentes"
-              v-model="ParticipanteSesion.idparticipante"
-              filled
-              chips
-              dense
-              outlined
-              color="#009900"
-              label="Seleccione un Residente"
-              item-text="nombre"
-              item-value="id"
-              @input="$v.ParticipanteSesion.idparticipante.$touch()"
-              @blur="$v.ParticipanteSesion.idparticipante.$touch()"
-              :error-messages="errorResidente"
-            >
-              <template v-slot:selection="data">
-                <v-chip
-                  v-bind="data.attrs"
-                  :input-value="data.selected"
-                  style="margin-top:5px"
+            <v-row no-gutters>
+              <v-col cols="5">
+                <v-select
+                  style="margin-top:3%;margin-right:6%"
+                  v-model="select"
+                  :items="items"
+                  item-text="text"
+                  item-value="value"
+                  label="Filtrar por:"
+                  return-object
+                  outlined
+                  dense
+                ></v-select>
+              </v-col>
+              <v-col cols="7">
+                <v-autocomplete
+                  style="margin-top:2%"
+                  :items="residentes"
+                  v-model="ParticipanteSesion.idparticipante"
+                  filled
+                  chips
+                  dense
+                  outlined
+                  color="#009900"
+                  label="Seleccione un Residente"
+                  :item-text="select.value"
+                  item-value="id"
+                  @input="$v.ParticipanteSesion.idparticipante.$touch()"
+                  @blur="$v.ParticipanteSesion.idparticipante.$touch()"
+                  :error-messages="errorResidente"
                 >
-                  <v-avatar left color="#b3b3ff" size="24">
-                    <span style="font-size:12px">RT</span>
-                  </v-avatar>
-                  {{ data.item.nombre }}
-                </v-chip>
-              </template>
-              <template v-slot:item="data">
-                <template>
-                  <v-list-item-avatar>
-                    <v-avatar left color="#b3b3ff" size="24">
-                      <span style="font-size:12px">RE</span>
-                    </v-avatar>
-                  </v-list-item-avatar>
-                  <v-list-item-content>
-                    <v-list-item-title
-                      >Nombre completo: {{ data.item.nombre }}
-                      {{ data.item.apellido }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle
-                      >Nro. Documento:
-                      {{ data.item.numeroDocumento }}</v-list-item-subtitle
+                  <template v-slot:selection="data">
+                    <v-chip
+                      v-bind="data.attrs"
+                      :input-value="data.selected"
+                      style="margin-top:5px"
                     >
-                  </v-list-item-content>
-                </template>
-              </template>
-            </v-autocomplete>
+                      <v-avatar left color="#b3b3ff" size="24">
+                        <span style="font-size:12px">RT</span>
+                      </v-avatar>
+                      {{ data.item.nombre }} {{data.item.apellido}}
+                    </v-chip>
+                  </template>
+                  <template v-slot:item="data">
+                    <template>
+                      <v-list-item-avatar>
+                        <v-avatar left color="#b3b3ff" size="24">
+                          <span style="font-size:12px">RE</span>
+                        </v-avatar>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          >Nombre completo: {{ data.item.nombre }}
+                          {{ data.item.apellido }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle
+                          >Nro. Documento:
+                          {{ data.item.numeroDocumento }}</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </template>
+                  </template>
+                </v-autocomplete>
+              </v-col>
+            </v-row>
             <v-text-field
               v-model="ParticipanteSesion.grado"
               color="#009900"
@@ -85,11 +102,11 @@
             </v-menu>
           </v-col>
           <v-col cols="5">
-          <v-row>
+          <v-row no-gutters>
             <v-col :cols="11" align="center">
               <div>
                 <vue-dropzone
-                  style="max-width:90%;max-height: 80%;padding:0%"
+                  style="max-width:100%;max-height: 100%;padding:0%"
                   ref="myVueDropzone"
                   @vdropzone-success="afterSuccess"
                   @vdropzone-removed-file="afterRemoved"
@@ -107,7 +124,7 @@
           color="#009900"
           label="Observaciones"
         ></v-text-field>
-        <v-btn style="margin-bottom:2%" block @click="agregarParticipante()" color="success">
+        <v-btn style="margin-bottom:2%" block @click="agregarParticipante()" dark color="blue">
           <v-icon left>mdi-plus</v-icon>
           <span >Agregar Participante</span>
         </v-btn>
@@ -167,6 +184,17 @@
                     </v-icon>
                     <span style="margin-left:2%">Visualizar Firma</span>
                   </v-btn>
+                  <v-btn
+                    style="margin-left:2%"
+                    dark
+                    color="red"
+                    @click="eliminarParticipante(item.idparticipante)"
+                  >
+                    <v-icon dark>
+                      mdi-delete
+                    </v-icon>
+                    <span style="margin-left:2%">Quitar Participante</span>
+                  </v-btn>
                 </v-expansion-panel-content>
               </v-expansion-panel>
               <p style="color:grey;margin-top:2%;margin-bottom:0%" >Encontrados: {{participantes.length}}</p>
@@ -181,9 +209,9 @@
             </v-btn>
           </v-col>
           <v-col>
-            <v-btn @click="modificarSesionEducativa()" block color="success">
+            <v-btn @click="modificarSesionEducativa()" :disabled="evaluarArregloParticipantes()" :dark="!evaluarArregloParticipantes()" block color="success">
               <v-icon left>done</v-icon>
-              <span>Agregar Participantes</span>
+              <span>Guardar Participantes agregados</span>
             </v-btn>
           </v-col>
         </v-row>
@@ -239,17 +267,23 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 export default {
-  props:["sesioneducativa","listaresidentes"],
+  props:["sesioneducativa","dialogoparticipante"],
   components: {
     vueDropzone: vue2Dropzone,
   },
   data() {
     return{
+      select: { value: "1", text: "Nombre" },
+      items: [
+        { value: "nombre", text: 'Nombre'},
+        { value: "apellido", text: 'Apellido'},
+        { value: "numeroDocumento", text: 'Numero Documento'},
+      ],
       datemenu:false,
       dialogVistaPreviaFirma:false,
       imagen:"",
       residente:{},
-      urlfirma:"",
+      residenteArray:[],
       participantes:[],
       ParticipanteSesion:{
         idparticipante:"",
@@ -272,14 +306,28 @@ export default {
       },
     }
   },
+  watch:{
+    dialogoparticipante: async function(dialogoparticipante){
+      if(dialogoparticipante){
+        await this.obtenerResidentes();
+        this.filtrarParticipantes();
+        this.residenteArray = this.residentes;
+        console.log("Residentes filtrados finales")
+        console.log(this.residentes);
+      }
+    }
+  },
   methods:{
-    ...mapMutations(["replaceSesionesEducativas"]),
+    ...mapMutations(["replaceSesionesEducativas","setResidentes"]),
     cerrarDialogo() {
       this.$emit("close-dialog-participantes");
+      this.participantes=[];
+      this.ParticipanteSesion = this.limpiarParticipanteAgregado();
+      this.$refs.myVueDropzone.removeAllFiles();
+      
     },
     afterSuccess(file, response) {
       this.ParticipanteSesion.firma = file.dataURL.split(",")[1];
-      console.log(this.ParticipanteSesion.firma);
       console.log("this.ParticipanteSesion.firma LLENADO");
     },
     afterRemoved(file, error, xhr) {
@@ -289,6 +337,19 @@ export default {
       this.participantes.push(this.ParticipanteSesion);
       this.ParticipanteSesion = this.limpiarParticipanteAgregado();
       this.$refs.myVueDropzone.removeAllFiles();
+      this.filtrarParticipantesInterno()
+      console.log("Residentes filtrados finales")
+      console.log(this.residentes);
+    },
+    eliminarParticipante(id){
+      var index =  this.participantes.findIndex(function(o){
+        return o.idparticipante === id;
+      })
+      if (index !== -1) { this.participantes.splice(index, 1);}
+    },
+    evaluarArregloParticipantes(){
+      if(this.participantes.length===0) {return true}
+      else{ return false}
     },
     verFirma(id) {
       this.participantes.forEach((part)=>{
@@ -315,7 +376,7 @@ export default {
     },
     encontrarNombrePorId(id){
       var nombreCompletoResidente = "";
-      this.listaresidentes.forEach((residente)=>{
+      this.residenteArray.forEach((residente)=>{
         if(residente.id === id){
           //LOS RETURN DENTRO DE UN FOREACH NO FUNCIONAN :D
           nombreCompletoResidente = residente.nombre + ' ' + residente.apellido;
@@ -323,6 +384,70 @@ export default {
       })
       return nombreCompletoResidente;
 
+    },
+    filtrarParticipantesInterno(){
+      var arrayResidente=this.residentes;
+      var arrayParticipante=this.participantes;
+
+      var retorno = arrayResidente.filter(comparer(arrayParticipante));
+      function comparer(participantes){
+        return function(residente){
+          return participantes.filter(function(participante){
+            return participante.idparticipante == residente.id
+          }).length == 0;
+        }
+      }
+      console.log("Filtrados:");
+      console.log(retorno);
+      this.setResidentes(retorno);
+
+
+
+      // var arrayResidente=this.residentes;
+      // var arrayParticipante=this.sesioneducativa.contenido.participantes;
+      // var retorno = [];
+      // for(var x=0;arrayResidente<=arrayResidente.length-1;x++){
+      //   for(var y=0;arrayParticipante<=arrayParticipante.length-1;y++){
+      //     if(arrayParticipante[y].idparticipante !== arrayResidente[x].id ){
+      //       retorno.push(residente[x]);
+      //     }
+      //   }
+      // }
+      // console.log("Retorno de filtro")
+      // console.log(retorno)
+      // //this.setResidentes(retorno);
+    },
+    filtrarParticipantes(){
+      var arrayResidente=this.residentes;
+      var arrayParticipante=this.sesioneducativa.contenido.participantes;
+
+      var retorno = arrayResidente.filter(comparer(arrayParticipante));
+      function comparer(participantes){
+        return function(residente){
+          return participantes.filter(function(participante){
+            return participante.idparticipante == residente.id
+          }).length == 0;
+        }
+      }
+      console.log("Filtrados:");
+      console.log(retorno);
+      this.setResidentes(retorno);
+
+
+
+      // var arrayResidente=this.residentes;
+      // var arrayParticipante=this.sesioneducativa.contenido.participantes;
+      // var retorno = [];
+      // for(var x=0;arrayResidente<=arrayResidente.length-1;x++){
+      //   for(var y=0;arrayParticipante<=arrayParticipante.length-1;y++){
+      //     if(arrayParticipante[y].idparticipante !== arrayResidente[x].id ){
+      //       retorno.push(residente[x]);
+      //     }
+      //   }
+      // }
+      // console.log("Retorno de filtro")
+      // console.log(retorno)
+      // //this.setResidentes(retorno);
     },
     async modificarSesionEducativa(){
       let participanteSemiListo = this.participantes.map(function(res){
@@ -348,8 +473,26 @@ export default {
         })
         .catch((err) => {console.log(info);console.log(err)});
     },
+    //Lista de Residentes para agregar participantes
+    async obtenerResidentes() {
+      await axios
+        .get("/residente/all")
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          for (var x=0;x<res.data.length;x++){
+              info[x].fechaIngreso = res.data[x].fechaIngreso.split("T")[0];
+          }
+          
+          this.setResidentes(info);
+          // console.log("Residentes:");
+          // console.log(info);
+        })
+        .catch((err) => console.log(err));
+    },
   },
   computed:{
+    ...mapState(["residentes"]),
     errorResidente() {
       const errors = [];
       if (!this.$v.ParticipanteSesion.idparticipante.$dirty) return errors;
@@ -367,9 +510,15 @@ export default {
       },
     }
   },
-  created(){
+  async created(){
     console.log("Componente Participante creado")
-  }
+    await this.obtenerResidentes();
+    //Filtrar a los participantes ya agregados previamente
+    this.filtrarParticipantes();
+    console.log("Residentes filtrados finales")
+    console.log(this.residentes);
+    this.residenteArray = this.residentes;
+  },
 }
 </script>
 

@@ -1,5 +1,4 @@
 <template>
-  <div>
     <v-card class="card">
       <v-card-title>Gestionar Sesiones Educativas</v-card-title>
       <v-data-table
@@ -24,7 +23,7 @@
             ></v-text-field>
             <v-spacer></v-spacer>
             <!--Dialogo de Registro de Nueva Sesion-->
-            <v-dialog persistent v-model="dialogoregistro" max-width="880px">
+            <v-dialog persistent v-model="dialogoregistro" max-width="920px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
@@ -38,7 +37,6 @@
                 </v-btn>
               </template>
               <RegistrarSesionEducativa
-                :listaresidentes="listaresidentes"
                 @close-dialog-dontsave="closeDialogRegistrar()"
               ></RegistrarSesionEducativa>
             </v-dialog>
@@ -47,19 +45,33 @@
         <template v-slot:[`item.actions`]="{ item }">
           <!--BOTONES-->
           <v-row align="center" justify="space-around">
+            <!--Abrir dialogo Modificar -->
+            <v-btn color="warning" dark @click="abrirDialogoModificar(item.id)">
+              <v-icon left> mdi-pencil </v-icon>
+              <span>Modificar Sesion</span>
+            </v-btn>
             <!--Abrir dialogo Ver Sesiones -->
             <v-btn color="info" dark @click="abrirDialogoDetalle(item.id)">
               <v-icon left> info </v-icon>
               <span>Ver Sesión</span>
             </v-btn>
             <!--Abrir Agregar Participante -->
-            <v-btn color="info" dark @click="abrirDialogoParticipante(item.id)">
+            <v-btn color="#6FB7F0" dark @click="abrirDialogoParticipante(item.id)">
               <v-icon left>mdi-plus</v-icon>
               <span>Agregar Participante</span>
             </v-btn>
           </v-row>
         </template>
       </v-data-table>
+      <!--Dialogo de Modificacion-->
+      <v-dialog persistent v-model="dialogomodificar" max-width="880px">
+        <ModificarSesionEducativa
+          :sesioneducativa="sesioneducativa"
+          :datoSesion="datoSesion"
+          :dialogomodificar="dialogomodificar"
+          @close-dialog-edit="closeDialogModificar()"
+        ></ModificarSesionEducativa>
+      </v-dialog>
       <!--Dialogo de Detalle-->
       <v-dialog persistent v-model="dialogodetalle" max-width="880px">
         <DetalleSesionEducativa
@@ -70,27 +82,27 @@
         ></DetalleSesionEducativa>
       </v-dialog>
       <!--Dialogo de Agregar Participantes-->
-      <v-dialog persistent v-model="dialogoparticipante" max-width="880px">
+      <v-dialog persistent v-model="dialogoparticipante" max-width="920px">
         <AgregarParticipante
           :sesioneducativa="sesioneducativa"
-          :listaresidentes="listaresidentes"
+          :dialogoparticipante="dialogoparticipante"
           @close-dialog-participantes="closeDialogParticipantes()"
         ></AgregarParticipante>
       </v-dialog>
     </v-card>
-  </div>
 </template>
 
 <script>
 import axios from "axios";
 import AgregarParticipante from "@/components/sesioneseducativas/AgregarParticipante.vue";
+import ModificarSesionEducativa from "@/components/sesioneseducativas/ModificarSesionEducativa.vue";
 import RegistrarSesionEducativa from "@/components/sesioneseducativas/RegistrarSesionEducativa.vue";
 import DetalleSesionEducativa from "@/components/sesioneseducativas/DetalleSesionEducativa.vue";
 import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarSesionesEducativas",
   components:{
-    AgregarParticipante, RegistrarSesionEducativa, DetalleSesionEducativa
+    AgregarParticipante, RegistrarSesionEducativa, DetalleSesionEducativa, ModificarSesionEducativa
   },
   data(){
     return{
@@ -105,8 +117,8 @@ export default {
         { text: "Area", value: "area" },
         { text: "Actions", value: "actions", sortable: false }
       ],
-      listaresidentes:[],
       dialogoregistro: false,
+      dialogomodificar:false,
       dialogodetalle: false,
       dialogoparticipante:false,
       loading:true
@@ -114,13 +126,16 @@ export default {
   },
   async created() {
     this.obtenerSesionesEducativas();
-    this.obtenerResidentes();
-    this.obtenerEducadores();
+    //this.obtenerResidentes();
+    //this.obtenerEducadores();
   },
   methods:{
     ...mapMutations(["setSesionesEducativas","setResidentes"]),
     closeDialogDetalle() {
       this.dialogodetalle = false;
+    },
+    closeDialogModificar() {
+      this.dialogomodificar = false;
     },
     closeDialogRegistrar() {
       this.dialogoregistro = false;
@@ -141,11 +156,13 @@ export default {
       this.datoSesion= await this.obtenerSesionEducativaDTO(idsesion);
       this.dialogodetalle = !this.dialogodetalle;
     },
+    async abrirDialogoModificar(idsesion) {
+      this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion);
+      this.datoSesion= await this.obtenerSesionEducativaDTO(idsesion);
+      this.dialogomodificar = !this.dialogomodificar;
+      
+    },
     async abrirDialogoParticipante(idsesion) {
-      await this.obtenerResidentes();
-      this.listaresidentes = this.residentes;
-      console.log("Lista de Residentes:")
-      console.log(this.listaresidentes)
       this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion);
       this.dialogoparticipante = !this.dialogoparticipante;
     },
@@ -198,24 +215,7 @@ export default {
         .catch((err) => console.log(err));
     },
 
-    //Lista de Residentes para agregar participantes
-    async obtenerResidentes() {
-      await axios
-        .get("/residente/all")
-        .then((res) => {
-          var info = {};
-          info = res.data;
-          //this.listaresidentes = info;
-          for (var x=0;x<res.data.length;x++){
-              info[x].fechaIngreso = res.data[x].fechaIngreso.split("T")[0];
-          }
-          
-          this.setResidentes(info);
-          console.log("infooo");
-          console.log(info);
-        })
-        .catch((err) => console.log(err));
-    },
+    
   },
   computed:{
     ...mapState(["sesionesEducativas","residentes"]),

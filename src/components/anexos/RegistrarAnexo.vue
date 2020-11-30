@@ -60,6 +60,19 @@
           color="#009900"
         ></v-textarea>
 
+        <v-select
+          filled
+          v-model="anexo.area"
+          label="Ingrese el área del anexo"
+          :items="areas"
+          item-value="value"
+          item-text="text"
+          @input="$v.anexo.area.$touch()"
+          @blur="$v.anexo.area.$touch()"
+          :error-messages="errorArea"
+        >
+        </v-select>
+
         <div>
           <vue-dropzone
             ref="myVueDropzone"
@@ -98,7 +111,7 @@
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState } from "vuex";
+import { mapGetters, mapActions, mapMutations, mapState } from "vuex";
 import { required, minLength, between } from "vuelidate/lib/validators";
 export default {
   components: {
@@ -107,6 +120,11 @@ export default {
   data() {
     return {
       listResidentes: [],
+      areas: [
+        { text: "Psicológica", value: "psicologica" },
+        { text: "Social", value: "social" },
+        { text: "Educativa", value: "educativa" }
+      ],
       anexo: {
         id: "",
         titulo: "",
@@ -141,8 +159,12 @@ export default {
       loadingSearch: false,
     };
   },
+  created () {
+    this.fetchUser();
+  },
   methods: {
     ...mapMutations(["setResidentes"]),
+    ...mapActions(['fetchUser']),
     async registrarAnexo() {
       this.$v.$touch();
       if (this.$v.$invalid) {
@@ -154,14 +176,13 @@ export default {
           false
         );
       } else {
-        /*
         for (let index = 0; index < this.anexosAux.length; index++) {
           let formData = new FormData();
 
           formData.append("file", this.anexosAux[index]);
 
           await axios
-            .post("/Media", formData)
+            .post("/Media/archivos/pdf", formData)
             .then((res) => {
               this.anexo.enlaces[index].link = res.data;
               this.anexo.enlaces[index].descripcion = "Enlace " + (index + 1);
@@ -171,10 +192,11 @@ export default {
             });
         }
 
+        this.anexo.idcreador = this.user.id;
         this.anexo.idresidente = this.residente.id;
 
         await axios
-          .post("/Anexo", anexo)
+          .post("/Anexo", this.anexo)
           .then((res) => {
             this.anexo = res.data;
             if (this.anexo.id !== "") {
@@ -187,15 +209,14 @@ export default {
               );
             }
           })
-          .catch((err) => console.log(err)); */
-        alert("Ta bien");
+          .catch((err) => console.log(err));
       }
     },
     afterSuccess(file, response) {
       this.anexosAux.push(file);
     },
     afterRemoved(file, error, xhr) {
-      let indexFile = this.anexosAux.findIndex((image) => image == file);
+      let indexFile = this.anexosAux.findIndex((document) => document == file);
 
       if (indexFile != -1) {
         this.anexosAux.splice(indexFile, 1);
@@ -236,6 +257,7 @@ export default {
   },
   computed: {
     ...mapState(["residentes"]),
+    ...mapGetters(['user']),
     verifyColor() {
       return "red";
     },
@@ -255,6 +277,13 @@ export default {
         errors.push("Debe ingresar una descripción obligatoriamente");
       !this.$v.anexo.descripcion.minLength &&
         errors.push("La descripción debe poseer al menos 4 caracteres");
+      return errors;
+    },
+    errorArea() {
+      const errors = [];
+      if (!this.$v.anexo.area.$dirty) return errors;
+      !this.$v.anexo.area.required &&
+        errors.push("Debe ingresar un área obligatoriamente");
       return errors;
     },
     errorResidente() {
@@ -318,6 +347,9 @@ export default {
         titulo: {
           required,
           minLength: minLength(4),
+        },
+        area: {
+          required,
         },
       },
       anexosAux: {
