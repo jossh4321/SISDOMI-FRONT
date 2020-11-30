@@ -861,7 +861,7 @@ export default {
 
       return errors;
     },
-  },
+  }
 };
 </script>
 <style  scoped>
