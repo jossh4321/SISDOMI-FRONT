@@ -24,29 +24,29 @@
                   <v-col>
                     <v-textarea
                       label="Titulo del Taller"
-                      v-model.trim="tallerescuelapadres.titulo"
+                      v-model.trim="taller.titulo"
                       outlined
                       color="#009900"
                       rows="1"
                       auto-grow
                       :readonly="isDisabled"
                       :error-messages="tituloErrors"
-                      @input="$v.tallerescuelapadres.titulo.$touch()"
-                      @blur="$v.tallerescuelapadres.titulo.$touch()"
+                      @input="$v.taller.titulo.$touch()"
+                      @blur="$v.taller.titulo.$touch()"
                     ></v-textarea>
                   </v-col>
                   <v-col>
                     <v-textarea
                       label="Descripción del Taller"
-                      v-model="tallerescuelapadres.descripcion"
+                      v-model="taller.descripcion"
                       outlined
                       color="#009900"
                       rows="1"
                       auto-grow
                       :readonly="isDisabled"
                       :error-messages="descripcionErrors"
-                      @input="$v.tallerescuelapadres.descripcion.$touch()"
-                      @blur="$v.tallerescuelapadres.descripcion.$touch()"
+                      @input="$v.taller.descripcion.$touch()"
+                      @blur="$v.taller.descripcion.$touch()"
                     ></v-textarea>
                   </v-col>
                 </v-row>
@@ -63,7 +63,7 @@
                       >
                       <template v-slot:activator="{ on, attrs }">
                           <v-text-field
-                          v-model="tallerescuelapadres.contenido.fechaInicio"
+                          v-model="taller.contenido.fechaInicio"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
@@ -71,13 +71,13 @@
                           color="#009900"
                           outlined
                           label="Fecha del inicio del taller"
-                          @input="$v.tallerescuelapadres.contenido.fechaInicio.$touch()"
-                            @blur="$v.tallerescuelapadres.contenido.fechaInicio.$touch()"
+                          @input="$v.taller.contenido.fechaInicio.$touch()"
+                            @blur="$v.taller.contenido.fechaInicio.$touch()"
                             :error-messages="fechainicioErrors"
                           ></v-text-field>
                       </template>
                       <v-date-picker
-                          v-model="tallerescuelapadres.contenido.fechaInicio"
+                          v-model="taller.contenido.fechaInicio"
                           @input="menu1 = false"
                           locale="es-es"
                       ></v-date-picker>
@@ -94,7 +94,7 @@
                         >
                         <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                            v-model="tallerescuelapadres.contenido.fechaFin"
+                            v-model="taller.contenido.fechaFin"
                             prepend-icon="mdi-calendar"
                             readonly
                             v-bind="attrs"
@@ -102,13 +102,13 @@
                             color="#009900"
                             outlined
                             label="Fecha fin del taller"
-                            @input="$v.tallerescuelapadres.contenido.fechaFin.$touch()"
-                            @blur="$v.tallerescuelapadres.contenido.fechaFin.$touch()"
+                            @input="$v.taller.contenido.fechaFin.$touch()"
+                            @blur="$v.taller.contenido.fechaFin.$touch()"
                             :error-messages="fechafinErrors"
                             ></v-text-field>
                         </template>
                         <v-date-picker
-                            v-model="tallerescuelapadres.contenido.fechaFin"
+                            v-model="taller.contenido.fechaFin"
                             @input="menu2 = false"
                             locale="es-es"
                         ></v-date-picker>
@@ -304,7 +304,7 @@
                               <v-col><h3>Acciones</h3></v-col>
                             </v-row>
                             <div
-                              v-for="(item, index) in tallerescuelapadres.contenido.tutores"
+                              v-for="(item, index) in taller.contenido.tutores"
                               :key="index"
                             >
                               <v-row>
@@ -362,7 +362,7 @@
                         <div>
                           <h4
                             class="red--text mt-5 mb-10"
-                            v-if="$v.tallerescuelapadres.contenido.tutores.$error"
+                            v-if="$v.taller.contenido.tutores.$error"
                           >
                             Debe tener como mínimo un tutor registrado
                           </h4>
@@ -431,7 +431,7 @@
                     color="success"
                     elevation="2"
                     width="100%"
-                    @click="sendTallerEscuelaPadres"
+                    @click="sendtaller"
                   >
                     <v-icon left>mdi-check</v-icon>
                     Finalizar
@@ -459,25 +459,6 @@ export default {
   data(){
     return {
       startStteper: 1,
-      tallerescuelapadres:{
-        creadordocumento: "",
-        tipo: "TallerEscuelaPadres",
-        fechacreacion: new Date(),
-        area: "social",
-        fase: "desarrollo",
-        titulo: "",
-        descripcion: "",
-        contenido:{
-          tutores:[],
-          fechaInicio: "",
-          fechaFin: "",
-        },
-        firma: {
-          urlfirma: "",
-          nombre: "",
-          cargo: ""
-        }
-      },
       tutor: {
           nombre: "",
           tipoDocumento: "",
@@ -485,7 +466,6 @@ export default {
           parentesco: "",
           usuaria: {}
       },
-      //recordar borrar al programar delete myObject.regex;
       step:1,
       editable:true,
       complete:false,
@@ -557,11 +537,11 @@ export default {
   },
   methods:{
     limpiar(){
-      this.tallerescuelapadres.titulo="";
-      this.tallerescuelapadres.descripcion="";
-      this.tallerescuelapadres.contenido.fechaInicio="";
-      this.tallerescuelapadres.contenido.fechaFin="";
-      this.tallerescuelapadres.contenido.tutores=[];
+      this.taller.titulo="";
+      this.taller.descripcion="";
+      this.taller.contenido.fechaInicio="";
+      this.taller.contenido.fechaFin="";
+      this.taller.contenido.tutores=[];
       this.step = 1;
     },
     fechaActual(){
@@ -580,7 +560,7 @@ export default {
       this.dialogAgregarTutores = true;
     },
     eliminarTutores(index) {
-      this.tallerescuelapadres.contenido.tutores.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
+      this.taller.contenido.tutores.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     },
     cerrarAgregarTutores() {
       this.dialogAgregarTutores = false;
@@ -606,7 +586,7 @@ export default {
          usuaria:this.residente,
         }//crear tutor variable
         
-        this.tallerescuelapadres.contenido.tutores.push(tutorA); //añadimos al arreglo principal
+        this.taller.contenido.tutores.push(tutorA); //añadimos al arreglo principal
         
         //limpiar
         this.tutor.nombre = "";
@@ -625,11 +605,11 @@ export default {
     actualizarTutores(index) {
       this.$v.tutor.$touch();
       if(!this.$v.tutor.$invalid){
-        this.tallerescuelapadres.contenido.tutores[index].nombre = this.tutor.nombre;
-        this.tallerescuelapadres.contenido.tutores[index].tipoDocumento = this.tutor.tipoDocumento;
-        this.tallerescuelapadres.contenido.tutores[index].numeroDocumento = this.tutor.numeroDocumento;
-        this.tallerescuelapadres.contenido.tutores[index].parentesco = this.tutor.parentesco;
-        this.tallerescuelapadres.contenido.tutores[index].usuaria = this.residente;
+        this.taller.contenido.tutores[index].nombre = this.tutor.nombre;
+        this.taller.contenido.tutores[index].tipoDocumento = this.tutor.tipoDocumento;
+        this.taller.contenido.tutores[index].numeroDocumento = this.tutor.numeroDocumento;
+        this.taller.contenido.tutores[index].parentesco = this.tutor.parentesco;
+        this.taller.contenido.tutores[index].usuaria = this.residente;
 
         //limpiar
         this.tutor.nombre = "";
@@ -649,11 +629,11 @@ export default {
     modalActualizar(index) {
       this.accion = "actualizar";
       this.dialogAgregarTutores = true;
-      this.tutor.nombre = this.tallerescuelapadres.contenido.tutores[index].nombre;
-      this.tutor.tipoDocumento = this.tallerescuelapadres.contenido.tutores[index].tipoDocumento;
-      this.tutor.numeroDocumento = this.tallerescuelapadres.contenido.tutores[index].numeroDocumento;
-      this.tutor.parentesco = this.tallerescuelapadres.contenido.tutores[index].parentesco;
-      this.residente = this.tallerescuelapadres.contenido.tutores[index].usuaria;
+      this.tutor.nombre = this.taller.contenido.tutores[index].nombre;
+      this.tutor.tipoDocumento = this.taller.contenido.tutores[index].tipoDocumento;
+      this.tutor.numeroDocumento = this.taller.contenido.tutores[index].numeroDocumento;
+      this.tutor.parentesco = this.taller.contenido.tutores[index].parentesco;
+      this.residente = this.taller.contenido.tutores[index].usuaria;
       
       this.indice = index;
     },
@@ -661,11 +641,11 @@ export default {
       this.accion = "consultar";
       this.dialogAgregarTutores = true;
 
-      this.tutor.nombre = this.tallerescuelapadres.contenido.tutores[index].nombre;
-      this.tutor.tipoDocumento = this.tallerescuelapadres.contenido.tutores[index].tipoDocumento;
-      this.tutor.numeroDocumento = this.tallerescuelapadres.contenido.tutores[index].numeroDocumento;
-      this.tutor.parentesco = this.tallerescuelapadres.contenido.tutores[index].parentesco;
-      this.residente = this.tallerescuelapadres.contenido.tutores[index].usuaria;
+      this.tutor.nombre = this.taller.contenido.tutores[index].nombre;
+      this.tutor.tipoDocumento = this.taller.contenido.tutores[index].tipoDocumento;
+      this.tutor.numeroDocumento = this.taller.contenido.tutores[index].numeroDocumento;
+      this.tutor.parentesco = this.taller.contenido.tutores[index].parentesco;
+      this.residente = this.taller.contenido.tutores[index].usuaria;
     },
     registerFile(file, response) {
       this.listImages.push(file);
@@ -677,61 +657,11 @@ export default {
         this.listImages.splice(indexFile, 1);
       }
     },
-    async sendTallerEscuelaPadres() {
-      this.$v.tallerescuelapadres.$touch();
+    async sendtaller() {
+      //Para probar algo sin registrar
+      this.$v.taller.$touch();
 
-      if (this.$v.tallerescuelapadres.$invalid) {
-        this.messageSweet(
-          "error",
-          "Errores al intentar registrar",
-          "Se ha presentado errores en los campos para el registro del Plan de Intervención",
-          false
-        );
-      } else {
-        for (let index = 0; index < this.listImages.length; index++) {
-          let formData = new FormData();
-          formData.append("file", this.listImages[index]);
-          await axios
-            .post("/Media", formData)
-            .then((res) => {
-              this.tallerescuelapadres.firma.urlfirma = res.data;
-              this.tallerescuelapadres.firma.nombre = this.user.usuario;
-              this.tallerescuelapadres.firma.cargo = this.user.rol;
-              
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        }
-
-        //borrar despues de probar el guardado
-        //this.tallerescuelapadres.firma.urlfirma = "https://siscarfileserver2.blob.core.windows.net/planes/8189c988-be54-4d02-84a0-610a65166ac8.jpg";
-
-        //Añadimos el id del usuario actual
-        this.tallerescuelapadres.creadordocumento = this.user.id;
-
-        this.tallerescuelapadres.contenido.tutores.forEach((element) => { element.usuariaid = element.usuaria.id; delete element.usuaria; });
-        let tallerescuelapadres = this.tallerescuelapadres;
-
-        axios
-          .post("/Taller/crearTEP", tallerescuelapadres)
-          .then((res) => {
-            this.messageSweet(
-              "success",
-              "Registro del Taller de escuela para padres",
-              "Se registró el Taller de escuela para padres de manera satisfactoria",
-              true
-            );
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      }
-
-      /*Para probar algo sin registrar
-      this.$v.tallerescuelapadres.$touch();
-
-      if (this.$v.tallerescuelapadres.$invalid) {
+      if (this.$v.taller.$invalid) {
         this.messageSweet(
           "error",
           "Errores al intentar registrar",
@@ -746,7 +676,7 @@ export default {
           "Se registró el Taller de escuela para padres de manera satisfactoria",
           true
         );
-      }*/
+      }
     },
     messageSweet(icon, title, text, valid) {
       this.$swal({
@@ -759,6 +689,11 @@ export default {
           this.$emit("register-complete");
         }
       });
+    },
+  },
+  props: {
+    taller: {
+      type: Object,
     },
   },
   computed:{
@@ -784,15 +719,15 @@ export default {
     tituloErrors() {
       const errors = [];
 
-      if (!this.$v.tallerescuelapadres.titulo.$dirty) {
+      if (!this.$v.taller.titulo.$dirty) {
         return errors;
       }
 
-      if (!this.$v.tallerescuelapadres.titulo.required) {
+      if (!this.$v.taller.titulo.required) {
         errors.push("El titulo es requerido");
       }
 
-      if (!this.$v.tallerescuelapadres.titulo.minLength) {
+      if (!this.$v.taller.titulo.minLength) {
         errors.push("Debe ingresar como mínimo 10 caracteres");
       }
 
@@ -801,15 +736,15 @@ export default {
     descripcionErrors() {
       const errors = [];
 
-      if (!this.$v.tallerescuelapadres.descripcion.$dirty) {
+      if (!this.$v.taller.descripcion.$dirty) {
         return errors;
       }
 
-      if (!this.$v.tallerescuelapadres.descripcion.required) {
+      if (!this.$v.taller.descripcion.required) {
         errors.push("La descripción es requerida");
       }
 
-      if (!this.$v.tallerescuelapadres.descripcion.minLength) {
+      if (!this.$v.taller.descripcion.minLength) {
         errors.push("Debe ingresar como mínimo 10 caracteres");
       }
 
@@ -818,11 +753,11 @@ export default {
     fechainicioErrors() {
       const errors = [];
 
-      if (!this.$v.tallerescuelapadres.contenido.fechaInicio.$dirty) return errors;
+      if (!this.$v.taller.contenido.fechaInicio.$dirty) return errors;
 
-      !this.$v.tallerescuelapadres.contenido.fechaInicio.required && errors.push("Debe Ingresar una Fecha de inicio obligatoriamente");
+      !this.$v.taller.contenido.fechaInicio.required && errors.push("Debe Ingresar una Fecha de inicio obligatoriamente");
 
-      if(this.$moment(this.tallerescuelapadres.contenido.fechaInicio) > this.$moment(this.tallerescuelapadres.contenido.fechaFin)) {
+      if(this.$moment(this.taller.contenido.fechaInicio) > this.$moment(this.taller.contenido.fechaFin)) {
         errors.push("La fecha inicio debe ser menor a la fecha fin");
       }
 
@@ -831,11 +766,11 @@ export default {
     fechafinErrors() {
       const errors = [];
 
-      if (!this.$v.tallerescuelapadres.contenido.fechaFin.$dirty) return errors;
+      if (!this.$v.taller.contenido.fechaFin.$dirty) return errors;
 
-      !this.$v.tallerescuelapadres.contenido.fechaFin.required && errors.push("Debe Ingresar una Fecha de fin obligatoriamente");
+      !this.$v.taller.contenido.fechaFin.required && errors.push("Debe Ingresar una Fecha de fin obligatoriamente");
 
-      if(this.$moment(this.tallerescuelapadres.contenido.fechaFin) < this.$moment(this.tallerescuelapadres.contenido.fechaInicio)) {
+      if(this.$moment(this.taller.contenido.fechaFin) < this.$moment(this.taller.contenido.fechaInicio)) {
         errors.push("La fecha fin debe ser mayor a la fecha inicio");
       }
       
@@ -843,8 +778,8 @@ export default {
     },
     tutoresErrors(){
       const errors = [];
-      if (!this.$v.tallerescuelapadres.contenido.tutores.$dirty) return errors;
-      !this.$v.tallerescuelapadres.contenido.tutores.required && errors.push("Debe ingresar un tutor obligatoriamente");
+      if (!this.$v.taller.contenido.tutores.$dirty) return errors;
+      !this.$v.taller.contenido.tutores.required && errors.push("Debe ingresar un tutor obligatoriamente");
       
       return errors;
     },
@@ -905,17 +840,26 @@ export default {
       !this.$v.residente.id.required &&
         errors.push("Debe ingresar un residente obligatoriamente");
 
-      /*if (this.tallerescuelapadres.contenido.tutores.length > 0) {
-        this.tallerescuelapadres.contenido.tutores.forEach(tutor => {
-            if(tutor.usuaria.id == this.residente.id) {
-              errors.push("Ya ha registrado un tutor para este residente.");
-            }
-        });
-      }*/
-      
       return errors;
     },
   },
+  created() {
+    this.residente.residente =
+      "HOLLA";
+    this.residente.id = "";
+
+    //this.listResidentes.push(this.residente);
+  },
+  mounted() {
+    var file = { size: 250, name: "firmatrabajador.jpg", type: "image/jpg" };
+    var url = this.taller.firma.urlfirma;
+
+    //this.$refs.myVueDropzone.manuallyAddFile(file, url);
+
+    this.listImages.push(
+      this.$refs.myVueDropzone.dropzoneElement.dropzone.files[0]
+    );
+  },  
   validations: {
     listImages: {
       required,
@@ -923,7 +867,7 @@ export default {
     residente:  {
       id: { required },
     },
-    tallerescuelapadres:{
+    taller:{
         titulo: {
           required,
           minLength: minLength(10),
