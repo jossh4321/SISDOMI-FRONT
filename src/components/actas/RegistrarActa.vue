@@ -137,6 +137,7 @@
   </v-card>
 </template>
 <script>
+import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 export default {
@@ -146,10 +147,10 @@ export default {
   data() {
       return {
       actaI: {
-        nombreusuaria:"Xiomara Paredes Guerra",
-        nombreplan:"PlanI_Edu_Xiomara_1",
-        objetivogeneral:"Realizar un adecuado plan de intervención",
-        objetivoespecifico:"Responde a Plan de seguimiento",        
+        nombreusuaria:" ",
+        nombreplan:" ",
+        objetivogeneral:" ",
+        objetivoespecifico:" ",        
         actividades_estrategias:" ",
         indicadores:" ",
         meta:" ",
@@ -167,7 +168,8 @@ export default {
          dictDefaultMessage: "Seleccione la firma del responsable o Arrastrela Aqui"
       },
     };
-  },methods:{
+  },
+  methods:{
     afterSuccess(file,response){
        this.usuario.datos.imagen = file.dataURL;
        this.$v.usuario.datos.imagen.$model = file.dataURL;

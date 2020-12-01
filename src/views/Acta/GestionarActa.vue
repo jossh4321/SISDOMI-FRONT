@@ -73,13 +73,14 @@
 <script>
 import axios from "axios";
 import RegistrarActa from "@/components/actas/RegistrarActa.vue";
-
+import ActualizarActa from "@/components/actas/ActualizarActa.vue";
 import { mapMutations, mapState } from "vuex";
 
 export default {
   name: "GestionarActaI",
   components: {
-    RegistrarActa
+    RegistrarActa,
+    ActualizarActa
    
   },
   data() {
@@ -163,18 +164,17 @@ export default {
     },
  async reg(item){
       var user = {};
-      await axios.get("/plan/id?id="+item)
+      await axios.get("/actas/id?id="+id)//prueba
       .then(res => {
          user = res.data; 
-         user.datos.fechanacimiento = res.data.datos
-                  .fechanacimiento.split("T")[0];
+  
       })
       .catch(err => console.log(err));
       return user;
     },
 
-   async abrirDialogoDetalle(actaI){
-     this.plan = await this.detail(actaI);
+   async abrirDialogoDetalle(item){
+     this.plan = await this.detail(item);
      this.dialogodetalle = !this.dialogodetalle;
    },
 
