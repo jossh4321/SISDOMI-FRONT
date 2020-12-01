@@ -25,7 +25,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
-                  darkdark @click="regitem(item)"
+                  darkdark @click="regitem(actaI)"
                   class="mb-2"
                   v-bind="attrs"
                   v-on="on"
@@ -34,9 +34,9 @@
                   <span>Registrar nueva Acta</span>
                 </v-btn>
               </template>
-             <RegistrarPlanIntervencion v-if="dialogoregistro" :actaI="actaI" @close-dialog-detail="closeDialogRegistrar()">
+             <RegistrarActa v-if="dialogoregistro" :actaI="actaI" @close-dialog-detail="closeDialogRegistrar()">
                 
-              ></RegistrarPlanIntervencion>
+              ></RegistrarActa>
             </v-dialog>
           </v-toolbar>
         </template>
@@ -44,8 +44,8 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
              <v-dialog v-model="dialogoactualizacion" max-width="880px">
-               <ActualizarActaIntervencion v-if="dialogoactualizacion" :actaI="actaI" @close-dialog-detail="closeDialogActualizar()">
-          </ActualizarActaIntervencion></v-dialog> -->
+               <ActualizarActa v-if="dialogoactualizacion" :actaI="actaI" @close-dialog-detail="closeDialogActualizar()">
+          </ActualizarActa></v-dialog> -->
             <v-btn color="warning" dark @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
@@ -79,7 +79,7 @@ import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarActaI",
   components: {
-    RegistrarActa,
+    RegistrarActa
    
   },
   data() {
@@ -126,33 +126,73 @@ export default {
     };
     
   },
-
+  async crated(){
+    this.obtenerplan();
+    
+  },
 
   methods: {
-     ...mapMutations(["setPlanInterve"]),
-    async regitem(item){
-      this.planA = await this.actu(item);
-      this.dialogoregistro=!this.dialogoregistro;
-      console.log(item);
-
+     ...mapMutations(["setplan","replaceplan"]),
+      testing2(){
+        axios.get("/plan/saludos")
+        .then(x => {
+          console.log(x.data);
+        }).catch(err => console.log(err));
     },
+    closeDialogRegistrar(){
+      this.dialogoregistro = false;
+    },
+    closeDialogActualizar(){
+      this.dialogoactualizacion = false;
+    },
+    closeDialogDetalle(){
+      this.dialogodetalle = false;
+    },
+    editItem(item) {
+      console.log(item);
+    },
+    deleteItem(item) {
+      console.log(item);
+    },
+
+    async regitem(item){
+      this.plan = await this.reg(item);
+      this.dialogoregistro=!this.dialogoregistro;
    
 
+    },
+ async reg(item){
+      var user = {};
+      await axios.get("/plan/id?id="+item)
+      .then(res => {
+         user = res.data; 
+         user.datos.fechanacimiento = res.data.datos
+                  .fechanacimiento.split("T")[0];
+      })
+      .catch(err => console.log(err));
+      return user;
+    },
+
+   async abrirDialogoDetalle(actaI){
+     this.plan = await this.detail(actaI);
+     this.dialogodetalle = !this.dialogodetalle;
+   },
+
     async editItem(item) {
-      this.planA =  await this.actu(item); 
+      this.plan =  await this.actu(item); 
       this.dialogoactualizacion=!this.dialogoactualizacion;
-      console.log(item);
+      
    //   console.log(item);
     },
     async actu(item){
    
-      var planA = {};
-      await axios.get("/usuario/id?id="+id)//prueba
+      var plan = {};
+      await axios.get("/plan/id?id="+item)//prueba
       .then(res => {
-         planA = res.data; 
+         plan = res.data; 
       })
       .catch(err => console.log(err));
-      return this.planA;
+      return this.plan;
     },
     detailItem(item) {
            
@@ -181,6 +221,7 @@ export default {
       .catch(err => console.log(err));
       return user;
     },
+
 
   },
    computed:{
