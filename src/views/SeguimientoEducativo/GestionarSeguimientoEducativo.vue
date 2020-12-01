@@ -47,10 +47,7 @@
 
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
-             <!--<v-dialog v-model="dialogoactualizacion" max-width="880px">
-               <ActualizarPlanIntervencion v-if="dialogoactualizacion" :planIntervencion="planIntervencion" @close-dialog-detail="closeDialogActualizar()">
-          </ActualizarPlanIntervencion></v-dialog> -->
-            <v-btn color="warning" dark @click="editItem(item)">
+            <v-btn color="warning" dark @click="abrirDialogoModificar(item.id)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
@@ -63,12 +60,26 @@
           </v-row>
         </template>
       </v-data-table>
-       
+       <!--Dialogo de Modificacion-->
+      <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
+        <ModificarSeguimientoEducativo
+          :seguimiento="seguimiento"
+          :residente ="residente"
+          :listaresidentes ="listaresidentes"
+          :listaeducadores="listaeducadores"
+          :dialogodetalle ="dialogoactualizacion"
+          
+
+          @close-dialog-edit="closeDialogModificar()"
+        >
+        </ModificarSeguimientoEducativo>
+      </v-dialog>
     <v-dialog persistent v-model="dialogodetalle" max-width="880px">
         <DetalleSeguimientoEducativo
           :seguimiento="seguimiento"
           :residente ="residente"
           :listaresidentes ="listaresidentes"
+          :listaeducadores="listaeducadores"
           :dialogodetalle ="dialogodetalle"
           @close-dialog-detail="closeDialogDetalle()"
         >
@@ -83,13 +94,15 @@ import axios from "axios";
 
 import DetalleSeguimientoEducativo from '@/components/seguimientoEducativo/DetalleSeguimientoEducativo.vue'
 import RegistrarSeguimientoEducativo from '@/components/seguimientoEducativo/RegistrarSeguimientoEducativo.vue'
+import ModificarSeguimientoEducativo from '@/components/seguimientoEducativo/ActualizarSeguimientoEducativo.vue'
 import { mapMutations, mapState } from "vuex";
 
 export default {
   name: "GestionarSeguimientoEducativo",
   components: {
     DetalleSeguimientoEducativo,
-    RegistrarSeguimientoEducativo
+    RegistrarSeguimientoEducativo,
+    ModificarSeguimientoEducativo
     
   },
   data() {
@@ -144,6 +157,12 @@ export default {
       this.residente = await this.loadResidente(this.seguimiento.idresidente);// traelos datos del residnete
       this.dialogodetalle = !this.dialogodetalle;
       },
+      ///abrir dialogo de modificacion
+    async abrirDialogoModificar(idseguimiento) {
+      this.seguimiento = await this.loadSeguimientoDetalle(idseguimiento);
+      this.residente = await this.loadResidente(this.seguimiento.idresidente);// traelos datos del residnete
+      this.dialogoactualizacion = !this.dialogoactualizacion;
+    },
   /////////////////Consumo de  apis 
     async obtenerSeguimiento() {
       await axios
