@@ -284,12 +284,16 @@
           </template>
         </v-card>
       </v-card-text>
+      <v-dialog v-model="dialogDocuments" max-width="500">
+        <detalle-documentos :areaDocuments="areaDocuments"></detalle-documentos>
+      </v-dialog>
     </template>
   </v-card>
 </template>
 
 <script>
 import axios from "axios";
+import DetalleDocumentos from '@/components/expediente/general/DetalleDocumentos.vue';
 
 export default {
   name: "app-expediente-residente",
@@ -297,6 +301,7 @@ export default {
     return {
       residente: null,
       showInfo: true,
+      dialogDocuments: false,
       headerDocuments: [
         {
           text: "Área",
@@ -315,6 +320,7 @@ export default {
           align: "center",
         },
       ],
+      areaDocuments: [],
     };
   },
   props: {
@@ -323,7 +329,17 @@ export default {
     },
   },
   methods: {
-    showDocuments(item) {},
+    showDocuments(item) {
+      axios
+        .get("/documento/tipo/" + item.area + "/residente/" + this.idresidente)
+        .then((res) => {
+          this.areaDocuments = res.data;
+          this.dialogDocuments = true;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
   },
   filters: {
     toPhoneReference(value) {
@@ -336,7 +352,7 @@ export default {
     },
     toCapitalize(value) {
       return value.charAt(0).toUpperCase() + value.substring(1);
-    },
+    }
   },
   created() {
     axios
@@ -350,6 +366,9 @@ export default {
         console.error(err);
       });
   },
+  components: {
+    DetalleDocumentos
+  }
 };
 </script>
 
