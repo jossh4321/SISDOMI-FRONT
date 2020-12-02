@@ -23,7 +23,7 @@
             ></v-text-field>
             <v-spacer></v-spacer>
             <!--Dialogo de Registro de Nueva Sesion-->
-            <v-dialog persistent v-model="dialogoregistro" max-width="920px">
+            <v-dialog persistent v-model="dialogoregistro" max-width="900px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
@@ -38,6 +38,7 @@
               </template>
               <RegistrarSesionEducativa
                 @close-dialog-dontsave="closeDialogRegistrar()"
+                :dialogoregistro="dialogoregistro"
               ></RegistrarSesionEducativa>
             </v-dialog>
           </v-toolbar>
@@ -207,7 +208,7 @@ export default {
           var info = {};
           info = res.data;
           for (var x=0;x<res.data.length;x++){
-              info[x].fechaCreacion = this.convertDateFormat(info[x].fechaCreacion);
+              info[x].fechaCreacion = info[x].fechaCreacion.split("T")[0];
           }
           this.setSesionesEducativas(info);
           
