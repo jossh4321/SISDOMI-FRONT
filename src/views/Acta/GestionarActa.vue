@@ -63,8 +63,8 @@
             <v-dialog persistent
                 v-model="dialogodetalle" 
                 max-width="880px">
-          <VisualizarActaIntervencion :plan="plan" @close-dialog-detail="closeDialogDetalle()">
-          </VisualizarActaIntervencion>
+          <VisualizarActa :plan="plan" @close-dialog-detail="closeDialogDetalle()">
+          </VisualizarActa>
       </v-dialog>
       
     </v-card>
@@ -74,13 +74,15 @@
 import axios from "axios";
 import RegistrarActa from "@/components/actas/RegistrarActa.vue";
 import ActualizarActa from "@/components/actas/ActualizarActa.vue";
+import VisualizarActa from "@/components/actas/VisualizarActa.vue";
 import { mapMutations, mapState } from "vuex";
 
 export default {
   name: "GestionarActaI",
   components: {
     RegistrarActa,
-    ActualizarActa
+    ActualizarActa,
+    VisualizarActa
    
   },
   data() {
@@ -173,11 +175,6 @@ export default {
       return user;
     },
 
-   async abrirDialogoDetalle(item){
-     this.plan = await this.detail(item);
-     this.dialogodetalle = !this.dialogodetalle;
-   },
-
     async editItem(item) {
       this.plan =  await this.actu(item); 
       this.dialogoactualizacion=!this.dialogoactualizacion;
@@ -186,13 +183,13 @@ export default {
     },
     async actu(item){
    
-      var plan = {};
-      await axios.get("/plan/id?id="+item)//prueba
+      var user = {};
+      await axios.get("/actas/id?id="+item)//prueba
       .then(res => {
-         plan = res.data; 
+         user = res.data; 
       })
       .catch(err => console.log(err));
-      return this.plan;
+      return user;
     },
     detailItem(item) {
            
@@ -213,7 +210,7 @@ export default {
       async obtenerCualquiercosa(id){
    
       var user = {};
-      await axios.get("/PlanIntervencionSocial/id?id="+id)//prueba
+      await axios.get("/actas/id?id="+id)//prueba
       .then(res => {
          user = res.data; 
   
