@@ -25,7 +25,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
-                  darkdark @click="regitem(item)"
+                  darkdark @click="regitem(actaI)"
                   class="mb-2"
                   v-bind="attrs"
                   v-on="on"
@@ -34,9 +34,9 @@
                   <span>Registrar nueva Acta</span>
                 </v-btn>
               </template>
-             <RegistrarPlanIntervencion v-if="dialogoregistro" :actaI="actaI" @close-dialog-detail="closeDialogRegistrar()">
+             <RegistrarActa v-if="dialogoregistro" :actaI="actaI" @close-dialog-detail="closeDialogRegistrar()">
                 
-              ></RegistrarPlanIntervencion>
+              ></RegistrarActa>
             </v-dialog>
           </v-toolbar>
         </template>
@@ -44,8 +44,8 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
              <v-dialog v-model="dialogoactualizacion" max-width="880px">
-               <ActualizarActaIntervencion v-if="dialogoactualizacion" :actaI="actaI" @close-dialog-detail="closeDialogActualizar()">
-          </ActualizarActaIntervencion></v-dialog> -->
+               <ActualizarActa v-if="dialogoactualizacion" :actaI="actaI" @close-dialog-detail="closeDialogActualizar()">
+          </ActualizarActa></v-dialog> -->
             <v-btn color="warning" dark @click="editItem(item)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
@@ -63,8 +63,8 @@
             <v-dialog persistent
                 v-model="dialogodetalle" 
                 max-width="880px">
-          <VisualizarActaIntervencion :plan="plan" @close-dialog-detail="closeDialogDetalle()">
-          </VisualizarActaIntervencion>
+          <VisualizarActa :plan="plan" @close-dialog-detail="closeDialogDetalle()">
+          </VisualizarActa>
       </v-dialog>
       
     </v-card>
@@ -73,13 +73,16 @@
 <script>
 import axios from "axios";
 import RegistrarActa from "@/components/actas/RegistrarActa.vue";
-
+import ActualizarActa from "@/components/actas/ActualizarActa.vue";
+import VisualizarActa from "@/components/actas/VisualizarActa.vue";
 import { mapMutations, mapState } from "vuex";
 
 export default {
   name: "GestionarActaI",
   components: {
     RegistrarActa,
+    ActualizarActa,
+    VisualizarActa
    
   },
   data() {
@@ -126,33 +129,67 @@ export default {
     };
     
   },
-
+  async crated(){
+    this.obtenerplan();
+    
+  },
 
   methods: {
-     ...mapMutations(["setPlanInterve"]),
-    async regitem(item){
-      this.planA = await this.actu(item);
-      this.dialogoregistro=!this.dialogoregistro;
-      console.log(item);
-
+     ...mapMutations(["setplan","replaceplan"]),
+      testing2(){
+        axios.get("/plan/saludos")
+        .then(x => {
+          console.log(x.data);
+        }).catch(err => console.log(err));
     },
+    closeDialogRegistrar(){
+      this.dialogoregistro = false;
+    },
+    closeDialogActualizar(){
+      this.dialogoactualizacion = false;
+    },
+    closeDialogDetalle(){
+      this.dialogodetalle = false;
+    },
+    editItem(item) {
+      console.log(item);
+    },
+    deleteItem(item) {
+      console.log(item);
+    },
+
+    async regitem(item){
+      this.plan = await this.reg(item);
+      this.dialogoregistro=!this.dialogoregistro;
    
 
+    },
+ async reg(item){
+      var user = {};
+      await axios.get("/actas/id?id="+id)//prueba
+      .then(res => {
+         user = res.data; 
+  
+      })
+      .catch(err => console.log(err));
+      return user;
+    },
+
     async editItem(item) {
-      this.planA =  await this.actu(item); 
+      this.plan =  await this.actu(item); 
       this.dialogoactualizacion=!this.dialogoactualizacion;
-      console.log(item);
+      
    //   console.log(item);
     },
     async actu(item){
    
-      var planA = {};
-      await axios.get("/usuario/id?id="+id)//prueba
+      var user = {};
+      await axios.get("/actas/id?id="+item)//prueba
       .then(res => {
-         planA = res.data; 
+         user = res.data; 
       })
       .catch(err => console.log(err));
-      return this.planA;
+      return user;
     },
     detailItem(item) {
            
@@ -173,7 +210,7 @@ export default {
       async obtenerCualquiercosa(id){
    
       var user = {};
-      await axios.get("/PlanIntervencionSocial/id?id="+id)//prueba
+      await axios.get("/actas/id?id="+id)//prueba
       .then(res => {
          user = res.data; 
   
@@ -181,6 +218,7 @@ export default {
       .catch(err => console.log(err));
       return user;
     },
+
 
   },
    computed:{

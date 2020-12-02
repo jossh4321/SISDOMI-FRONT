@@ -21,20 +21,103 @@
           ><!--CONTIENE LOS STEPPERS 1 -->
           <div class="container-user">
             <form>
-              <v-text-field style="margin-top:5px"
-                v-model="nombrecompleto"
-                label="Nombres y apellidos de Usuaria Car"
-                outlined
-                readonly
-                color="#009900"
-              ></v-text-field>
-               <v-text-field
-                    v-model="educador"
-                    label="Educador Responsable"
-                    outlined
-                    readonly
-                    color="#009900"
-                ></v-text-field>  
+               <v-autocomplete
+                            v-model="seguimiento.idresidente"
+                            :items="listaresidentes"
+                            filled
+                            chips
+                            disabled
+                            dense
+                            outlined
+                            color="#009900"
+                            label="Usuaria CAR"
+                            item-text="nombre"
+                            item-value="id"
+                         
+                            
+                          >
+                            <template v-slot:selection="data">
+                              <v-chip
+                                v-bind="data.attrs"
+                                :input-value="data.selected"
+                                style="margin-top:5px"
+                              >
+                                <v-avatar left color="#b3b3ff" size="24">
+                                  <span style="font-size:12px">UE</span>
+                                </v-avatar>
+                                {{ data.item.nombre + " " + data.item.apellido }}
+                              </v-chip>
+                            </template>
+                            <template v-slot:item="data">
+                              <template>
+                                <v-list-item-avatar>
+                                  <v-avatar left color="#b3b3ff" size="24">
+                                    <span style="font-size:12px">US</span>
+                                  </v-avatar>
+                                </v-list-item-avatar>
+                                <v-list-item-content>
+                                  <v-list-item-title
+                                    >Nombre completo: {{ data.item.nombre }}
+                                    {{ data.item.apellido }}
+                                  </v-list-item-title>
+                                  <v-list-item-subtitle
+                                    >Nro. Documento:
+                                    {{ data.item.numeroDocumento }}</v-list-item-subtitle
+                                  >
+                                </v-list-item-content>
+                              </template>
+                            </template>
+                          </v-autocomplete>
+                 <!-- autocomplete de  educadores-->
+                        <v-autocomplete
+                              :items="listaeducadores"
+                              filled
+                              chips
+                              dense
+                              disabled
+                              outlined
+                              v-model="seguimiento.creadordocumento"
+                              color="#009900"
+                              label="Educador responsable"
+                              item-text="usuario"
+                              item-value="id"
+                            
+                              
+                            >
+                              <template v-slot:selection="data">
+                                <v-chip
+                                  v-bind="data.attrs"
+                                  :input-value="data.selected"
+                                  style="margin-top:5px"
+                                >
+                                  <v-avatar left color="#b3b3ff" size="24">
+                                    <span style="font-size:12px">RT</span>
+                                  </v-avatar>
+                                  {{ data.item.datos.nombre  + " " +  data.item.datos.apellido }}
+                                </v-chip>
+                              </template>
+                              <template v-slot:item="data">
+                                <template>
+                                  <v-list-item-avatar>
+                                    <v-avatar left color="#b3b3ff" size="24">
+                                      <span style="font-size:12px">UC</span>
+                                    </v-avatar>
+                                  </v-list-item-avatar>
+                                  <v-list-item-content>
+                                    <v-list-item-title
+                                      >Nombre completo: {{ data.item.datos.nombre }}
+                                      {{ data.item.datos.apellido }}
+                                    </v-list-item-title>
+                                    <v-list-item-subtitle
+                                      >Nro. Documento:
+                                      {{
+                                        data.item.datos.numeroDocumento
+                                      }}</v-list-item-subtitle
+                                    >
+                                  </v-list-item-content>
+                                </template>
+                              </template>
+                          </v-autocomplete>
                  <v-menu
                   v-model="datemenu"
                   :close-on-content-click="false"
@@ -485,7 +568,7 @@ import axios from 'axios';
 export default {
   
 name:'DetalleSeguimientoEducativo',
-props: ["seguimiento","residente","listaresidentes","dialogodetalle"],
+props: ["seguimiento","residente","listaresidentes","listaeducadores"],
 data(){
   return{
     dialog: false,//dialogo de ver firma
@@ -496,14 +579,10 @@ data(){
     notas:[],
     educador:"",
     dialogVistaPreviaFirma: false,
-    nombrecompleto: this.residente.nombre +" " + this.residente.apellido
+    
     
   }
   },
-  async created() {
-     
-      this.obtenerEducador();
-    },
   methods:{
       cerrarDialogo(){
         this.step=1;
@@ -514,13 +593,6 @@ data(){
         this.dialog1=true;
         console.log(this.notas)
       },
-       async obtenerEducador(){
-          await axios.get("/usuario/id?id="+this.seguimiento.creadordocumento)
-            .then(res => {
-                    this.educador = res.data.datos.nombre + " "+res.data.datos.apellido;
-                    console.log(this.educador)
-            }).catch(err => console.log(err));
-       },
        verFirma(index) {
       console.log(this.seguimiento.contenido.firmas[index].urlfirma);
       this.imagen = this.seguimiento.contenido.firmas[index].urlfirma;
@@ -530,6 +602,7 @@ data(){
       this.dialogVistaPreviaFirma = false;
     },
 },
+
 
 
 }

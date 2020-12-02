@@ -73,6 +73,16 @@
               ></component>
             </v-dialog>
 
+            <!--Actualizar Modal-->
+            <v-dialog v-model="dialogTallerModify" persistent max-width="880">
+              <component
+                :is="typeTallerSelected"
+                :taller="taller"
+                @close-dialog="closeDialogModify"
+                @edit-complete="editComplete"
+              ></component>
+            </v-dialog>
+
           </v-toolbar>
         </template>
         <template v-slot:[`item.fechacreacion`]="{ item }">
@@ -98,10 +108,14 @@
 <script>
 import axios from "axios";
 import RegistrarTallerEscuelaPadres from "@/components/talleres/escuelapadres/RegistrarTallerEscuelaPadres.vue";
+import RegistrarTallerEducativo from "@/components/talleres/educativo/RegistrarTallerEducativo.vue";
+import ActualizarTallerEscuelaPadres from "@/components/talleres/escuelapadres/ActualizarTallerEscuelaPadres.vue";
 export default {
   name: "GestionarTalleres",
   components: {
-     RegistrarTallerEscuelaPadres
+     RegistrarTallerEscuelaPadres,
+     ActualizarTallerEscuelaPadres,
+     RegistrarTallerEducativo
   },
   data() {
     return {
@@ -138,13 +152,34 @@ export default {
         text: "",
         value: "",
       },
+      taller: {},
+      typeTallerSelected: "",
       dialogRegister: false,
-      dialogTallerRegister: false
+      dialogTallerRegister: false,
+      dialogTallerModify: false,
     };
   },
   methods: {
-    editItem(item) {
-      console.log(item);
+    async editItem(item) {
+      await axios
+        .get("/Taller/" + item.id)
+        .then((res) => {
+          this.taller = res.data;
+
+          this.typeTallerSelected = "ActualizarTallerEscuelaPadres";
+          /*if (res.data.area == "social" && res.data.fase == "desarrollo") {
+            this.typePlanSelected = "ActualizarTallerEscuelaPadres";
+          } else if (res.data.area == "social") {
+            this.typePlanSelected = "ModificarPlanIntervencionSocial";
+          } else if (res.data.area == "psicologica") {
+            this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
+          }*/
+
+          this.dialogTallerModify = true;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
     detailItem(item) {
       console.log(item);
@@ -175,6 +210,15 @@ export default {
       this.closeDialog();
       this.loading = true;
       this.listTalleres();
+    },
+    editComplete() {
+      this.closeDialogModify();
+      this.loading = true;
+      this.listTalleres();
+    },
+    closeDialogModify() {
+      this.dialogTallerModify = false;
+      this.typeTallerSelected = "";
     },
   },
   created() {

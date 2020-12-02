@@ -1,5 +1,4 @@
 <template>
-  <div>
     <v-card class="card">
       <v-card-title>Gestionar Sesiones Educativas</v-card-title>
       <v-data-table
@@ -24,7 +23,7 @@
             ></v-text-field>
             <v-spacer></v-spacer>
             <!--Dialogo de Registro de Nueva Sesion-->
-            <v-dialog persistent v-model="dialogoregistro" max-width="880px">
+            <v-dialog persistent v-model="dialogoregistro" max-width="920px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
@@ -38,7 +37,6 @@
                 </v-btn>
               </template>
               <RegistrarSesionEducativa
-                :listaresidentes="listaresidentes"
                 @close-dialog-dontsave="closeDialogRegistrar()"
               ></RegistrarSesionEducativa>
             </v-dialog>
@@ -58,7 +56,7 @@
               <span>Ver Sesión</span>
             </v-btn>
             <!--Abrir Agregar Participante -->
-            <v-btn color="info" dark @click="abrirDialogoParticipante(item.id)">
+            <v-btn color="#6FB7F0" dark @click="abrirDialogoParticipante(item.id)">
               <v-icon left>mdi-plus</v-icon>
               <span>Agregar Participante</span>
             </v-btn>
@@ -84,15 +82,14 @@
         ></DetalleSesionEducativa>
       </v-dialog>
       <!--Dialogo de Agregar Participantes-->
-      <v-dialog persistent v-model="dialogoparticipante" max-width="880px">
+      <v-dialog persistent v-model="dialogoparticipante" max-width="920px">
         <AgregarParticipante
           :sesioneducativa="sesioneducativa"
-          :listaresidentes="listaresidentes"
+          :dialogoparticipante="dialogoparticipante"
           @close-dialog-participantes="closeDialogParticipantes()"
         ></AgregarParticipante>
       </v-dialog>
     </v-card>
-  </div>
 </template>
 
 <script>
@@ -120,7 +117,6 @@ export default {
         { text: "Area", value: "area" },
         { text: "Actions", value: "actions", sortable: false }
       ],
-      listaresidentes:[],
       dialogoregistro: false,
       dialogomodificar:false,
       dialogodetalle: false,
@@ -167,8 +163,6 @@ export default {
       
     },
     async abrirDialogoParticipante(idsesion) {
-      await this.obtenerResidentes();
-      this.listaresidentes = this.residentes;
       this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion);
       this.dialogoparticipante = !this.dialogoparticipante;
     },
@@ -221,24 +215,7 @@ export default {
         .catch((err) => console.log(err));
     },
 
-    //Lista de Residentes para agregar participantes
-    async obtenerResidentes() {
-      await axios
-        .get("/residente/all")
-        .then((res) => {
-          var info = {};
-          info = res.data;
-          //this.listaresidentes = info;
-          for (var x=0;x<res.data.length;x++){
-              info[x].fechaIngreso = res.data[x].fechaIngreso.split("T")[0];
-          }
-          
-          this.setResidentes(info);
-          console.log("infooo");
-          console.log(info);
-        })
-        .catch((err) => console.log(err));
-    },
+    
   },
   computed:{
     ...mapState(["sesionesEducativas","residentes"]),
