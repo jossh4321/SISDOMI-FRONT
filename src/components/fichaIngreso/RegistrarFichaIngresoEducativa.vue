@@ -111,6 +111,81 @@
                         ></v-textarea>
                 </v-row>
 
+                <v-card
+                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <v-text-field
+                          v-model="docEscolar"
+                          label="Documentos Escolares"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarDocEscolar"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+
+                  <v-card
+                    tile
+                    elevation="0"
+                    color="#FAFAFA"
+                    style="margin:5px"
+                    height="60"
+                    v-for="docEscolar in docEscolares"
+                    :key="docEscolar"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <span>{{ docEscolar }}</span>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarDocEscolar(docEscolar)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+
+                <div>
+                  <vue-dropzone
+                    ref="myVueDropzone"
+                    @vdropzone-success="afterSuccess"
+                    @vdropzone-removed-file="afterRemoved"
+                    id="dropzone"
+                    :options="dropzoneOptions3"
+                  >
+                  </vue-dropzone>
+                </div>
+
                 <v-row>
                     <v-col>
                         <v-btn block @click="show=false" color="primary">
@@ -508,7 +583,7 @@ export default {
             headers: { "My-Awesome-Header": "header value" },
             addRemoveLinks: true,
             dictDefaultMessage:
-              "Seleccione un archivo anexo de su dispositivo o arrástrela aquí",
+              "Seleccione una observacion de su dispositivo o arrástrela aquí",
           },
           dropzoneOptions2: {
             url: "https://httpbin.org/post",
@@ -521,8 +596,21 @@ export default {
             dictDefaultMessage:
               "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
           },
+          dropzoneOptions3: {
+            url: "https://httpbin.org/post",
+            thumbnailWidth: 250,
+            maxFilesize: 10.0,
+            maxFiles: 10,
+            acceptedFiles: ".pdf",
+            headers: { "My-Awesome-Header": "header value" },
+            addRemoveLinks: true,
+            dictDefaultMessage:
+              "Arrastre aquí un documento escolar de su dispositivo",
+          },
           conclusion: "",
           conclusiones: [],
+          docEscolar: "",
+          docEscolares: [],
           urlfirma: "",
           firmas: { urlfirma: "", nombre: "", cargo: "" },
           fichaIngreso: {
@@ -563,6 +651,8 @@ export default {
     async created() {
       this.conclusiones = "";
       this.conclusion = "";
+      this.docEscolar = "";
+      this.docEscolares = "";
     },
     methods:{
         cerrarDialogo(){     
@@ -593,6 +683,19 @@ export default {
             }
           });
         },
+        agregarDocEscolar(){
+          let docEscolares = this.docEscolar;
+          this.fichaIngreso.contenido.documentosescolares.push(docEscolares);
+          this.docEscolares = this.fichaIngreso.contenido.documentosescolares;
+          this.docEscolar = "";
+        },
+        eliminarDocEscolar(docEscolar){
+          this.docEscolares.forEach(function(car, index, object) {
+            if (car === docEscolar) {
+              object.splice(index, 1);
+            }
+          });
+        }, 
         agregarFirma() {
           let firmas = {
             urlfirma: this.urlfirma,
