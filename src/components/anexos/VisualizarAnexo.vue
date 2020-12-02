@@ -31,6 +31,14 @@
           readonly
         ></v-textarea>
 
+        <v-text-field
+          :value="areaAux"
+          label="Area"
+          outlined
+          color="#009900"
+          readonly
+        ></v-text-field>
+
         <div>
           <div v-for="(item, index) in anexo.enlaces" :key="item.index">
             <a :href="item.link">{{ item.descripcion }}</a>
@@ -68,6 +76,7 @@ export default {
         residente: "",
         id: "",
       },
+      areaAux: ''
     };
   },
   async created() {
@@ -84,12 +93,28 @@ export default {
         this.residente.residente = selected.apellido + " " + selected.nombre;
       })
       .catch((err) => console.log(err));
+    this.getAreaText(this.anexo.area);
   },
   methods: {
     ...mapMutations(["setResidentes"]),
     closeDialog() {
       this.$emit("close-dialog-detail");
     },
+    getAreaText(texto){
+      switch(this.anexo.area) {
+        case "social":
+          this.areaAux = "Social";
+          break;
+        case "psicologica":
+          this.areaAux = "Psicológica";
+          break;
+        case "educativa":
+          this.areaAux = "Educativa";
+          break;
+        default:
+          this.areaAux = "";
+      }
+    }
   },
   computed: {
     ...mapState(["residentes"]),
