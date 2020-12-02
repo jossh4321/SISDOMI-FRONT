@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Registro de Taller de escuela para padres</v-card-title>
+    <v-card-title class="justify-center">Actualización de Taller de escuela para padres</v-card-title>
     <v-card>
       <v-stepper v-model="step">
         <v-stepper-header>
@@ -9,7 +9,7 @@
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step editable step="2">
-            Participantes
+            Tutores
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step editable step="3">
@@ -63,21 +63,21 @@
                       >
                       <template v-slot:activator="{ on, attrs }">
                           <v-text-field
-                          v-model="taller.contenido.fechaInicio"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          color="#009900"
-                          outlined
-                          label="Fecha del inicio del taller"
-                          @input="$v.taller.contenido.fechaInicio.$touch()"
-                            @blur="$v.taller.contenido.fechaInicio.$touch()"
+                            v-model="taller.contenido.fechainicio"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            color="#009900"
+                            outlined
+                            label="Fecha del inicio del taller"
+                            @input="$v.taller.contenido.fechainicio.$touch()"
+                            @blur="$v.taller.contenido.fechainicio.$touch()"
                             :error-messages="fechainicioErrors"
                           ></v-text-field>
                       </template>
                       <v-date-picker
-                          v-model="taller.contenido.fechaInicio"
+                          v-model="taller.contenido.fechainicio"
                           @input="menu1 = false"
                           locale="es-es"
                       ></v-date-picker>
@@ -94,7 +94,7 @@
                         >
                         <template v-slot:activator="{ on, attrs }">
                             <v-text-field
-                            v-model="taller.contenido.fechaFin"
+                            v-model="taller.contenido.fechafin"
                             prepend-icon="mdi-calendar"
                             readonly
                             v-bind="attrs"
@@ -102,13 +102,13 @@
                             color="#009900"
                             outlined
                             label="Fecha fin del taller"
-                            @input="$v.taller.contenido.fechaFin.$touch()"
-                            @blur="$v.taller.contenido.fechaFin.$touch()"
+                            @input="$v.taller.contenido.fechafin.$touch()"
+                            @blur="$v.taller.contenido.fechafin.$touch()"
                             :error-messages="fechafinErrors"
                             ></v-text-field>
                         </template>
                         <v-date-picker
-                            v-model="taller.contenido.fechaFin"
+                            v-model="taller.contenido.fechafin"
                             @input="menu2 = false"
                             locale="es-es"
                         ></v-date-picker>
@@ -232,6 +232,7 @@
                                         hide-no-data
                                         hide-selected
                                         return-object
+                                        :readonly="isDisabled"
                                         @input="$v.residente.id.$touch()"
                                         @blur="$v.residente.id.$touch()"
                                         :error-messages="errorResidente"
@@ -404,6 +405,7 @@
                     id="dropzone"
                     @vdropzone-success="registerFile"
                     @vdropzone-removed-file="removedFile"
+                    @vdropzone-mounted="mounteddropzone"
                   ></vue-dropzone>
                   <v-alert
                     type="error"
@@ -434,7 +436,7 @@
                     @click="sendtaller"
                   >
                     <v-icon left>mdi-check</v-icon>
-                    Finalizar
+                    Actualizar
                   </v-btn>
                 </v-col>
               </v-row>
@@ -454,6 +456,45 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 
 import { mapGetters } from "vuex";
+
+function fechaIvalid(value) {
+  return !(this.$moment(value) > this.$moment(this.taller.contenido.fechafin));
+}
+
+function fechaFvalid(value) {
+  return !(this.$moment(value) < this.$moment(this.taller.contenido.fechainicio));
+}
+
+function nrodocxTipo(value) {
+  return this.tutor.tipoDocumento != "";
+}
+
+function dniValid(value) {
+  if (this.tutor.tipoDocumento == "DNI") {
+    return /^[0-9]{8}$/.test(value);
+  }
+  else{
+    return true;
+  }
+}
+
+function pasValid(value) {
+  if (this.tutor.tipoDocumento == "Pasaporte") {
+    return /^(?!^0+$)[a-zA-Z0-9]{3,20}$/.test(value);
+  }
+  else{
+    return true;
+  }
+}
+
+function CEValid(value) {
+  if (this.tutor.tipoDocumento == "Carnet Extranjeria") {
+    return /^[0-9]{9}$/.test(value);
+  }
+  else{
+    return true;
+  }
+}
 
 export default {
   data(){
@@ -539,8 +580,8 @@ export default {
     limpiar(){
       this.taller.titulo="";
       this.taller.descripcion="";
-      this.taller.contenido.fechaInicio="";
-      this.taller.contenido.fechaFin="";
+      this.taller.contenido.fechainicio="";
+      this.taller.contenido.fechafin="";
       this.taller.contenido.tutores=[];
       this.step = 1;
     },
@@ -571,6 +612,7 @@ export default {
       this.tutor.numeroDocumento = "";
       this.tutor.parentesco = "";
       this.residente = {};
+      this.listResidentes = [];
 
       this.$v.tutor.$reset();
       this.$v.residente.$reset();
@@ -594,10 +636,12 @@ export default {
         this.tutor.numeroDocumento = "";
         this.tutor.parentesco = "";
         this.residente = {};
+        this.listResidentes = [];
 
         this.dialogAgregarTutores = false;
         //reiniciamos el estado de la validacion
         this.$v.tutor.$reset();
+        this.$v.residente.$reset();
       }else{
         console.log("no se guardo el tutor");
       }
@@ -617,10 +661,12 @@ export default {
         this.tutor.numeroDocumento = "";
         this.tutor.parentesco = "";
         this.residente = {};
+        this.listResidentes = [];
 
         this.dialogAgregarTutores = false;
 
         this.$v.tutor.$reset();
+        this.$v.residente.$reset();
       }
       else{
         console.log("no se actualizo el tutor");
@@ -633,8 +679,13 @@ export default {
       this.tutor.tipoDocumento = this.taller.contenido.tutores[index].tipoDocumento;
       this.tutor.numeroDocumento = this.taller.contenido.tutores[index].numeroDocumento;
       this.tutor.parentesco = this.taller.contenido.tutores[index].parentesco;
-      this.residente = this.taller.contenido.tutores[index].usuaria;
+
+      this.residente.id = this.taller.contenido.tutores[index].usuaria._id;
+      this.residente.residente = this.taller.contenido.tutores[index].usuaria.residente;
+      this.residente.numeroDocumento = this.taller.contenido.tutores[index].usuaria.numeroDocumento;
       
+      this.listResidentes.push(this.residente);
+
       this.indice = index;
     },
     modalConsultar(index) {
@@ -645,7 +696,12 @@ export default {
       this.tutor.tipoDocumento = this.taller.contenido.tutores[index].tipoDocumento;
       this.tutor.numeroDocumento = this.taller.contenido.tutores[index].numeroDocumento;
       this.tutor.parentesco = this.taller.contenido.tutores[index].parentesco;
-      this.residente = this.taller.contenido.tutores[index].usuaria;
+
+      this.residente.id = this.taller.contenido.tutores[index].usuaria._id;
+      this.residente.residente = this.taller.contenido.tutores[index].usuaria.residente;
+      this.residente.numeroDocumento = this.taller.contenido.tutores[index].usuaria.numeroDocumento;
+
+      this.listResidentes.push(this.residente);
     },
     registerFile(file, response) {
       this.listImages.push(file);
@@ -657,26 +713,53 @@ export default {
         this.listImages.splice(indexFile, 1);
       }
     },
+    
     async sendtaller() {
       //Para probar algo sin registrar
       this.$v.taller.$touch();
-
       if (this.$v.taller.$invalid) {
         this.messageSweet(
           "error",
-          "Errores al intentar registrar",
-          "Se ha presentado errores en los campos para el registro del Plan de Intervención",
+          "Errores al intentar actualizar",
+          "Se ha presentado errores en los campos para la actualización del taller",
           false
         );
       }
       else{
-        this.messageSweet(
-          "success",
-          "Registro del Taller de escuela para padres",
-          "Se registró el Taller de escuela para padres de manera satisfactoria",
-          true
-        );
+
+        let tallerEP = {
+          id: this.taller.id,
+          descripcion: this.taller.descripcion,
+          titulo: this.taller.titulo,
+          contenido: this.taller.contenido,
+          firma: this.taller.firma,
+        };
+
+        axios
+          .put("/Taller/actualizarTallerEP", tallerEP)
+          .then((res) => {
+            this.messageSweet(
+              "success",
+              "Actualización del Taller de escuela para padres",
+              "Se actualizó el Taller de escuela para padres de manera satisfactoria",
+              true
+            );
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
       }
+    },
+    mounteddropzone() {
+      var file = { size: 250, name: "Firma del trabajador", type: "image/jpg" };
+      var url = this.taller.firma.urlfirma;
+
+      this.$refs.myVueDropzone.manuallyAddFile(file, url);
+
+      this.listImages.push(
+        this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[0]
+      );
     },
     messageSweet(icon, title, text, valid) {
       this.$swal({
@@ -753,26 +836,22 @@ export default {
     fechainicioErrors() {
       const errors = [];
 
-      if (!this.$v.taller.contenido.fechaInicio.$dirty) return errors;
+      if (!this.$v.taller.contenido.fechainicio.$dirty) return errors;
 
-      !this.$v.taller.contenido.fechaInicio.required && errors.push("Debe Ingresar una Fecha de inicio obligatoriamente");
+      !this.$v.taller.contenido.fechainicio.required && errors.push("Debe Ingresar una Fecha de inicio obligatoriamente");
 
-      if(this.$moment(this.taller.contenido.fechaInicio) > this.$moment(this.taller.contenido.fechaFin)) {
-        errors.push("La fecha inicio debe ser menor a la fecha fin");
-      }
+      !this.$v.taller.contenido.fechainicio.fechaIvalid && errors.push("La fecha inicio debe ser menor a la fecha fin");
 
       return errors;
     },
     fechafinErrors() {
       const errors = [];
 
-      if (!this.$v.taller.contenido.fechaFin.$dirty) return errors;
+      if (!this.$v.taller.contenido.fechafin.$dirty) return errors;
 
-      !this.$v.taller.contenido.fechaFin.required && errors.push("Debe Ingresar una Fecha de fin obligatoriamente");
+      !this.$v.taller.contenido.fechafin.required && errors.push("Debe Ingresar una Fecha de fin obligatoriamente");
 
-      if(this.$moment(this.taller.contenido.fechaFin) < this.$moment(this.taller.contenido.fechaInicio)) {
-        errors.push("La fecha fin debe ser mayor a la fecha inicio");
-      }
+      !this.$v.taller.contenido.fechafin.fechaFvalid && errors.push("La fecha fin debe ser mayor a la fecha inicio");
       
       return errors;
     },
@@ -795,27 +874,17 @@ export default {
     tutornumerodocumentoErrors() {
       const errors = [];
       if (!this.$v.tutor.numeroDocumento.$dirty) return errors;
-      !this.$v.tutor.numeroDocumento.required &&
-        errors.push("Debe ingresar el Numero de Documento Obligatoriamente");
-      !this.tutor.tipoDocumento != "" &&
-        errors.push("Debe seleccionar el Tipo de Documento Inicialmente");
-      if (this.tutor.tipoDocumento == "DNI") {
-        !/^[0-9]{8}$/.test(this.tutor.numeroDocumento) != false &&
-          errors.push("El Numero de DNI debe poseer 8 digitos numericos");
-      }
-      if (this.tutor.tipoDocumento == "Pasaporte") {
-        !/^(?!^0+$)[a-zA-Z0-9]{3,20}$/.test(this.tutor.numeroDocumento) !=
-          false &&
-          errors.push(
-            "El Numero de Pasaporte debe poseer de 3 a 20 caracteres alfanumericos"
-          );
-      }
-      if (this.tutor.tipoDocumento == "Carnet Extranjeria") {
-        !/^[0-9]{9}$/.test(this.tutor.numeroDocumento) != false &&
-          errors.push(
-            "El Numero del Carnet de Extranjeria debe poseer 9 digitos numericos"
-          );
-      }
+      
+      !this.$v.tutor.numeroDocumento.required && errors.push("Debe ingresar el número de Documento Obligatoriamente");
+      
+      !this.$v.tutor.numeroDocumento.nrodocxTipo && errors.push("Debe seleccionar el Tipo de Documento Inicialmente");
+
+      !this.$v.tutor.numeroDocumento.dniValid && errors.push("El número de DNI debe poseer 8 digitos númericos");
+      
+      !this.$v.tutor.numeroDocumento.pasValid && errors.push("El número de Pasaporte debe poseer de 3 a 20 caracteres alfanumericos");
+
+      !this.$v.tutor.numeroDocumento.CEValid && errors.push("El Numero del Carnet de Extranjeria debe poseer 9 digitos numericos");
+
       return errors;
     },
     tipoDocumentoErrors() {
@@ -844,22 +913,10 @@ export default {
     },
   },
   created() {
-    this.residente.residente =
-      "HOLLA";
-    this.residente.id = "";
-
+    
     //this.listResidentes.push(this.residente);
   },
-  mounted() {
-    var file = { size: 250, name: "firmatrabajador.jpg", type: "image/jpg" };
-    var url = this.taller.firma.urlfirma;
-
-    //this.$refs.myVueDropzone.manuallyAddFile(file, url);
-
-    this.listImages.push(
-      this.$refs.myVueDropzone.dropzoneElement.dropzone.files[0]
-    );
-  },  
+  
   validations: {
     listImages: {
       required,
@@ -877,11 +934,13 @@ export default {
           minLength: minLength(10),
         },
         contenido:{
-          fechaInicio:{
+          fechainicio:{
             required,
+            fechaIvalid
           },
-          fechaFin:{
+          fechafin:{
             required,
+            fechaFvalid
           },
           tutores:{
             required,
@@ -891,7 +950,7 @@ export default {
       tutor: {
           nombre: { required },
           tipoDocumento: { required },
-          numeroDocumento: { required },
+          numeroDocumento: { required, nrodocxTipo, dniValid, pasValid, CEValid },
           parentesco: { required },
       }
   },
