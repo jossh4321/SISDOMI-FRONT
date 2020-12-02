@@ -46,7 +46,11 @@
                             :listaresidentes="listaresidentes" 
                             :visible="showRegistrarInformeSE"
                             :titulo="titulo"  
-                            @close="showRegistrarInformeSE=false"/>                   
+                            @close="showRegistrarInformeSE=false"/>
+                        <RegistrarInformePsicologicoInicial           
+                            v-if="showRegistrarInformePI" 
+                            :visible="showRegistrarInformePI"                                 
+                            @close="showRegistrarInformePI=false"/>                   
                     </v-col>
                 </template>
             </v-row>
@@ -60,6 +64,7 @@ import RegistrarInformeEducativoInicial from '@/components/informes/RegistrarInf
 import RegistrarInformeEducativoEvolutivo from '@/components/informes/RegistrarInformeEducativoEvolutivo.vue'
 import RegistrarInformeSocialInicial from '@/components/informes/RegistrarInformeSocialInicial.vue'
 import RegistrarInformeSocialEvolutivo from '@/components/informes/RegistrarInformeSocialEvolutivo.vue'
+import RegistrarInformePsicologicoInicial from '@/components/informes/RegistrarInformePsicologicoInicial.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
     props:["listaresidentes", "listaeducadores"],
@@ -67,7 +72,8 @@ export default {
         RegistrarInformeEducativoInicial,
         RegistrarInformeEducativoEvolutivo,
         RegistrarInformeSocialInicial,
-        RegistrarInformeSocialEvolutivo
+        RegistrarInformeSocialEvolutivo,
+        RegistrarInformePsicologicoInicial
     },
     data () {
       return {                
@@ -87,6 +93,7 @@ export default {
         showRegistrarInformeEE: false,
         showRegistrarInformeSI: false,
         showRegistrarInformeSE: false,
+        showRegistrarInformePI: false,
       }
     },
      methods:{
@@ -118,8 +125,11 @@ export default {
                     this.titulo = "Registrar Informe Social Final"
                     this.showRegistrarInformeSE = true;
                     break;
+                case "7":
+                    this.showRegistrarInformePI = true;
+                    break;
                 default: 
-                    console.log("no encontre ni pincho");
+                    console.log("no encontre ni pincho .|.");
             }            
             this.$emit("close-dialog-save");
         },

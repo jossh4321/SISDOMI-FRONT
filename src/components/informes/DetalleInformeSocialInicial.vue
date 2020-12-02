@@ -406,7 +406,6 @@
                 </v-card>
               </v-dialog>
 
-
               <v-card
                 style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
               >
