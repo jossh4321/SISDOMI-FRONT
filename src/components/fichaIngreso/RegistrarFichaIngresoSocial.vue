@@ -307,6 +307,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import {mapMutations, mapState} from "vuex";
 import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
+import RegistrarInformeEducativoEvolutivoVue from '../informes/RegistrarInformeEducativoEvolutivo.vue';
 
 export default {
         
@@ -388,13 +389,17 @@ export default {
             }).catch(err => console.log(err));            
     
       }
-      }, async mensaje(icono,titulo,texto,footer){
+      , async mensaje(icono,titulo,texto,footer){
       await this.$swal({
         icon: icono,
         title: titulo,
         text: texto,
         footer:footer
       });
+    },
+    async registrarInforme(){
+
+    },
     },
     computed: {
     show: {

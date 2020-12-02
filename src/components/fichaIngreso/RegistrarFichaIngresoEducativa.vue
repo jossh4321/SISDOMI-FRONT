@@ -89,27 +89,21 @@
                     </v-col>
                 </v-row>
 
-                <v-row>
+             
                     <v-textarea
                             label="Situación Académica"
-                            auto-grow
-                            outlined    
                             v-model="fichaIngreso.situacionescolar"   
                             color="#009900"
-                            shaped
                         ></v-textarea>
-                </v-row>
+                
 
-                 <v-row>
+                
                     <v-textarea
                             label="Observacion"
-                            auto-grow
-                            outlined       
-                            
+                            v-model="fichaIngreso.observacion"
                             color="#009900"
-                            shaped
                         ></v-textarea>
-                </v-row>
+              
 
                 <v-row>
                     <v-col>
@@ -284,7 +278,7 @@
 
                 <div>
                   <vue-dropzone
-                    ref="myVueDropzone"
+                    ref="myVueDropzone2"
                     @vdropzone-success="afterSuccess"
                     @vdropzone-removed-file="afterRemoved"
                     id="dropzone"
@@ -439,7 +433,7 @@
                         </v-btn>
                     </v-col>
                     <v-col>
-                        <v-btn block @click="registrarfichaIngreso" color="success">
+                        <v-btn block @click="registrarFicha" color="success">
                             <v-icon left>mdi-content-save-all-outline</v-icon>
                             <span >Registrar Ficha de Ingreso</span>
                         </v-btn>
@@ -461,6 +455,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import {mapMutations, mapState} from "vuex";
 import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
+
 
 export default {
         
@@ -510,21 +505,23 @@ export default {
             dictDefaultMessage:
               "Seleccione un archivo anexo de su dispositivo o arrástrela aquí",
           },
-          dropzoneOptions2: {
-            url: "https://httpbin.org/post",
-            thumbnailWidth: 250,
-            maxFilesize: 5.0,
-            maxFiles: 1,
-            acceptedFiles: ".png",
-            headers: { "My-Awesome-Header": "header value" },
-            addRemoveLinks: true,
-            dictDefaultMessage:
-              "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
-          },
+         dropzoneOptions2: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFilesize: 3.0,
+        maxFiles: 1,
+        acceptedFiles: ".jpg, .png, jpeg",
+        headers: { "My-Awesome-Header": "header value" },
+        addRemoveLinks: true,
+        dictDefaultMessage:
+          "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
+      },
           conclusion: "",
           conclusiones: [],
-          urlfirma: "",
+          
           firmas: { urlfirma: "", nombre: "", cargo: "" },
+           imagen: "",
+
           fichaIngreso: {
             id: "",
             tipo: "FichaEducativaIngreso",
@@ -550,12 +547,12 @@ export default {
                 situacionescolar: ""
               },
               responsableturno: "",
-              conclusiones: [],
-              firmas: [],
+              conclusiones:[],
+              firmas:[],
               codigodocumento: "",
             },
           },
-          imagen: "",
+         
 
         }
         
@@ -569,6 +566,46 @@ export default {
             this.step = 1;       
             this.$emit("close-dialog-fichaIngreso");
         }, 
+        afterSuccess2(file, response) {
+      console.log(file);
+      this.firmas.urlfirma = file.dataURL.split(",")[1];
+      //this.$v.firma.urlfirma.$model = file.dataURL.split(",")[1];
+      //console.log(file.dataURL.split(",")[1]);
+    },
+    
+    afterRemoved2(file, error, xhr) {
+      this.firmas.urlfirma = "";
+      
+    },
+    afterSuccess(file, response) {
+      // console.log(file);
+      // console.log(file.dataURL);
+      // console.log(this.$refs.myVueDropzone);
+
+      this.fileList.push(file);
+    },
+    afterRemoved(file, error, xhr) {
+      this.this.fichaIngreso.contenido.documentosescolares = "";
+      
+    },
+    
+    async sendPDFFiles() {
+      let listaanexos = this.fileList;
+      for (let index = 0; index < this.fileList.length; index++) {
+        let formData = new FormData();
+        formData.append("file", this.fileList[index]);
+        await axios
+          .post("/Media/archivos/pdf", formData)
+          .then((res) => {
+            listaanexos[index] = res.data;
+          })
+          .catch((err) => console.log(err));
+      }
+      this.fichaIngreso.contenido.documentosescolares = listaanexos;
+      console.log(listaanexos);
+    },
+
+
         async rFichaIngresoE(){
             
             await axios.post("Documento/all/fichaingresoeducativacrear")
@@ -578,6 +615,9 @@ export default {
               this.addFichaIngreso(this.fichaIngreso)
             }).catch(err => console.log(err));
             
+        },
+        async  registrarFicha(){
+          console.log(this.fichaIngreso)      
         },
         agregarConclusion() {
           let conclusiones = this.conclusion;
@@ -594,12 +634,12 @@ export default {
           });
         },
         agregarFirma() {
-          let firmas = {
-            urlfirma: this.urlfirma,
+          let firmad = {
+            urlfirma: this.firmas.urlfirma,
             nombre: this.firmas.nombre,
             cargo: this.firmas.cargo,
           };
-          this.fichaIngreso.contenido.firmas.push(firmas);
+          this.fichaIngreso.contenido.firmas.push(firmad);
           this.$refs.myVueDropzone.removeAllFiles();
 
           this.urlfirma = "";
