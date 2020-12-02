@@ -327,6 +327,7 @@
                             ref="myVueDropzone"
                             @vdropzone-success="afterSuccess"
                             @vdropzone-removed-file="afterRemoved"
+                            @vdropzone-mounted="mounteddropzone"
                             id="dropzone"
                             :options="dropzoneOptions"
                           >
@@ -342,9 +343,9 @@
                          <v-divider class="divider-custom"></v-divider>
                           <v-row>
                             <v-col>
-                              <v-btn block @click="registrarIncidencia" color="success">
+                              <v-btn block @click="modificarIncidencia()" color="warning">
                                 <v-icon left>mdi-content-save-all-outline</v-icon>
-                                <span>Registrar Incidencia</span>
+                                <span>Modificar Incidencia</span>
                               </v-btn>
                             </v-col>
                             <v-col>
@@ -372,7 +373,7 @@ import moment from "moment";
 export default {
    components: {
     vueDropzone: vue2Dropzone,
-    },props:["incidencia"],
+    },props:["incidencia","listResidentesSelected"],
     data(){
         return{
             timemenu:false,
@@ -392,7 +393,9 @@ export default {
             incidenciasAux:"",
             searchResidente:null,
             loadingSearch:false,
-            listResidentes:[]
+            listResidentes: this.listResidentesSelected,
+            imagenFirma:{urlOrigen: this.incidencia.firma.urlfirma,
+                        modificar:{estado:false,file:{}}}
       }
     },watch:{
         async searchResidente(value){
@@ -403,12 +406,8 @@ export default {
           await axios.get("/residente/nombre/"+value)
                 .then((res) => {
                     let residenteMap = res.data.map(
-                      function(res){
-                        return {
-                            residente: res.nombre+" "+res.apellido,
-                            id:res.id,
-                            numeroDocumento: res.numeroDocumento
-                        }
+                      (res)=>{
+                        return this.convertItemToResidente(res);
                       });      
                     this.listResidentes = residenteMap;
                     this.loadingSearch = false;
@@ -417,23 +416,36 @@ export default {
                   });
         }
     },created(){
-        this.listResidentes = this.incidencia.residentes;
     },methods:{
         ...mapMutations(["replaceIncidencia"]),
+        convertItemToResidente(item){
+              return {
+                residente: item.nombre+" "+item.apellido,
+                id:item.id,
+                numeroDocumento: item.numeroDocumento
+              }
+        },mounteddropzone(){
+          console.log("hola");
+            var file = { size: 123, name: "Firma del Documento", type: "image/jpg" };
+            this.$refs.myVueDropzone.manuallyAddFile(file, this.incidencia.firma.urlfirma,null,null,true);
+          },
         clearAfterSelect(){
           this.searchResidente = "";
         },
         afterRemoved(file, error, xhr) {
-          this.incidencia.firma.urlfirma = "";
-          this.$v.incidencia.firma.urlfirma.$model = "";
+          this.imagenFirma.modificar.estado = true;
+          this.imagenFirma.modificar.file = {};
         },
         afterSuccess(file, response) {
-           this.incidencia.firma.urlfirma = file;
+          this.imagenFirma.modificar.estado = true;
+          this.imagenFirma.modificar.file = file;
+          console.log(this.imagenFirma.modificar.file);
         },
-         eliminar (item) {
+        eliminar (item) {
             const index = this.incidencia.residentes.indexOf(item.id);
             if (index >= 0) this.incidencia.residentes.splice(index, 1);
-        }, addObservacion() {
+        }, 
+        addObservacion() {
            this.$v.observacionesAux.$touch();
             if (this.observacionesAux != "" && !this.$v.observacionesAux.$invalid) {
                 this.incidencia.observaciones.push(this.observacionesAux);
@@ -451,9 +463,9 @@ export default {
             this.incidencia.observaciones.splice(index, 1);
         },deleteItemIncidencia(index) {
             this.incidencia.incidencias.splice(index, 1);
-        },async registrarIncidencia(){
+        },async modificarIncidencia(){
           this.$v.incidencia.$touch();
-          if(this.$v.incidencia.$invalid){
+          if(this.$v.incidencia.$invalid || this.errorFirma == true){
               await this.mensaje(
                 "error",
                 "..Oops",
@@ -461,34 +473,43 @@ export default {
                 "<strong>Verifique los campos Ingresados<strong>"
               );
           }else{
-            var urlfirma = await this.registrarFirma(this.incidencia.firma.urlfirma);
-            this.incidencia.firma.urlfirma = urlfirma;
-            this.incidencia.usuario = this.user.id;
+            var incidenciaPUT = this.incidencia;
+            incidenciaPUT.firma.urlfirma = 
+                  this.imagenFirma.modificar.estado==true?
+                  await this.modificaFirma():
+                  this.imagenFirma.urlOrigen;
+            var fecha = new Date(this.incidencia.fecha);
+            fecha.setHours(this.incidencia.hora.split(":")[0]);
+            fecha.setMinutes(this.incidencia.hora.split(":")[1]);
+            incidenciaPUT["fecha"] = fecha.toISOString();
+            //this.incidencia.usuario = this.user.id;
             await axios
-              .post("/incidencia",this.incidencia)
+              .put("/incidencia",incidenciaPUT)
               .then((res) =>{
-                 this.incidencia = res.data;
-                 this.addIncidencia(res.data);
+                 this.replaceIncidencia(res.data);
                  this.cerrarDialogo();
               }).catch(err => console.log(err));
                await this.mensaje(
                   "success",
                   "listo",
-                  "Usuario registrado Satisfactoriamente",
+                  "Usuario modificado Satisfactoriamente",
                   "<strong>Se redirigira a la Interfaz de Gestion<strong>"
                 );
           }
-        },async registrarFirma(file){
+        },async modificaFirma(){
+          var url = this.imagenFirma.urlOrigen;
           var urlFile = "";
           let formData = new FormData();
-          formData.append("file",file);
-            await axios.post("/Media",formData)
-                      .then((res)=> {
-                        urlFile = res.data;
+          formData.append("file",this.imagenFirma.modificar.file);
+          //var mediabody={file:{File:formData}, urlfirma: this.imagenFirma.urlOrigen }
+            await axios.put(`/Media/${this.imagenFirma.urlOrigen}`,formData)
+                       .then((res)=> {
+                            urlFile = res.data;
                       });
             return urlFile;
         },cerrarDialogo(){
-          this.$emit("close-dialog-save-incidencia");
+          this.step = 1;
+          this.$emit("close-dialog-edit-incidencia");
           this.reiniciarCampos();
           this.reiniciarValidaciones();
         },async mensaje(icono, titulo, texto, footer) {
@@ -504,25 +525,8 @@ export default {
               this.$v.incidenciasAux.$reset();
           },reiniciarCampos(){
               this.$refs.myVueDropzone.removeAllFiles();
-              this.incidencia = this.reiniciarIncidencia();
               this.observacionesAux = "";
               this.incidenciasAux="";
-          },reiniciarIncidencia(){
-              return {
-                  fecha:"",
-                  hora:"",
-                  usuario:"",
-                  titulo:"",
-                  descripcion:"",
-                  incidencias:[],
-                  observaciones:[],
-                  residentes:[],
-                  firma:{
-                    urlfirma:"",
-                    nombre:"Jose Alejandro Paredes Masias",
-                    cargo:"Director del Area Educativa"
-                  }
-              };
           }
     },computed:{
       //Validacion de Titulo
@@ -577,12 +581,13 @@ export default {
         !this.$v.incidencia.hora.required &&
           errors.push("Debe Ingresar una Hora Obligatoriamente");
         return errors;
-      },errorFirma() {
-        return this.$v.incidencia.firma.urlfirma.required == false &&
-          this.$v.incidencia.firma.urlfirma.$dirty == true
-          ? true
-          : false;
       },
+      errorFirma() {
+        if(this.imagenFirma.modificar.estado == true &&
+        Object.entries(this.imagenFirma.modificar.file).length === 0){return true}
+         else {return false}
+      },
+
       errorResidente() {
         const errors = [];
         if (!this.$v.incidencia.residentes.$dirty) return errors;
@@ -668,12 +673,8 @@ export default {
                   required
               },hora:{
                 required
-              },firma:{
-                urlfirma:{
-                  required,
-                }
               }
-           }, 
+           },
            observacionesAux:{
             required,
             minLength: minLength(5),
