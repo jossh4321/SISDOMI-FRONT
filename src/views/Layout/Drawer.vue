@@ -195,6 +195,13 @@ export default {
           icon: "dashboard",
           name: "GestionarActaExternamiento",
           href: "/dashboard/Actas"
+        },
+        {
+          title: "Expedientes Matriz",
+          group: "admin",
+          icon: "dashboard",
+          name: "ConsultaExpedienteMatriz",
+          href: "/dashboard/expedientes"
         }
       ],
       scrollSettings: {

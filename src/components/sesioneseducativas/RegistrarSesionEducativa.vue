@@ -4,11 +4,11 @@
     <v-card>
       <v-stepper v-model="step">
         <v-stepper-header>
-          <v-stepper-step :complete="complete" :editable="editable" step="1">
+          <v-stepper-step :complete="step > 1" step="1">
             Registro de Sesion
           </v-stepper-step>
           <v-divider></v-divider>
-          <v-stepper-step editable step="2">
+          <v-stepper-step step="2">
             Agregar participantes
             <small>(Opcional)</small>
           </v-stepper-step>
@@ -58,64 +58,85 @@
                     locale="es-es"
                   ></v-date-picker>
                 </v-menu>
+                <v-btn @click="step=2" style="margin-top:1%" dark color="blue">
+                  <v-icon left>mdi-plus</v-icon>
+                  <span>Agregar Participantes</span>
+                </v-btn>
               </form>
             </div>
           </v-stepper-content>
           <v-stepper-content step="2">
             <v-card>
               <v-card-title class="justify-center">Registro de Sesion Educativa</v-card-title>
-              <v-card style="padding: 15px 20px">
+              <v-card >
                 <form>
                   <v-row>
                     <v-col cols="7">
-                      <v-autocomplete
-                        style="margin-top:2%"
-                        :items="listaresidentes"
-                        v-model="ParticipanteSesion.idparticipante"
-                        filled
-                        chips
-                        dense
-                        outlined
-                        color="#009900"
-                        label="Seleccione un Residente"
-                        item-text="nombre"
-                        item-value="id"
-                        @input="$v.ParticipanteSesion.idparticipante.$touch()"
-                        @blur="$v.ParticipanteSesion.idparticipante.$touch()"
-                        :error-messages="errorResidente"
-                      >
-                        <template v-slot:selection="data">
-                          <v-chip
-                            v-bind="data.attrs"
-                            :input-value="data.selected"
-                            style="margin-top:5px"
+                      <v-row no-gutters>
+                        <v-col cols="5">
+                          <v-select
+                            style="margin-top:3%;margin-right:6%"
+                            v-model="select"
+                            :items="items"
+                            item-text="text"
+                            item-value="value"
+                            label="Filtrar por:"
+                            return-object
+                            outlined
+                            dense
+                          ></v-select>
+                        </v-col>
+                        <v-col cols="7">
+                          <v-autocomplete
+                            style="margin-top:2%"
+                            :items="residentes"
+                            v-model="ParticipanteSesion.idparticipante"
+                            filled
+                            chips
+                            dense
+                            outlined
+                            color="#009900"
+                            label="Seleccione un Residente"
+                            :item-text="select.value"
+                            item-value="id"
+                            @input="$v.ParticipanteSesion.idparticipante.$touch()"
+                            @blur="$v.ParticipanteSesion.idparticipante.$touch()"
+                            :error-messages="errorResidente"
                           >
-                            <v-avatar left color="#b3b3ff" size="24">
-                              <span style="font-size:12px">RT</span>
-                            </v-avatar>
-                            {{ data.item.nombre }}
-                          </v-chip>
-                        </template>
-                        <template v-slot:item="data">
-                          <template>
-                            <v-list-item-avatar>
-                              <v-avatar left color="#b3b3ff" size="24">
-                                <span style="font-size:12px">RE</span>
-                              </v-avatar>
-                            </v-list-item-avatar>
-                            <v-list-item-content>
-                              <v-list-item-title
-                                >Nombre completo: {{ data.item.nombre }}
-                                {{ data.item.apellido }}
-                              </v-list-item-title>
-                              <v-list-item-subtitle
-                                >Nro. Documento:
-                                {{ data.item.numeroDocumento }}</v-list-item-subtitle
+                            <template v-slot:selection="data">
+                              <v-chip
+                                v-bind="data.attrs"
+                                :input-value="data.selected"
+                                style="margin-top:5px"
                               >
-                            </v-list-item-content>
-                          </template>
-                        </template>
-                      </v-autocomplete>
+                                <v-avatar left color="#b3b3ff" size="24">
+                                  <span style="font-size:12px">RT</span>
+                                </v-avatar>
+                                {{ data.item.nombre }} {{ data.item.apellido }} 
+                              </v-chip>
+                            </template>
+                            <template v-slot:item="data">
+                              <template>
+                                <v-list-item-avatar>
+                                  <v-avatar left color="#b3b3ff" size="24">
+                                    <span style="font-size:12px">RE</span>
+                                  </v-avatar>
+                                </v-list-item-avatar>
+                                <v-list-item-content>
+                                  <v-list-item-title
+                                    >Nombre completo: {{ data.item.nombre }}
+                                    {{ data.item.apellido }}
+                                  </v-list-item-title>
+                                  <v-list-item-subtitle
+                                    >Nro. Documento:
+                                    {{ data.item.numeroDocumento }}</v-list-item-subtitle
+                                  >
+                                </v-list-item-content>
+                              </template>
+                            </template>
+                          </v-autocomplete>
+                        </v-col>
+                      </v-row>
                       <v-text-field
                         v-model="ParticipanteSesion.grado"
                         color="#009900"
@@ -148,11 +169,11 @@
                       </v-menu>
                     </v-col>
                     <v-col cols="5">
-                    <v-row>
+                    <v-row no-gutters>
                       <v-col :cols="11" align="center">
                         <div>
                           <vue-dropzone
-                            style="max-width:90%;max-height: 80%;padding:0%"
+                            style="max-width:100%;max-height: 100%;padding:0%"
                             ref="myVueDropzone"
                             @vdropzone-success="afterSuccess"
                             @vdropzone-removed-file="afterRemoved"
@@ -170,7 +191,7 @@
                     color="#009900"
                     label="Observaciones"
                   ></v-text-field>
-                  <v-btn style="margin-bottom:2%" block @click="agregarParticipante()" color="success">
+                  <v-btn style="margin-bottom:2%" block @click="agregarParticipante()" dark color="blue">
                     <v-icon left>mdi-plus</v-icon>
                     <span >Agregar Participante</span>
                   </v-btn>
@@ -230,6 +251,17 @@
                               </v-icon>
                               <span style="margin-left:2%">Visualizar Firma</span>
                             </v-btn>
+                            <v-btn
+                              style="margin-left:2%"
+                              dark
+                              color="red"
+                              @click="eliminarParticipante(encontrarResidentePorId(item.idparticipante),item.idparticipante)"
+                            >
+                              <v-icon dark>
+                                mdi-delete
+                              </v-icon>
+                              <span style="margin-left:2%">Quitar Participante</span>
+                            </v-btn>
                           </v-expansion-panel-content>
                         </v-expansion-panel>
                         <p style="color:grey;margin-top:2%;margin-bottom:0%" >Encontrados: {{sesioneducativa.contenido.participantes.length}}</p>
@@ -283,11 +315,7 @@
           <v-card-actions style="padding:1% 3%">
             <v-row>
               <v-col cols="6">
-                <v-btn v-if="step=1" @click="step=2" block color="success">
-                  <v-icon left>done</v-icon>
-                  <span>Continuar</span>
-                </v-btn>
-                <v-btn v-else block color="success">
+                <v-btn @click="registrarResidente()" block color="success">
                   <v-icon left>done</v-icon>
                   <span>Registrar</span>
                 </v-btn>
@@ -310,15 +338,22 @@
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 export default {
-  props:["residente","visible","listaresidentes"],
+  name:"RegistrarSesionEducativa",
+  props:["visible","dialogoregistro"],
   components: {
     vueDropzone: vue2Dropzone,
   },
   data(){
     return{
+      select: { value: "1", text: "Nombre" },
+      items: [
+        { value: "nombre", text: 'Nombre'},
+        { value: "apellido", text: 'Apellido'},
+        { value: "numeroDocumento", text: 'Numero Documento'},
+      ],
       datemenu:false,
       datemenu2:false,
       dialogVistaPreviaFirma:false,
@@ -334,9 +369,10 @@ export default {
         dictDefaultMessage:
           "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
       },
+      residenteArray:[],
       sesioneducativa:{
         titulo:"",
-        idCreador:"",
+        idCreador: "",
         fechaCreacion:"",
         area:"",
         contenido:{
@@ -353,21 +389,30 @@ export default {
         datemenu2:false,
       },
       step:1,
-      editable:true,
-      complete:false,
       datemenu: false,
     }
   },
+  watch:{
+    dialogoregistro: async function(dialogoregistro){
+      if(dialogoregistro){
+        this.residenteArray = this.residentes;
+        console.log("Residentes filtrados finales")
+        console.log(this.residentes);
+      }
+    }
+  },
   methods:{
+    ...mapMutations(["setResidentes","addSesionesEducativas"]),
     limpiar(){
       this.sesioneducativa.titulo="";
       this.sesioneducativa.area="";
       this.sesioneducativa.fechaCreacion="";
+      this.sesioneducativa.contenido.participantes=[];
+      this.step=1
     },
     ...mapMutations(["replaceSesionesEducativas"]),
     afterSuccess(file, response) {
       this.ParticipanteSesion.firma = file.dataURL.split(",")[1];
-      console.log(this.ParticipanteSesion.firma);
       console.log("this.ParticipanteSesion.firma LLENADO");
     },
     afterRemoved(file, error, xhr) {
@@ -377,7 +422,21 @@ export default {
       this.sesioneducativa.contenido.participantes.push(this.ParticipanteSesion);
       this.ParticipanteSesion = this.limpiarParticipanteAgregado();
       this.$refs.myVueDropzone.removeAllFiles();
-      console.log(this.sesioneducativa.contenido.participantes)
+      this.filtrarParticipantesInterno()
+      console.log("Residentes filtrados finales")
+      console.log(this.residentes);
+      
+    },
+    eliminarParticipante(item, id){
+      var index =  this.sesioneducativa.contenido.participantes.findIndex(function(o){
+        return o.idparticipante === id;
+      })
+      if (index !== -1) { 
+        this.sesioneducativa.contenido.participantes.splice(index, 1);
+        this.residentes.push(item);
+      }
+      console.log("Residentes filtrados finales")
+      console.log(this.residentes);
     },
     verFirma(id) {
       this.sesioneducativa.contenido.participantes.forEach((part)=>{
@@ -404,7 +463,7 @@ export default {
     },
     encontrarNombrePorId(id){
       var nombreCompletoResidente = "";
-      this.listaresidentes.forEach((residente)=>{
+      this.residenteArray.forEach((residente)=>{
         if(residente.id === id){
           //LOS RETURN DENTRO DE UN FOREACH NO FUNCIONAN :D
           nombreCompletoResidente = residente.nombre + ' ' + residente.apellido;
@@ -413,7 +472,37 @@ export default {
       return nombreCompletoResidente;
 
     },
+    encontrarResidentePorId(id){
+      var residenteObject = {};
+      this.residenteArray.forEach((residente)=>{
+        if(residente.id === id){
+          //LOS RETURN DENTRO DE UN FOREACH NO FUNCIONAN :D
+          residenteObject = {
+            id: residente.id,
+            nombre: residente.nombre,
+            apellido: residente.apellido,
+            numeroDocumento: residente.numeroDocumento
+          }
+        }
+      })
+      return residenteObject;
+    },
+    filtrarParticipantesInterno(){
+      var arrayResidente=this.residentes;
+      var arrayParticipante=this.sesioneducativa.contenido.participantes;
 
+      var retorno = arrayResidente.filter(comparer(arrayParticipante));
+      function comparer(participantes){
+        return function(residente){
+          return participantes.filter(function(participante){
+            return participante.idparticipante == residente.id
+          }).length == 0;
+        }
+      }
+      console.log("Filtrados:");
+      console.log(retorno);
+      this.setResidentes(retorno);
+    },
     /*
     //Funcion para cerrar solo el presente modal.
     //No utilizado
@@ -424,15 +513,53 @@ export default {
     cerrarTodo() {
       this.$emit("close-dialog-dontsave");
       this.limpiar();
+      this.ParticipanteSesion = this.limpiarParticipanteAgregado();
       this.show = false
     },
     fechaActual(){
       //Retorna la fecha actual en formato YYYY/MM/DD
+      //No se está usando
       var f = new Date();
-      return f.getFullYear() + "-" + (f.getMonth() +1) + "-"+ f.getDate();
-    }
+      return f.getFullYear() + "/" + (f.getMonth() +1) + "/"+ f.getDate();
+    },
+    async obtenerResidentes() {
+      await axios
+        .get("/residente/all")
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          for (var x=0;x<res.data.length;x++){
+              info[x].fechaIngreso = res.data[x].fechaIngreso.split("T")[0];
+          }
+          
+          this.setResidentes(info);
+          console.log("infooo");
+          console.log(info);
+        })
+        .catch((err) => console.log(err));
+    },
+    async registrarResidente() {
+      await axios
+        .post("/SesionesEducativas", this.sesioneducativa)
+        .then((res) => {
+          var info ={
+            id: res.data.id,
+            titulo: res.data.titulo,
+            fechaCreacion: res.data.fechaCreacion.split("T")[0],
+            area: res.data.area,
+            tipo: res.data.tipo,
+            idCreador: res.data.idCreador
+          }
+          this.addSesionesEducativas(info);
+          this.limpiar();
+          this.cerrarTodo();
+        })
+        .catch((err) => console.log(err));
+    },
   },
   computed:{
+    ...mapState(["residentes"]),
+    ...mapGetters(["user"]),
     show: {
       get() {
         return this.visible;
@@ -460,6 +587,13 @@ export default {
       },
     }
   },
+  async created(){
+    await this.obtenerResidentes();
+    console.log("Residentes filtrados finales")
+    console.log(this.residentes);
+    this.residenteArray = this.residentes;
+    this.sesioneducativa.idCreador = this.user.id;
+  }
 }
 </script>
 

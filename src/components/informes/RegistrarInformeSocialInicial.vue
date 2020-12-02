@@ -94,7 +94,9 @@
                   :error-messages="errorAntecedentes"
                 ></v-textarea>
 
-                <v-card style="padding:5px;margin:0 0 18px 0;background-color:#EAEAEA">
+                <v-card
+                  style="padding:5px;margin:0 0 18px 0;background-color:#EAEAEA"
+                >
                   <v-card-title>
                     <v-row>
                       <v-col :cols="8">
@@ -359,10 +361,10 @@
                   outlined
                   color="#009900"
                   rows="1"
-                  auto-grow  
+                  auto-grow
                   @input="$v.informe.contenido.situacionfamiliar.$touch()"
                   @blur="$v.informe.contenido.situacionfamiliar.$touch()"
-                  :error-messages="errorSituacionFamiliar"                                  
+                  :error-messages="errorSituacionFamiliar"
                 ></v-textarea>
 
                 <v-row>
@@ -602,13 +604,13 @@
                         >
                         </vue-dropzone>
                       </div>
-                          <v-card v-if="errorUrlFirma" color="red">
-                    <v-card-text class="text-center" style="color: white"
-                      >Debe Subir una imagen del usuario
-                      Obligatoriamente</v-card-text
-                    >
-                  </v-card>
-                  <v-divider class="divider-custom"></v-divider>
+                      <v-card v-if="errorUrlFirma" color="red">
+                        <v-card-text class="text-center" style="color: white"
+                          >Debe Subir una imagen de la firma
+                          obligatoriamente</v-card-text
+                        >
+                      </v-card>
+                      <v-divider class="divider-custom"></v-divider>
                     </v-col>
                   </v-row>
                   <v-card
@@ -725,7 +727,13 @@ import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import { required, minLength, email, helpers,numeric } from "vuelidate/lib/validators";
+import {
+  required,
+  minLength,
+  email,
+  helpers,
+  numeric,
+} from "vuelidate/lib/validators";
 import moment from "moment";
 
 export default {
@@ -801,7 +809,7 @@ export default {
       dialogAgregarFamiliar: false,
       accion: "registrar",
       indice: "",
-      recomendacion: "",      
+      recomendacion: "",
       recomendaciones: [],
       dialogVistaPreviaFirma: false,
       imagen: "",
@@ -833,7 +841,7 @@ export default {
       console.log(this.informe);
       this.$v.informe.$touch();
       if (this.$v.informe.$invalid) {
-        console.log("Hay errores :c");        
+        console.log("Hay errores :c");
         this.mensaje(
           "error",
           "..Oops",
@@ -841,14 +849,14 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        console.log("no hay errores");        
+        console.log("no hay errores");
         await axios
           .post("/informe/informesi", this.informe)
           .then((res) => {
-            this.informe = res.data;            
+            this.informe = res.data;
             var resi = this.listaresidentes.filter(function(residente) {
               return residente.id == res.data.idresidente;
-            });            
+            });
             var info = {
               id: res.data.id,
               tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
@@ -857,7 +865,7 @@ export default {
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
             this.addInforme(info);
-            this.show = false
+            this.show = false;
           })
           .catch((err) => console.log(err));
         await this.mensaje(
@@ -884,7 +892,6 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        
         let familiar = {
           nombre: this.familiar.nombre,
           apellido: this.familiar.apellido,
@@ -914,7 +921,7 @@ export default {
     },
     cerrarAgregarFamiliar() {
       this.dialogAgregarFamiliar = false;
-      
+
       this.familiar.nombre = "";
       this.familiar.apellido = "";
       this.familiar.parentesco = "";
@@ -1017,12 +1024,12 @@ export default {
       ].numerodocumento;
     },
     agregarRecomendaciones() {
-      this.$v.recomendacion.$touch();      
+      this.$v.recomendacion.$touch();
       if (!this.$v.recomendacion.$invalid) {
-      let recomendaciones = this.recomendacion;
-      this.informe.contenido.recomendaciones.push(recomendaciones);
-      this.recomendaciones = this.informe.contenido.recomendaciones;
-      this.recomendacion = "";
+        let recomendaciones = this.recomendacion;
+        this.informe.contenido.recomendaciones.push(recomendaciones);
+        this.recomendaciones = this.informe.contenido.recomendaciones;
+        this.recomendacion = "";
       }
     },
     eliminarRecomendaciones(recomendacion) {
@@ -1032,34 +1039,34 @@ export default {
         }
       });
     },
-    agregarFirma() {      
+    agregarFirma() {
       this.$v.firmas.$touch();
       this.$v.urlfirma.$touch();
 
       if (!this.$v.firmas.$invalid && !this.errorUrlFirma) {
-      let firmas = {
-        urlfirma: this.urlfirma,
-        nombre: this.firmas.nombre,
-        cargo: this.firmas.cargo,
-      };
-      this.informe.contenido.firmas.push(firmas);
-      this.$refs.myVueDropzone.removeAllFiles();
+        let firmas = {
+          urlfirma: this.urlfirma,
+          nombre: this.firmas.nombre,
+          cargo: this.firmas.cargo,
+        };
+        this.informe.contenido.firmas.push(firmas);
+        this.$refs.myVueDropzone.removeAllFiles();
 
-      this.urlfirma = "";
-      this.firmas.nombre = "";
-      this.firmas.cargo = "";
+        this.urlfirma = "";
+        this.firmas.nombre = "";
+        this.firmas.cargo = "";
       }
     },
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
     },
-    verFirma(index) {      
+    verFirma(index) {
       this.imagen = this.informe.contenido.firmas[index].urlfirma;
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
     },
-    afterSuccess(file, response) {      
+    afterSuccess(file, response) {
       this.fileList.push(file);
     },
     afterRemoved(file, error, xhr) {
@@ -1141,9 +1148,7 @@ export default {
       !this.$v.familiar.edad.required &&
         errors.push("Debe escribir la edad del familiar obligatoriamente");
       !this.$v.familiar.edad.numeric &&
-        errors.push(
-          "Debe Ingresar valores Numericos"
-        );
+        errors.push("Debe Ingresar valores Numericos");
       return errors;
     },
     errorEstadoCivil() {
@@ -1305,21 +1310,21 @@ export default {
         },
         ocupacion: {
           required,
-        },        
+        },
       },
-      recomendacion : {
+      recomendacion: {
         required,
       },
-      urlfirma:{
-        required
+      urlfirma: {
+        required,
       },
-      firmas:{
-        nombre:{
+      firmas: {
+        nombre: {
           required,
         },
-        cargo:{
+        cargo: {
           required,
-        }
+        },
       },
     };
   },

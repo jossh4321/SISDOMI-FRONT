@@ -16,9 +16,12 @@ import GestionarIncidencias from "../views/Incidencias/GestionarIncidencias.vue"
 import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 import GestionActa from '../views/Acta/GestionarActa.vue';
 
-
 /* Rutas de sebas, fede, jaime y angello */
 import GestionarPlanes from '@/views/PlanIntervencion/GestionarPlanes.vue';
+
+/* Rutas para la consulta de expediente */
+import GestionarExpedientes from '@/views/ExpedienteMatriz/GestionarExpedientes.vue';
+import ExpedienteResidente from '@/views/ExpedienteMatriz/ExpedienteResidente.vue';
 
 /* Importación del axios para la verificación del token */
 import axios from '../store/index.js';
@@ -80,7 +83,7 @@ const routes = [{
                 path: 'planIntervencionR',
                 name: 'plandeIntervencion',
                 component: GestionarPlanes
-            },{
+            }, {
                 path: 'incidencias',
                 name: 'GestionarIncidencias',
                 component: GestionarIncidencias
@@ -95,8 +98,19 @@ const routes = [{
                 name: 'GestionarActa',
                 component: GestionActa
             },
+            {
+                path: 'expedientes',
+                name: 'ConsultaExpedienteMatriz',
+                component: GestionarExpedientes
+            },
+            {
+                path: 'expediente/:idresidente',
+                name: 'ExpedienteResidente',
+                component: ExpedienteResidente,
+                props: true
+            }
         ],
-        
+
         component: () =>
             import ( /* webpackChunkName: "about" */ '../views/Layout/Principal.vue')
     },

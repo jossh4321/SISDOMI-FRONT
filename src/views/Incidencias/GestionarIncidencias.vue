@@ -3,12 +3,11 @@
          <v-data-table
     :headers="headers"
     :items="incidencias"
-
+    item-key="id"
     :page.sync="page"
     :items-per-page="itemsPerPage"
     hide-default-footer  
     @page-count="pageCount = $event"
-
     sort-by="calories"
     class="elevation-1"
   >
@@ -49,6 +48,9 @@
         </v-dialog>
         <!---->
       </v-toolbar>
+    </template>
+     <template v-slot:[`item.autor`]="{ item }">
+        {{ item.autor.datos.nombre | getNombreUsuario(item.autor.datos.apellido) }} 
     </template>
     <template v-slot:[`item.fecha`]="{ item }">
       <v-chip
@@ -102,24 +104,36 @@
     </div>
   <!---->
     <!--DIALOGO DE CONSULTA DE INCIDENCIA-->
-        <v-dialog v-model="dialogoConsultarIncidencia" max-width="500px">
+        <v-dialog v-model="dialogoConsultarIncidencia" persistent max-width="650px">
           <v-card>
-            <v-card-title class="headline">CONSULTA DE UNA INCIDENCIA</v-card-title>
+            <ConsultarIncidencia ref="consultarIncidencia"
+            @close-dialog-edit-incidencia="closeDialogConsultar"
+            :incidencia="incidencia"
+            ></ConsultarIncidencia>
           </v-card>
         </v-dialog>
         <!---->
     <!--DIALOGO DE MODIFICACION DE INCIDENCIA-->
-        <v-dialog v-model="dialogoModificarIncidencia" max-width="500px">
+        <v-dialog v-model="dialogoModificarIncidencia" persistent max-width="650px">
           <v-card>
-            <v-card-title class="headline">MODIFICACION DE UNA INCIDENCIA</v-card-title>
+              <ModificarIncidencia  ref="modificarIncidencia"
+              @close-dialog-edit-incidencia="closeDialogModificar"
+              :incidencia="incidencia" 
+              :listResidentesSelected="listResidentesSelected"
+              ></ModificarIncidencia>
           </v-card>
         </v-dialog>
         <!---->
     </div>
 </template>
 <script>
+import axios from "axios";
 import RegistrarIncidencia from '@/components/incidencias/RegistrarIncidencia.vue'
+import ModificarIncidencia from '@/components/incidencias/ModificarIncidencia.vue'
+import ConsultarIncidencia from '@/components/incidencias/ConsultarIncidencia.vue'
+//import ConsultarIncidencia from '@/components/incidencias/ConsultarIncidencia.vue'
 import moment from "moment";
+import { mapState, mapMutations } from "vuex";
 moment.locale("es")
 export default {
     data(){
@@ -130,25 +144,6 @@ export default {
                 dialogoConsultarIncidencia:false,
                 dialogoModificarIncidencia:false,
                 dialogoRegistrarIncidencia:false,
-                incidencias:[
-                {id:"000000001",
-                usuario:"Usuario1",
-                fecharegistro:new Date(),
-                fecha: new Date(),
-                titulo:"Titulo1",
-                descripcion:"Descripcion1",
-                observaciones:["Obs1","Obs2","Obs3"],
-                incidencias:["Inc1","Inc2","Inc3"],
-                residentes:["Res1","Res2","Res3"]},
-                {id:"000000002",
-                usuario:"Usuario2",
-                fecharegistro:new Date(),
-                fecha: new Date(),
-                titulo:"Titulo2",
-                descripcion:"Descripcion2",
-                observaciones:["Obs1","Obs2","Obs3"],
-                incidencias:["Inc1","Inc2","Inc3"],
-                residentes:["Res1","Res2","Res3"]}],
                 headers: [
                             {
                             text: 'Titulo',
@@ -157,33 +152,79 @@ export default {
                             value: 'titulo',
                             },
                             { text: 'Fecha/Hora', value: 'fecha' },
-                            { text: 'Responsable', value: 'usuario' },
+                            { text: 'Responsable', value: 'autor' },
                             { text: 'N° Involucrados', value: 'residentes' },
                             { text: 'Opciones', value: 'actions', sortable: false }
                         ],
+                        listResidentesSelected:[],
+                incidencia:{}
         }
         
+    },async created(){
+        await axios.get("/incidencia/all/detalle")
+          .then((res)=>{
+                this.setIncidencias(res.data);
+          }).catch(error => console.error(error));
     },components:{
-        RegistrarIncidencia
-
+        RegistrarIncidencia,
+        ModificarIncidencia,
+        ConsultarIncidencia
     },methods:{
-        consultarIncidencia(id){
+        ...mapMutations(["setIncidencias"]),
+        async loadIncidenciaDetalle(id){
+          await axios.get(`/incidencia/detalle/${id}`)
+                      .then(res=>{
+                          this.incidencia = res.data;
+                          var fecha = moment(res.data.fecha);
+                          this.incidencia.fecha = fecha.format('YYYY-MM-DD');
+                          this.incidencia.hora = fecha.format("HH:mm");
+                      }).catch(err => console.error());
+        },async consultarIncidencia(id){
+            await this.loadIncidenciaDetalle(id);
+             this.incidencia.residentes = this.incidencia.residentes
+                      .map((res)=> {return this.convertItemToResidente(res)});
             this.dialogoConsultarIncidencia = !this.dialogoConsultarIncidencia;
-        },modificarIncidencia(id){
+            if(this.$refs.consultarIncidencia != undefined){this.$refs.consultarIncidencia.mounteddropzone();}
+        },async modificarIncidencia(id){
+            await this.loadIncidenciaDetalle(id);
+            this.listResidentesSelected = this.incidencia.residentes
+                      .map((res)=> {return this.convertItemToResidente(res)});
+            this.incidencia.residentes = this.incidencia.residentes
+                      .map((res)=> {return res.id});
             this.dialogoModificarIncidencia = !this.dialogoModificarIncidencia;
+            if(this.$refs.modificarIncidencia != undefined){
+              console.log(this.$refs.modificarIncidencia);
+                this.$refs.modificarIncidencia.mounteddropzone();
+                this.$refs.modificarIncidencia.imagenFirma = {
+                  urlOrigen: this.incidencia.firma.urlfirma,
+                        modificar:{estado:false,file:{}}};
+            }
+        },closeDialogConsultar(){
+            this.dialogoConsultarIncidencia = !this.dialogoConsultarIncidencia;
         },closeDialogRegistrar(){
             this.dialogoRegistrarIncidencia = !this.dialogoRegistrarIncidencia;
-        }
+        },closeDialogModificar(){
+             this.dialogoModificarIncidencia = !this.dialogoModificarIncidencia;
+        },convertItemToResidente(item){
+              return {
+                residente: item.nombre+" "+item.apellido,
+                id:item.id,
+                numeroDocumento: item.numeroDocumento
+              }
+        },
     },computed:{
+        ...mapState(["incidencias"]),
         
     },filters:{
         numResidentes: (residentes) => {
       return residentes.length + " Residentes";
-    },
-        fomatoFecha: (fecha) =>{
+    },fomatoFecha: (fecha) =>{
             var formato = moment(fecha);
             return formato.format("llll");
-        }
+    },getNombreUsuario: (nombre,apellido)=>{
+      return `${nombre} ${apellido}`;
+    }
+        
     }
 }
 </script>

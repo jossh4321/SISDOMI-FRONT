@@ -72,13 +72,13 @@
                   chips
                   dense
                   outlined
-                  v-model="informe.creadordocumento"
+                  v-model="informe.contenido.evaluador"
                   color="#009900"
                   label="Educador responsable"
                   item-text="usuario"
                   item-value="id"
-                  @input="$v.informe.creadordocumento.$touch()"
-                  @blur="$v.informe.creadordocumento.$touch()"
+                  @input="$v.informe.contenido.evaluador.$touch()"
+                  @blur="$v.informe.contenido.evaluador.$touch()"
                   :error-messages="errorCreador"
                 >
                   <template v-slot:selection="data">
@@ -331,6 +331,13 @@
                         >
                         </vue-dropzone>
                       </div>
+                      <v-card v-if="errorUrlFirma" color="red">
+                        <v-card-text class="text-center" style="color: white"
+                          >Debe Subir una imagen de la firma
+                          obligatoriamente</v-card-text
+                        >
+                      </v-card>
+                      <v-divider class="divider-custom"></v-divider>
                     </v-col>
                   </v-row>
                   <v-card
@@ -355,21 +362,21 @@
                       </v-col>
                       <v-col :cols="2" align="center">
                         <template>
-                            <v-btn
-                              fab
-                              icon=""
-                              x-small
-                              dark
-                              color="#EAEAEA"
-                              @click="verFirma(index)"
-                            >
-                              <img
-                                style="width:25% "
-                                src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
-                                alt="firma"
-                              />
-                            </v-btn>
-                          </template>
+                          <v-btn
+                            fab
+                            icon=""
+                            x-small
+                            dark
+                            color="#EAEAEA"
+                            @click="verFirma(index)"
+                          >
+                            <img
+                              style="width:25% "
+                              src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
+                              alt="firma"
+                            />
+                          </v-btn>
+                        </template>
                       </v-col>
                       <v-col :cols="2" align="right">
                         <div style="margin-right:20px">
@@ -390,33 +397,33 @@
                   </v-card>
                 </v-card>
                 <v-dialog
-                          v-model="dialogVistaPreviaFirma"
-                          persistent
-                          max-width="600px"
-                        >
-                          <v-card align="center">
-                            <v-card-title>
-                              <span class="headline">Vista previa</span>
-                            </v-card-title>
-                            <v-card-text>
-                              <img
-                                width="100%"
-                                height="100%"
-                                :src="'data:image/jpeg;base64,' + imagen"
-                                alt=""
-                              />
-                            </v-card-text>
-                            <v-card-actions>
-                              <v-spacer></v-spacer>
-                              <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="cerrarVistaPreviaFirma()"
-                              >
-                                Cerrar
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
+                  v-model="dialogVistaPreviaFirma"
+                  persistent
+                  max-width="600px"
+                >
+                  <v-card align="center">
+                    <v-card-title>
+                      <span class="headline">Vista previa</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <img
+                        width="100%"
+                        height="100%"
+                        :src="'data:image/jpeg;base64,' + imagen"
+                        alt=""
+                      />
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="cerrarVistaPreviaFirma()"
+                      >
+                        Cerrar
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
                 </v-dialog>
 
                 <v-row>
@@ -448,6 +455,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
+import { mapGetters } from "vuex";
 
 export default {
   props: ["listaresidentes", "listaeducadores", "visible"],
@@ -506,6 +514,7 @@ export default {
           firmas: [],
           codigodocumento: "",
           lugarevaluacion: "",
+          evaluador: "",
         },
       },
       imagen: "",
@@ -551,7 +560,7 @@ export default {
           .post("/informe/informeei", this.informe)
           .then((res) => {
             this.informe = res.data;
-            console.log(this.listaresidentes);
+            this.informe.creadordocumento = this.user;
             var resi = this.listaresidentes.filter(function(residente) {
               return residente.id == res.data.idresidente;
             });
@@ -593,10 +602,13 @@ export default {
       this.$emit("close");
     },
     agregarConclusion() {
-      let conclusiones = this.conclusion;
-      this.informe.contenido.conclusiones.push(conclusiones);
-      this.conclusiones = this.informe.contenido.conclusiones;
-      this.conclusion = "";
+      // this.$v.conclusion.$touch();
+      // if (!this.$v.conclusion.$invalid) {
+        let conclusiones = this.conclusion;
+        this.informe.contenido.conclusiones.push(conclusiones);
+        this.conclusiones = this.informe.contenido.conclusiones;
+        this.conclusion = "";
+      // }
     },
     eliminarConclusion(conclusion) {
       // this.informe.contenido.conclusiones.splice(conclusion, 1);
@@ -607,17 +619,22 @@ export default {
       });
     },
     agregarFirma() {
-      let firmas = {
-        urlfirma: this.urlfirma,
-        nombre: this.firmas.nombre,
-        cargo: this.firmas.cargo,
-      };
-      this.informe.contenido.firmas.push(firmas);
-      this.$refs.myVueDropzone.removeAllFiles();
+      // this.$v.firmas.$touch();
+      // this.$v.urlfirma.$touch();
 
-      this.urlfirma = "";
-      this.firmas.nombre = "";
-      this.firmas.cargo = "";
+      // if (!this.$v.firmas.$invalid && !this.errorUrlFirma) {
+        let firmas = {
+          urlfirma: this.urlfirma,
+          nombre: this.firmas.nombre,
+          cargo: this.firmas.cargo,
+        };
+        this.informe.contenido.firmas.push(firmas);
+        this.$refs.myVueDropzone.removeAllFiles();
+
+        this.urlfirma = "";
+        this.firmas.nombre = "";
+        this.firmas.cargo = "";
+      // }
     },
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
@@ -691,6 +708,7 @@ export default {
         }
       },
     },
+    ...mapGetters(["user"]),
     errorResidente() {
       const errors = [];
       if (!this.$v.informe.idresidente.$dirty) return errors;
@@ -700,8 +718,8 @@ export default {
     },
     errorCreador() {
       const errors = [];
-      if (!this.$v.informe.creadordocumento.$dirty) return errors;
-      !this.$v.informe.creadordocumento.required &&
+      if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
+      !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un educador obligatoriamente");
       return errors;
     },
@@ -747,14 +765,38 @@ export default {
         errors.push("El análisis académico debe tener al menos 100 caracteres");
       return errors;
     },
+    // errorNombreFirma() {
+    //   const errors = [];
+    //   if (!this.$v.firmas.nombre.$dirty) return errors;
+    //   !this.$v.firmas.nombre.required &&
+    //     errors.push("Debe registrar el nombre obligatoriamente");
+    //   return errors;
+    // },
+    // errorCargoFirma() {
+    //   const errors = [];
+    //   if (!this.$v.firmas.cargo.$dirty) return errors;
+    //   !this.$v.firmas.cargo.required &&
+    //     errors.push("Debe registrar el cargo obligatoriamente");
+    //   return errors;
+    // },
+    // errorUrlFirma() {
+    //   return this.$v.urlfirma.required == false &&
+    //     this.$v.urlfirma.$dirty == true
+    //     ? true
+    //     : false;
+    // },
+    // errorConclusion() {
+    //   const errors = [];
+    //   if (!this.$v.conclusion.$dirty) return errors;
+    //   !this.$v.conclusion.required &&
+    //     errors.push("Debe registrar la conclusión obligatoriamente");
+    //   return errors;
+    // },
   },
   validations() {
     return {
       informe: {
         idresidente: {
-          required,
-        },
-        creadordocumento: {
           required,
         },
         fechacreacion: {
@@ -764,6 +806,9 @@ export default {
           lugarevaluacion: {
             required,
             minLength: minLength(10),
+          },
+          evaluador: {
+            required,
           },
           situacionacademica: {
             required,
@@ -775,6 +820,20 @@ export default {
           },
         },
       },
+      // urlfirma: {
+      //   required,
+      // },
+      // firmas: {
+      //   nombre: {
+      //     required,
+      //   },
+      //   cargo: {
+      //     required,
+      //   },
+      // },
+      // conclusion: {
+      //   required,
+      // },
     };
   },
 };
