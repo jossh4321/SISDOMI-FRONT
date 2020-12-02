@@ -113,7 +113,7 @@ export default {
       headers:[
         { text: "Titulo", align:"start", sortable:false, value: "titulo" },
         { text: "Tipo de Sesión", value: "tipo" },
-        { text: "Id Creador", value: "idCreador" },
+        { text: "Id Creador", value: "datoscreador.usuario" },
         { text: "Fecha de Creacion", value: "fechaCreacion" },
         { text: "Area", value: "area" },
         { text: "Actions", value: "actions", sortable: false }
