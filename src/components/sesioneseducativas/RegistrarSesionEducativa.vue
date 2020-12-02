@@ -255,7 +255,7 @@
                               style="margin-left:2%"
                               dark
                               color="red"
-                              @click="eliminarParticipante(item.idparticipante)"
+                              @click="eliminarParticipante(encontrarResidentePorId(item.idparticipante),item.idparticipante)"
                             >
                               <v-icon dark>
                                 mdi-delete
@@ -338,11 +338,11 @@
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 export default {
   name:"RegistrarSesionEducativa",
-  props:["visible"],
+  props:["visible","dialogoregistro"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -369,9 +369,10 @@ export default {
         dictDefaultMessage:
           "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
       },
+      residenteArray:[],
       sesioneducativa:{
         titulo:"",
-        idCreador:"",
+        idCreador: "",
         fechaCreacion:"",
         area:"",
         contenido:{
@@ -389,6 +390,15 @@ export default {
       },
       step:1,
       datemenu: false,
+    }
+  },
+  watch:{
+    dialogoregistro: async function(dialogoregistro){
+      if(dialogoregistro){
+        this.residenteArray = this.residentes;
+        console.log("Residentes filtrados finales")
+        console.log(this.residentes);
+      }
     }
   },
   methods:{
@@ -412,12 +422,21 @@ export default {
       this.sesioneducativa.contenido.participantes.push(this.ParticipanteSesion);
       this.ParticipanteSesion = this.limpiarParticipanteAgregado();
       this.$refs.myVueDropzone.removeAllFiles();
+      this.filtrarParticipantesInterno()
+      console.log("Residentes filtrados finales")
+      console.log(this.residentes);
+      
     },
-    eliminarParticipante(id){
+    eliminarParticipante(item, id){
       var index =  this.sesioneducativa.contenido.participantes.findIndex(function(o){
         return o.idparticipante === id;
       })
-      if (index !== -1) { this.sesioneducativa.contenido.participantes.splice(index, 1);}
+      if (index !== -1) { 
+        this.sesioneducativa.contenido.participantes.splice(index, 1);
+        this.residentes.push(item);
+      }
+      console.log("Residentes filtrados finales")
+      console.log(this.residentes);
     },
     verFirma(id) {
       this.sesioneducativa.contenido.participantes.forEach((part)=>{
@@ -444,7 +463,7 @@ export default {
     },
     encontrarNombrePorId(id){
       var nombreCompletoResidente = "";
-      this.residentes.forEach((residente)=>{
+      this.residenteArray.forEach((residente)=>{
         if(residente.id === id){
           //LOS RETURN DENTRO DE UN FOREACH NO FUNCIONAN :D
           nombreCompletoResidente = residente.nombre + ' ' + residente.apellido;
@@ -453,7 +472,37 @@ export default {
       return nombreCompletoResidente;
 
     },
+    encontrarResidentePorId(id){
+      var residenteObject = {};
+      this.residenteArray.forEach((residente)=>{
+        if(residente.id === id){
+          //LOS RETURN DENTRO DE UN FOREACH NO FUNCIONAN :D
+          residenteObject = {
+            id: residente.id,
+            nombre: residente.nombre,
+            apellido: residente.apellido,
+            numeroDocumento: residente.numeroDocumento
+          }
+        }
+      })
+      return residenteObject;
+    },
+    filtrarParticipantesInterno(){
+      var arrayResidente=this.residentes;
+      var arrayParticipante=this.sesioneducativa.contenido.participantes;
 
+      var retorno = arrayResidente.filter(comparer(arrayParticipante));
+      function comparer(participantes){
+        return function(residente){
+          return participantes.filter(function(participante){
+            return participante.idparticipante == residente.id
+          }).length == 0;
+        }
+      }
+      console.log("Filtrados:");
+      console.log(retorno);
+      this.setResidentes(retorno);
+    },
     /*
     //Funcion para cerrar solo el presente modal.
     //No utilizado
@@ -471,7 +520,7 @@ export default {
       //Retorna la fecha actual en formato YYYY/MM/DD
       //No se está usando
       var f = new Date();
-      return f.getFullYear() + "-" + (f.getMonth() +1) + "-"+ f.getDate();
+      return f.getFullYear() + "/" + (f.getMonth() +1) + "/"+ f.getDate();
     },
     async obtenerResidentes() {
       await axios
@@ -510,6 +559,7 @@ export default {
   },
   computed:{
     ...mapState(["residentes"]),
+    ...mapGetters(["user"]),
     show: {
       get() {
         return this.visible;
@@ -538,7 +588,11 @@ export default {
     }
   },
   async created(){
-    this.obtenerResidentes();
+    await this.obtenerResidentes();
+    console.log("Residentes filtrados finales")
+    console.log(this.residentes);
+    this.residenteArray = this.residentes;
+    this.sesioneducativa.idCreador = this.user.id;
   }
 }
 </script>

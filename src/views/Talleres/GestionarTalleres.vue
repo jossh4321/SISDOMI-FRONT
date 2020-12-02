@@ -85,8 +85,8 @@
 
           </v-toolbar>
         </template>
-        <template v-slot:[`item.fechacreacion`]="{ item }">
-          {{ item.fechacreacion | moment("DD/MM/YYYY") }}
+        <template v-slot:[`item.fechaCreacion`]="{ item }">
+          {{ item.fechaCreacion | moment("DD/MM/YYYY") }}
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
@@ -96,7 +96,7 @@
             </v-btn>
 
             <v-btn color="info" dark @click="detailItem(item)">
-              <v-icon left> mdi-pencil </v-icon>
+              <v-icon left> mdi-file-eye </v-icon>
               <span>Visualizar</span>
             </v-btn>
           </v-row>
@@ -130,7 +130,7 @@ export default {
         { text: "Tipo", value: "tipo" },
         { text: "Área", value: "area" },
         { text: "Fase", value: "fase" },
-        { text: "Fecha registro", value: "fechacreacion" },
+        { text: "Fecha registro", value: "fechaCreacion" },
         { text: "Actions", value: "actions", sortable: false },
       ],
       talleres: [],
@@ -166,14 +166,15 @@ export default {
         .then((res) => {
           this.taller = res.data;
 
-          this.typeTallerSelected = "ActualizarTallerEscuelaPadres";
-          /*if (res.data.area == "social" && res.data.fase == "desarrollo") {
-            this.typePlanSelected = "ActualizarTallerEscuelaPadres";
+          if (res.data.tipo == "TallerEscuelaPadres") {
+            this.typeTallerSelected = "ActualizarTallerEscuelaPadres";
+            this.taller.contenido.fechainicio = res.data.contenido.fechainicio.split("T")[0];
+            this.taller.contenido.fechafin = res.data.contenido.fechafin.split("T")[0];
           } else if (res.data.area == "social") {
-            this.typePlanSelected = "ModificarPlanIntervencionSocial";
+            this.typeTallerSelected = "ModificarPlanIntervencionSocial";
           } else if (res.data.area == "psicologica") {
-            this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
-          }*/
+            this.typeTallerSelected = "ModificarPlanIntervencionPsicologico";
+          }
 
           this.dialogTallerModify = true;
         })
@@ -190,6 +191,7 @@ export default {
         .then((res) => {
           //this.loading = false;
           this.talleres = res.data;
+          
         })
         .catch((err) => {
           console.error(err);

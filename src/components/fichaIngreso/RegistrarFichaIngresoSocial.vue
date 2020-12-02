@@ -1,24 +1,39 @@
 <template>
 <v-dialog v-model="show" max-width="65%">
     <v-card >
-      <v-card-title class="justify-center">Registrar Ficha de Ingreso Social</v-card-title>
+      <v-card-title class="justify-center">Resgistrar Ficha de Ingreso Social</v-card-title>
       <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step 
           editable
           step="1"
         >
-        Datos del Residente
+        Residente y Familia
         </v-stepper-step>
         <v-divider></v-divider>
         <v-stepper-step
           editable
           step="2"
         >
-        Datos Sociales
+        Vivienda
+        </v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step
+          editable
+          step="3"
+        >
+        Económico y Legal
+        </v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step
+          editable
+          step="4"
+        >
+        Encargado
         </v-stepper-step>
       </v-stepper-header>    
       <v-stepper-items>
+        <!--Residente y Familiares-->
         <v-stepper-content step="1">
           <div class="container-user">
             <form>
@@ -27,12 +42,12 @@
                   filled
                   chips
                   dense
-                  outlined        
-                  v-model="fichaSocial.idresidente"  
+                  outlined  
+                  v-model="fichaIngreso.idresidente"        
                   color="#009900"
                   label="Residente"
                   item-text="nombre"
-                  item-value="id"                            
+                  item-value="residenteSeleccionado"                            
                 >
 
                 <template v-slot:selection="data">
@@ -56,135 +71,106 @@
                     </v-list-item-avatar>
                     <v-list-item-content>
                         <v-list-item-title>Nombre completo: {{ data.item.nombre }} {{data.item.apellido}} </v-list-item-title>
-                        <v-list-item-subtitle>Nro. Documento: {{data.item.numeroDocumento}}</v-list-item-subtitle>                    
+                        <v-list-item-subtitle>Nro. Documento: {{data.item.numerodocumento}}</v-list-item-subtitle>                    
                     </v-list-item-content>
                 </template>
-                </v-autocomplete> 
-                <v-autocomplete
-                  :items="listaeducadores"
-                  filled
-                  chips
-                  dense
-                  outlined
-                  v-model="fichaSocial.creadordocumento"
-                  color="#009900"
-                  label="Educador responsable"
-                  item-text="usuario"
-                  item-value="id"
-                  
-                >
-                  <template v-slot:selection="data">
-                    <v-chip
-                      v-bind="data.attrs"
-                      :input-value="data.selected"
-                      style="margin-top:5px"
-                    >
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size:12px">RT</span>
-                      </v-avatar>
-                      {{ data.item.datos.nombre }}
-                    </v-chip>
-                  </template>
-                  <template v-slot:item="data">
-                    <template>
-                      <v-list-item-avatar>
-                        <v-avatar left color="#b3b3ff" size="24">
-                          <span style="font-size:12px">UC</span>
-                        </v-avatar>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          >Nombre completo: {{ data.item.datos.nombre }}
-                          {{ data.item.datos.apellido }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle
-                          >Nro. Documento:
-                          {{
-                            data.item.datos.numeroDocumento
-                          }}</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </template>
-                  </template>
                 </v-autocomplete>
-
-                <v-row>
-                    <v-col>
+                
+                <v-card
+                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
                         <v-text-field
-                            label="Nombres"
-                            auto-grow
-                            outlined        
-                            color="#009900"
-                            shaped
+                          v-model="motivoIngreso"
+                          label="Motivo Ingreso"
+                          color="#009900"
                         ></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field
-                            label="Apellidos"
-                            auto-grow
-                            outlined         
-                            color="#009900"
-                            shaped
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-
-                <v-row>
-                    <v-col>
-                         <v-select              
-                            :items="itemSexo"
-                            v-model="itemSexo.value"
-                            label="Sexo"
-                            outlined      
-                            dense       
-                        ></v-select>
-                    </v-col>
-                    <v-col>
-                        <v-menu
-                            v-model="datemenu"
-                            :close-on-content-click="false"
-                            :nudge-right="40"
-                            transition="scale-transition"
-                            offset-y
-                            min-width="290px"
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarMotivoIngreso"
                         >
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                    label="Fecha de Nacimiento"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    :error-messages="errorFechaNacimiento"
-                                    color="#009900"
-                                ></v-text-field>
-                            </template>
-                            <v-date-picker
-                                @input="menu2 = false"
-                                locale="es-es"
-                            ></v-date-picker> 
-                        </v-menu>
-                    </v-col>
-                </v-row>
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+
+                  <v-card
+                    tile
+                    elevation="0"
+                    color="#FAFAFA"
+                    style="margin:5px"
+                    height="60"
+                    v-for="motivoIngreso in motivosIngreso"
+                    :key="motivoIngreso"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <span>{{ motivoIngreso }}</span>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarMotivoIngreso(motivoIngreso)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+
+                <div>
+                  <vue-dropzone
+                    ref="myVueDropzone"
+                    @vdropzone-success="afterSuccess"
+                    @vdropzone-removed-file="afterRemoved"
+                    id="dropzone"
+                    :options="dropzoneOptions_MotivoIngreso"
+                  >
+                  </vue-dropzone>
+                </div>
+
+                
 
                 <v-row>
                     <v-col>
-                        <v-text-field
-                            label="Apoderado"
-                            auto-grow
-                            outlined       
-                            color="#009900"
-                            shaped
-                        ></v-text-field>
+                      <v-select              
+                        :items="itemFamilias"
+                        v-model="itemFamilias.value"
+                        label="Tipo de familia"            
+                        outlined      
+                        dense       
+                      ></v-select>
                     </v-col>
                     <v-col>
-                        <v-text-field
-                            label="Celular"
-                            auto-grow
-                            outlined       
-                            color="#009900"
-                            shaped
-                        ></v-text-field>
+                      <v-text-field
+                        label="Problemática familiar"
+                        auto-grow
+                        outlined        
+                        color="#009900"
+                        shaped
+                      ></v-text-field> 
                     </v-col>
                 </v-row>
 
@@ -198,7 +184,7 @@
                     <v-col>
                         <v-btn block color= yellow>
                             <v-icon left>mdi-page-next-outline</v-icon>
-                            <span>Ver más del Residente</span>
+                            <span>Datos del Residente</span>
                         </v-btn>
                     </v-col>
                     <v-col>
@@ -211,65 +197,309 @@
             </form>
           </div>
         </v-stepper-content>
+
         <v-stepper-content step="2">
-          <div  class="container-user">
-            <form> 
-                <v-row>
+          <div class="container-user">
+            <form>
+                <v-text-field
+                  label="Nombre de Institución Educativa"
+                  auto-grow
+                  outlined        
+                  color="#009900"
+                  shaped
+                ></v-text-field> 
+
+               <v-row>
                     <v-col>
-                        <v-menu
-                            v-model="datemenu"
-                            :close-on-content-click="false"
-                            :nudge-right="40"
-                            transition="scale-transition"
-                            offset-y
-                            min-width="290px"
-                        >
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                    label="Fecha de Ingreso"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    :error-messages="errorFechaNacimiento"
-                                    color="#009900"
-                                ></v-text-field>
-                            </template>
-                            <v-date-picker
-                                @input="menu2 = false"
-                                locale="es-es"
-                            ></v-date-picker> 
-                        </v-menu>
+                      <v-select              
+                        :items="itemModalidad"
+                        v-model="itemModalidad.value"
+                        label="Tipo"            
+                        outlined      
+                        dense       
+                      ></v-select>
                     </v-col>
                     <v-col>
-                        <v-menu
-                            v-model="datemenu"
-                            :close-on-content-click="false"
-                            :nudge-right="40"
-                            transition="scale-transition"
-                            offset-y
-                            min-width="290px"
-                        >
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                    label="Fecha de Entrevista"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    :error-messages="errorFechaNacimiento"
-                                    color="#009900"
-                                ></v-text-field>
-                            </template>
-                            <v-date-picker
-                                @input="menu2 = false"
-                                locale="es-es"
-                            ></v-date-picker> 
-                        </v-menu>
+                      <v-autocomplete
+                        label="Modalidad"            
+                        outlined      
+                        dense       
+                      ></v-autocomplete>
                     </v-col>
                 </v-row>
+
+                <v-text-field
+                  label="Dirección"
+                  auto-grow
+                  outlined        
+                  color="#009900"
+                  shaped
+                ></v-text-field> 
+
+
+                 <v-row>
+                    <v-col>
+                      <v-text-field
+                        label="Celular/Telefono"
+                        auto-grow
+                        outlined        
+                        color="#009900"
+                        shaped
+                      ></v-text-field> 
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        label="Correo"
+                        auto-grow
+                        outlined        
+                        color="#009900"
+                        shaped
+                      ></v-text-field> 
+                    </v-col>
+                </v-row>
+
                 
+
+                <v-row>
+                    <v-col>
+                        <v-btn block @click="show=false" color="primary">
+                            <v-icon left>mdi-close-outline</v-icon>
+                            <span>Cerrar</span>
+                        </v-btn>
+                    </v-col>
+                    <v-col>
+                        <v-btn block @click="step = 3" color="success">
+                            <v-icon left>mdi-page-next-outline</v-icon>
+                            <span>Continuar</span>
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </form>
+          </div>
+        </v-stepper-content>
+
+        <v-stepper-content step="3">
+          <div class="container-user">
+            <form>
+                <v-text-field
+                  label="Nombre de Institución Educativa"
+                  auto-grow
+                  outlined        
+                  color="#009900"
+                  shaped
+                ></v-text-field> 
+
+               <v-row>
+                    <v-col>
+                      <v-select              
+                        :items="itemModalidad"
+                        v-model="itemModalidad.value"
+                        label="Tipo"            
+                        outlined      
+                        dense       
+                      ></v-select>
+                    </v-col>
+                    <v-col>
+                      <v-autocomplete
+                        label="Modalidad"            
+                        outlined      
+                        dense       
+                      ></v-autocomplete>
+                    </v-col>
+                </v-row>
+
+                <v-text-field
+                  label="Dirección"
+                  auto-grow
+                  outlined        
+                  color="#009900"
+                  shaped
+                ></v-text-field> 
+
+
+                 <v-row>
+                    <v-col>
+                      <v-text-field
+                        label="Celular/Telefono"
+                        auto-grow
+                        outlined        
+                        color="#009900"
+                        shaped
+                      ></v-text-field> 
+                    </v-col>
+                    <v-col>
+                      <v-text-field
+                        label="Correo"
+                        auto-grow
+                        outlined        
+                        color="#009900"
+                        shaped
+                      ></v-text-field> 
+                    </v-col>
+                </v-row>
+
                 
+
+                <v-row>
+                    <v-col>
+                        <v-btn block @click="show=false" color="primary">
+                            <v-icon left>mdi-close-outline</v-icon>
+                            <span>Cerrar</span>
+                        </v-btn>
+                    </v-col>
+                    <v-col>
+                        <v-btn block @click="step = 4" color="success">
+                            <v-icon left>mdi-page-next-outline</v-icon>
+                            <span>Continuar</span>
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </form>
+          </div>
+        </v-stepper-content>
+
+        <v-stepper-content step="4">
+          <div  class="container-user">
+            <form> 
+                
+
+                <v-card
+                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="4" align="left">
+                        <v-text-field
+                          v-model="firmas.nombre"
+                          label="Nombre"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="left">
+                        <v-text-field
+                          v-model="firmas.cargo"
+                          label="Cargo"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarFirma"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                  <v-row>
+                    <v-col :cols="12" align="right">
+                      <div>
+                        <vue-dropzone
+                          ref="myVueDropzone"
+                          @vdropzone-success="afterSuccess2"
+                          @vdropzone-removed-file="afterRemoved2"
+                          id="dropzone2"
+                          :options="dropzoneOptions_Firmas"
+                        >
+                        </vue-dropzone>
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <v-card
+                    color="#FAFAFA"
+                    style="margin-top:5px"
+                    height="60"
+                    v-for="(item, index) in fichaIngreso.contenido.firmas"
+                    :key="index"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8">
+                        <article>
+                          <img
+                            style="margin-right:5px;width:6% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
+                            alt="imagen usuario"
+                          />
+                          <span style="font-size:18px">
+                            {{ item.nombre }} {{ item.cargo }}</span
+                          >
+                        </article>
+                      </v-col>
+                      <v-col :cols="2" align="center">
+                        <template>
+                            <v-btn
+                              fab
+                              icon=""
+                              x-small
+                              dark
+                              color="#EAEAEA"
+                              @click="verFirma(index)"
+                            >
+                              <img
+                                style="width:25% "
+                                src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
+                                alt="firma"
+                              />
+                            </v-btn>
+                          </template>
+                      </v-col>
+                      <v-col :cols="2" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarFirma(index)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+                <v-dialog
+                          v-model="dialogVistaPreviaFirma"
+                          persistent
+                          max-width="600px"
+                        >
+                          <v-card align="center">
+                            <v-card-title>
+                              <span class="headline">Vista previa</span>
+                            </v-card-title>
+                            <v-card-text>
+                              <img
+                                width="100%"
+                                height="100%"
+                                :src="'data:image/jpeg;base64,' + imagen"
+                                alt=""
+                              />
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="cerrarVistaPreviaFirma()"
+                              >
+                                Cerrar
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                </v-dialog>
 
               <v-row>
                     <v-col>
@@ -279,13 +509,7 @@
                         </v-btn>
                     </v-col>
                     <v-col>
-                        <v-btn block @click="step = 1" color= yellow>
-                            <v-icon left>mdi-page-next-outline</v-icon>
-                            <span>Ver datos del Residente</span>
-                        </v-btn>
-                    </v-col>
-                    <v-col>
-                        <v-btn block @click="registrarInforme" color="success">
+                        <v-btn block @click="registrarfichaIngreso" color="success">
                             <v-icon left>mdi-content-save-all-outline</v-icon>
                             <span >Registrar Ficha de Ingreso</span>
                         </v-btn>
@@ -299,6 +523,7 @@
     </v-card>
   </v-dialog>
 </template>
+
 <script> 
 
 import axios from 'axios';
@@ -315,15 +540,143 @@ export default {
     ...mapMutations(["setFichaIngreso","addFichaIngreso"]),
     data() {
         return {
-            itemSexo: [
-                { value: '1', text: 'Femenino'},
-                { value: '2', text: 'Masculino'}
+            itemFamilias: [
+                { value: '1', text: 'Nuclear'},
+                { value: '2', text: 'Extensa'},
+                { value: '3', text: 'Monoparental'},
+                { value: '4', text: 'Homoparental'},
+                { value: '5', text: 'Desintegrada'},
+                { value: '6', text: 'Reconstruida'},
+                { value: '7', text: 'Acogida'}
             ],
 
+            dialogVistaPreviaFirma: false,
+            dialogoVistaFamiliares : false,
             datemenu: false,
             step: 1,
 
-            fichaSocial:{
+            dropzoneOptions_MotivoIngreso: {
+              url: "https://httpbin.org/post",
+              thumbnailWidth: 250,
+              maxFilesize: 10.0,
+              maxFiles: 10,
+              acceptedFiles: ".pdf",
+              headers: { "My-Awesome-Header": "header value" },
+              addRemoveLinks: true,
+              dictDefaultMessage:
+                "Seleccione un motivo de ingreso de su dispositivo o arrástrela aquí",
+            },
+            dropzoneOptions_Familiares: {
+              url: "https://httpbin.org/post",
+              thumbnailWidth: 250,
+              maxFilesize: 10.0,
+              maxFiles: 10,
+              acceptedFiles: ".pdf",
+              headers: { "My-Awesome-Header": "header value" },
+              addRemoveLinks: true,
+              dictDefaultMessage:
+                "Aquí se observarán a familiares registrados",
+            },
+            dropzoneOptions_Habitantes: {
+              url: "https://httpbin.org/post",
+              thumbnailWidth: 250,
+              maxFilesize: 10.0,
+              maxFiles: 10,
+              acceptedFiles: ".pdf",
+              headers: { "My-Awesome-Header": "header value" },
+              addRemoveLinks: true,
+              dictDefaultMessage:
+                "Aquí se observarán a familiares registrados",
+            },
+            dropzoneOptions_Servicios: {
+              url: "https://httpbin.org/post",
+              thumbnailWidth: 250,
+              maxFilesize: 10.0,
+              maxFiles: 10,
+              acceptedFiles: ".pdf",
+              headers: { "My-Awesome-Header": "header value" },
+              addRemoveLinks: true,
+              dictDefaultMessage:
+                "Aquí se observarán los servicios registrados",
+            },
+            dropzoneOptions_Ingresos: {
+              url: "https://httpbin.org/post",
+              thumbnailWidth: 250,
+              maxFilesize: 10.0,
+              maxFiles: 10,
+              acceptedFiles: ".pdf",
+              headers: { "My-Awesome-Header": "header value" },
+              addRemoveLinks: true,
+              dictDefaultMessage:
+                "Aquí se observarán los ingresos registrados",
+            },
+            dropzoneOptions_Egresos: {
+              url: "https://httpbin.org/post",
+              thumbnailWidth: 250,
+              maxFilesize: 10.0,
+              maxFiles: 10,
+              acceptedFiles: ".pdf",
+              headers: { "My-Awesome-Header": "header value" },
+              addRemoveLinks: true,
+              dictDefaultMessage:
+                "Aquí se observarán los egresos registrados",
+            },
+            dropzoneOptions_Penales: {
+              url: "https://httpbin.org/post",
+              thumbnailWidth: 250,
+              maxFilesize: 10.0,
+              maxFiles: 10,
+              acceptedFiles: ".pdf",
+              headers: { "My-Awesome-Header": "header value" },
+              addRemoveLinks: true,
+              dictDefaultMessage:
+                "Aquí se observarán los registros penales",
+            },
+            dropzoneOptions_Firmas: {
+              url: "https://httpbin.org/post",
+              thumbnailWidth: 250,
+              maxFilesize: 5.0,
+              maxFiles: 1,
+              acceptedFiles: ".png",
+              headers: { "My-Awesome-Header": "header value" },
+              addRemoveLinks: true,
+              dictDefaultMessage:
+                "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
+            },
+            
+            motivoIngreso: "",
+            motivosIngreso: [],
+            
+            familiar : "",
+            familiares : { 
+              nombreCompleto : "",
+              parentezco : "",
+              edad : "",
+              estadoCivil : "",
+              gradoInstruccion : "",
+              ocupacion : "",
+              observacion : ""
+            },
+
+            habitante: "",
+            habitantes: [],
+
+            servicio: "",
+            servicios: { servicio: "", tipo: "" },
+
+            ingreso: "",
+            ingresos: [],
+
+            egreso: "",
+            egresos: [],
+
+            penal: "",
+            penales: { familiar: "", motivo: "" },
+
+            urlfirma: "",
+            firmas: { urlfirma: "", nombre: "", cargo: "" },
+
+            fichaIngreso:{
                 id:"",
                 tipo:"FichaSocialIngreso",
                 historialcontenido:[],
@@ -368,28 +721,219 @@ export default {
                     planintervencion:"",
                     firmas:[],
                     codigodocumento:""
-                    
                     }
-            }
-    }
+            },
+            imagen: "",
+        }
     },
+    async created() {
+      this.motivosIngreso = "";
+      this.motivoIngreso = "";
+      this.habitantes = "";
+      this.habitante = "";
+      this.ingresos = "";
+      this.ingreso = "";
+      this.egresos = "";
+      this.egreso = "";
+    },
+
     methods:{
         cerrarDialogo(){     
             this.step = 1;       
             this.$emit("close-dialog-fichaIngreso");
         }, 
-        async rFichaIngresoP(){
+        async rFichaIngresoS(){
 
            await axios.get("Documento/all/fichaingresosocialcrear")
             .then(res => {
               //console.log( "porfavor" )
               this.fichaIngreso=res.data;
-              this.rFichaIngresoP(res.data);
+              this.rFichaIngresoS(res.data);
               this.addFichaIngreso(this.fichaIngreso)
             }).catch(err => console.log(err));            
     
-      }
-      , async mensaje(icono,titulo,texto,footer){
+        },
+
+        agregarMotivoIngreso() {
+          let motivosIngreso = this.motivoIngreso;
+          this.fichaIngreso.contenido.motivoingreso.push(motivosIngreso);
+          this.motivosIngreso = this.fichaIngreso.contenido.motivoingreso;
+          this.motivoIngreso = "";
+        },
+        eliminarMotivoIngreso(motivoIngreso) {
+          this.motivosIngreso.forEach(function(car, index, object) {
+            if (car === motivoIngreso) {
+              object.splice(index, 1);
+            }
+          });
+        },
+
+        agregarHabitante() {
+          let habitantes = this.habitante;
+          this.fichaIngreso.contenido.habitantes.push(habitantes);
+          this.habitantes = this.fichaIngreso.contenido.habitantes;
+          this.habitante = "";
+        },
+        eliminarHabitante(habitante) {
+          this.habitantes.forEach(function(car, index, object) {
+            if (car === habitante) {
+              object.splice(index, 1);
+            }
+          });
+        },
+
+        agregarIngreso() {
+          let ingresos = this.ingreso;
+          this.fichaIngreso.contenido.ingresos.push(ingresos);
+          this.ingresos = this.fichaIngreso.contenido.ingresos;
+          this.ingreso = "";
+        },
+        eliminarIngreso(ingreso) {
+          this.ingresos.forEach(function(car, index, object) {
+            if (car === ingreso) {
+              object.splice(index, 1);
+            }
+          });
+        },
+
+        agregarEgreso() {
+          let egresos = this.egreso;
+          this.fichaIngreso.contenido.egresos.push(egresos);
+          this.egresos = this.fichaIngreso.contenido.egresos;
+          this.egreso = "";
+        },
+        eliminarEgreso(egreso) {
+          this.egresos.forEach(function(car, index, object) {
+            if (car === egreso) {
+              object.splice(index, 1);
+            }
+          });
+        },
+
+        agregarFamiliar() {
+          let familiares = { 
+              nombreCompleto : this.familiares.nombreCompleto,
+              parentezco : this.familiares.parentezco,
+              edad : this.familiares.edad,
+              estadoCivil : this.familiares.estadoCivil,
+              gradoInstruccion : this.familiares.gradoInstruccion,
+              ocupacion : this.familiares.ocupacion,
+              observacion : this.familiares.observacion
+          };
+          this.fichaIngreso.contenido.familiares.push(familiares);
+          this.$refs.myVueDropzone.removeAllFiles();
+
+          this.familiares.nombreCompleto = "";
+          this.familiares.parentezco= "";
+          this.familiares.edad= "";
+          this.familiares.estadoCivil= "";
+          this.familiares.gradoInstruccion= "";
+          this.familiares.ocupacion= "";
+          this.familiares.observacion= "";
+        },
+        eliminarFamiliar(index) {
+          this.fichaIngreso.contenido.familiares.splice(index, 1);
+        },
+        verDatosFamiliar(index) {
+          this.familiares = { 
+              nombreCompleto : this.fichaIngreso.contenido.familiares[index].nombreCompleto,
+              parentezco : this.fichaIngreso.contenido.familiares[index].parentezco,
+              edad : this.fichaIngreso.contenido.familiares[index].edad,
+              estadoCivil : this.fichaIngreso.contenido.familiares[index].estadoCivil,
+              gradoInstruccion : this.fichaIngreso.contenido.familiares[index].gradoInstruccion,
+              ocupacion : this.fichaIngreso.contenido.familiares[index].ocupacion,
+              observacion : this.fichaIngreso.contenido.familiares[index].observacion
+            },
+          this.dialogoVistaFamiliares = true;
+        },
+        cerrarVistaDatosFamiliar() {
+          this.dialogoVistaFamiliares = false;
+        },
+
+        agregarServicio() {
+          let servicios = { 
+            servicio: servicios.servicio, 
+            tipo: servicios.tipo,
+          };
+          this.fichaIngreso.contenido.servicios.push(servicios);
+          this.$refs.myVueDropzone.removeAllFiles();
+
+          this.servicios.servicio = "";
+          this.servicios.tipo = "";
+        },
+        eliminarServicio(index) {
+          this.fichaIngreso.contenido.servicios.splice(index, 1);
+        },
+
+        agregarPenal() {
+          let penales = { 
+            familiar: penales.familiar, 
+            motivo: penales.motivo,
+          };
+          this.fichaIngreso.contenido.penales.push(penales);
+          this.$refs.myVueDropzone.removeAllFiles();
+
+          this.penales.familiar = "";
+          this.penales.motivo = "";
+        },
+        eliminarPenal(index) {
+          this.fichaIngreso.contenido.penales.splice(index, 1);
+        },
+
+        agregarFirma() {
+          let firmas = {
+            urlfirma: this.urlfirma,
+            nombre: this.firmas.nombre,
+            cargo: this.firmas.cargo,
+          };
+          this.fichaIngreso.contenido.firmas.push(firmas);
+          this.$refs.myVueDropzone.removeAllFiles();
+
+          this.urlfirma = "";
+          this.firmas.nombre = "";
+          this.firmas.cargo = "";
+        },
+        eliminarFirma(index) {
+          this.fichaIngreso.contenido.firmas.splice(index, 1);
+        },
+        verFirma(index) {
+          console.log(this.fichaIngreso.contenido.firmas[index].urlfirma);
+          this.imagen = this.fichaIngreso.contenido.firmas[index].urlfirma;
+          this.dialogVistaPreviaFirma = true;
+        },
+        cerrarVistaPreviaFirma() {
+          this.dialogVistaPreviaFirma = false;
+        },
+
+
+        agregarFirma() {
+          let firmas = {
+            urlfirma: this.urlfirma,
+            nombre: this.firmas.nombre,
+            cargo: this.firmas.cargo,
+          };
+          this.fichaIngreso.contenido.firmas.push(firmas);
+          this.$refs.myVueDropzone.removeAllFiles();
+
+          this.urlfirma = "";
+          this.firmas.nombre = "";
+          this.firmas.cargo = "";
+        },
+        eliminarFirma(index) {
+          this.fichaIngreso.contenido.firmas.splice(index, 1);
+        },
+        verFirma(index) {
+          console.log(this.fichaIngreso.contenido.firmas[index].urlfirma);
+          this.imagen = this.fichaIngreso.contenido.firmas[index].urlfirma;
+          this.dialogVistaPreviaFirma = true;
+        },
+        cerrarVistaPreviaFirma() {
+          this.dialogVistaPreviaFirma = false;
+        },
+
+
+
+      }, async mensaje(icono,titulo,texto,footer){
       await this.$swal({
         icon: icono,
         title: titulo,
@@ -397,10 +941,59 @@ export default {
         footer:footer
       });
     },
-    async registrarInforme(){
 
+    limpiarFichaIngreso() {
+      return {
+        fichaIngreso:{
+          id:"",
+          tipo:"FichaSocialIngreso",
+          historialcontenido:[],
+          creadordocumento:"",
+          fechacreacion:"",
+          area:"Social",
+          fase:"acogida",
+          idresidente:"",
+          estado:"creado",
+          contenido:{
+            familiar:{
+                motivoingreso:[],
+                familiares:[],
+                tipofamilia:"",
+                problematicafam:"" 
+            },
+            vivienda:{
+                ubicacion:"",
+                descripcionubicacion:"",
+                habitantes:[],
+                habitacionesdormir:"",
+                tipopropiedad:"",
+                tipo:"",
+                material:"",
+                tipopiso:"",
+                tipotecho:"",
+                servicios:[], 
+            },
+            economico:{
+                condicionlaboral:"",
+                ocupacion:"",
+                ingresos:[],
+                egresos:[],
+                observacion:""
+            },
+            salud:"",
+            legal:{
+                penales:[],
+                apoyolocal:"",
+            },
+            diagnosticosocial:"",
+            planintervencion:"",
+            firmas:[],
+            codigodocumento:""
+          }
+        }
+      };
     },
-    },
+
     computed: {
     show: {
       get () {
@@ -414,4 +1007,20 @@ export default {
     }
   }
 }
+
 </script>
+
+<style scoped>
+.dropzone-custom-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.dropzone-custom-title {
+  margin-top: 0;
+  color: #00b782;
+}
+</style>
