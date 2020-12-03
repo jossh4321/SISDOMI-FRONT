@@ -11,7 +11,7 @@
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step editable step="2">
-            Aspectos de Intervenciónn
+            Aspectos de Intervención
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step editable step="3">

@@ -239,7 +239,7 @@
               class="ml-3"
               icon="info"
             >
-              No se ha registrado ningún documento al residente
+              No se ha registrado ningún anexo al residente
             </v-alert>
           </template>
         </v-card>

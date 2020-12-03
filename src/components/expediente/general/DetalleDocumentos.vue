@@ -46,20 +46,39 @@
         </template>
       </template>
     </v-list>
-    <v-dialog v-model="showInfoDocument" persistent>
-        <component :is="typeDocument"></component>
+    <v-dialog v-model="showInfoDocument" persistent max-width="880">
+      <component
+        :is="typeDocument"
+        :documento="documento"
+        @close-dialog-detail="closeDialogDetail"
+      ></component>
     </v-dialog>
   </v-card>
 </template>
 
 <script>
+import axios from "axios";
+import DetallePlanIntervencionEducativo from "@/components/expediente/educativo/DetallePlanIntervencion.vue";
+import DetallePlanIntervencionPsicologico from "@/components/expediente/psicologico/DetallePlanIntervencion.vue";
+import DetallePlanIntervencionSocial from "@/components/expediente/social/DetallePlanIntervencion.vue";
+import DetalleInformeInicialEducativo from "@/components/expediente/educativo/DetalleInformeInicial.vue";
+import DetalleInformeInicialPsicologico from "@/components/expediente/psicologico/DetalleInformeInicial.vue";
+import DetalleInformeInicialSocial from "@/components/expediente/social/DetalleInformeInicial.vue";
+import DetalleInformeEvolutivoEducativo from "@/components/expediente/educativo/DetalleInformeEvolutivo.vue";
+import DetalleInformeEvolutivoPsicologico from "@/components/expediente/psicologico/DetalleInformeEvolutivo.vue";
+import DetalleInformeEvolutivoSocial from "@/components/expediente/social/DetalleInformeEvolutivo.vue";
+import DetalleInformeFinalEducativo from "@/components/expediente/educativo/DetalleInformeFinal.vue";
+import DetalleInformeFinalPsicologico from "@/components/expediente/psicologico/DetalleInformeFinal.vue";
+import DetalleInformeFinalSocial from "@/components/expediente/social/DetalleInformeFinal.vue";
+
 export default {
   name: "app-detalle-documentos",
   data() {
-      return {
-          showInfoDocument: false,
-          typeDocument: ""
-      }
+    return {
+      showInfoDocument: false,
+      typeDocument: "",
+      documento: null,
+    };
   },
   props: {
     areaDocuments: {
@@ -68,9 +87,62 @@ export default {
     },
   },
   methods: {
-      detailDocument(documentId) {
-          console.log(documentId);
+    detailDocument(documentId) {
+      axios
+        .get("/documento/" + documentId)
+        .then((res) => {
+          let area = "";
+          let informe = "";
+          
+          area = this.evaluateArea(res.data.area);
+          informe = this.evaluateDocumento(res.data.tipo);
+
+          this.documento = res.data;
+          this.typeDocument = "Detalle" + informe + area;
+          this.showInfoDocument = true;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    evaluateArea(area) {
+      let areaEvaluate = "";
+
+      switch (area) {
+        case "educativa":
+          areaEvaluate = "Educativo";
+          break;
+        case "psicologica":
+          areaEvaluate = "Psicologico";
+          break;
+        case "social":
+          areaEvaluate = "Social";
+          break;
+        default:
+          break;
       }
+
+      return areaEvaluate;
+    },
+    evaluateDocumento(tipo) {
+      let tipoEvaluate = "";
+
+      if (/^.*(Inicial)$/.test(tipo)) {
+        tipoEvaluate = "InformeInicial";
+      } else if (/^.*(Evolutivo)$/.test(tipo)) {
+        tipoEvaluate = "InformeEvolutivo";
+      } else if (/^.*(Final)$/.test(tipo)) {
+        tipoEvaluate = "InformeFinal";
+      } else if (/^.*(Individual)$/.test(tipo)) {
+        tipoEvaluate = "PlanIntervencion";
+      }
+
+      return tipoEvaluate;
+    },
+    closeDialogDetail() {
+      this.typeDocument = "";
+      this.showInfoDocument = false;
+    },
   },
   filters: {
     typeDocument(value) {
@@ -90,6 +162,20 @@ export default {
         .concat("-")
         .concat((value + 1).toString().padStart(3, 0));
     },
+  },
+  components: {
+    DetallePlanIntervencionEducativo,
+    DetallePlanIntervencionPsicologico,
+    DetallePlanIntervencionSocial,
+    DetalleInformeInicialEducativo,
+    DetalleInformeInicialPsicologico,
+    DetalleInformeInicialSocial,
+    DetalleInformeEvolutivoEducativo,
+    DetalleInformeEvolutivoPsicologico,
+    DetalleInformeEvolutivoSocial,
+    DetalleInformeFinalEducativo,
+    DetalleInformeFinalPsicologico,
+    DetalleInformeFinalSocial,
   },
 };
 </script>

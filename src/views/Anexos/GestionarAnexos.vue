@@ -84,7 +84,6 @@
       <component
         :is="ismodifier"
         :anexo="selectedanexo"
-        :residente="selectedresidente"
         @close-dialog="closeDialogModify"
         @modifier-complete="modifierComplete"
       ></component>
@@ -192,16 +191,6 @@ export default {
           console.error(err);
         });
      
-      await axios
-      .get("/residente/all")
-      .then((res) => {
-        let selected = res.data.find(
-          (element) => element.id == this.selectedanexo.idresidente
-        );
-        this.selectedresidente.id = selected.id;
-        this.selectedresidente.residente = selected.apellido + " " + selected.nombre;
-      })
-      .catch((err) => console.log(err));
       this.dialogModify = true;
     },
     async detailAnexo(item) {
