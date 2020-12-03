@@ -26,7 +26,7 @@
         <div class="container-actaI">
       <form>
         <v-text-field
-          v-model="actaI.nombreplan"
+          v-model="actaI.nombreplan.id"
           label="Ingrese el nombre del Acta"
           outlined
           color="#009900"
@@ -34,7 +34,7 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="actaI.nombreusuaria"
+          v-model="actaI.nombreusuaria.id"
           label="Ingrese el nombre-dni de la usuaria"
           outlined
           color="#009900"
@@ -42,7 +42,7 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="actaI.objetivogeneral"
+          v-model="actaI.objetivogeneral.id"
           label="Ingrese el objetivo general"
           outlined
           color="#009900"
@@ -50,7 +50,7 @@
         ></v-text-field>
 
         <v-textarea
-          v-model="actaI.objetivoespecifico"
+          v-model="actaI.objetivoespecifico.id"
           label="Ingrese los objetivos específicos"
           auto-grow
           outlined
