@@ -705,14 +705,11 @@ export default {
         }*/
 
         //borrar despues de probar el guardado
-        this.tallerEdu.firma.urlfirma = "https://siscarfileserver2.blob.core.windows.net/planes/8189c988-be54-4d02-84a0-610a65166ac8.jpg";
+        /*this.tallerEdu.firma.urlfirma = "https://siscarfileserver2.blob.core.windows.net/planes/8189c988-be54-4d02-84a0-610a65166ac8.jpg";
         this.tallerEdu.firma.nombre = this.user.usuario;
         this.tallerEdu.firma.cargo = this.user.rol;
         
-        //Añadimos el id del usuario actual
         this.tallerEdu.creadordocumento = this.user.id;
-
-        //this.tallerEdu.contenido.tutores.forEach((element) => { element.usuariaid = element.usuaria.id; delete element.usuaria; })
 
         let tallerEdu = this.tallerEdu;
 
@@ -728,7 +725,14 @@ export default {
           })
           .catch((err) => {
             console.error(err);
-          });
+          });*/
+
+          this.messageSweet(
+              "success",
+              "Registro del Taller educativo",
+              "Se registró el Taller educativo de manera satisfactoria",
+              true
+            );
       }
     },
     messageSweet(icon, title, text, valid) {

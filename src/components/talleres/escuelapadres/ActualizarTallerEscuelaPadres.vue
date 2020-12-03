@@ -221,37 +221,51 @@
                                       </v-row>
 
                                       <v-autocomplete
-                                        label="Nombres y apellidos del residente"
-                                        outlined
-                                        v-model="residente"
-                                        :loading="loadingSearch"
-                                        :search-input.sync="searchResidente"
                                         :items="listResidentes"
+                                        v-model="tutor.usuaria"
+                                        :search-input.sync="searchResidente"
+                                        filled
+                                        chips
+                                        outlined
+                                        color="#009900"
+                                        label="Residente a cargo del tutor"
                                         item-text="residente"
-                                        item-value="id"
-                                        hide-no-data
-                                        hide-selected
                                         return-object
-                                        :readonly="isDisabled"
-                                        @input="$v.residente.id.$touch()"
-                                        @blur="$v.residente.id.$touch()"
+                                        @input="$v.tutor.usuaria.$touch()"
+                                        @blur="$v.tutor.usuaria.$touch()"
                                         :error-messages="errorResidente"
-                                        >
-                                        <template v-slot:item="item">
-                                            <v-list-item-avatar
-                                            color="primary"
-                                            class="headline font-weight-light white--text"
-                                            >
-                                            {{ item.item.residente.charAt(0) }}
+                                        :readonly="isDisabled"
+                                      >
+                                        <template v-slot:selection="data">
+                                          <v-chip
+                                            v-bind="data.attrs"
+                                            :input-value="data.selected"
+                                            style="margin-top:5px"
+                                          >
+                                            <v-avatar left color="#b3b3ff" size="24">
+                                              <span style="font-size:12px">{{ data.item.residente.charAt(0) }}</span>
+                                            </v-avatar>
+                                            {{ data.item.residente }}
+                                          </v-chip>
+                                        </template>
+                                        <template v-slot:item="data">
+                                          <template>
+                                            <v-list-item-avatar>
+                                              <v-avatar left color="#b3b3ff" size="24">
+                                                <span style="font-size:12px">{{ data.item.residente.charAt(0) }}</span>
+                                              </v-avatar>
                                             </v-list-item-avatar>
                                             <v-list-item-content>
-                                            <v-list-item-title>
-                                                {{ item.item.residente }}
-                                            </v-list-item-title>
-                                            <v-list-item-subtitle>
-                                                {{ item.item.numeroDocumento }}
-                                            </v-list-item-subtitle>
+                                              <v-list-item-title
+                                                >Nombre completo: {{ data.item.residente }}
+                                                {{ data.item.apellido }}
+                                              </v-list-item-title>
+                                              <v-list-item-subtitle
+                                                >Nro. Documento:
+                                                {{ data.item.numeroDocumento }}</v-list-item-subtitle
+                                              >
                                             </v-list-item-content>
+                                          </template>
                                         </template>
                                       </v-autocomplete>
 
@@ -601,7 +615,7 @@ export default {
       this.dialogAgregarTutores = true;
     },
     eliminarTutores(index) {
-      this.taller.contenido.tutores.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
+      this.taller.contenido.tutores.splice(index, 1); //eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     },
     cerrarAgregarTutores() {
       this.dialogAgregarTutores = false;
@@ -611,21 +625,19 @@ export default {
       this.tutor.tipoDocumento = "";
       this.tutor.numeroDocumento = "";
       this.tutor.parentesco = "";
-      this.residente = {};
-      this.listResidentes = [];
+      this.tutor.usuaria = {};
 
       this.$v.tutor.$reset();
-      this.$v.residente.$reset();
     },
     guardarTutores() {
       this.$v.tutor.$touch();
       if(!this.$v.tutor.$invalid){
-        let tutorA = { 
+        let tutorA = {
          nombre: this.tutor.nombre,
          tipoDocumento:this.tutor.tipoDocumento,
          numeroDocumento:this.tutor.numeroDocumento,
          parentesco:this.tutor.parentesco,
-         usuaria:this.residente,
+         usuaria:this.tutor.usuaria,
         }//crear tutor variable
         
         this.taller.contenido.tutores.push(tutorA); //añadimos al arreglo principal
@@ -635,13 +647,11 @@ export default {
         this.tutor.tipoDocumento = "";
         this.tutor.numeroDocumento = "";
         this.tutor.parentesco = "";
-        this.residente = {};
-        this.listResidentes = [];
+        this.tutor.usuaria = {};
 
         this.dialogAgregarTutores = false;
         //reiniciamos el estado de la validacion
         this.$v.tutor.$reset();
-        this.$v.residente.$reset();
       }else{
         console.log("no se guardo el tutor");
       }
@@ -653,20 +663,18 @@ export default {
         this.taller.contenido.tutores[index].tipoDocumento = this.tutor.tipoDocumento;
         this.taller.contenido.tutores[index].numeroDocumento = this.tutor.numeroDocumento;
         this.taller.contenido.tutores[index].parentesco = this.tutor.parentesco;
-        this.taller.contenido.tutores[index].usuaria = this.residente;
+        this.taller.contenido.tutores[index].usuaria = this.tutor.usuaria;
 
         //limpiar
         this.tutor.nombre = "";
         this.tutor.tipoDocumento = "";
         this.tutor.numeroDocumento = "";
         this.tutor.parentesco = "";
-        this.residente = {};
-        this.listResidentes = [];
+        this.tutor.usuaria = {};
 
         this.dialogAgregarTutores = false;
 
         this.$v.tutor.$reset();
-        this.$v.residente.$reset();
       }
       else{
         console.log("no se actualizo el tutor");
@@ -679,13 +687,8 @@ export default {
       this.tutor.tipoDocumento = this.taller.contenido.tutores[index].tipoDocumento;
       this.tutor.numeroDocumento = this.taller.contenido.tutores[index].numeroDocumento;
       this.tutor.parentesco = this.taller.contenido.tutores[index].parentesco;
-
-      this.residente.id = this.taller.contenido.tutores[index].usuaria._id;
-      this.residente.residente = this.taller.contenido.tutores[index].usuaria.residente;
-      this.residente.numeroDocumento = this.taller.contenido.tutores[index].usuaria.numeroDocumento;
+      this.tutor.usuaria = this.taller.contenido.tutores[index].usuaria;
       
-      this.listResidentes.push(this.residente);
-
       this.indice = index;
     },
     modalConsultar(index) {
@@ -697,11 +700,7 @@ export default {
       this.tutor.numeroDocumento = this.taller.contenido.tutores[index].numeroDocumento;
       this.tutor.parentesco = this.taller.contenido.tutores[index].parentesco;
 
-      this.residente.id = this.taller.contenido.tutores[index].usuaria._id;
-      this.residente.residente = this.taller.contenido.tutores[index].usuaria.residente;
-      this.residente.numeroDocumento = this.taller.contenido.tutores[index].usuaria.numeroDocumento;
-
-      this.listResidentes.push(this.residente);
+      this.tutor.usuaria = this.taller.contenido.tutores[index].usuaria;
     },
     registerFile(file, response) {
       this.listImages.push(file);
@@ -712,12 +711,14 @@ export default {
       if (indexFile != -1) {
         this.listImages.splice(indexFile, 1);
       }
+
+      this.taller.firma = {};
     },
     
     async sendtaller() {
       //Para probar algo sin registrar
       this.$v.taller.$touch();
-      if (this.$v.taller.$invalid) {
+      if (this.$v.taller.$invalid || this.$v.listImages.$invalid) {
         this.messageSweet(
           "error",
           "Errores al intentar actualizar",
@@ -726,16 +727,43 @@ export default {
         );
       }
       else{
+        if(this.taller.firma.urlfirma == "" || this.taller.firma.urlfirma == null || this.taller.firma.urlfirma == undefined) {
+          //Es una firma nueva
+          for (let index = 0; index < this.listImages.length; index++) {
 
-        let tallerEP = {
-          id: this.taller.id,
-          descripcion: this.taller.descripcion,
-          titulo: this.taller.titulo,
-          contenido: this.taller.contenido,
-          firma: this.taller.firma,
-        };
+              if (
+                this.listImages[index] != null &&
+                (this.listImages[index].dataURL != undefined)
+              ) {
+                let formData = new FormData();
 
-        axios
+                formData.append("file", this.listImages[index]);
+
+                await axios
+                  .post("/Media", formData)
+                  .then((res) => {
+                    this.taller.firma.urlfirma = res.data;
+                    this.taller.firma.nombre = this.user.usuario;
+                    this.taller.firma.cargo = this.user.rol;
+                    
+                  })
+                  .catch((err) => {
+                    console.error(err);
+                  });
+              }
+            }
+        }
+        else{
+          //No se toco la firma
+          let tallerEP = {
+            id: this.taller.id,
+            descripcion: this.taller.descripcion,
+            titulo: this.taller.titulo,
+            contenido: this.taller.contenido,
+            firma: this.taller.firma,
+          };
+
+          axios
           .put("/Taller/actualizarTallerEP", tallerEP)
           .then((res) => {
             this.messageSweet(
@@ -748,7 +776,7 @@ export default {
           .catch((err) => {
             console.log(err);
           });
-
+        }
       }
     },
     mounteddropzone() {
@@ -905,24 +933,36 @@ export default {
     },
     errorResidente() {
       const errors = [];
-      if (!this.$v.residente.id.$dirty) return errors;
-      !this.$v.residente.id.required &&
-        errors.push("Debe ingresar un residente obligatoriamente");
+      
+      if (!this.$v.tutor.usuaria.$dirty) return errors;
+
+      !this.$v.tutor.usuaria.required && errors.push("Debe ingresar un residente obligatoriamente");
 
       return errors;
     },
   },
   created() {
-    
-    //this.listResidentes.push(this.residente);
+    //inicializar la lista de residentes
+    axios
+        .get("/residente/all/fase/2")
+        .then((res) => {
+          let residentesMap = res.data.map(function (res) {
+            return {
+              residente: res.nombre + " " + res.apellido,
+              id: res.id,
+              numeroDocumento: res.tipoDocumento + ": " + res.numeroDocumento,
+            };
+          });
+          this.listResidentes = residentesMap;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
   },
   
   validations: {
     listImages: {
       required,
-    },
-    residente:  {
-      id: { required },
     },
     taller:{
         titulo: {
@@ -945,13 +985,14 @@ export default {
           tutores:{
             required,
           }
-        },
+        }
       },
       tutor: {
           nombre: { required },
           tipoDocumento: { required },
           numeroDocumento: { required, nrodocxTipo, dniValid, pasValid, CEValid },
           parentesco: { required },
+          usuaria: { required }
       }
   },
   components: {

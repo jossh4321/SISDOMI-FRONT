@@ -109,13 +109,15 @@
 import axios from "axios";
 import RegistrarTallerEscuelaPadres from "@/components/talleres/escuelapadres/RegistrarTallerEscuelaPadres.vue";
 import RegistrarTallerEducativo from "@/components/talleres/educativo/RegistrarTallerEducativo.vue";
+import RegistrarTallerFormativoEgreso from "@/components/talleres/formativoegreso/RegistrarTallerFormativoEgreso.vue";
 import ActualizarTallerEscuelaPadres from "@/components/talleres/escuelapadres/ActualizarTallerEscuelaPadres.vue";
 export default {
   name: "GestionarTalleres",
   components: {
      RegistrarTallerEscuelaPadres,
      ActualizarTallerEscuelaPadres,
-     RegistrarTallerEducativo
+     RegistrarTallerEducativo,
+     RegistrarTallerFormativoEgreso
   },
   data() {
     return {
