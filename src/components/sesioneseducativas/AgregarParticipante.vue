@@ -188,7 +188,7 @@
                     style="margin-left:2%"
                     dark
                     color="red"
-                    @click="eliminarParticipante(item.idparticipante)"
+                    @click="eliminarParticipante(encontrarResidentePorId(item.idparticipante),item.idparticipante)"
                   >
                     <v-icon dark>
                       mdi-delete
@@ -341,11 +341,18 @@ export default {
       console.log("Residentes filtrados finales")
       console.log(this.residentes);
     },
-    eliminarParticipante(id){
+    eliminarParticipante(item,id){
       var index =  this.participantes.findIndex(function(o){
         return o.idparticipante === id;
       })
-      if (index !== -1) { this.participantes.splice(index, 1);}
+      if (index !== -1) { 
+        this.participantes.splice(index, 1);
+        //this.sesioneducativa.contenido.participantes.splice(index, 1);
+        this.residentes.push(item);
+      }
+      console.log("Residentes filtrados finales")
+      console.log(this.residentes);
+      
     },
     evaluarArregloParticipantes(){
       if(this.participantes.length===0) {return true}
@@ -383,6 +390,22 @@ export default {
         }
       })
       return nombreCompletoResidente;
+
+    },
+    encontrarResidentePorId(id){
+      var residenteObject = {};
+      this.residenteArray.forEach((residente)=>{
+        if(residente.id === id){
+          //LOS RETURN DENTRO DE UN FOREACH NO FUNCIONAN :D
+          residenteObject = {
+            id: residente.id,
+            nombre: residente.nombre,
+            apellido: residente.apellido,
+            numeroDocumento: residente.numeroDocumento
+          }
+        }
+      })
+      return residenteObject;
 
     },
     filtrarParticipantesInterno(){
@@ -468,6 +491,7 @@ export default {
         .put("/SesionesEducativas", this.sesioneducativa)
         .then((res) => {
           info = res.data
+          info.fechaCreacion = info.fechaCreacion.split("T")[0];
           this.replaceSesionesEducativas(info);
           this.cerrarDialogo();
         })
@@ -511,10 +535,9 @@ export default {
     }
   },
   async created(){
-    console.log("Componente Participante creado")
     await this.obtenerResidentes();
     //Filtrar a los participantes ya agregados previamente
-    this.filtrarParticipantes();
+    this.filtrarParticipantes()
     console.log("Residentes filtrados finales")
     console.log(this.residentes);
     this.residenteArray = this.residentes;

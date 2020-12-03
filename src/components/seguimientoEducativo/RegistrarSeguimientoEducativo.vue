@@ -93,7 +93,7 @@
                                   <v-avatar left color="#b3b3ff" size="24">
                                     <span style="font-size:12px">RT</span>
                                   </v-avatar>
-                                  {{ data.item.datos.nombre }}
+                                  {{ data.item.datos.nombre + " " +  data.item.datos.apellido  }}
                                 </v-chip>
                               </template>
                               <template v-slot:item="data">

@@ -26,7 +26,7 @@
         <div class="container-actaI">
       <form>
         <v-text-field
-          v-model="planI.nombreplan"
+          v-model="actaI.nombreplan"
           label="Ingrese el nombre del Acta"
           outlined
           color="#009900"
@@ -34,7 +34,7 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="planI.nombreusuaria"
+          v-model="actaI.nombreusuaria"
           label="Ingrese el nombre-dni de la usuaria"
           outlined
           color="#009900"
@@ -42,7 +42,7 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="planI.objetivogeneral"
+          v-model="actaI.objetivogeneral"
           label="Ingrese el objetivo general"
           outlined
           color="#009900"
@@ -50,7 +50,7 @@
         ></v-text-field>
 
         <v-textarea
-          v-model="planI.objetivoespecifico"
+          v-model="actaI.objetivoespecifico"
           label="Ingrese los objetivos específicos"
           auto-grow
           outlined
@@ -73,8 +73,8 @@
       <form>
         <br />
         <v-textarea
-          v-model="actaI.casos_problemas"
-          label="Ingrese nuevo nombre de Plan"
+          v-model="actaI"
+          label="Ingrese nuevo nombre de Acta"
           auto-grow
           outlined
           rows="2"
@@ -116,8 +116,7 @@
           color="#009900"
           shaped
         ></v-textarea>
-
-        <div>
+    <div>
           <vue-dropzone ref="myVueDropzone"
             @vdropzone-success="afterSuccess"
             @vdropzone-removed-file="afterRemoved"
@@ -138,6 +137,7 @@
   </v-card>
 </template>
 <script>
+import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 export default {
@@ -146,12 +146,11 @@ export default {
   },
   data() {
       return {
-      planI: {
-        nombreusuaria:"Xiomara Paredes Guerra",
-        nombreplan:"PlanI_Edu_Xiomara_1",
-        objetivogeneral:"Realizar un adecuado plan de intervención",
-        objetivoespecifico:"Responde a Plan de seguimiento",
-        casos_problemas:" ",
+      actaI: {
+        nombreusuaria:" ",
+        nombreplan:" ",
+        objetivogeneral:" ",
+        objetivoespecifico:" ",        
         actividades_estrategias:" ",
         indicadores:" ",
         meta:" ",
@@ -169,7 +168,8 @@ export default {
          dictDefaultMessage: "Seleccione la firma del responsable o Arrastrela Aqui"
       },
     };
-  },methods:{
+  },
+  methods:{
     afterSuccess(file,response){
        this.usuario.datos.imagen = file.dataURL;
        this.$v.usuario.datos.imagen.$model = file.dataURL;
