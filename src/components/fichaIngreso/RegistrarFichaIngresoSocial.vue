@@ -752,7 +752,13 @@ export default {
               this.addFichaIngreso(this.fichaIngreso)
             }).catch(err => console.log(err));            
     
-        },
+        }, afterSuccess(file, response) {
+      
+    },
+    afterRemoved(file, error, xhr) {
+     
+      
+    },
 
         agregarMotivoIngreso() {
           let motivosIngreso = this.motivoIngreso;

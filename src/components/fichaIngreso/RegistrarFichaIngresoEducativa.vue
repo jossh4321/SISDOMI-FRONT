@@ -39,7 +39,7 @@
                   color="#009900"
                   label="Residente"
                   item-text="nombre"
-                  item-value="residenteSeleccionado"                            
+                  item-value="id"                            
                 >
 
                 <template v-slot:selection="data">
@@ -51,7 +51,7 @@
                         <v-avatar left color="#b3b3ff"  size="24">
                         <span style="font-size:12px">RT</span>
                         </v-avatar>
-                        {{ data.item.nombre }}
+                        {{ data.item.nombre  + " " + data.item.apellido}}
                     </v-chip>
                 </template>
                   
@@ -63,36 +63,36 @@
                     </v-list-item-avatar>
                     <v-list-item-content>
                         <v-list-item-title>Nombre completo: {{ data.item.nombre }} {{data.item.apellido}} </v-list-item-title>
-                        <v-list-item-subtitle>Nro. Documento: {{data.item.numerodocumento}}</v-list-item-subtitle>                    
+                        <v-list-item-subtitle>Nro. Documento: {{data.item.numeroDocumento}}</v-list-item-subtitle>                    
                     </v-list-item-content>
                 </template>
                 </v-autocomplete> 
-
+                 
                 <v-row>
                     <v-col>
-                      <v-select              
-                        :items="itemNivel"
-                        v-model="itemNivel.value"
+                      <v-text-field             
+                        v-model="fichaIngreso.contenido.nivel"
                         label="Nivel"            
-                        outlined      
-                        dense       
-                      ></v-select>
+    
+                        color="#009900"
+                        shaped
+                      ></v-text-field>    
+                      
                     </v-col>
                     <v-col>
-                      <v-select              
-                        :items="itemGrado"
-                        v-model="itemGrado.value"
+                      <v-text-field             
+                        v-model="fichaIngreso.contenido.grado"
                         label="Grado"            
-                        outlined      
-                        dense       
-                      ></v-select>
+                        color="#009900"
+                        shaped     
+                      ></v-text-field>
                     </v-col>
                 </v-row>
-
+               
              
                     <v-textarea
                             label="Situación Académica"
-                            v-model="fichaIngreso.situacionescolar"   
+                            v-model="fichaIngreso.contenido.situacionescolar"   
                             color="#009900"
                         ></v-textarea>
                 
@@ -100,7 +100,7 @@
                 
                     <v-textarea
                             label="Observacion"
-                            v-model="fichaIngreso.observacion"
+                            v-model="fichaIngreso.contenido.observacion"
                             color="#009900"
                         ></v-textarea>
               
@@ -171,10 +171,10 @@
 
                 <div>
                   <vue-dropzone
-                    ref="myVueDropzone"
-                    @vdropzone-success="afterSuccess"
-                    @vdropzone-removed-file="afterRemoved"
-                    id="dropzone"
+                    ref="myVueDropzone3"
+                    @vdropzone-success="afterSuccess3"
+                    @vdropzone-removed-file="afterRemoved3"
+                    id="dropzone3"
                     :options="dropzoneOptions3"
                   >
                   </vue-dropzone>
@@ -209,6 +209,7 @@
             <form>
                 <v-text-field
                   label="Nombre de Institución Educativa"
+                  v-model="fichaIngreso.contenido.nombre"
                   auto-grow
                   outlined        
                   color="#009900"
@@ -217,25 +218,30 @@
 
                <v-row>
                     <v-col>
-                      <v-select              
-                        :items="itemModalidad"
-                        v-model="itemModalidad.value"
-                        label="Tipo"            
-                        outlined      
-                        dense       
-                      ></v-select>
+                <v-text-field
+                  label="Tipo"
+                  v-model="fichaIngreso.contenido.tipo"
+                  auto-grow
+                  outlined        
+                  color="#009900"
+                  shaped
+                ></v-text-field>
                     </v-col>
                     <v-col>
-                      <v-autocomplete
-                        label="Modalidad"            
-                        outlined      
-                        dense       
-                      ></v-autocomplete>
+                 <v-text-field
+                  label="Modalidad"
+                  v-model="fichaIngreso.contenido.modalidad"
+                  auto-grow
+                  outlined        
+                  color="#009900"
+                  shaped
+                ></v-text-field>
                     </v-col>
                 </v-row>
 
                 <v-text-field
                   label="Dirección"
+                  v-model="fichaIngreso.contenido.direccion"
                   auto-grow
                   outlined        
                   color="#009900"
@@ -247,6 +253,7 @@
                     <v-col>
                       <v-text-field
                         label="Celular/Telefono"
+                        v-model="fichaIngreso.contenido.telefono"
                         auto-grow
                         outlined        
                         color="#009900"
@@ -256,6 +263,7 @@
                     <v-col>
                       <v-text-field
                         label="Correo"
+                        v-model="fichaIngreso.contenido.correo"
                         auto-grow
                         outlined        
                         color="#009900"
@@ -591,6 +599,17 @@ export default {
         dictDefaultMessage:
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
       },
+      dropzoneOptions3: {
+            url: "https://httpbin.org/post",
+            thumbnailWidth: 250,
+            maxFilesize: 10.0,
+            maxFiles: 10,
+            acceptedFiles: ".pdf",
+            headers: { "My-Awesome-Header": "header value" },
+            addRemoveLinks: true,
+            dictDefaultMessage:
+              "Seleccione una observacion de su dispositivo o arrástrela aquí",
+          },
           conclusion: "",
           conclusiones: [],
           
@@ -662,6 +681,17 @@ export default {
       this.fileList.push(file);
     },
     afterRemoved(file, error, xhr) {
+      this.this.fichaIngreso.contenido.documentosescolares = "";
+      
+    },
+    afterSuccess3(file, response) {
+      // console.log(file);
+      // console.log(file.dataURL);
+      // console.log(this.$refs.myVueDropzone);
+
+      this.fileList.push(file);
+    },
+    afterRemoved3(file, error, xhr) {
       this.this.fichaIngreso.contenido.documentosescolares = "";
       
     },
