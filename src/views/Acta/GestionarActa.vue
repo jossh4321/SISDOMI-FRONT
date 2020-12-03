@@ -46,7 +46,7 @@
              <v-dialog v-model="dialogoactualizacion" max-width="880px">
                <ActualizarActa v-if="dialogoactualizacion" :actaI="actaI" @close-dialog-detail="closeDialogActualizar()">
           </ActualizarActa></v-dialog> -->
-            <v-btn color="warning" dark @click="editItem(item)">
+            <v-btn color="warning" dark @click="abrirDialogoDetalle(item.id)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
@@ -63,7 +63,7 @@
             <v-dialog persistent
                 v-model="dialogodetalle" 
                 max-width="880px">
-          <VisualizarActa :plan="plan" @close-dialog-detail="closeDialogDetalle()">
+          <VisualizarActa :v-if="dialogodetalle" :actaI="actaI" @close-dialog-detail="closeDialogDetalle()">
           </VisualizarActa>
       </v-dialog>
       
@@ -106,7 +106,7 @@ export default {
           nombre: "ActaI_Edu_Xiomara_1",
           usuaria: "Xiomara Paredes Guerra",
           fechaRegistro: "15/09/2019",
-          id: "5facd2e1bd5f87ed3632aa12",
+          id: "5f7d0906845dc60be0f02949",
         },
         {
           nombre: "ActaI_Psico_Xiomara_1",
@@ -148,11 +148,11 @@ export default {
     closeDialogActualizar(){
       this.dialogoactualizacion = false;
     },
-    closeDialogDetalle(){
-      this.dialogodetalle = false;
+    closeDialoVisualizar(){
+      this.VisualizarActa      
     },
-    editItem(item) {
-      console.log(item);
+  editItem(item) {
+    console.log(item);
     },
     deleteItem(item) {
       console.log(item);
@@ -160,13 +160,13 @@ export default {
 
     async regitem(item){
       this.plan = await this.reg(item);
-      this.dialogoregistro=!this.dialogoregistro;
-   
+     this.dialogoregistro=!this.dialogoregistro;
+    console.log(item);
 
     },
  async reg(item){
       var user = {};
-      await axios.get("/actas/id?id="+id)//prueba
+      await axios.get("/actaexternamiento/id?id="+item)//prueba
       .then(res => {
          user = res.data; 
   
@@ -204,13 +204,13 @@ export default {
      
        this.plan =  await this.obtenerCualquiercosa(idPlanI); 
         this.dialogodetalle = !this.dialogodetalle;
-        console.log(this.plan);
+       console.log(this.plan);
         },
         
       async obtenerCualquiercosa(id){
    
       var user = {};
-      await axios.get("/actas/id?id="+id)//prueba
+      await axios.get("/actaexternamiento/id?id="+id)//prueba
       .then(res => {
          user = res.data; 
   
@@ -222,12 +222,6 @@ export default {
 
   },
    computed:{
-     
-     
-          
-     
-     
-     
     ...mapState(["planesD"])
   }
 };
