@@ -50,7 +50,13 @@
                         <RegistrarInformePsicologicoInicial           
                             v-if="showRegistrarInformePI" 
                             :visible="showRegistrarInformePI"                                 
-                            @close="showRegistrarInformePI=false"/>                   
+                            @close="showRegistrarInformePI=false"/>
+                        <RegistrarInformePsicologicoEvolutivo                 
+                            v-if="showRegistrarInformePE"
+                            :listaresidentes="listaresidentes" 
+                            :visible="showRegistrarInformePE"
+                            :titulo="titulo"  
+                            @close="showRegistrarInformePE=false"/>                       
                     </v-col>
                 </template>
             </v-row>
@@ -65,6 +71,7 @@ import RegistrarInformeEducativoEvolutivo from '@/components/informes/RegistrarI
 import RegistrarInformeSocialInicial from '@/components/informes/RegistrarInformeSocialInicial.vue'
 import RegistrarInformeSocialEvolutivo from '@/components/informes/RegistrarInformeSocialEvolutivo.vue'
 import RegistrarInformePsicologicoInicial from '@/components/informes/RegistrarInformePsicologicoInicial.vue'
+import RegistrarInformePsicologicoEvolutivo from '@/components/informes/RegistrarInformePsicologicoEvolutivo.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
     props:["listaresidentes", "listaeducadores"],
@@ -73,7 +80,8 @@ export default {
         RegistrarInformeEducativoEvolutivo,
         RegistrarInformeSocialInicial,
         RegistrarInformeSocialEvolutivo,
-        RegistrarInformePsicologicoInicial
+        RegistrarInformePsicologicoInicial,
+        RegistrarInformePsicologicoEvolutivo
     },
     data () {
       return {                
@@ -94,6 +102,7 @@ export default {
         showRegistrarInformeSI: false,
         showRegistrarInformeSE: false,
         showRegistrarInformePI: false,
+        showRegistrarInformePE: false,
       }
     },
      methods:{
@@ -127,6 +136,14 @@ export default {
                     break;
                 case "7":
                     this.showRegistrarInformePI = true;
+                    break;
+                case "8":
+                    this.titulo = "Registrar Informe Psicologico Evolutivo"
+                    this.showRegistrarInformePE = true;
+                    break;
+                case "9":
+                    this.titulo = "Registrar Informe Psicologico Final"
+                    this.showRegistrarInformePE = true;
                     break;
                 default: 
                     console.log("no encontre ni pincho .|.");
