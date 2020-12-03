@@ -658,6 +658,7 @@ export default {
       this.docEscolares = "";
     },
     methods:{
+      ...mapMutations(["addFichaIngreso"]),
         cerrarDialogo(){     
             this.step = 1;       
             this.$emit("close-dialog-fichaIngreso");
@@ -711,6 +712,14 @@ export default {
       this.fichaIngreso.contenido.documentosescolares = listaanexos;
       console.log(listaanexos);
     },
+    async mensaje(icono, titulo, texto, footer) {
+      await this.$swal({
+        icon: icono,
+        title: titulo,
+        text: texto,
+        footer: footer,
+      });
+    },
 
 
         async rFichaIngresoE(){
@@ -723,8 +732,22 @@ export default {
             }).catch(err => console.log(err));
             
         },
+        ///registrar ficha
         async  registrarFicha(){
-          console.log(this.fichaIngreso)      
+          console.log(this.fichaIngreso)  
+        await axios
+          .post("/Documento/fichaingresoeducativa", this.fichaIngreso)
+          .then((res) => {
+            this.addFichaIngreso(res.data);
+            this.cerrarDialogo();
+          })
+          .catch((err) => console.log(err));
+        await this.mensaje(
+          "success",
+          "listo",
+          "Informe Seguimiento educativo registrado Satisfactoriamente",
+          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+        );    
         },
         agregarConclusion() {
           let conclusiones = this.conclusion;
