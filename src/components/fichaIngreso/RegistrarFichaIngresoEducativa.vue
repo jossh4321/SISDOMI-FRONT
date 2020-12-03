@@ -736,7 +736,7 @@ export default {
         async  registrarFicha(){
           console.log(this.fichaIngreso)  
         await axios
-          .post("/Documento/fichaingresoeducativa", this.fichaIngreso)
+          .post("/Documento/all/fichaingresoeducativacrear", this.fichaIngreso)
           .then((res) => {
             this.addFichaIngreso(res.data);
             this.cerrarDialogo();
