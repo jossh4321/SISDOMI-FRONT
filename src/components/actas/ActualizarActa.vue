@@ -68,6 +68,12 @@
       </form>
     </div>
       </v-stepper-content>
+      <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
       <v-stepper-content step="2">
         <div  class="container-user">
       <form>

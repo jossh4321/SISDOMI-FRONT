@@ -166,7 +166,7 @@ export default {
     },
  async reg(item){
       var user = {};
-      await axios.get("/actaexternamiento/id?id="+item)//prueba
+      await axios.get("/actas/id?id="+id)//prueba
       .then(res => {
          user = res.data; 
   
@@ -184,7 +184,7 @@ export default {
     async actu(item){
    
       var user = {};
-      await axios.get("/actas/id?id="+item)//prueba
+      await axios.get("/actas/id?id="+id)//prueba
       .then(res => {
          user = res.data; 
       })
@@ -199,6 +199,13 @@ export default {
     closeDialogDetalle() {
       this.dialogodetalle = false;
     },
+    
+    closeDialogRegistrar(){
+      this.dialogoregistro = false;
+    },
+    closeDialogActualizar(){
+      this.dialogoactualizacion = false;
+    },
     ///abrir dialogo de detalle
     async abrirDialogoDetalle(idPlanI){
      
@@ -210,7 +217,7 @@ export default {
       async obtenerCualquiercosa(id){
    
       var user = {};
-      await axios.get("/actaexternamiento/id?id="+id)//prueba
+      await axios.get("/actas/id?id="+id)//prueba
       .then(res => {
          user = res.data; 
   
