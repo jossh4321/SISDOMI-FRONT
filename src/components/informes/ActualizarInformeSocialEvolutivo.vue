@@ -701,7 +701,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(["informes"]),
     verifyColor() {
       return "red";
     },

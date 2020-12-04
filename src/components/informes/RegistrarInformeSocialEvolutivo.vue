@@ -500,7 +500,7 @@ export default {
       if (this.$v.$invalid) {
         console.log("hay errores");
         this.mensaje(
-          "Error",
+          "error",
           "..Oops",
           "Se encontraron errores en el formulario",
           "<strong>Verifique los campos Ingresados<strong>"
@@ -629,7 +629,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(["informes"]),
     verifyColor() {
       return "red";
     },
