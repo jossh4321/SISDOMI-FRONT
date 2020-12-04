@@ -513,17 +513,12 @@
 </template>
 <script>
 import axios from "axios";
-import vue2Dropzone from "vue2-dropzone";
-import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 
 export default {
   props: ["informe", "visible"],
-  components: {
-    vueDropzone: vue2Dropzone,
-  },
   data() {
     return {
       step: 1,
@@ -570,51 +565,9 @@ export default {
         })
         .catch((err) => console.log(err));
     },
-    async sendPDFFiles() {
-      let listaanexos = this.fileList;
-      for (let index = 0; index < this.fileList.length; index++) {
-        let formData = new FormData();
-        formData.append("file", this.fileList[index]);
-        await axios
-          .post("/Media/archivos/pdf", formData)
-          .then((res) => {
-            listaanexos[index] = res.data;
-          })
-          .catch((err) => console.log(err));
-      }
-      this.informe.contenido.anexos = listaanexos;
-      console.log(listaanexos);
-    },
     resetInformeValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
       this.$v.informe.$reset();
-    },
-    agregarFamiliar() {
-      let familiar = {
-        nombre: this.familiar.nombre,
-        apellido: this.familiar.apellido,
-        numerodocumento: this.familiar.numerodocumento,
-        parentesco: this.familiar.parentesco,
-        edad: this.familiar.edad,
-        estadocivil: this.familiar.estadocivil,
-        gradoinstruccion: this.familiar.gradoinstruccion,
-        ocupacion: this.familiar.ocupacion,
-        observaciones: this.familiar.observaciones,
-      };
-
-      this.informe.contenido.familiares.push(familiar);
-
-      this.familiar.nombre = "";
-      this.familiar.apellido = "";
-      this.familiar.parentesco = "";
-      this.familiar.edad = "";
-      this.familiar.estadocivil = "";
-      this.familiar.gradoinstruccion = "";
-      this.familiar.ocupacion = "";
-      this.familiar.observaciones = "";
-      this.familiar.numerodocumento = "";
-
-      this.dialogAgregarFamiliar = false;
     },
     cerrarAgregarFamiliar() {
       this.dialogAgregarFamiliar = false;
@@ -657,51 +610,12 @@ export default {
         index
       ].numerodocumento;
     },
-    agregarFirma() {
-      let firmas = {
-        urlfirma: this.urlfirma,
-        nombre: this.firmas.nombre,
-        cargo: this.firmas.cargo,
-      };
-      this.informe.contenido.firmas.push(firmas);
-      this.$refs.myVueDropzone.removeAllFiles();
-
-      this.urlfirma = "";
-      this.firmas.nombre = "";
-      this.firmas.cargo = "";
-    },
-    eliminarFirma(index) {
-      this.informe.contenido.firmas.splice(index, 1);
-    },
     verFirma(index) {
       console.log(this.informe.contenido.firmas[index].urlfirma);
       this.imagen = this.informe.contenido.firmas[index].urlfirma;
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
-    },
-    afterSuccess(file, response) {
-      console.log(file);
-      console.log(file.dataURL);
-      console.log(this.$refs.myVueDropzone);
-      this.fileList.push(file);
-    },
-    afterRemoved(file, error, xhr) {
-      this.informe.contenido.anexos = "";
-    },
-    afterSuccess2(file, response) {
-      this.urlfirma = file.dataURL.split(",")[1];
-    },
-    afterRemoved2(file, error, xhr) {
-      this.urlfirma = "";
-    },
-    async mensaje(icono, titulo, texto, footer) {
-      await this.$swal({
-        icon: icono,
-        title: titulo,
-        text: texto,
-        footer: footer,
-      });
     },
     cerrarDialogo() {
       this.$emit("close-dialog-detail");

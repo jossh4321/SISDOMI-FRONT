@@ -1,5 +1,4 @@
-<template>
-  <v-dialog v-model="show" max-width="50%">
+<template>  
     <v-card>
       <v-card-title class="justify-center"
         >Registro de Informe Psicológico Inicial</v-card-title
@@ -161,7 +160,7 @@
                     color="#FAFAFA"
                     style="margin:5px"
                     height="60"
-                    v-for="transtorno in transtornos"
+                    v-for="transtorno in informe.contenido.transtornos"
                     :key="transtorno"
                   >
                     <v-row style="margin-left:10px;heigh:100%" align="center">
@@ -245,7 +244,7 @@
                     color="#FAFAFA"
                     style="margin:5px"
                     height="60"
-                    v-for="conclusion in conclusiones"
+                    v-for="conclusion in informe.contenido.conclusiones"
                     :key="conclusion"
                   >
                     <v-row style="margin-left:10px;heigh:100%" align="center">
@@ -309,7 +308,7 @@
                     color="#FAFAFA"
                     style="margin:5px"
                     height="60"
-                    v-for="recomendacion in recomendaciones"
+                    v-for="recomendacion in informe.contenido.recomendaciones"
                     :key="recomendacion"
                   >
                     <v-row style="margin-left:10px;heigh:100%" align="center">
@@ -483,13 +482,13 @@
 
                 <v-row>
                   <v-col>
-                    <v-btn block color="success" @click="registrarInforme">
+                    <v-btn block color="success" @click="actualizarInforme">
                       <v-icon left>mdi-content-save-all-outline</v-icon>
-                      <span>Registrar Informe</span>
+                      <span>Actualizar Informe</span>
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block @click="show = false" color="primary">
+                    <v-btn block @click="cerrarDialogo()" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
                     </v-btn>
@@ -500,8 +499,7 @@
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
-    </v-card>
-  </v-dialog>
+    </v-card>  
 </template>
 <script>
 
@@ -512,7 +510,7 @@ import { mapGetters, mapMutations, mapState } from "vuex";
 import moment from "moment";
 
 export default {
-  props: ["listaresidentes", "visible"],
+  props: ["listaresidentes", "visible", "informe"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -537,36 +535,15 @@ export default {
       recomendacion: "",
       recomendaciones: [],
       urlfirma: "",
-      firmas: { nombre: "", cargo: "" },
-      informe: {
-        id: "",
-        tipo: "InformePsicologicoInicial",
-        historialcontenido: [],
-        creadordocumento: "",
-        fechacreacion: "",
-        area: "psicologica",
-        fase: "acogida",
-        idresidente: "",
-        estado: "creado",
-        contenido: {
-          antecedentes: "",
-          contextopsicologico: "",
-          analisisactual: "",
-          transtornos: [],
-          recomendaciones: [],
-          conclusiones: [],
-          firmas: [],
-          codigodocumento: "",
-          evaluador: "",
-        },
-      },
+      firmas: { nombre: "", cargo: "" },      
       imagen: "",
       dialogVistaPreviaFirma: false,
       datemenu: false,
     };
   },
   methods: {
-    async registrarInforme() {
+      ...mapMutations(["addInforme"]),
+    async actualizarInforme() {
       this.informe.creadordocumento = this.user.id;
       console.log(this.informe);
       // this.$v.informe.$touch();
@@ -582,29 +559,28 @@ export default {
       //     console.log("no hay errores");
       //     console.log(this.informe);
           await axios
-            .post("/informe/informepi", this.informe)
-            .then((res) => {
-              this.informe = res.data;
-              var resi = this.listaresidentes.filter(function(residente) {
-                return residente.id == res.data.idresidente;
-              });
-              console.log(resi);
-              var info = {
-                id: res.data.id,
-                tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-                fechacreacion: res.data.fechacreacion.split("T")[0],
-                codigodocumento: res.data.contenido.codigodocumento,
-                nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
-              };
-              this.addInforme(info);
-              this.cerrarDialogo();
-            })
-            .catch((err) => console.log(err));
+          .put("/informe/informepi", this.informe)
+          .then((res) => {
+            this.informe = res.data;
+            var resi = this.listaresidentes.filter(function(residente) {
+              return residente.id == res.data.idresidente;
+            });
+            var info = {
+              id: res.data.id,
+              tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
+              fechacreacion: res.data.fechacreacion.split("T")[0],
+              codigodocumento: res.data.contenido.codigodocumento,
+              nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
+            };
+            this.addInforme(info);
+            this.cerrarDialogo();
+          })
+          .catch((err) => console.log(err));
         await this.mensaje(
           "success",
           "Listo",
           "Informe registrado Satisfactoriamente",
-          "<strong>Se redirigira a la interfaz de gestión<strong>"
+          "<strong>Se redirigirá a la interfaz de gestión<strong>"
         );
       // }
     },
@@ -693,9 +669,7 @@ export default {
       this.urlfirma = "";
     },
     cerrarDialogo() {
-      //this.informe = this.limpiarInforme();
-      this.step = 1;
-      this.$emit("close");
+      this.$emit("close-dialog-update");
     },
   },
   computed: {

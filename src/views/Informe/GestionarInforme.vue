@@ -88,6 +88,16 @@
           @close-dialog-update="closeDialogActualizar()">
         </ActualizarInformeSocialInicial>
       </v-dialog>
+       <v-dialog persistent
+                v-model="dialogoIPIactualizacion" 
+                max-width="880px">
+        <ActualizarInformePsicologicoInicial
+          v-if="dialogoIPIactualizacion"
+          :informe="informe" 
+          :listaresidentes="listaresidentes"          
+          @close-dialog-update="closeDialogActualizar()">
+        </ActualizarInformePsicologicoInicial>
+      </v-dialog>
       <v-dialog persistent
                 v-model="dialogoIEEactualizacion" 
                 max-width="880px">
@@ -160,6 +170,15 @@
           @close-dialog-detail="closeDialogDetalle()">
         </DetalleInformeSocialEvolutivo>
       </v-dialog>
+       <v-dialog persistent
+                v-model="dialogoIPIdetalle" 
+                max-width="880px">
+        <DetalleInformePsicologicoInicial
+          v-if="dialogoIPIdetalle"
+          :informe="informe"            
+          @close-dialog-detail="closeDialogDetalle()">
+        </DetalleInformePsicologicoInicial>
+      </v-dialog>
       <v-dialog persistent
                 v-model="dialogoIPEdetalle" 
                 max-width="880px">
@@ -182,11 +201,13 @@ import ActualizarInformeEducativoInicial from "@/components/informes/ActualizarI
 import ActualizarInformeEducativoEvolutivo from "@/components/informes/ActualizarInformeEducativoEvolutivo.vue";
 import ActualizarInformeSocialInicial from "@/components/informes/ActualizarInformeSocialInicial.vue";
 import ActualizarInformeSocialEvolutivo from "@/components/informes/ActualizarInformeSocialEvolutivo.vue";
+import ActualizarInformePsicologicoInicial from "@/components/informes/ActualizarInformePsicologicoInicial.vue";
 import ActualizarInformePsicologicoEvolutivo from "@/components/informes/ActualizarInformePsicologicoEvolutivo.vue";
 import DetalleInformeEducativoInicial from "@/components/informes/DetalleInformeEducativoInicial.vue";
 import DetalleInformeEducativoEvolutivo from "@/components/informes/DetalleInformeEducativoEvolutivo.vue";
 import DetalleInformeSocialInicial from "@/components/informes/DetalleInformeSocialInicial.vue";
 import DetalleInformeSocialEvolutivo from "@/components/informes/DetalleInformeSocialEvolutivo.vue";
+import DetalleInformePsicologicoInicial from "@/components/informes/DetalleInformePsicologicoInicial.vue";
 import DetalleInformePsicologicoEvolutivo from "@/components/informes/DetalleInformePsicologicoEvolutivo.vue";
 import { mapMutations, mapState } from "vuex";
 export default {
@@ -197,11 +218,13 @@ export default {
     ActualizarInformeEducativoEvolutivo,
     ActualizarInformeSocialInicial,
     ActualizarInformeSocialEvolutivo,
+    ActualizarInformePsicologicoInicial,
     ActualizarInformePsicologicoEvolutivo,
     DetalleInformeEducativoInicial,
     DetalleInformeEducativoEvolutivo,
     DetalleInformeSocialInicial,
     DetalleInformeSocialEvolutivo,
+    DetalleInformePsicologicoInicial,
     DetalleInformePsicologicoEvolutivo
   },
   data() {
@@ -228,11 +251,13 @@ export default {
       dialogoIEEactualizacion: false,
       dialogoISIactualizacion: false,
       dialogoISEactualizacion: false,
+      dialogoIPIactualizacion: false,
       dialogoIPEactualizacion: false,
       dialogoIEIdetalle:false,
       dialogoIEEdetalle:false,
       dialogoISIdetalle:false,
       dialogoISEdetalle:false,
+      dialogoIPIdetalle:false,
       dialogoIPEdetalle:false,
       listaresidentes: [],
       loading:true
@@ -253,6 +278,7 @@ export default {
       this.dialogoIEEactualizacion = false;
       this.dialogoISEactualizacion = false;
       this.dialogoISIactualizacion = false;
+      this.dialogoIPIactualizacion = false;
       this.dialogoIPEactualizacion = false;
     },
     closeDialogDetalle() {
@@ -260,6 +286,7 @@ export default {
       this.dialogoIEEdetalle = false;
       this.dialogoISIdetalle = false;
       this.dialogoISEdetalle = false;
+      this.dialogoIPIdetalle = false;
       this.dialogoIPEdetalle = false;      
     },
     async obtenerInformes() {
@@ -303,6 +330,9 @@ export default {
                     this.titulo = "Modificar Informe Social Final";
                     this.dialogoISEactualizacion = !this.dialogoISEactualizacion;
                     break;
+                case "Informe Psicologico Inicial":                    
+                    this.dialogoIPIactualizacion = !this.dialogoIPIactualizacion;
+                    break;
                 case "Informe Psicologico Evolutivo":
                     this.titulo = "Modificar Informe Psicologico Evolutivo";
                     this.dialogoIPEactualizacion = !this.dialogoIPEactualizacion;
@@ -341,6 +371,9 @@ export default {
                 case "Informe Social Final":
                     this.titulo = "Detalle del Informe Social Final";
                     this.dialogoISEdetalle = !this.dialogoISEdetalle;
+                    break;
+                case "Informe Psicologico Inicial":                    
+                    this.dialogoIPIdetalle = !this.dialogoIPIdetalle;
                     break;
                 case "Informe Psicologico Evolutivo":
                     this.titulo = "Detalle del Informe Psicologico Evolutivo";

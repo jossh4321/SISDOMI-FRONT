@@ -264,7 +264,7 @@ export default {
     ...mapMutations(["setUsuarios","addUsuario","replaceUsuario"]),
     mounteddropzone(){
       var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg" };
-      this.$refs.myVueDropzone.manuallyAddFile(file, this.usuario.datos.imagen,null,null,true);
+      this.$refs.myVueDropzone.manuallyAddFile(file, this.usuario.datos.imagen,null,null,true);      
     },
     async actualizarUsuario(){
        this.$v.$touch();
