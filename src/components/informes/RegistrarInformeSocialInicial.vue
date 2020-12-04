@@ -825,9 +825,11 @@ export default {
   methods: {
     ...mapMutations(["addInforme"]),
     async sendPDFFiles() {
+      let listaTitulos = [];
       let listaanexos = this.fileList;
       for (let index = 0; index < this.fileList.length; index++) {
         let formData = new FormData();
+        listaTitulos.push(this.fileList[index].name);
         formData.append("file", this.fileList[index]);
         await axios
           .post("/Media/archivos/pdf", formData)
@@ -836,15 +838,21 @@ export default {
           })
           .catch((err) => console.log(err));
       }
-      this.informe.contenido.anexos = listaanexos;
-      console.log(listaanexos);
+      for (let index = 0; index < this.fileList.length; index++) {
+        this.informe.contenido.anexos.push({
+          url: listaanexos[index],
+          titulo: listaTitulos[index],
+        });
+      }
+      console.log(this.informe.contenido.anexos);
     },
     async registrarInforme() {
-      await this.sendPDFFiles();
+        await this.sendPDFFiles();
+      //this.informe.creadordocumento = this.user.id;
       console.log(this.informe);
       this.$v.informe.$touch();
       if (this.$v.informe.$invalid) {
-        console.log("Hay errores :c");
+        console.log("hay errores");
         this.mensaje(
           "error",
           "..Oops",
@@ -852,37 +860,82 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        console.log("no hay errores");
-        await axios
-          .post("/informe/informesi", this.informe)
-          .then((res) => {
-            this.informe = res.data;
-            var resi = this.listaresidentes.filter(function(residente) {
-              return residente.id == res.data.idresidente;
-            });
-            var info = {
-              id: res.data.id,
-              tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-              fechacreacion: res.data.fechacreacion.split("T")[0],
-              codigodocumento: res.data.contenido.codigodocumento,
-              nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
-            };
-            this.addInforme(info);
-            this.show = false;
-          })
-          .catch((err) => console.log(err));
+          console.log("no hay errores");
+          console.log(this.informe);
+          await axios
+            .post("/informe/informesi", this.informe)
+            .then((res) => {
+              this.informe = res.data;
+              var resi = this.listaresidentes.filter(function(residente) {
+                return residente.id == res.data.idresidente;
+              });
+              console.log(resi);
+              var info = {
+                id: res.data.id,
+                tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
+                fechacreacion: res.data.fechacreacion.split("T")[0],
+                codigodocumento: res.data.contenido.codigodocumento,
+                nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
+              };
+              this.addInforme(info);
+              this.cerrarDialogo();
+            })
+            .catch((err) => console.log(err));
         await this.mensaje(
           "success",
           "Listo",
-          "Informe registrado satisfactoriamente",
+          "Informe registrado Satisfactoriamente",
           "<strong>Se redirigira a la interfaz de gestión<strong>"
         );
       }
+      // await this.sendPDFFiles();
+      // console.log(this.informe);
+      // this.$v.informe.$touch();      
+      // if (this.$v.informe.$invalid) {
+      //   console.log("Hay errores :c");
+      //   this.mensaje(
+      //     "error",
+      //     "..Oops",
+      //     "Se encontraron errores en el formulario",
+      //     "<strong>Verifique los campos Ingresados<strong>"
+      //   );
+      // } else {
+      //   console.log("no hay errores");
+      //   await axios
+      //     .post("/informe/informesi", this.informe)
+      //     .then((res) => {
+      //       this.informe = res.data;
+      //       var resi = this.listaresidentes.filter(function(residente) {
+      //         return residente.id == res.data.idresidente;
+      //       });
+      //       var info = {
+      //         id: res.data.id,
+      //         tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
+      //         fechacreacion: res.data.fechacreacion.split("T")[0],
+      //         codigodocumento: res.data.contenido.codigodocumento,
+      //         nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
+      //       };
+      //       this.addInforme(info);
+      //       this.cerrarDialogo();
+      //     })
+      //     .catch((err) => console.log(err));
+      //   await this.mensaje(
+      //     "success",
+      //     "Listo",
+      //     "Informe registrado satisfactoriamente",
+      //     "<strong>Se redirigira a la interfaz de gestión<strong>"
+      //   );
+      // }
     },
     resetInformeValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
       this.$v.informe.$reset();
       this.$v.firmas.$reset();
+    },
+    cerrarDialogo() {
+    //  this.informe = this.limpiarInforme();
+      this.step = 1;
+      this.$emit("close");
     },
     agregarFamiliar() {
       this.$v.familiar.$touch();
@@ -920,6 +973,8 @@ export default {
         this.familiar.numerodocumento = "";
 
         this.dialogAgregarFamiliar = false;
+
+         this.$v.familiar.$reset();
       }
     },
     cerrarAgregarFamiliar() {
@@ -1058,6 +1113,9 @@ export default {
         this.urlfirma = "";
         this.firmas.nombre = "";
         this.firmas.cargo = "";
+
+        this.$v.firmas.$reset();
+        this.$v.urlfirma.$reset();
       }
     },
     eliminarFirma(index) {
@@ -1191,7 +1249,7 @@ export default {
       if (!this.$v.familiar.ocupacion.$dirty) return errors;
       !this.$v.familiar.ocupacion.required &&
         errors.push("Debe escribir la ocupación del familiar obligatoriamente");
-      !this.$v.informe.familiar.ocupacion.esParrafo &&
+      !this.$v.familiar.ocupacion.esParrafo &&
         errors.push("No se aceptan caracteres especiales");
       return errors;
     },

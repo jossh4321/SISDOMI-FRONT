@@ -565,8 +565,8 @@ export default {
   methods: {
     ...mapMutations(["replaceInforme"]),
     async actualizarInformeEducativoInicial() {
-      this.$v.$touch();
-      if (this.$v.$invalid) {
+      this.$v.informe.$touch();
+      if (this.$v.informe.$invalid) {
         console.log("hay errores");
         this.mensaje(
           "error",
