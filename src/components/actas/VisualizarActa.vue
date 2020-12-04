@@ -26,7 +26,7 @@
         <div class="container-actaI">
       <form>
         <v-text-field
-          v-model="actaI.nombreplan.id"
+          v-model="actaI.nombreplan"
           label="Ingrese el nombre del Acta"
           outlined
           color="#009900"
@@ -34,7 +34,7 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="actaI.nombreusuaria.id"
+          v-model="actaI.nombreusuaria"
           label="Ingrese el nombre-dni de la usuaria"
           outlined
           color="#009900"
@@ -42,7 +42,7 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="actaI.objetivogeneral.id"
+          v-model="actaI.objetivogeneral"
           label="Ingrese el objetivo general"
           outlined
           color="#009900"
@@ -50,7 +50,7 @@
         ></v-text-field>
 
         <v-textarea
-          v-model="actaI.objetivoespecifico.id"
+          v-model="actaI.objetivoespecifico"
           label="Ingrese los objetivos específicos"
           auto-grow
           outlined
@@ -68,6 +68,12 @@
       </form>
     </div>
       </v-stepper-content>
+      <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
       <v-stepper-content step="2">
         <div  class="container-user">
       <form>
@@ -173,7 +179,18 @@ export default {
     afterSuccess(file,response){
        this.usuario.datos.imagen = file.dataURL;
        this.$v.usuario.datos.imagen.$model = file.dataURL;
-    },afterRemoved(file, error, xhr){
+    },
+    resetUsuarioValidationState() {
+      this.$refs.myVueDropzone.removeAllFiles();
+      this.$v.actaI.$reset();
+    },
+      cerrarDialogo() {
+      this.actaI = this.limpiarUsuario();
+      this.step = 1;
+      this.resetUsuarioValidationState();
+      this.$emit("close-dialog-save");
+      },
+    afterRemoved(file, error, xhr){
       this.usuario.datos.imagen = "";
        this.$v.usuario.datos.imagen.$model = "";
     }
@@ -184,7 +201,23 @@ export default {
         text: texto,
         footer:footer
       });
-    }
+    },
+    limpiarUsuario() {
+      return {
+        
+        datos: {
+          
+        nombreusuaria:" ",
+        nombreplan:" ",
+        objetivogeneral:" ",
+        objetivoespecifico:" ",        
+        actividades_estrategias:" ",
+        indicadores:" ",
+        meta:" ",
+        },
+      };
+    },
+  
   },
   computed:{
 
