@@ -770,7 +770,7 @@ export default {
         await this.mensaje(
           "success",
           "listo",
-          "Usuario modificado Satisfactoriamente",
+          "Seguimiento educativo modificado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
       }

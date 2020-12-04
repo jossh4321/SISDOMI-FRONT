@@ -63,7 +63,7 @@
             <v-dialog persistent
                 v-model="dialogodetalle" 
                 max-width="880px">
-          <VisualizarActa :v-if="dialogodetalle" :actaI="actaI" @close-dialog-detail="closeDialogDetalle()">
+          <VisualizarActa :actaI="actaI" @close-dialog-detail="closeDialogDetalle()">
           </VisualizarActa>
       </v-dialog>
       
@@ -159,12 +159,12 @@ export default {
     },
 
     async regitem(item){
-      this.plan = await this.reg(item);
+      this.plan = await this.reg(id);
      this.dialogoregistro=!this.dialogoregistro;
     console.log(item);
 
     },
- async reg(item){
+ async reg(id){
       var user = {};
       await axios.get("/actas/id?id="+id)//prueba
       .then(res => {
@@ -184,7 +184,7 @@ export default {
     async actu(item){
    
       var user = {};
-      await axios.get("/actas/id?id="+id)//prueba
+      await axios.get("/actas/id?id="+item)//prueba
       .then(res => {
          user = res.data; 
       })
@@ -198,13 +198,6 @@ export default {
     /////////////////////////////////////
     closeDialogDetalle() {
       this.dialogodetalle = false;
-    },
-    
-    closeDialogRegistrar(){
-      this.dialogoregistro = false;
-    },
-    closeDialogActualizar(){
-      this.dialogoactualizacion = false;
     },
     ///abrir dialogo de detalle
     async abrirDialogoDetalle(idPlanI){
