@@ -618,9 +618,11 @@ export default {
   methods: {
     ...mapMutations(["addInforme"]),
     async sendPDFFiles() {
+      let listaTitulos = [];
       let listaanexos = this.fileList;
       for (let index = 0; index < this.fileList.length; index++) {
         let formData = new FormData();
+        listaTitulos.push(this.fileList[index].name);
         formData.append("file", this.fileList[index]);
         await axios
           .post("/Media/archivos/pdf", formData)
@@ -629,8 +631,13 @@ export default {
           })
           .catch((err) => console.log(err));
       }
-      this.informe.contenido.anexos = listaanexos;
-      console.log(listaanexos);
+      for (let index = 0; index < this.fileList.length; index++) {
+        this.informe.contenido.anexos.push({
+          url: listaanexos[index],
+          titulo: listaTitulos[index],
+        });
+      }
+      console.log(this.informe.contenido.anexos);
     },
     async registrarInforme() {
       await this.sendPDFFiles();
@@ -644,7 +651,7 @@ export default {
       if (this.$v.$invalid) {
         console.log("hay errores");
         this.mensaje(
-          "Error",
+          "error",
           "..Oops",
           "Se encontraron errores en el formulario",
           "<strong>Verifique los campos Ingresados<strong>"
@@ -746,14 +753,16 @@ export default {
       this.dialogVistaPreviaFirma = false;
     },
     afterSuccess(file, response) {
-      console.log(file);
-      console.log(file.dataURL);
-      console.log(this.$refs.myVueDropzone);
       this.fileList.push(file);
+      console.log(this.fileList.length)
     },
     afterRemoved(file, error, xhr) {
-      this.informe.contenido.anexos = "";
-      //this.$v.informe.contenido.anexos.$model = "";
+      this.fileList.forEach(function(car, index, object) {
+        if (car === file) {
+          object.splice(index, 1);
+        }
+      });
+      console.log(this.fileList.length)
     },
     afterSuccess2(file, response) {
       this.urlfirma = file.dataURL.split(",")[1];
