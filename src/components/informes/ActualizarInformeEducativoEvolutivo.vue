@@ -484,7 +484,7 @@
               
               <v-row>
                 <v-col>
-                  <v-btn color="warning" block>
+                  <v-btn color="warning" block @click="actualizarInforme()">
                     <v-icon left>mdi-briefcase-edit</v-icon>
                     <span>Actualizar Informe</span>
                   </v-btn>
@@ -517,6 +517,7 @@ export default {
   },
   data() {
     return {
+      fileList: [],
       datemenu: false,
       step: 1,
       dialogVistaPreviaFirma: false,
@@ -560,10 +561,12 @@ export default {
       //this.resetUsuarioValidationState();
       this.$emit("close-dialog-update");
     },
-    async sendPDFFiles() {
+     async sendPDFFiles() {
+      let listaTitulos = [];
       let listaanexos = this.fileList;
       for (let index = 0; index < this.fileList.length; index++) {
         let formData = new FormData();
+        listaTitulos.push(this.fileList[index].name)
         formData.append("file", this.fileList[index]);
         await axios
           .post("/Media/archivos/pdf", formData)
@@ -572,8 +575,56 @@ export default {
           })
           .catch((err) => console.log(err));
       }
-      this.informe.contenido.anexos = listaanexos;
-      console.log(listaanexos);
+      for (let index = 0; index < this.fileList.length; index++) {
+        this.informe.contenido.anexos.push(
+          {
+            url: listaanexos[index],
+            titulo: listaTitulos[index],
+          }
+        )
+      }
+      console.log(this.informe.contenido.anexos);
+    },
+    async actualizarInforme() {
+      await this.sendPDFFiles();
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        console.log("hay errores");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
+        console.log("no hay errores");
+        await axios
+          .put("/informe/informeee", this.informe)
+          .then((res) => {
+            this.informe = res.data;
+            console.log(this.listaresidentes);
+            var resi = this.listaresidentes.filter(function(residente) {
+              return residente.id == res.data.idresidente;
+            });
+            console.log(resi);
+            var info = {
+              id: res.data.id,
+              tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
+              fechacreacion: res.data.fechacreacion.split("T")[0],
+              codigodocumento: res.data.contenido.codigodocumento,
+              nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
+            };
+            this.replaceInforme(info);
+            this.cerrarDialogo();
+          })
+          .catch((err) => console.log(err));
+        await this.mensaje(
+          "success",
+          "listo",
+          "Informe Actualizado Satisfactoriamente",
+          "<strong>Se redirigira a la Interfaz de Gestión<strong>"
+        );
+      }
     },
     agregarLogros() {
       let logros = this.logro;
