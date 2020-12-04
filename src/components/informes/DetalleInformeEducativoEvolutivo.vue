@@ -124,15 +124,9 @@
                     style="background-color:#EAEAEA"
                     height="70"
                   >
-                    <v-row style="margin:1%;heigh:100%" align="center">
-                      <v-col :cols="8" align="left">
-                        <v-text-field
-                          disabled
-                          label="Logros alcanzados"
-                          color="#009900"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
+                    <v-card-title>
+                    Logros Alcanzados
+                  </v-card-title>
                   </v-card>
 
                   <v-card
@@ -159,15 +153,9 @@
                     style="background-color:#EAEAEA"
                     height="70"
                   >
-                    <v-row style="margin:1%;heigh:100%" align="center">
-                      <v-col :cols="8" align="left">
-                        <v-text-field
-                          disabled
-                          label="Recomendaciones"
-                          color="#009900"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
+                    <v-card-title>
+                    Recomendaciones
+                  </v-card-title>
                   </v-card>
 
                   <v-card
@@ -186,8 +174,90 @@
                     </v-row>
                   </v-card>
                 </v-card>
+                 
                  <v-card
-                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                >
+                    <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="50"
+                    >
+                    <v-card-title>
+                        Anexos
+                    </v-card-title>
+                    </v-card>
+                    <v-card
+                      color="#FAFAFA"
+                      style="margin-top:5px"
+                      height="60"
+                      v-for="(item, index) in informe.contenido.anexos"
+                      :key="index"
+                    >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8">
+                        <article>
+                          <img
+                            style="margin-right:5px;width:6% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/2991/2991112.svg"
+                            alt="imagen documento"
+                          />
+                          <span style="font-size:18px">
+                            {{ item.titulo }}</span
+                          >
+                        </article>
+                      </v-col>
+                      <v-col :cols="4" align="center">
+                        <template>
+                            <v-btn
+                              fab
+                              icon=""
+                              x-small
+                              dark
+                              color="#EAEAEA"
+                              @click="verAnexo(index)"
+                            >
+                              <img
+                                style="width:25% "
+                                src="https://www.flaticon.es/svg/static/icons/svg/709/709612.svg"
+                                alt="visualizar"
+                              />
+                            </v-btn>
+                          </template>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+
+                <v-dialog
+                          v-model="dialogVistaPreviaAnexos"
+                          persistent
+                          max-width="600px"
+                        >
+                          <v-card align="center">
+                            <v-card-title>
+                              <span class="headline">Vista previa</span>
+                            </v-card-title>
+                            <v-card-text>
+                              <iframe
+                              :src= pdf
+                              width=100% height=600></iframe>
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="cerrarVistaPreviaAnexo()"
+                              >
+                                Cerrar
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                </v-dialog>
+
+                <v-card
+                style="margin-top:30px;margin-bottom:3%;padding:5px 5px;background-color:#EAEAEA"
               >
                 <v-card
                   elevation="0"
@@ -239,18 +309,17 @@
                   </v-row>
                 </v-card>
               </v-card>
-
-              <v-dialog
-                        v-model="dialogVistaPreviaFirma"
-                        persistent
-                        max-width="600px"
-                      >
-                        <v-card align="center">
-                          <v-card-title>
-                            <span class="headline">Vista previa</span>
-                          </v-card-title>
-                          <v-card-text>
-                            <img
+                <v-dialog
+                          v-model="dialogVistaPreviaFirma"
+                          persistent
+                          max-width="600px"
+                        >
+                          <v-card align="center">
+                            <v-card-title>
+                              <span class="headline">Vista previa</span>
+                            </v-card-title>
+                            <v-card-text>
+                              <img
                               v-if="imagen.includes('http')"
                               width="100%"
                               height="100%"
@@ -264,19 +333,19 @@
                               :src="'data:image/jpeg;base64,' + imagen"
                               alt=""
                             />
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              color="blue darken-1"
-                              text
-                              @click="cerrarVistaPreviaFirma()"
-                            >
-                              Cerrar
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="cerrarVistaPreviaFirma()"
+                              >
+                                Cerrar
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                </v-dialog>
 
                     <v-btn block @click="cerrarDialogo()" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
@@ -308,7 +377,9 @@ export default {
         urlfirma: "",
         firmas: { urlfirma: "", nombre: "", cargo: "" },
         imagen: "",
+        pdf: "",
         dialogVistaPreviaFirma: false,
+        dialogVistaPreviaAnexos: false,
       }
     },
     async created() {
@@ -332,12 +403,20 @@ export default {
             }).catch(err => console.log(err));
        },
         verFirma(index) {
-          console.log(this.informe.contenido.firmas[index].urlfirma);
-          this.imagen = this.informe.contenido.firmas[index].urlfirma;
-          this.dialogVistaPreviaFirma = true;
+        console.log(this.informe.contenido.firmas[index].urlfirma);
+        this.imagen = this.informe.contenido.firmas[index].urlfirma;
+        this.dialogVistaPreviaFirma = true;
         },
         cerrarVistaPreviaFirma() {
           this.dialogVistaPreviaFirma = false;
+        },
+        verAnexo(index) {
+          this.pdf = this.informe.contenido.anexos[index].url;
+          console.log(this.pdf),
+          this.dialogVistaPreviaAnexos = true;
+        },
+        cerrarVistaPreviaAnexo() {
+          this.dialogVistaPreviaAnexos = false;
         },
     }
 }

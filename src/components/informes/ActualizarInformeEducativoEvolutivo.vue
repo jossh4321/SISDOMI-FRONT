@@ -329,131 +329,222 @@
                   </v-row>
                 </v-card>
               </v-card>
-              <div>
-                <vue-dropzone
-                  ref="myVueDropzone"
-                  @vdropzone-success="afterSuccess"
-                  @vdropzone-removed-file="afterRemoved"
-                  id="dropzone"
-                  :options="dropzoneOptions"
+              <v-card
+                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
-                </vue-dropzone>
-              </div>
-
-               <v-card
-                style="
-                  margin-top: 30px;
-                  padding: 5px 5px;
-                  background-color: #eaeaea;
-                "
-              >
-                <v-card
-                  elevation="0"
-                  style="background-color: #eaeaea"
-                  height="70"
-                >
-                  <v-row style="margin: 1%; heigh: 100%" align="center">
-                    <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model="firmas.nombre"
-                        label="Nombre"
-                        color="#009900"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model="firmas.cargo"
-                        label="Cargo"
-                        color="#009900"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col :cols="4" align="right">
-                      <v-btn fab small dark color="green" @click="agregarFirma">
-                        <v-icon dark> mdi-plus </v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-card>
-                <v-row>
-                  <v-col :cols="12" align="right">
-                    <div>
-                      <vue-dropzone
-                        ref="myVueDropzone"
-                        @vdropzone-success="afterSuccess2"
-                        @vdropzone-removed-file="afterRemoved2"
-                        id="dropzone2"
-                        :options="dropzoneOptions2"
-                      >
-                      </vue-dropzone>
-                    </div>
-                  </v-col>
-                </v-row>
-                <v-card
-                  color="#FAFAFA"
-                  style="margin-top: 5px"
-                  height="60"
-                  v-for="(item, index) in informe.contenido.firmas"
-                  :key="index"
-                >
-                  <v-row style="margin-left: 10px; heigh: 100%" align="center">
-                    <v-col :cols="8">
-                      <article>
-                        <img
-                          style="margin-right: 5px; width: 6%"
-                          src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
-                          alt="imagen usuario"
-                        />
-                        <span style="font-size: 18px">
-                          {{ item.nombre }} - {{ item.cargo }}</span
+                      <div>
+                        <vue-dropzone
+                        ref="myVueDropzone2"
+                        @vdropzone-success="afterSuccess"
+                        @vdropzone-removed-file="afterRemoved"
+                        id="dropzone"
+                        :options="dropzoneOptions"
                         >
-                      </article>
-                    </v-col>
-                    <v-col :cols="2" align="center">
-                      <template>
+                        </vue-dropzone>
+                      </div>
+                    <v-card
+                      color="#FAFAFA"
+                      style="margin-top:5px"
+                      height="60"
+                      v-for="(item, index) in informe.contenido.anexos"
+                      :key="index"
+                    >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8">
+                        <article>
+                          <img
+                            style="margin-right:5px;width:6% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/2991/2991112.svg"
+                            alt="imagen documento"
+                          />
+                          <span style="font-size:18px">
+                            {{ item.titulo }}</span
+                          >
+                        </article>
+                      </v-col>
+                      <v-col :cols="2" align="center">
+                        <template>
+                            <v-btn
+                              fab
+                              icon=""
+                              x-small
+                              dark
+                              color="#EAEAEA"
+                              @click="verAnexo(index)"
+                            >
+                              <img
+                                style="width:25% "
+                                src="https://www.flaticon.es/svg/static/icons/svg/709/709612.svg"
+                                alt="visualizar"
+                              />
+                            </v-btn>
+                          </template>
+                      </v-col>
+                      <v-col :cols="2" align="right">
+                        <div style="margin-right:20px">
                           <v-btn
                             fab
-                            icon=""
                             x-small
                             dark
-                            color="#EAEAEA"
-                            @click="verFirma(index)"
+                            color="red"
+                            @click="eliminarAnexo(index)"
                           >
-                            <img
-                              style="width: 25%"
-                              src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
-                              alt="firma"
-                            />
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
                           </v-btn>
-                        </template>
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <div style="margin-right: 20px">
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+
+                <v-dialog
+                          v-model="dialogVistaPreviaAnexos"
+                          persistent
+                          max-width="600px"
+                        >
+                          <v-card align="center">
+                            <v-card-title>
+                              <span class="headline">Vista previa</span>
+                            </v-card-title>
+                            <v-card-text>
+                              <iframe
+                              :src= pdf
+                              width=100% height=600></iframe>
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="cerrarVistaPreviaAnexo()"
+                              >
+                                Cerrar
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                </v-dialog>
+
+                <v-card
+                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="4" align="left">
+                        <v-text-field
+                          v-model="firmas.nombre"
+                          label="Nombre"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="left">
+                        <v-text-field
+                          v-model="firmas.cargo"
+                          label="Cargo"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="right">
                         <v-btn
                           fab
-                          x-small
+                          small
                           dark
-                          color="red"
-                          @click="eliminarFirma(index)"
+                          color="green"
+                          @click="agregarFirma"
                         >
-                          <v-icon dark> mdi-minus </v-icon>
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
                         </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                  <v-row>
+                    <v-col :cols="12" align="right">
+                      <div>
+                        <vue-dropzone
+                          ref="myVueDropzone"
+                          @vdropzone-success="afterSuccess2"
+                          @vdropzone-removed-file="afterRemoved2"
+                          id="dropzone2"
+                          :options="dropzoneOptions2"
+                        >
+                        </vue-dropzone>
                       </div>
                     </v-col>
                   </v-row>
+                  <v-card
+                    color="#FAFAFA"
+                    style="margin-top:5px"
+                    height="60"
+                    v-for="(item, index) in informe.contenido.firmas"
+                    :key="index"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8">
+                        <article>
+                          <img
+                            style="margin-right:5px;width:6% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
+                            alt="imagen usuario"
+                          />
+                          <span style="font-size:18px">
+                            {{ item.nombre }} {{ item.cargo }}</span
+                          >
+                        </article>
+                      </v-col>
+                      <v-col :cols="2" align="center">
+                        <template>
+                            <v-btn
+                              fab
+                              icon=""
+                              x-small
+                              dark
+                              color="#EAEAEA"
+                              @click="verFirma(index)"
+                            >
+                              <img
+                                style="width:25% "
+                                src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
+                                alt="firma"
+                              />
+                            </v-btn>
+                          </template>
+                      </v-col>
+                      <v-col :cols="2" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarFirma(index)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
                 </v-card>
-              </v-card>
-
-              <v-dialog
-                        v-model="dialogVistaPreviaFirma"
-                        persistent
-                        max-width="600px"
-                      >
-                        <v-card align="center">
-                          <v-card-title>
-                            <span class="headline">Vista previa</span>
-                          </v-card-title>
-                          <v-card-text>
-                            <img
+                <v-dialog
+                          v-model="dialogVistaPreviaFirma"
+                          persistent
+                          max-width="600px"
+                        >
+                          <v-card align="center">
+                            <v-card-title>
+                              <span class="headline">Vista previa</span>
+                            </v-card-title>
+                            <v-card-text>
+                              <img
                               v-if="imagen.includes('http')"
                               width="100%"
                               height="100%"
@@ -467,19 +558,19 @@
                               :src="'data:image/jpeg;base64,' + imagen"
                               alt=""
                             />
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              color="blue darken-1"
-                              text
-                              @click="cerrarVistaPreviaFirma()"
-                            >
-                              Cerrar
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="cerrarVistaPreviaFirma()"
+                              >
+                                Cerrar
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                </v-dialog>
               
               
               <v-row>
@@ -521,6 +612,7 @@ export default {
       datemenu: false,
       step: 1,
       dialogVistaPreviaFirma: false,
+      dialogVistaPreviaAnexos: false,
       dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
@@ -549,7 +641,8 @@ export default {
       recomendaciones: [],
       urlfirma: "",
       firmas: { urlfirma: "", nombre: "", cargo: "" },
-      imagen: ""
+      imagen: "",
+      pdf: "",
     };
   },
   async created() {
@@ -557,6 +650,7 @@ export default {
     this.cargarRecomendaciones();    
   },
   methods: {
+    ...mapMutations(["replaceInforme"]),
     cerrarDialogo() {
       //this.resetUsuarioValidationState();
       this.$emit("close-dialog-update");
@@ -671,6 +765,14 @@ export default {
       this.firmas.nombre = "";
       this.firmas.cargo = "";
     },
+    async mensaje(icono, titulo, texto, footer) {
+      await this.$swal({
+        icon: icono,
+        title: titulo,
+        text: texto,
+        footer: footer,
+      });
+    },
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
     },
@@ -681,6 +783,17 @@ export default {
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
+    },
+    eliminarAnexo(index) {
+      this.informe.contenido.anexos.splice(index, 1);
+    },
+    verAnexo(index) {
+      this.pdf = this.informe.contenido.anexos[index].url;
+      console.log(this.pdf),
+      this.dialogVistaPreviaAnexos = true;
+    },
+    cerrarVistaPreviaAnexo() {
+      this.dialogVistaPreviaAnexos = false;
     },
     afterSuccess(file, response) {
       console.log(file);
@@ -700,8 +813,6 @@ export default {
     },
   },
   computed: {
-    ...mapMutations(["replaceInforme"]),
-    ...mapState(["informes"]),
     verifyColor() {
       return "red";
     },
@@ -779,12 +890,6 @@ export default {
           situacionactual: {
             required,
           },
-          logroalcanzado: {
-            required,
-          },
-          recomendaciones: {
-            required,
-          },
           iereinsersion: {
             nombre: {
               required,
@@ -799,13 +904,6 @@ export default {
               required,
             },
           },
-          firmas: [
-            {
-              urlfirma: {
-                required,
-              },
-            },
-          ],
         },
       },
     };
