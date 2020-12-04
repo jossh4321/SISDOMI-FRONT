@@ -47,17 +47,17 @@
           <!--BOTONES-->
           <v-row align="center" justify="space-around">
             <!--Abrir dialogo Modificar -->
-            <v-btn color="warning" dark @click="abrirDialogoModificar(item.id)">
+            <v-btn color="warning" dark @click="abrirDialogoModificar(item.id,item)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Modificar Sesion</span>
             </v-btn>
             <!--Abrir dialogo Ver Sesiones -->
-            <v-btn color="info" dark @click="abrirDialogoDetalle(item.id)">
+            <v-btn color="info" dark @click="abrirDialogoDetalle(item.id,item)">
               <v-icon left> info </v-icon>
               <span>Ver Sesión</span>
             </v-btn>
             <!--Abrir Agregar Participante -->
-            <v-btn color="#6FB7F0" dark @click="abrirDialogoParticipante(item.id)">
+            <v-btn color="#6FB7F0" dark @click="abrirDialogoParticipante(item.id,item)">
               <v-icon left>mdi-plus</v-icon>
               <span>Agregar Participante</span>
             </v-btn>
@@ -142,7 +142,6 @@ export default {
       this.dialogoregistro = false;
     },
     closeDialogParticipantes() {
-      console.log("asdasdasdasda");
       this.dialogoparticipante = false;
     },
 
@@ -152,24 +151,26 @@ export default {
         var date = dateMongo[0].split('-');
         return date[2] + '/' + date[1] + '/' + date[0];
     },
-    async abrirDialogoDetalle(idsesion) {
-      this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion);
+    async abrirDialogoDetalle(idsesion,array) {
+      this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion,array);
       this.datoSesion= await this.obtenerSesionEducativaDTO(idsesion);
       this.dialogodetalle = !this.dialogodetalle;
     },
-    async abrirDialogoModificar(idsesion) {
-      this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion);
+    async abrirDialogoModificar(idsesion,array) {
+      this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion,array);
+      console.log("Saliendo:")
+      console.log(this.sesioneducativa)
       this.datoSesion= await this.obtenerSesionEducativaDTO(idsesion);
       this.dialogomodificar = !this.dialogomodificar;
       
     },
-    async abrirDialogoParticipante(idsesion) {
-      this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion);
+    async abrirDialogoParticipante(idsesion, array) {
+      this.sesioneducativa = await this.loadSesionEducativaDetalle(idsesion,array);
       this.dialogoparticipante = !this.dialogoparticipante;
     },
 
     //Obtener datos de una sesión por id
-    async loadSesionEducativaDetalle(idsesion) {
+    async loadSesionEducativaDetalle(idsesion,array) {
       var user = {};
       await axios
         .get("/SesionesEducativas/id?id=" + idsesion)
@@ -178,7 +179,16 @@ export default {
           user.fechaCreacion = user.fechaCreacion.split("T")[0];
         })
         .catch((err) => console.log(err));
-      console.log(user);
+      user={
+        id: user.id,
+        titulo: user.titulo,
+        idCreador: user.idCreador,
+        fechaCreacion: user.fechaCreacion,
+        area: user.area,
+        contenido: user.contenido,
+        tipo: user.tipo,
+        datoscreador: array.datoscreador.usuario
+      }
       return user;
     },
     //Obtener datos de una sesión por id
@@ -194,8 +204,6 @@ export default {
           }
         })
         .catch((err) => console.log(err));
-      console.log("Sesion educativa DTO:");
-      console.log(user);
       return user;
     },
     //Datos para tabla principal

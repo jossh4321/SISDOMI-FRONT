@@ -46,11 +46,16 @@
              <v-dialog v-model="dialogoactualizacion" max-width="880px">
                <ActualizarActa v-if="dialogoactualizacion" :actaI="actaI" @close-dialog-detail="closeDialogActualizar()">
           </ActualizarActa></v-dialog> -->
-            <v-btn color="warning" dark @click="abrirDialogoDetalle(item.id)">
+            <v-btn color="warning" dark @click="abrirDialogoActualizar(item.id)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
                  <!-- <v-dialog v-model="Visualizarplan" max-width="880px">-->
+                   
+                  <v-dialog persistent v-model="dialogodetalle" max-width="880px">
+          <VisualizarActa :actaI="actaI" @close-dialog-detail="closeDialogDetalle()">
+          </VisualizarActa>
+      </v-dialog>
                   <v-btn color="info" @click="abrirDialogoDetalle(item.id)" >
                   <v-icon left> mdi-pencil </v-icon>
                        <span>Visualizar</span>
@@ -58,15 +63,7 @@
                <!--   </v-dialog> -->
           </v-row>
         </template>
-      </v-data-table>
-       
-            <v-dialog persistent
-                v-model="dialogodetalle" 
-                max-width="880px">
-          <VisualizarActa :actaI="actaI" @close-dialog-detail="closeDialogDetalle()">
-          </VisualizarActa>
-      </v-dialog>
-      
+      </v-data-table>             
     </v-card>
   </div>
 </template>
@@ -124,7 +121,7 @@ export default {
       ],
       dialogodetalle: false,
       dialogoregistro: false,
-      Visualizarplan: false,
+      VisualizarActa: false,
       dialogoactualizacion: false
     };
     
@@ -149,7 +146,7 @@ export default {
       this.dialogoactualizacion = false;
     },
     closeDialoVisualizar(){
-      this.VisualizarActa      
+      this.VisualizarActa = false;
     },
   editItem(item) {
     console.log(item);
@@ -175,36 +172,34 @@ export default {
       return user;
     },
 
-    async editItem(item) {
-      this.plan =  await this.actu(item); 
+    async abrirDialogoActualizar(id) {
+      this.plan =  await this.actu(id); 
       this.dialogoactualizacion=!this.dialogoactualizacion;
-      
+      console.log(id);
    //   console.log(item);
     },
-    async actu(item){
+    async actu(id){
    
       var user = {};
-      await axios.get("/actas/id?id="+item)//prueba
+      await axios.get("/actas/id?id="+id)//prueba
       .then(res => {
          user = res.data; 
       })
       .catch(err => console.log(err));
       return user;
     },
-    detailItem(item) {
+    detailItem(id) {
            
  // console.log(item.id);
     },
     /////////////////////////////////////
-    closeDialogDetalle() {
-      this.dialogodetalle = false;
-    },
+  
     ///abrir dialogo de detalle
-    async abrirDialogoDetalle(idPlanI){
+    async abrirDialogoDetalle(id){
      
-       this.plan =  await this.obtenerCualquiercosa(idPlanI); 
+       this.plan =  await this.obtenerCualquiercosa(id); 
         this.dialogodetalle = !this.dialogodetalle;
-       console.log(this.plan);
+       console.log(id);
         },
         
       async obtenerCualquiercosa(id){

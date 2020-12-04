@@ -30,7 +30,7 @@
           label="Ingrese el nombre del Acta"
           outlined
           color="#009900"
-          disabled
+          
         ></v-text-field>
 
         <v-text-field
@@ -38,7 +38,7 @@
           label="Ingrese el nombre-dni de la usuaria"
           outlined
           color="#009900"
-          disabled
+          
         ></v-text-field>
 
         <v-text-field
@@ -46,7 +46,7 @@
           label="Ingrese el objetivo general"
           outlined
           color="#009900"
-          disabled
+          
         ></v-text-field>
 
         <v-textarea
@@ -58,7 +58,7 @@
           row-height="25"
           color="#009900"
           shaped
-          disabled
+          
         ></v-textarea>
 
         <v-btn block @click="step = 2" color="primary">
@@ -179,7 +179,18 @@ export default {
     afterSuccess(file,response){
        this.usuario.datos.imagen = file.dataURL;
        this.$v.usuario.datos.imagen.$model = file.dataURL;
-    },afterRemoved(file, error, xhr){
+    },
+    resetUsuarioValidationState() {
+      this.$refs.myVueDropzone.removeAllFiles();
+      this.$v.actaI.$reset();
+    },
+      cerrarDialogo() {
+      this.actaI = this.limpiarUsuario();
+      this.step = 1;
+      this.resetUsuarioValidationState();
+      this.$emit("close-dialog-save");
+      },
+    afterRemoved(file, error, xhr){
       this.usuario.datos.imagen = "";
        this.$v.usuario.datos.imagen.$model = "";
     }
@@ -190,7 +201,23 @@ export default {
         text: texto,
         footer:footer
       });
-    }
+    },
+    limpiarUsuario() {
+      return {
+        
+        datos: {
+          
+        nombreusuaria:" ",
+        nombreplan:" ",
+        objetivogeneral:" ",
+        objetivoespecifico:" ",        
+        actividades_estrategias:" ",
+        indicadores:" ",
+        meta:" ",
+        },
+      };
+    },
+  
   },
   computed:{
 

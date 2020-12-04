@@ -30,7 +30,7 @@
           label="Ingrese el nombre del Acta"
           outlined
           color="#009900"
-          disabled
+          
         ></v-text-field>
 
         <v-text-field
@@ -38,7 +38,7 @@
           label="Ingrese el nombre-dni de la usuaria"
           outlined
           color="#009900"
-          disabled
+          
         ></v-text-field>
 
         <v-text-field
@@ -46,7 +46,7 @@
           label="Ingrese el objetivo general"
           outlined
           color="#009900"
-          disabled
+          
         ></v-text-field>
 
         <v-textarea
@@ -58,7 +58,7 @@
           row-height="25"
           color="#009900"
           shaped
-          disabled
+          
         ></v-textarea>
 
         <v-btn block @click="step = 2" color="primary">
@@ -79,7 +79,7 @@
       <form>
         <br />
         <v-textarea
-          v-model="actaI"
+          v-model="actaI.nombre_acta"
           label="Ingrese nuevo nombre de Acta"
           auto-grow
           outlined
@@ -87,7 +87,7 @@
           row-height="25"
           color="#009900"
           shaped
-          editable          
+                    
         ></v-textarea>
 
         <v-textarea
@@ -156,7 +156,8 @@ export default {
         nombreusuaria:" ",
         nombreplan:" ",
         objetivogeneral:" ",
-        objetivoespecifico:" ",        
+        objetivoespecifico:" ", 
+        nombre_acta:" ",       
         actividades_estrategias:" ",
         indicadores:" ",
         meta:" ",
@@ -210,7 +211,8 @@ export default {
         nombreusuaria:" ",
         nombreplan:" ",
         objetivogeneral:" ",
-        objetivoespecifico:" ",        
+        objetivoespecifico:" ",    
+        nombre_acta:" ",    
         actividades_estrategias:" ",
         indicadores:" ",
         meta:" ",
