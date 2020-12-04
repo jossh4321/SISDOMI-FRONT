@@ -642,7 +642,7 @@
                         <v-col>
                           <v-btn block @click="registrarSeguimiento" color="success">
                             <v-icon left>mdi-page-next-outline</v-icon>
-                            <span>Continuar</span>
+                            <span>Registrar Seguimiento </span>
                           </v-btn>
                         </v-col>
                         <v-col>
@@ -742,6 +742,7 @@ methods:{
   ...mapMutations(["addSeguimiento"]),
       cerrarDialogo(){
          this.step = 1;
+         this.seguimiento = this.limpiarSeguimiento();
         this.$emit("close-dialog-save");
        
       },
@@ -854,6 +855,29 @@ methods:{
      this.seguimiento.contenido.trimestre[0].puntajes.splice(index)
      
     },
+    limpiarSeguimiento(){
+      return{
+      seguimiento:{
+      id:"",
+      tipo:"InformeSeguimientoEducativo",
+      historialcontenido:[],
+      creadordocumento:"",
+      fechacreacion:"",
+      area:"Educativa",
+      fase:"acogida",
+      idresidente:"",
+      estado:"creado",
+      contenido:{
+           modalidad:"",
+           nivel:"",
+           grado:"",
+           añoescolar:"",
+           trimestre:[ ],
+           firmas:[],
+           codigodocumento:""
+      },
+      },
+      }}
   },
  computed: {
     verifyColor() {
