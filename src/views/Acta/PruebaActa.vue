@@ -13,9 +13,9 @@
         :page.sync="page"
         @page-count="pageCount = $event"
         hide-default-footer
-        loading-text="Cargando expedientes"
-        no-data-text="No se ha registrado ningún expediente"
-        no-results-text="No se ha encontrado ningún expediente"
+        loading-text="Cargando actas"
+        no-data-text="No se ha registrado ningún acta"
+        no-results-text="No se ha encontrado ningún acta"
         class="datatable"
         :loading="loading"
         :search="search"
@@ -101,7 +101,7 @@ export default {
           });
       },
       detailExpedient(item) {
-        this.$router.push("/dashboard/expediente/" + item.idResidente);    
+        this.$router.push("/dashboard/p/" + item.id);    
       }
   },
   created() {
