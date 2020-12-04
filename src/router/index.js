@@ -16,6 +16,9 @@ import GestionarIncidencias from "../views/Incidencias/GestionarIncidencias.vue"
 import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 import GestionActa from '../views/Acta/GestionarActa.vue';
 
+//Prueba
+import PruebaActa from '../views/Acta/PruebaActa.vue';
+
 /* Rutas de sebas, fede, jaime y angello */
 import GestionarPlanes from '@/views/PlanIntervencion/GestionarPlanes.vue';
 
@@ -108,6 +111,11 @@ const routes = [{
                 name: 'ExpedienteResidente',
                 component: ExpedienteResidente,
                 props: true
+            },
+            {
+                path: 'p',
+                name: 'PruebaActa',
+                component: PruebaActa
             }
         ],
 
