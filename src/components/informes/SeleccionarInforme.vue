@@ -47,7 +47,8 @@
                             :visible="showRegistrarInformeSE"
                             :titulo="titulo"  
                             @close="showRegistrarInformeSE=false"/>
-                        <RegistrarInformePsicologicoInicial           
+                        <RegistrarInformePsicologicoInicial        
+                            :listaresidentes="listaresidentes"    
                             v-if="showRegistrarInformePI" 
                             :visible="showRegistrarInformePI"                                 
                             @close="showRegistrarInformePI=false"/>

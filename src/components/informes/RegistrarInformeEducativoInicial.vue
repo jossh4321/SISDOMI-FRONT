@@ -76,10 +76,7 @@
                   color="#009900"
                   label="Educador responsable"
                   item-text="usuario"
-                  item-value="id"
-                  @input="$v.informe.contenido.evaluador.$touch()"
-                  @blur="$v.informe.contenido.evaluador.$touch()"
-                  :error-messages="errorCreador"
+                  item-value="id"                  
                 >
                   <template v-slot:selection="data">
                     <v-chip
@@ -570,8 +567,8 @@ export default {
       await this.sendPDFFiles();
       this.informe.creadordocumento = this.user.id;
       console.log(this.informe);
-      this.$v.$touch();
-      if (this.$v.$invalid) {
+      this.$v.informe.$touch();
+      if (this.$v.informe.$invalid) {
         console.log("hay errores");
         this.mensaje(
           "error",
@@ -608,6 +605,10 @@ export default {
           "<strong>Se redirigira a la interfaz de gestión<strong>"
         );
       }
+      this.$v.firmas.$reset();
+      this.$v.urlfirma.$reset();
+      this.$v.conclusion.$reset();
+
     },
     resetInformeValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
@@ -670,7 +671,6 @@ export default {
       this.informe.contenido.firmas.splice(index, 1);
     },
     verFirma(index) {
-      console.log(this.informe.contenido.firmas[index].urlfirma);
       this.imagen = this.informe.contenido.firmas[index].urlfirma;
       this.dialogVistaPreviaFirma = true;
     },
@@ -690,7 +690,7 @@ export default {
     },
     afterSuccess2(file, response) {
       this.urlfirma = file.dataURL.split(",")[1];
-      console.log(this.urlfirma);
+      //console.log(this.urlfirma);
     },
     afterRemoved2(file, error, xhr) {
       this.urlfirma = "";
@@ -747,13 +747,13 @@ export default {
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
     },
-    errorCreador() {
-      const errors = [];
-      if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
-      !this.$v.informe.contenido.evaluador.required &&
-        errors.push("Debe seleccionar un educador obligatoriamente");
-      return errors;
-    },
+    // errorCreador() {
+    //   const errors = [];
+    //   if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
+    //   !this.$v.informe.contenido.evaluador.required &&
+    //     errors.push("Debe seleccionar un educador obligatoriamente");
+    //   return errors;
+    // },
     errorLugarEvaluacion() {
       const errors = [];
       if (!this.$v.informe.contenido.lugarevaluacion.$dirty) return errors;
@@ -853,10 +853,7 @@ export default {
           lugarevaluacion: {
             required,
             minLength: minLength(10),
-          },
-          evaluador: {
-            required,
-          },
+          },         
           situacionacademica: {
             required,
             minLength: minLength(100),
