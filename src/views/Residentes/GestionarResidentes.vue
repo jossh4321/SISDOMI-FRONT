@@ -53,8 +53,12 @@
               <span>Actualizar</span>
             </v-btn>
             <v-btn color="info" dark @click="abrirDialogoDetalle(item.id)">
-              <v-icon left> mdi-pencil </v-icon>
+              <v-icon left> info </v-icon>
               <span>Visualizar</span>
+            </v-btn>
+            <v-btn color="grey" dark @click="abrirDialogoPromover(item.id)">
+              <v-icon left> mdi-page-next-outline </v-icon>
+              <span>Promover</span>
             </v-btn>
           </v-row>
         </template>
@@ -76,6 +80,14 @@
         >
         </ConsultarResidente>
       </v-dialog>
+      <!--Dialogo de Detalle-->
+      <v-dialog persistent v-model="dialogopromover" max-width="880px">
+        <PromoverResidente
+          :residente="residente"
+          @close-dialog-promover="closeDialogPromover()"
+        >
+        </PromoverResidente>
+      </v-dialog>
     </v-card>
   </div>
 </template>
@@ -85,6 +97,7 @@ import axios from "axios";
 import ModificarResidente from "@/components/residentes/ActualizarResidente.vue";
 import ConsultarResidente from "@/components/residentes/DetalleResidente.vue";
 import RegistrarResidente from "@/components/residentes/RegistrarResidente.vue";
+import PromoverResidente from "@/components/residentes/PromoverResidente.vue";
 import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarResidentes",
@@ -92,6 +105,7 @@ export default {
     ConsultarResidente,
     ModificarResidente,
     RegistrarResidente,
+    PromoverResidente
   },
   data() {
     return {
@@ -137,6 +151,7 @@ export default {
       dialogoregistro: false,
       dialogoactualizacion: false,
       dialogodetalle: false,
+      dialogopromover:false
     };
   },
   async created() {
@@ -159,6 +174,9 @@ export default {
     closeDialogModificar() {
       this.dialogoactualizacion = false;
     },
+    closeDialogPromover(){
+      this.dialogopromover = false;
+    },
     ///abrir dialogo de detalle
     async abrirDialogoDetalle(idresidente) {
       this.residente = await this.loadResidenteDetalle(idresidente);
@@ -168,6 +186,11 @@ export default {
     async abrirDialogoModificar(idresidente) {
       this.residente = await this.loadResidenteDetalle(idresidente);
       this.dialogoactualizacion = !this.dialogoactualizacion;
+    },
+    ///abrir dialogo de promover
+    async abrirDialogoPromover(idresidente) {
+      this.residente = await this.loadResidenteDetalle(idresidente);
+      this.dialogopromover = !this.dialogopromover;
     },
 
     async loadResidenteDetalle(idresidente) {

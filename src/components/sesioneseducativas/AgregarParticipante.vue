@@ -282,6 +282,7 @@ export default {
       datemenu:false,
       dialogVistaPreviaFirma:false,
       imagen:"",
+      nombreCreador:"",
       residente:{},
       residenteArray:[],
       participantes:[],
@@ -486,16 +487,26 @@ export default {
       console.log(this.sesioneducativa.contenido.participantes)
       this.sesioneducativa.contenido.participantes = this.sesioneducativa.contenido.participantes.concat(participanteSemiListo);
       console.log(this.sesioneducativa);
-      var info = "";
       await axios
         .put("/SesionesEducativas", this.sesioneducativa)
         .then((res) => {
-          info = res.data
-          info.fechaCreacion = info.fechaCreacion.split("T")[0];
+          var info ={
+            id: res.data.id,
+            titulo: res.data.titulo,
+            fechaCreacion: res.data.fechaCreacion.split("T")[0],
+            area: res.data.area,
+            tipo: res.data.tipo,
+            idCreador: res.data.idCreador,
+            datoscreador:{
+              usuario: this.nombreCreador
+            }
+          }
+          console.log("Modificado xd")
+          console.log(info);
           this.replaceSesionesEducativas(info);
           this.cerrarDialogo();
         })
-        .catch((err) => {console.log(info);console.log(err)});
+        .catch((err) => {console.log(err)});
     },
     //Lista de Residentes para agregar participantes
     async obtenerResidentes() {
@@ -541,6 +552,7 @@ export default {
     console.log("Residentes filtrados finales")
     console.log(this.residentes);
     this.residenteArray = this.residentes;
+    this.nombreCreador = this.sesioneducativa.datoscreador
   },
 }
 </script>
