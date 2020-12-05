@@ -395,6 +395,7 @@ export default {
   watch:{
     dialogoregistro: async function(dialogoregistro){
       if(dialogoregistro){
+        await this.obtenerResidentes();
         this.residenteArray = this.residentes;
         console.log("Residentes filtrados finales")
         console.log(this.residentes);
