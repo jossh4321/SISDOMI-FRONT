@@ -860,7 +860,7 @@ methods:{
       this.trimestre.recomendaciones="";
     },
     eliminarTrimestre(index){
-      this.seguimiento.contenido.trimestre.splice(index);
+      this.seguimiento.contenido.trimestre.splice(index,1);
     },
     guardarNotas(){
       let puntajesd={area:this.puntajes.area,promedio:this.puntajes.promedio};
@@ -873,7 +873,7 @@ methods:{
        this.puntajes.promedio="";
     },
     eliminarNotas(index){
-     this.seguimiento.contenido.trimestre[0].puntajes.splice(index)
+     this.seguimiento.contenido.trimestre[0].puntajes.splice(index,1)
      
     },
     

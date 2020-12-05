@@ -521,7 +521,27 @@
                           @click="abrirDialogoNotas(item.puntajes)"
                         >
                           Añadir Notas
-                        </v-btn>  
+                        </v-btn> 
+                        </div>
+                    </v-col>
+                    <v-col :cols="1">
+                       <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarTrimestre(index)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                  </v-row>
+                </v-card>
+              </v-card> 
           <!--Card de  trimestre nOTAS  nose cual es--> 
           <v-row justify="center">
                 <v-dialog v-model="dialog1" persistent max-width="850px">
@@ -643,11 +663,7 @@
                 </v-dialog>
               </v-row>
        
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-card>
+                      
 
 
                     <!--Botones de card -->
@@ -773,6 +789,7 @@ export default {
           "Seguimiento educativo modificado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
+        location.reload();//metodo de js para refrescar la pagina
       }
     },
      ///metodo para agregar firma residente
@@ -809,7 +826,7 @@ export default {
       this.trimestre.recomendaciones="";
     },
     eliminarTrimestre(index){
-      this.trimestre.puntajes.splice(index);
+       this.seguimiento.contenido.trimestre.splice(index,1);
     },
     guardarNotas(){
       let puntajesd={area:this.puntajes.area,promedio:this.puntajes.promedio};
@@ -821,7 +838,7 @@ export default {
        this.puntajes.promedio="";
     },
     eliminarNotas(index){
-     this.seguimiento.contenido.trimestre[0].puntajes.splice(index)
+     this.seguimiento.contenido.trimestre[0].puntajes.splice(index,1)
      
     },
 
