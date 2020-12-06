@@ -602,7 +602,7 @@ function esTexto(value) {
 }
 
 function esParrafo(value) {
-  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value);
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
 
 export default {
@@ -911,7 +911,6 @@ export default {
       if (!this.$v.informe.fechacreacion.$dirty) return errors;
       !this.$v.informe.fechacreacion.required &&
         errors.push("Debe ingresar la fecha de evaluación obligatoriamente");
-      //validating whether the user are an adult
       var dateselected = new Date(this.informe.fechacreacion);
       var maxdate = new Date();
       !(dateselected.getTime() < maxdate.getTime()) &&
