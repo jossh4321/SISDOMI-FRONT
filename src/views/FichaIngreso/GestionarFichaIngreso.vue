@@ -129,7 +129,8 @@ import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarF
 import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/ModificarFichaIngresoPsicologica.vue'
 import ModificarFichaIngresoSocial  from '@/components/fichaIngreso/ModificarFichaIngresoSocial.vue'
 import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
-
+import ConsultarFichaIngresoPsicologica from '@/components/fichaIngreso/ConsultarFichaIngresoPsicologica.vue'
+import ConsultarFichaIngresoSocial from '@/components/fichaIngreso/ConsultarFichaIngresoSocial.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarFicha",
@@ -175,7 +176,8 @@ export default {
     },
     closeDialogDetalle() {
       this.dialogoFIEconsultar=false
-
+      this.dialogoFIPconsultar=false
+      this.dialogoFISconsultar=false
     },
    closeDialogActualizar() {
    this.dialogoaFIEctualizacion=false
