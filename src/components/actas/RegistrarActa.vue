@@ -16,40 +16,40 @@
           <div class="container-user">
             <form>
               <v-text-field
-                v-model="usuario.datos.nombre"
+                v-model="usuario.datos.nombreusuaria"
           label="Ingrese el nombre del Acta"
                 outlined
-                @input="$v.usuario.datos.nombre.$touch()"
-                @blur="$v.usuario.datos.nombre.$touch()"
-                :error-messages="errorNombre"
+                @input="$v.usuario.datos.nombreusuaria.$touch()"
+                @blur="$v.usuario.datos.nombreusuaria.$touch()"
+                :error-messages="errorNombreusuaria"
                 color="#009900"
               ></v-text-field>
               <v-text-field
-                v-model="usuario.datos.apellido"
+                v-model="usuario.datos.nombreplan"
           label="Ingrese el nombre-dni de la usuaria"
                 outlined
-                @input="$v.usuario.datos.apellido.$touch()"
-                @blur="$v.usuario.datos.apellido.$touch()"
-                :error-messages="errorApellido"
+                @input="$v.usuario.datos.nombreplan.$touch()"
+                @blur="$v.usuario.datos.nombreplan.$touch()"
+                :error-messages="errorNombreplan"
                 color="#009900"
               ></v-text-field>
                 <v-text-field
-                v-model="usuario.datos.apellido"
+                v-model="usuario.datos.objetivogeneral"
           label="Ingrese el objetivo general"
                 outlined
-                @input="$v.usuario.datos.apellido.$touch()"
-                @blur="$v.usuario.datos.apellido.$touch()"
-                :error-messages="errorApellido"
+                @input="$v.usuario.datos.objetivogeneral.$touch()"
+                @blur="$v.usuario.datos.objetivogeneral.$touch()"
+                :error-messages="errorObjetivogeneral"
                 color="#009900"
               ></v-text-field>
             
               <v-text-field
-                v-model="usuario.datos.numerodocumento"
+                v-model="usuario.datos.objetivoespecifico"
           label="Ingrese los objetivos específicos"
                 outlined
-                @input="$v.usuario.datos.numerodocumento.$touch()"
-                @blur="$v.usuario.datos.numerodocumento.$touch()"
-                :error-messages="errorNumeroDocumento"
+                @input="$v.usuario.datos.objetivoespecifico.$touch()"
+                @blur="$v.usuario.datos.objetivoespecifico.$touch()"
+                :error-messages="errorObjetivoespecifico"
                 color="#009900"
               ></v-text-field>
             
@@ -75,45 +75,45 @@
           <div class="container-user">
             <form>
               <v-text-field
-                v-model="usuario.usuario"
+                v-model="usuario.nombre_acta"
           label="Ingrese nuevo nombre de Acta"
                 outlined
-                @input="$v.usuario.usuario.$touch()"
-                @blur="$v.usuario.usuario.$touch()"
-                :error-messages="errorNombreUsuario"
+                @input="$v.usuario.nombre_acta.$touch()"
+                @blur="$v.usuario.nombre_acta.$touch()"
+                :error-messages="errorNombre_acta"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
                 <v-text-field
-                v-model="usuario.usuario"
+                v-model="usuario.actividades_estrategias"
           label="Ingrese nuevo nombre-dni de Usuario"
                 outlined
-                @input="$v.usuario.usuario.$touch()"
-                @blur="$v.usuario.usuario.$touch()"
-                :error-messages="errorNombreUsuario"
+                @input="$v.usuario.actividades_estrategias.$touch()"
+                @blur="$v.usuario.actividades_estrategias.$touch()"
+                :error-messages="errorActividades_estrategias"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
                 <v-text-field
-                v-model="usuario.usuario"
+                v-model="usuario.indicadores"
           label="Ingrese nuevo objetivo general"
                 outlined
-                @input="$v.usuario.usuario.$touch()"
-                @blur="$v.usuario.usuario.$touch()"
-                :error-messages="errorNombreUsuario"
+                @input="$v.usuario.indicadores.$touch()"
+                @blur="$v.usuario.indicadores.$touch()"
+                :error-messages="errorIndicadores"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
                 <v-text-field
-                v-model="usuario.usuario"
+                v-model="usuario.meta"
           label="Ingrese nuevos objetivos especificos"
                 outlined
-                @input="$v.usuario.usuario.$touch()"
-                @blur="$v.usuario.usuario.$touch()"
-                :error-messages="errorNombreUsuario"
+                @input="$v.usuario.meta.$touch()"
+                @blur="$v.usuario.meta.$touch()"
+                :error-messages="errorMeta"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
@@ -228,7 +228,7 @@ export default {
         await this.mensaje(
           "success",
           "listo",
-          "Usuario registrado Satisfactoriamente",
+          "Acta registrada Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
       }
@@ -294,105 +294,88 @@ export default {
     },
     errorNombre() {
       const errors = [];
-      if (!this.$v.usuario.datos.nombre.$dirty) return errors;
-      !this.$v.usuario.datos.nombre.required &&
+      if (!this.$v.usuario.datos.nombreusuaria.$dirty) return errors;
+      !this.$v.usuario.datos.nombreusuaria.required &&
         errors.push("Debe ingresar un Nombre Obligatoriamente");
-      !this.$v.usuario.datos.nombre.minLength &&
+      !this.$v.usuario.datos.nombreusuaria.minLength &&
         errors.push("El Nombre debe tener al menos 3 caracteres");
       return errors;
     },
     errorApellido() {
       const errors = [];
-      if (!this.$v.usuario.datos.apellido.$dirty) return errors;
-      !this.$v.usuario.datos.apellido.required &&
-        errors.push("Debe ingresar un Apellido Obligatoriamente");
-      !this.$v.usuario.datos.apellido.minLength &&
-        errors.push("El apellido debe tener al menos 3 caracteres");
+      if (!this.$v.usuario.datos.nombreplan.$dirty) return errors;
+      !this.$v.usuario.datos.nombreplan.required &&
+        errors.push("Debe ingresar un nombre Obligatoriamente");
+      !this.$v.usuario.datos.nombreplan.minLength &&
+        errors.push("El nombre debe tener al menos 3 caracteres");
       return errors;
     },
     errorNumeroDocumento() {
       const errors = [];
-      if (!this.$v.usuario.datos.numerodocumento.$dirty) return errors;
-      !this.$v.usuario.datos.numerodocumento.required &&
+      if (!this.$v.usuario.datos.objetivogeneral.$dirty) return errors;
+      !this.$v.usuario.datos.objetivogeneral.required &&
         errors.push("Debe ingresar el Numero de Documento Obligatoriamente");
-      !this.usuario.datos.tipodocumento != "" &&
-        errors.push("Debe seleccionar el Tipo de Documento Inicialmente");
-      if (this.usuario.datos.tipodocumento == "DNI") {
-        !/^[0-9]{8}$/.test(this.usuario.datos.numerodocumento) != false &&
-          errors.push("El Numero de DNI debe poseer 8 digitos numericos");
-      }
-      if (this.usuario.datos.tipodocumento == "Pasaporte") {
-        !/^(?!^0+$)[a-zA-Z0-9]{3,20}$/.test(
-          this.usuario.datos.numerodocumento
-        ) != false &&
-          errors.push(
-            "El Numero de Pasaporte debe poseer de 3 a 20 caracteres alfanumericos"
-          );
-      }
-      if (this.usuario.datos.tipodocumento == "Carnet Extranjeria") {
-        !/^[0-9]{9}$/.test(this.usuario.datos.numerodocumento) != false &&
-          errors.push("El Numero de DNI debe poseer 9 digitos numericos");
-      }
+      !this.usuario.datos.objetivogeneral != "" &&
+        errors.push("debe tener al menos 3 caracteres");
+      
       return errors;
     },
     errorTipoDocumento() {
       const errors = [];
-      if (!this.$v.usuario.datos.tipodocumento.$dirty) return errors;
-      !this.$v.usuario.datos.tipodocumento.required &&
-        errors.push("Debe seleccionar el Tipo de Documento Obligatoriamente");
+      if (!this.$v.usuario.datos.objetivoespecifico.$dirty) return errors;
+      !this.$v.usuario.datos.objetivoespecifico.required &&
+        errors.push("Debe seleccionar el objetivoespecifico Obligatoriamente");
       return errors;
     },
     errorFechaNacimiento() {
       const errors = [];
-      if (!this.$v.usuario.datos.fechanacimiento.$dirty) return errors;
-      !this.$v.usuario.datos.fechanacimiento.required &&
-        errors.push("Debe Ingresar una Fecha de Nacimiento Obligatoriamente");
-      //validating whether the user are an adult
-      var dateselected = new Date(this.usuario.datos.fechanacimiento);
-      var maxdate = new Date();
-      maxdate.setFullYear(maxdate.getFullYear() - 18);
-      !(dateselected.getTime() <= maxdate.getTime()) &&
-        errors.push("El usuario debe ser mayor de edad");
-
+      if (!this.$v.usuario.datos.nombre_acta.$dirty) return errors;
+      !this.$v.usuario.datos.nombre_acta.required &&
+        errors.push("Debe ingresar un nombre Obligatoriamente");
+      !this.$v.usuario.datos.nombre_acta.minLength &&
+        errors.push("El nombre debe tener al menos 3 caracteres");
       return errors;
+
+      
     },
     errorEmail() {
       const errors = [];
-      if (!this.$v.usuario.datos.email.$dirty) return errors;
-      !this.$v.usuario.datos.email.required &&
-        errors.push("Debe ingresar el email Obligatoriamente");
-      !this.$v.usuario.datos.email.email &&
+      if (!this.$v.usuario.datos.actividades_estrategias.$dirty) return errors;
+      !this.$v.usuario.datos.actividades_estrategias.required &&
+        errors.push("Debe ingresar actividades_estrategias Obligatoriamente");
+      !this.$v.usuario.datos.actividades_estrategias.email &&
         errors.push("Debe ingresar el formato example@example.something");
       return errors;
     },
     errorDireccion() {
       const errors = [];
-      if (!this.$v.usuario.datos.email.$dirty) return errors;
-      !this.$v.usuario.datos.direccion.required &&
+      if (!this.$v.usuario.datos.indicadores.$dirty) return errors;
+      !this.$v.usuario.datos.indicadores.required &&
         errors.push("Debe ingresar una direccion Obligatoriamente");
-      !this.$v.usuario.datos.direccion.minLength &&
+      !this.$v.usuario.datos.indicadores.minLength &&
         errors.push("La direccion debe tener al menos 10 caracteres");
       return errors;
     },
+      
     errorRol() {
       const errors = [];
-      if (!this.$v.usuario.rol.$dirty) return errors;
-      !this.$v.usuario.rol.required &&
-        errors.push("Debe seleccionar un Rol obligatoriamente");
+      if (!this.$v.usuario.meta.$dirty) return errors;
+      !this.$v.usuario.meta.required &&
+        errors.push("Debe seleccionar un meta obligatoriamente");
       return errors;
     },
     errorEstado() {
       const errors = [];
-      if (!this.$v.usuario.estado.$dirty) return errors;
-      !this.$v.usuario.estado.required &&
-        errors.push("Debe seleccionar un Estado obligatoriamente");
+      if (!this.$v.usuario.nombre_acta.$dirty) return errors;
+      !this.$v.usuario.nombre_acta.required &&
+        errors.push("Debe seleccionar un nombre_acta obligatoriamente");
       return errors;
     },
     errorImagen() {
       return this.$v.usuario.datos.imagen.required == false &&
         this.$v.usuario.datos.imagen.$dirty == true
         ? true
-        : false;
+        : false; 
     },
   },
   validations() {
@@ -422,9 +405,11 @@ export default {
           },
           tipodocumento: {
             required,
+             minLength: minLength(3),
           },
           numerodocumento: {
             required,
+            
           },
           email: {
             required,
