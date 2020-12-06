@@ -208,12 +208,18 @@
                                v-model="firma.cargo"
                                 label="Cargo"
                                 outlined  
+                              @input="$v.firma.cargo.$touch()"
+                               @blur="$v.firma.cargo.$touch()"
+                              :error-messages="errorCargoFirma"
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                v-model="firma.nombre"
                                 label="Nombre"
                                 outlined  
+                              @input="$v.firma.nombre.$touch()"
+                              @blur="$v.firma.nombre.$touch()"
+                              :error-messages="errorNombreFirma"
                                 color="#009900"
                                 ></v-text-field>
                        <div>
@@ -427,6 +433,9 @@
                                 v-model="trimestre.orden"
                                 label="N°Puesto"
                                 outlined  
+                            @input="$v.trimestre.orden.$touch()"
+                            @blur="$v.trimestre.orden.$touch()"
+                            :error-messages="errorOrdenTrimestre"
                                 color="#009900"
                                 ></v-text-field>
                                 
@@ -434,12 +443,18 @@
                                 v-model="trimestre.analisiseducativo"
                                 label="Analisis Educativo"
                                 outlined  
+                            @input="$v.trimestre.analisiseducativo.$touch()"
+                            @blur="$v.trimestre.analisiseducativo.$touch()"
+                            :error-messages="errorAnalisisTrimestre"
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="trimestre.recomendaciones"
                                 label="Recomendaciones"
                                 outlined  
+                                @input="$v.trimestre.recomendaciones.$touch()"
+                            @blur="$v.trimestre.recomendaciones.$touch()"
+                            :error-messages="errorRecomendacionTrimestre"
                                 color="#009900"
                                 ></v-text-field>
 
@@ -554,12 +569,18 @@
                                 v-model="puntajes.area"
                                 label="Nombre del Curso:"
                                 outlined  
+                                @input="$v.puntajes.area.$touch()"
+                                @blur="$v.puntajes.area.$touch()"
+                                :error-messages="errorAreaPuntajes"
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="puntajes.promedio"
                                 label="Nota obtenida:"
-                                outlined  
+                                outlined 
+                                @input="$v.puntajes.promedio.$touch()"
+                                @blur="$v.puntajes.promedio.$touch()"
+                                :error-messages="errorPromedioPuntajes" 
                                 color="#009900"
                                 ></v-text-field>
                                 <v-btn 
@@ -911,6 +932,78 @@ export default {
         errors.push("El Año escolar  debe tener al menos 4 caracteres");
       return errors;
     },
+    errorCargoFirma(){
+    const errors = [];
+    if(!this.$v.firma.cargo.$dirty) return errors;
+    !this.$v.firma.cargo.required &&
+      errors.push("Debe ingresar un Cargo");
+    !this.$v.firma.cargo.minLength &&
+      errors.push("El cargo al menos 4 caracteres");
+    return errors;
+
+    },
+    errorNombreFirma(){
+    const errors = [];
+    if(!this.$v.firma.nombre.$dirty) return errors;
+    !this.$v.firma.nombre.required &&
+      errors.push("Debe ingresar un nombre");
+    !this.$v.firma.nombre.minLength &&
+      errors.push("El nombre debe tener  al menos 4 caracteres");
+    return errors;
+    },
+    errorOrdenTrimestre(){
+    const errors = [];
+    if(!this.$v.trimestre.orden.$dirty) return errors;
+    !this.$v.trimestre.orden.required &&
+      errors.push("Debe ingresar un orden");
+    !this.$v.trimestre.orden.minLength &&
+      errors.push("El trimestre debe tener  al menos 1 caracteres");
+    return errors;
+    !this.$v.trimestre.orden.numeric &&
+        errors.push(
+          "Debe Ingresar valores Numericos"
+        );
+    },
+    errorAnalisisTrimestre(){
+   const errors = [];
+    if(!this.$v.trimestre.analisiseducativo.$dirty) return errors;
+    !this.$v.trimestre.analisiseducativo.required &&
+      errors.push("Debe ingresar un analisis educativo");
+    !this.$v.trimestre.analisiseducativo.minLength &&
+      errors.push("El analisis educativo debe tener al menos 4 caracteres");
+    return errors;
+    },
+    errorRecomendacionTrimestre(){
+    const errors = [];
+    if(!this.$v.trimestre.recomendaciones.$dirty) return errors;
+    !this.$v.trimestre.recomendaciones.required &&
+      errors.push("Debe ingresar una recomendacion");
+    !this.$v.trimestre.recomendaciones.minLength &&
+      errors.push("La recomendacion debe tener al menos 4 caracteres");
+    return errors;
+    },
+    errorAreaPuntajes(){
+    const errors = [];
+    if(!this.$v.puntajes.area.$dirty) return errors;
+    !this.$v.puntajes.area.required &&
+      errors.push("Debe ingresar un Curso");
+    !this.$v.puntajes.area.minLength &&
+      errors.push("El puntaje debe tener 2 caracteres");
+    return errors;
+    !this.$v.trimestre.orden.numeric &&
+      errors.push("Debe Ingresar valores Numericos");
+    
+    },
+    errorPromedioPuntajes(){
+    const errors = [];
+    if(!this.$v.puntajes.promedio.$dirty) return errors;
+    !this.$v.puntajes.promedio.required &&
+      errors.push("Debe ingresar un promedio");
+    !this.$v.puntajes.promedio.minLength &&
+      errors.push("el puntaje  debe tener al menos 2 caracteres");
+    return errors;
+    
+    }
   },
   validations(){
         return{
@@ -947,7 +1040,43 @@ export default {
            firmas:[],
            codigodocumento:""
       },
-    }
+    },
+    firma:{
+     cargo:{
+       required,
+        minLength: minLength(4),
+     },
+     nombre:{
+       required,
+        minLength: minLength(4),
+     }
+    },
+    trimestre:{
+      orden:{
+        required,
+        minLength: minLength(1),
+        numeric
+        }
+        ,analisiseducativo:{
+          required,
+        minLength: minLength(4),
+        },
+        recomendaciones:{
+          required,
+        minLength: minLength(4),
+        }
+        },
+    puntajes:{
+          area:{
+            required,
+            minLength: minLength(4),
+          },
+          promedio:{
+            required,
+            minLength: minLength(2),
+            numeric
+          }
+      }
         
             }
         }

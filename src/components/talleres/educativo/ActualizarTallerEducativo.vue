@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Registro de Taller educativo</v-card-title>
+    <v-card-title class="justify-center">Actualización de Taller educativo</v-card-title>
     <v-card>
       <v-stepper v-model="step">
         <v-stepper-header>
@@ -24,29 +24,29 @@
                   <v-col>
                     <v-textarea
                       label="Titulo del Taller"
-                      v-model.trim="tallerEdu.titulo"
+                      v-model.trim="taller.titulo"
                       outlined
                       color="#009900"
                       rows="1"
                       auto-grow
                       :readonly="isDisabled"
                       :error-messages="tituloErrors"
-                      @input="$v.tallerEdu.titulo.$touch()"
-                      @blur="$v.tallerEdu.titulo.$touch()"
+                      @input="$v.taller.titulo.$touch()"
+                      @blur="$v.taller.titulo.$touch()"
                     ></v-textarea>
                   </v-col>
                   <v-col>
                     <v-textarea
                       label="Descripción del Taller"
-                      v-model.trim="tallerEdu.descripcion"
+                      v-model.trim="taller.descripcion"
                       outlined
                       color="#009900"
                       rows="1"
                       auto-grow
                       :readonly="isDisabled"
                       :error-messages="descripcionErrors"
-                      @input="$v.tallerEdu.descripcion.$touch()"
-                      @blur="$v.tallerEdu.descripcion.$touch()"
+                      @input="$v.taller.descripcion.$touch()"
+                      @blur="$v.taller.descripcion.$touch()"
                     ></v-textarea>
                   </v-col>
                 </v-row>
@@ -63,7 +63,7 @@
                       >
                       <template v-slot:activator="{ on, attrs }">
                           <v-text-field
-                          v-model="tallerEdu.contenido.fecharealizacion"
+                          v-model="taller.contenido.fecharealizacion"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
@@ -71,13 +71,13 @@
                           color="#009900"
                           outlined
                           label="Fecha de realización del taller"
-                          @input="$v.tallerEdu.contenido.fecharealizacion.$touch()"
-                            @blur="$v.tallerEdu.contenido.fecharealizacion.$touch()"
+                          @input="$v.taller.contenido.fecharealizacion.$touch()"
+                            @blur="$v.taller.contenido.fecharealizacion.$touch()"
                             :error-messages="fecharealizacionErrors"
                           ></v-text-field>
                       </template>
                       <v-date-picker
-                          v-model="tallerEdu.contenido.fecharealizacion"
+                          v-model="taller.contenido.fecharealizacion"
                           @input="menu1 = false"
                           locale="es-es"
                       ></v-date-picker>
@@ -88,11 +88,11 @@
                       :items="['mañana', 'tarde', 'noche']"
                       label="Seleccione un turno"
                       outlined
-                      v-model="tallerEdu.contenido.turno"
+                      v-model="taller.contenido.turno"
                       :readonly="isDisabled"
                       color="#009900"
-                      @input="$v.tallerEdu.contenido.turno.$touch()"
-                      @blur="$v.tallerEdu.contenido.turno.$touch()"
+                      @input="$v.taller.contenido.turno.$touch()"
+                      @blur="$v.taller.contenido.turno.$touch()"
                       :error-messages="turnoErrors"
                     ></v-select>
                   </v-col>
@@ -102,15 +102,15 @@
                   <v-col cols="12" sm="6" md="6">
                     <v-textarea
                       label="Nº de sesión"
-                      v-model.number="tallerEdu.contenido.nrosesion"
+                      v-model.number="taller.contenido.nrosesion"
                       outlined
                       color="#009900"
                       rows="1"
                       auto-grow
                       :readonly="isDisabled"
                       :error-messages="nroSesionErrors"
-                      @input="$v.tallerEdu.contenido.nrosesion.$touch()"
-                      @blur="$v.tallerEdu.contenido.nrosesion.$touch()"
+                      @input="$v.taller.contenido.nrosesion.$touch()"
+                      @blur="$v.taller.contenido.nrosesion.$touch()"
                     ></v-textarea>
                   </v-col>
                 </v-row>
@@ -170,6 +170,7 @@
                                   v-model="dialogAgregarParticipantes"
                                   persistent
                                   max-width="600px"
+                                  eager
                                 >
                                   <v-card align="center">
                                     <v-card-title>
@@ -430,15 +431,13 @@
                                         ref="myVueDropzoneParticipante"
                                         :options="dropzoneOptionsP"
                                         id="dropzoneParticipante"
-                                        v-bind:class="validDropParticipante"
                                         @vdropzone-success="registerFileParticipante"
                                         @vdropzone-removed-file="removedFileParticipante"
                                       >
-                                      <div v-bind:class="['dz-message', mostrarTextInicial]" data-dz-message><span>Ingrese la firma del residente</span></div>
                                       </vue-dropzone>
                                       <v-alert
                                         type="error"
-                                        v-if="!$v.participante.imgfirma.required"
+                                        v-if="!$v.participante.imgfirma.required & accion !='consultar'"
                                         class="mt-2"
                                         >
                                         Debe ingresar una firma para el registro
@@ -482,7 +481,7 @@
                               <v-col><h3>Acciones</h3></v-col>
                             </v-row>
                             <div
-                              v-for="(item, index) in tallerEdu.contenido.participantes"
+                              v-for="(item, index) in taller.contenido.participantes"
                               :key="index"
                               >
                               <v-row>
@@ -542,7 +541,7 @@
                         <div>
                           <h4
                             class="red--text mt-5 mb-10"
-                            v-if="$v.tallerEdu.contenido.participantes.$error"
+                            v-if="$v.taller.contenido.participantes.$error"
                             >
                             Debe tener como mínimo un participante registrado
                           </h4>
@@ -585,6 +584,7 @@
                     id="dropzone"
                     @vdropzone-success="registerFile"
                     @vdropzone-removed-file="removedFile"
+                    @vdropzone-mounted="mounteddropzone"
                   ></vue-dropzone>
                   <v-alert
                     type="error"
@@ -612,7 +612,7 @@
                     color="success"
                     elevation="2"
                     width="100%"
-                    @click="sendTallerEducativo"
+                    @click="sendtaller"
                   >
                     <v-icon left>mdi-check</v-icon>
                     Finalizar
@@ -643,26 +643,6 @@ function nrosesionValid(value) {
 export default {
   data(){
     return {
-      tallerEdu:{
-        creadordocumento: "",
-        tipo: "TallerEducativo",
-        fechacreacion: new Date(),
-        area: "educativa",
-        fase: "desarrollo",
-        titulo: "",
-        descripcion: "",
-        contenido:{
-          turno:"",
-          nrosesion: 1,
-          fecharealizacion: "",
-          participantes: [],
-        },
-        firma: {
-          urlfirma: "",
-          nombre: "",
-          cargo: ""
-        }
-      },
       participante: {
           cooperacion: "",
           puntualidad: "",
@@ -708,7 +688,7 @@ export default {
         thumbnailWidth: 250,
         maxFiles: 1,
         addRemoveLinks: true,
-        //dictDefaultMessage: "Ingrese la firma del residente",
+        dictDefaultMessage: "Ingrese la firma del residente",
         acceptedFiles: "image/*",
         headers: { "My-Awesome-Header": "header value" },
         dictRemoveFile: "Remover firma",
@@ -758,12 +738,12 @@ export default {
   },
   methods:{
     limpiar(){
-      this.tallerEdu.titulo="";
-      this.tallerEdu.descripcion="";
-      this.tallerEdu.contenido.fecharealizacion="";
-      this.tallerEdu.contenido.nrosesion=0;
-      this.tallerEdu.contenido.turno="";
-      this.tallerEdu.contenido.participantes=[];
+      this.taller.titulo="";
+      this.taller.descripcion="";
+      this.taller.contenido.fecharealizacion="";
+      this.taller.contenido.nrosesion=0;
+      this.taller.contenido.turno="";
+      this.taller.contenido.participantes=[];
       this.$refs.myVueDropzone.removeAllFiles();
       this.$refs.myVueDropzoneParticipante.removeAllFiles();
 
@@ -783,7 +763,7 @@ export default {
       this.dialogAgregarParticipantes = true;
     },
     eliminarParticipantes(index) {
-      this.tallerEdu.contenido.participantes.splice(index, 1);
+      this.taller.contenido.participantes.splice(index, 1);
     },
     cerrarAgregarParticipantes() {
       this.dialogAgregarParticipantes = false;
@@ -794,6 +774,7 @@ export default {
       this.participante.conducta = "";
       this.participante.usuaria = {};
       this.participante.imgfirma = {};
+      this.participante.firma = "";
       this.$refs.myVueDropzoneParticipante.removeAllFiles();
       this.isActiveDropPart = true;
       this.$refs.myVueDropzoneParticipante.$options.dictDefaultMessage = "Ingrese la firma del residente";
@@ -812,7 +793,7 @@ export default {
          imgfirma:this.participante.imgfirma
         }
         
-        this.tallerEdu.contenido.participantes.push(parti);
+        this.taller.contenido.participantes.push(parti);
         
         this.participante.cooperacion = "";
         this.participante.puntualidad = "";
@@ -832,12 +813,12 @@ export default {
     actualizarParticipantes(index) {
       this.$v.participante.$touch();
       if(!this.$v.participante.$invalid){
-        this.tallerEdu.contenido.participantes[index].cooperacion = this.participante.cooperacion;
-        this.tallerEdu.contenido.participantes[index].puntualidad = this.participante.puntualidad;
-        this.tallerEdu.contenido.participantes[index].aprendizaje = this.participante.aprendizaje;
-        this.tallerEdu.contenido.participantes[index].conducta = this.participante.conducta;
-        this.tallerEdu.contenido.participantes[index].usuaria = this.participante.usuaria;
-        this.tallerEdu.contenido.participantes[index].imgfirma = this.participante.imgfirma;
+        this.taller.contenido.participantes[index].cooperacion = this.participante.cooperacion;
+        this.taller.contenido.participantes[index].puntualidad = this.participante.puntualidad;
+        this.taller.contenido.participantes[index].aprendizaje = this.participante.aprendizaje;
+        this.taller.contenido.participantes[index].conducta = this.participante.conducta;
+        this.taller.contenido.participantes[index].usuaria = this.participante.usuaria;
+        this.taller.contenido.participantes[index].imgfirma = this.participante.imgfirma;
 
         this.participante.cooperacion = "";
         this.participante.puntualidad = "";
@@ -878,36 +859,59 @@ export default {
     modalActualizar(index) {
       this.accion = "actualizar";
       this.dialogAgregarParticipantes = true;
-      this.participante.cooperacion = this.tallerEdu.contenido.participantes[index].cooperacion;
-      this.participante.puntualidad = this.tallerEdu.contenido.participantes[index].puntualidad;
-      this.participante.aprendizaje = this.tallerEdu.contenido.participantes[index].aprendizaje;
-      this.participante.conducta = this.tallerEdu.contenido.participantes[index].conducta;
-      this.participante.usuaria = this.tallerEdu.contenido.participantes[index].usuaria;
-      this.participante.imgfirma = this.tallerEdu.contenido.participantes[index].imgfirma;
+      this.participante.cooperacion = this.taller.contenido.participantes[index].cooperacion;
+      this.participante.puntualidad = this.taller.contenido.participantes[index].puntualidad;
+      this.participante.aprendizaje = this.taller.contenido.participantes[index].aprendizaje;
+      this.participante.conducta = this.taller.contenido.participantes[index].conducta;
+      this.participante.usuaria = this.taller.contenido.participantes[index].usuaria;
+      this.participante.imgfirma = this.taller.contenido.participantes[index].imgfirma;
+      this.participante.firma = this.taller.contenido.participantes[index].firma;
 
       //Mostrar la imagen en el modal
       //var dataURI = 'data:image/png;base64,' + this.participante.imgfirma;
       //var blob = this.dataURItoBlob(dataURI); 
-      this.$refs.myVueDropzoneParticipante.addFile(this.participante.imgfirma);
+      if(this.participante.firma === "") {
+        this.$refs.myVueDropzoneParticipante.addFile(this.participante.imgfirma);
+      }
+      else{
+        
+        var file = { size: 250, name: "Firma de la residente", type: "image/jpg" };
+        var url = this.participante.firma;
+
+        this.$refs.myVueDropzoneParticipante.manuallyAddFile(file, url);
+      }
       
       this.indice = index;
     },
     modalConsultar(index) {
       this.accion = "consultar";
-      this.$refs.myVueDropzoneParticipante.$options.dictDefaultMessage = "";
       this.dialogAgregarParticipantes = true;
 
-      this.participante.cooperacion = this.tallerEdu.contenido.participantes[index].cooperacion;
-      this.participante.puntualidad = this.tallerEdu.contenido.participantes[index].puntualidad;
-      this.participante.aprendizaje = this.tallerEdu.contenido.participantes[index].aprendizaje;
-      this.participante.conducta = this.tallerEdu.contenido.participantes[index].conducta;
-      this.participante.usuaria = this.tallerEdu.contenido.participantes[index].usuaria;
-      this.participante.imgfirma = this.tallerEdu.contenido.participantes[index].imgfirma;
-
+      this.participante.cooperacion = this.taller.contenido.participantes[index].cooperacion;
+      this.participante.puntualidad = this.taller.contenido.participantes[index].puntualidad;
+      this.participante.aprendizaje = this.taller.contenido.participantes[index].aprendizaje;
+      this.participante.conducta = this.taller.contenido.participantes[index].conducta;
+      this.participante.usuaria = this.taller.contenido.participantes[index].usuaria;
+      this.participante.imgfirma = this.taller.contenido.participantes[index].imgfirma;
+      this.participante.firma = this.taller.contenido.participantes[index].firma;
       //Mostrar la imagen en el modal
       //var dataURI = 'data:image/png;base64,' + this.participante.imagenfirma;
-      //var blob = this.dataURItoBlob(dataURI); 
-      this.$refs.myVueDropzoneParticipante.addFile(this.participante.imgfirma);
+      //var blob = this.dataURItoBlob(dataURI);
+      if(this.participante.firma === "") {
+        this.$refs.myVueDropzoneParticipante.addFile(this.participante.imgfirma);
+      }
+      else{
+        console.log(this.$refs.myVueDropzoneParticipante);
+        var file = { size: 250, name: "Firma de la residente", type: "image/jpg" };
+        var url = this.participante.firma;
+
+        this.$refs.myVueDropzoneParticipante.manuallyAddFile(file, url);
+      }
+      /*this.listImages.push(
+        this.$refs.myVueDropzoneParticipante.$refs.dropzoneElement.dropzone.files[0]
+      );
+
+      this.$refs.myVueDropzoneParticipante.addFile(this.participante.imgfirma);*/
       //bloquear el dropzone
       
       this.isActiveDropPart = false;
@@ -925,65 +929,67 @@ export default {
     registerFileParticipante(file, response) {
       //this.imagenfirmaParticipante = file.dataURL.split(",")[1];
       this.participante.imgfirma = file;
-      console.log(this.participante.imgfirma);
     },
     removedFileParticipante(file, error, xhr) {
       //this.imagenfirmaParticipante = "";
       this.participante.imgfirma =  {};
     },
-    async sendTallerEducativo() {
-      this.$v.tallerEdu.$touch();
+    async sendtaller() {
+      this.$v.taller.$touch();
 
-      if (this.$v.tallerEdu.$invalid) {
+      if (this.$v.taller.$invalid) {
         this.messageSweet(
           "error",
-          "Errores al intentar registrar",
-          "Se ha presentado errores en los campos para el registro del Taller educativo",
+          "Errores al intentar actualizar",
+          "Se ha presentado errores en los campos para la actualización del Taller educativo",
           false
         );
       } else {
-        for (var participante of this.tallerEdu.contenido.participantes) {
-          let formData = new FormData();
-          formData.append("file", participante.imgfirma);
-          await axios
-              .post("/Media/talleres", formData)
-              .then((res) => {
-                //colocamos la url de la firma en el objeto por cada participante
-                participante.firma = res.data;
-                //quitamos el atributo imgfirma del obj
-                delete participante.imgfirma;
-              })
-              .catch((err) => {
-                console.error(err);
-              });
+        for (var participante of this.taller.contenido.participantes) {
+          if(participante.firma == "" || participante.firma == null || participante.firma == undefined){ //Si es una nueva firma
+            let formData = new FormData();
+            formData.append("file", participante.imgfirma);
+            await axios
+                .post("/Media/talleres", formData)
+                .then((res) => {
+                  participante.firma = res.data;
+                  delete participante.imgfirma;
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+          }
+          else{
+            delete participante.imgfirma;
+          }
         }
 
-        for (let index = 0; index < this.listImages.length; index++) {
+        if(this.taller.firma.urlfirma == "" || this.taller.firma.urlfirma == null || this.taller.firma.urlfirma == undefined){
+          for (let index = 0; index < this.listImages.length; index++) {
           let formData = new FormData();
           formData.append("file", this.listImages[index]);
           await axios
             .post("/Media/talleres", formData)
             .then((res) => {
-              this.tallerEdu.firma.urlfirma = res.data;
-              this.tallerEdu.firma.nombre = this.user.usuario;
-              this.tallerEdu.firma.cargo = this.user.rol;
+              this.taller.firma.urlfirma = res.data;
+              this.taller.firma.nombre = this.user.usuario;
+              this.taller.firma.cargo = this.user.rol;
             })
             .catch((err) => {
               console.error(err);
             });
+          }
         }
-        
-        this.tallerEdu.creadordocumento = this.user.id;
 
-        let tallerEdu = this.tallerEdu;
+        let taller = this.taller;
 
-        axios
-          .post("/Taller/crearTE", tallerEdu)
+        await axios
+          .put("/Taller/actualizarTallerE", taller)
           .then((res) => {
             this.messageSweet(
               "success",
-              "Registro del Taller educativo",
-              "Se registró el Taller educativo de manera satisfactoria",
+              "Actualización del Taller educativo",
+              "Se actualizó el Taller educativo de manera satisfactoria",
               true
             );
           })
@@ -991,6 +997,14 @@ export default {
             console.error(err);
           });
       }
+    },
+    mounteddropzone() {
+      var file = { size: 250, name: "Firma del trabajador", type: "image/jpg" };
+      var url = this.taller.firma.urlfirma;
+      this.$refs.myVueDropzone.manuallyAddFile(file, url);
+      this.listImages.push(
+        this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[0]
+      );
     },
     messageSweet(icon, title, text, valid) {
       this.$swal({
@@ -1004,6 +1018,39 @@ export default {
         }
       });
     },
+  },
+  props: {
+    taller: {
+      type: Object,
+    },
+  },
+  async created(){ //solo para que se sepa que tiene algo
+      for (var participante of this.taller.contenido.participantes) {
+        const response = await fetch(participante.firma,
+            { method: 'GET',
+            mode: 'no-cors'
+            });
+        const blob = await response.blob();
+        const file = new File([blob], 'image/jpg', {type: "image/jpg"});    
+        participante.imgfirma = file;
+      }
+
+      //inicializar la lista de residentes
+    await axios
+        .get("/residente/all/fase/1")//deberia ser fase 2 pasa a 1 para probar
+        .then((res) => {
+          let residentesMap = res.data.map(function (res) {
+            return {
+              residente: res.nombre + " " + res.apellido,
+              id: res.id,
+              numeroDocumento: res.tipoDocumento + ": " + res.numeroDocumento,
+            };
+          });
+          this.listResidentes = residentesMap;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
   },
   computed:{
     ...mapGetters(["user"]),
@@ -1038,15 +1085,15 @@ export default {
     tituloErrors() {
       const errors = [];
 
-      if (!this.$v.tallerEdu.titulo.$dirty) {
+      if (!this.$v.taller.titulo.$dirty) {
         return errors;
       }
 
-      if (!this.$v.tallerEdu.titulo.required) {
+      if (!this.$v.taller.titulo.required) {
         errors.push("El titulo es requerido");
       }
 
-      if (!this.$v.tallerEdu.titulo.minLength) {
+      if (!this.$v.taller.titulo.minLength) {
         errors.push("Debe ingresar como mínimo 10 caracteres");
       }
 
@@ -1055,15 +1102,15 @@ export default {
     descripcionErrors() {
       const errors = [];
 
-      if (!this.$v.tallerEdu.descripcion.$dirty) {
+      if (!this.$v.taller.descripcion.$dirty) {
         return errors;
       }
 
-      if (!this.$v.tallerEdu.descripcion.required) {
+      if (!this.$v.taller.descripcion.required) {
         errors.push("La descripción es requerida");
       }
 
-      if (!this.$v.tallerEdu.descripcion.minLength) {
+      if (!this.$v.taller.descripcion.minLength) {
         errors.push("Debe ingresar como mínimo 10 caracteres");
       }
 
@@ -1072,20 +1119,20 @@ export default {
     fecharealizacionErrors() {
       const errors = [];
 
-      if (!this.$v.tallerEdu.contenido.fecharealizacion.$dirty) return errors;
+      if (!this.$v.taller.contenido.fecharealizacion.$dirty) return errors;
 
-      !this.$v.tallerEdu.contenido.fecharealizacion.required && errors.push("Debe Ingresar la fecha en la cual se realizó el taller obligatoriamente");
+      !this.$v.taller.contenido.fecharealizacion.required && errors.push("Debe Ingresar la fecha en la cual se realizó el taller obligatoriamente");
 
       return errors;
     },
     turnoErrors() {
       const errors = [];
 
-      if (!this.$v.tallerEdu.contenido.turno.$dirty) {
+      if (!this.$v.taller.contenido.turno.$dirty) {
         return errors;
       }
 
-      if (!this.$v.tallerEdu.contenido.turno.required) {
+      if (!this.$v.taller.contenido.turno.required) {
         errors.push("Debe ingresar el turno obligatoriamente");
       }
 
@@ -1094,19 +1141,19 @@ export default {
     nroSesionErrors() {
       const errors = [];
 
-      if (!this.$v.tallerEdu.contenido.nrosesion.$dirty) {
+      if (!this.$v.taller.contenido.nrosesion.$dirty) {
         return errors;
       }
 
-      if (!this.$v.tallerEdu.contenido.nrosesion.required) {
+      if (!this.$v.taller.contenido.nrosesion.required) {
         errors.push("Debe ingresar el n° de sesión obligatoriamente");
       }
 
-      !this.$v.tallerEdu.contenido.nrosesion.numeric &&
+      !this.$v.taller.contenido.nrosesion.numeric &&
         errors.push(
           "Debe Ingresar valores Numericos"
         );
-      !this.$v.tallerEdu.contenido.nrosesion.nrosesionValid &&
+      !this.$v.taller.contenido.nrosesion.nrosesionValid &&
         errors.push(
           "El n° de sesión debe ser mayor a 0"
         );
@@ -1161,7 +1208,7 @@ export default {
     listImages: {
       required,
     },
-    tallerEdu:{
+    taller:{
         titulo: {
           required,
           minLength: minLength(10),

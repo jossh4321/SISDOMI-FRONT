@@ -34,9 +34,8 @@
                   <span>Registrar nueva Acta</span>
                 </v-btn>
               </template>
-             <RegistrarActa v-if="dialogoregistro" :actaI="actaI" @close-dialog-detail="closeDialogRegistrar()">
-                
-              ></RegistrarActa>
+             <RegistrarActa 
+                  @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
             </v-dialog>
           </v-toolbar>
         </template>
@@ -44,7 +43,8 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
              <v-dialog v-model="dialogoactualizacion" max-width="880px">
-               <ActualizarActa v-if="dialogoactualizacion" :actaI="actaI" @close-dialog-detail="closeDialogActualizar()">
+               <ActualizarActa v-if="dialogoactualizacion" 
+        :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()">
           </ActualizarActa></v-dialog> -->
             <v-btn color="warning" dark @click="abrirDialogoActualizar(item.id)">
               <v-icon left> mdi-pencil </v-icon>
@@ -53,7 +53,7 @@
                  <!-- <v-dialog v-model="Visualizarplan" max-width="880px">-->
                    
                   <v-dialog persistent v-model="dialogodetalle" max-width="880px">
-          <VisualizarActa :actaI="actaI" @close-dialog-detail="closeDialogDetalle()">
+          <VisualizarActa :usuario="usuario" @close-dialog-detail="closeDialogDetalle()">
           </VisualizarActa>
       </v-dialog>
                   <v-btn color="info" @click="abrirDialogoDetalle(item.id)" >
@@ -86,7 +86,7 @@ export default {
     return {
       search: "",
       plan: {},
-      planA: [],
+    
       headers: [
         {
           text: "Nombre Acta Externamiento",
@@ -145,7 +145,7 @@ export default {
     closeDialogActualizar(){
       this.dialogoactualizacion = false;
     },
-    closeDialoVisualizar(){
+    closeDialogDetalle(){
       this.VisualizarActa = false;
     },
   editItem(item) {

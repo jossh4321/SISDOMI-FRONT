@@ -202,6 +202,13 @@ export default {
           icon: "dashboard",
           name: "ConsultaExpedienteMatriz",
           href: "/dashboard/expedientes"
+        },
+        {
+          title: "Gestion de Incidencias",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarIncidencia",
+          href: "/dashboard/incidencias"
         }
       ],
       scrollSettings: {
