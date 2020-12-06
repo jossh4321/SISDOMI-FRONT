@@ -145,6 +145,7 @@ export default {
     };
   },
   mounted() {
+    console.log('ptm help');
     this.$refs.myVueDropzone.removeAllFiles();
     for (let index = 0; index < this.anexo.enlaces.length; index++) {
       var file = {
@@ -190,7 +191,7 @@ export default {
   methods: {
     ...mapMutations(["setResidentes"]),
     vfileAdded(file) {
-      console.log(file);
+      //console.log(file);
     },
     async modificarAnexo() {
       this.$v.$touch();
