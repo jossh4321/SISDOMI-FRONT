@@ -145,7 +145,7 @@ export default {
     closeDialogActualizar(){
       this.dialogoactualizacion = false;
     },
-    closeDialoVisualizar(){
+    closeDialogDetalle(){
       this.VisualizarActa = false;
     },
   editItem(item) {
