@@ -4,7 +4,7 @@
       <v-card-title> Gestionar Ficha Ingreso </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="fichaingreso"    
+        :items="fichaingreso"
         :search="search"
         class="elevation-1"
       >
@@ -22,9 +22,7 @@
             ></v-text-field>
             <v-spacer></v-spacer>
             <!-- Dialogo de Registro-->
-            <v-dialog  v-model="dialogDialogNuevaFichaIngreso"
-            max-width="350px">
-
+            <v-dialog v-model="dialogDialogNuevaFichaIngreso" max-width="500px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
@@ -33,38 +31,67 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                <v-icon left>mdi-plus</v-icon>
+                  <v-icon left>mdi-plus</v-icon>
                   <span>Registrar Ficha Ingreso</span>
                 </v-btn>
               </template>
-                <SeleccionarFichaIngreso 
-                :residente ="residente"
-                :listaresidentes="listaresidentes"
-                :listaeducadores="listaeducadores"
-                @close-dialog-initial="closeDialogNuevaFichaIngreso()"
-                ></SeleccionarFichaIngreso >
+              <v-card>
+                <v-card-title class="justify-center"
+                  >Nueva Ficha de Ingreso</v-card-title
+                >
+                <div class="container-user">
+                  <v-card-text>
+                    <v-select
+                      :items="items"
+                      :item-value="items.value"
+                      v-model="selectorFichaIngreso"
+                      label="Seleccione la Ficha de Ingreso"
+                      outlined
+                      dense
+                    ></v-select>
+
+                    <v-row>
+                      <v-col>
+                        <v-btn block @click="cerrarDialogoRegistroFichaIngreso()" color="primary">
+                          <v-icon left>mdi-close-outline</v-icon>
+                          <span>Cerrar</span>
+                        </v-btn>
+                      </v-col>
+                      <v-col>
+                        <v-btn block @click="abrirDialogoRegistroFichaIngreso()" color="success">
+                          <v-icon left>mdi-page-next-outline</v-icon>
+                          <span>Continuar</span>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </div>
+              </v-card>
             </v-dialog>
           </v-toolbar>
         </template>
         <template v-slot:[`item.fechacreacion`]="{ item }">
           {{ item.fechacreacion | moment("DD/MM/YYYY") }}
         </template>
-         <template v-slot:[`item.actions`]="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
-          <v-btn  color="warning"
-             dark 
-             @click="editItem(item)">
-            <v-icon left> mdi-pencil</v-icon>
+            <v-btn color="warning" dark @click="editItem(item)">
+              <v-icon left> mdi-pencil</v-icon>
               <span>Actualizar</span>
             </v-btn>
-            <v-btn color="info" dark
-             @click="abrirDialogoConsultar(item.id)">
+            <v-btn color="info" dark @click="abrirDialogoConsultar(item.id)">
               <v-icon left> mdi-file-eye </v-icon>
               <span>Consultar</span>
-            </v-btn> 
+            </v-btn>
           </v-row>
         </template>
       </v-data-table>
+      <!--Dialogo de Registro de Fichas de Ingreso-->
+      <v-dialog v-model="dialogoRegistroFichaIngreso" persistent > 
+        <v-component :is="selectorFichaIngreso" 
+        @cerrar-modal-registro-ficha-ingreso="cerrarDialogoRegistroFichaIngreso">
+        </v-component>
+      </v-dialog>
       <!--Dialogo de Modificar-->
       <!--<v-dialog persistent
                 v-model="dialogoactualizacion" 
@@ -75,7 +102,7 @@
         </ModificarFichaIngreso>  
       </v-dialog>-->
 
-     <!--Dialogo de Consultar-->
+      <!--Dialogo de Consultar-->
       <!--<v-dialog persistent
           v-model="dialogoconsultar" 
           max-width="880px">
@@ -85,22 +112,28 @@
   </div>
 </template>
 <script>
-import axios from 'axios';
+import axios from "axios";
 //import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
-import SeleccionarFichaIngreso from '@/components/fichaIngreso/SeleccionarFichaIngreso.vue'
-
-import {mapMutations, mapState} from "vuex";
+import SeleccionarFichaIngreso from "@/components/fichaIngreso/SeleccionarFichaIngreso.vue";
+import RegistrarFichaIngresoEducativa from '@/components/fichaIngreso/RegistrarFichaIngresoEducativa.vue'
+import RegistrarFichaIngresoPsicologica from '@/components/fichaIngreso/RegistrarFichaIngresoPsicologica.vue'
+import RegistrarFichaIngresoSocial from '@/components/fichaIngreso/RegistrarFichaIngresoSocial.vue'
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarFicha",
   components: {
-   
-     SeleccionarFichaIngreso,
-       
+    RegistrarFichaIngresoEducativa,RegistrarFichaIngresoPsicologica,RegistrarFichaIngresoSocial
   },
   data() {
     return {
       search: "",
-      residente:{},
+      residente: {},
+      selectorFichaIngreso:"RegistrarFichaIngresoEducativa",
+      items: [
+            { value: 'RegistrarFichaIngresoSocial', text: 'Ficha de Ingreso Social'},
+            { value: 'RegistrarFichaIngresoEducativa', text: 'Ficha de Ingreso Educativa'},
+            { value: 'RegistrarFichaIngresoPsicologica', text: 'Ficha de Ingreso Psicologica'}
+      ],
       headers: [
         {
           text: "Codigo de la Ficha ",
@@ -108,52 +141,54 @@ export default {
           sortable: false,
           value: "codigodocumento",
         },
-        { text: "Residente", value: "residenteresultado"},
+        { text: "Residente", value: "residenteresultado" },
         { text: "Fecha Creacion", value: "fechacreacion" },
-        { text: "Area",value:"area"},
+        { text: "Area", value: "area" },
         { text: "Aciones", value: "actions", sortable: false },
       ],
-     SeleccionarFichaIngreso:false,
+      SeleccionarFichaIngreso: false,
       fichaIngreso: [],
-      dialogDialogNuevaFichaIngreso :false,
-       listaresidentes: [],
-       listaeducadores:[],
+      dialogDialogNuevaFichaIngreso: false,
+      listaresidentes: [],
+      listaeducadores: [],
+      dialogoRegistroFichaIngreso:false
+
     };
   },
-      async created(){
-      this.obtenerfichasIngresos();
-      this.obtenerResidentes();
-      this.obtenerEducadores();
+  async created() {
+    this.obtenerfichasIngresos();
+    this.obtenerResidentes();
+    this.obtenerEducadores();
   },
 
   methods: {
     ...mapMutations(["setFichaIngreso"]),
-    editItem(item) {
-    },
-    detailItem(item) {
-    },
+    editItem(item) {},
+    detailItem(item) {},
     closeDialogDetalle() {
       this.dialogodetalle = false;
     },
     closeDialogModificar() {
       this.dialogoactualizacion = false;
     },
-
-    closeDialogNuevaFichaIngreso()
-    {
-      this.dialogDialogNuevaFichaIngreso=false
+    abrirDialogoRegistroFichaIngreso(){
+      this.dialogoRegistroFichaIngreso = true;
+    },cerrarDialogoRegistroFichaIngreso(){  
+      
+      this.dialogoRegistroFichaIngreso = false;
+      console.log("hola desde el padre");
     },
-       
-    
-       async obtenerfichasIngresos(){
-           await axios.get("/Documento/all/fichaingresoresidente")
-            .then(res => {
-              //console.log( "porfavor" )
-              this.setFichaIngreso(res.data);
-            }).catch(err => console.log(err));            
+    async obtenerfichasIngresos() {
+      await axios
+        .get("/Documento/all/fichaingresoresidente")
+        .then((res) => {
+          //console.log( "porfavor" )
+          this.setFichaIngreso(res.data);
+        })
+        .catch((err) => console.log(err));
     },
     ///Obtener residente
-     async loadResidente(idresidente) {
+    async loadResidente(idresidente) {
       var user = {};
       await axios
         .get("/Residente/id?id=" + idresidente)
@@ -167,27 +202,29 @@ export default {
       return user;
     },
     //obtener todos los residentes
-    async obtenerResidentes(){
-          await axios.get("/residente/all")
-                  .then( x => {
-                            this.listaresidentes = x.data;
-                            console.log(this.listaresidentes);
-                  }).catch(err => console.log(err));
-        },
-        ////obtener todos los eduacatoderes
-         async obtenerEducadores(){
-          await axios.get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
-            .then(res => {
-                    this.listaeducadores = res.data;
-                    console.log(this.listaeducadores);
-            }).catch(err => console.log(err));
-    }
-
-  },computed:{
+    async obtenerResidentes() {
+      await axios
+        .get("/residente/all")
+        .then((x) => {
+          this.listaresidentes = x.data;
+          console.log(this.listaresidentes);
+        })
+        .catch((err) => console.log(err));
+    },
+    ////obtener todos los eduacatoderes
+    async obtenerEducadores() {
+      await axios
+        .get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
+        .then((res) => {
+          this.listaeducadores = res.data;
+          console.log(this.listaeducadores);
+        })
+        .catch((err) => console.log(err));
+    },
+  },
+  computed: {
     ...mapState(["fichaingreso"]),
-    
-  }
-
+  },
 };
 </script>
 <style scoped>

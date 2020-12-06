@@ -1,5 +1,4 @@
 <template>
-<v-dialog v-model="show" max-width="65%">
     <v-card >
       <v-card-title class="justify-center">Registrar Ficha de Ingreso Social</v-card-title>
       <v-stepper v-model="step">
@@ -155,7 +154,6 @@
                                     readonly
                                     v-bind="attrs"
                                     v-on="on"
-                                    :error-messages="errorFechaNacimiento"
                                     color="#009900"
                                 ></v-text-field>
                             </template>
@@ -190,7 +188,7 @@
 
                 <v-row>
                     <v-col>
-                        <v-btn block @click="show=false" color="primary">
+                        <v-btn block @click="cerrarDialogo" color="primary">
                             <v-icon left>mdi-close-outline</v-icon>
                             <span>Cerrar</span>
                         </v-btn>
@@ -231,7 +229,6 @@
                                     readonly
                                     v-bind="attrs"
                                     v-on="on"
-                                    :error-messages="errorFechaNacimiento"
                                     color="#009900"
                                 ></v-text-field>
                             </template>
@@ -257,7 +254,6 @@
                                     readonly
                                     v-bind="attrs"
                                     v-on="on"
-                                    :error-messages="errorFechaNacimiento"
                                     color="#009900"
                                 ></v-text-field>
                             </template>
@@ -268,12 +264,9 @@
                         </v-menu>
                     </v-col>
                 </v-row>
-                
-                
-
               <v-row>
                     <v-col>
-                        <v-btn block @click="show=false" color="primary">
+                        <v-btn block @click="cerrarDialogo" color="primary">
                             <v-icon left>mdi-close-outline</v-icon>
                             <span>Cerrar</span>
                         </v-btn>
@@ -285,7 +278,7 @@
                         </v-btn>
                     </v-col>
                     <v-col>
-                        <v-btn block @click="registrarInforme" color="success">
+                        <v-btn block @click="registrarFichaIngresoSocial" color="success">
                             <v-icon left>mdi-content-save-all-outline</v-icon>
                             <span >Registrar Ficha de Ingreso</span>
                         </v-btn>
@@ -297,7 +290,6 @@
       </v-stepper-items>
       </v-stepper>        
     </v-card>
-  </v-dialog>
 </template>
 <script> 
 
@@ -377,17 +369,15 @@ export default {
             this.step = 1;       
             this.$emit("close-dialog-fichaIngreso");
         }, 
-        async rFichaIngresoP(){
+        async registrarFichaIngresoSocial(){
 
-           await axios.get("Documento/all/fichaingresosocialcrear")
-            .then(res => {
-              //console.log( "porfavor" )
-              this.fichaIngreso=res.data;
-              this.rFichaIngresoP(res.data);
-              this.addFichaIngreso(this.fichaIngreso)
-            }).catch(err => console.log(err));            
+               
     
-      }
+      }, cerrarDialogo(){     
+            this.step = 1;       
+            this.$emit("cerrar-modal-registro-ficha-ingreso");
+            console.log("hola");
+        }
       }, async mensaje(icono,titulo,texto,footer){
       await this.$swal({
         icon: icono,
@@ -397,16 +387,6 @@ export default {
       });
     },
     computed: {
-    show: {
-      get () {
-        return this.visible
-      },
-      set (value) {
-        if (!value) {
-          this.$emit('close-dialog-fichaIngreso')
-        }
-      }
-    }
   }
 }
 </script>

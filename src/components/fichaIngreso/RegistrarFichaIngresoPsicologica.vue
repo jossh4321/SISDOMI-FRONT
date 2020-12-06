@@ -1,5 +1,4 @@
 <template>
-<v-dialog v-model="show" max-width="65%">
     <v-card >
       <v-card-title class="justify-center">Registrar Ficha de Ingreso Psicológica</v-card-title>
       <v-stepper v-model="step">
@@ -107,7 +106,6 @@
                                     readonly
                                     v-bind="attrs"
                                     v-on="on"
-                                    :error-messages="errorFechaNacimiento"
                                     color="#009900"
                                 ></v-text-field>
                             </template>
@@ -142,7 +140,7 @@
 
                 <v-row>
                     <v-col>
-                        <v-btn block @click="show=false" color="primary">
+                        <v-btn block @click="cerrarDialogo" color="primary">
                             <v-icon left>mdi-close-outline</v-icon>
                             <span>Cerrar</span>
                         </v-btn>
@@ -192,7 +190,6 @@
                                     readonly
                                     v-bind="attrs"
                                     v-on="on"
-                                    :error-messages="errorFechaNacimiento"
                                     color="#009900"
                                 ></v-text-field>
                             </template>
@@ -240,7 +237,7 @@
 
               <v-row>
                     <v-col>
-                        <v-btn block @click="show=false" color="primary">
+                        <v-btn block @click="cerrarDialogo" color="primary">
                             <v-icon left>mdi-close-outline</v-icon>
                             <span>Cerrar</span>
                         </v-btn>
@@ -252,7 +249,7 @@
                         </v-btn>
                     </v-col>
                     <v-col>
-                        <v-btn block @click="registrarInforme" color="success">
+                        <v-btn block @click="registrarFichaPsicologicaIngreso" color="success">
                             <v-icon left>mdi-content-save-all-outline</v-icon>
                             <span >Registrar Ficha de Ingreso</span>
                         </v-btn>
@@ -264,7 +261,6 @@
       </v-stepper-items>
       </v-stepper>        
     </v-card>
-  </v-dialog>
 </template>
 <script> 
 
@@ -293,9 +289,9 @@ export default {
     methods:{
         cerrarDialogo(){     
             this.step = 1;       
-            this.$emit("close-dialog-fichaIngreso");
+            this.$emit("cerrar-modal-registro-ficha-ingreso");
         }, 
-        async rFichaIngresoP(){
+        async registrarFichaPsicologicaIngreso(){
             
             await axios.post("/Documento/all/fichaingresopsicologicacrear")
               .then(res => {

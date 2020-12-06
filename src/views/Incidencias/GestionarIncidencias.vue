@@ -136,6 +136,7 @@ import moment from "moment";
 import { mapState, mapMutations } from "vuex";
 moment.locale("es")
 export default {
+    name: "GestionarIncidencia",
     data(){
         return {
                 page: 1,
