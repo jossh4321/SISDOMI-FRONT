@@ -38,7 +38,7 @@
                   color="#009900"
                   label="Residente"
                   item-text="nombre"
-                  item-value="residenteSeleccionado"                            
+                  item-value="id"                            
                 >
 
                 <template v-slot:selection="data">
@@ -50,7 +50,7 @@
                         <v-avatar left color="#b3b3ff"  size="24">
                         <span style="font-size:12px">RT</span>
                         </v-avatar>
-                        {{ data.item.nombre }}
+                        {{ data.item.nombre  + " " + data.item.apellido}}
                     </v-chip>
                 </template>
                   
@@ -62,53 +62,122 @@
                     </v-list-item-avatar>
                     <v-list-item-content>
                         <v-list-item-title>Nombre completo: {{ data.item.nombre }} {{data.item.apellido}} </v-list-item-title>
-                        <v-list-item-subtitle>Nro. Documento: {{data.item.numerodocumento}}</v-list-item-subtitle>                    
+                        <v-list-item-subtitle>Nro. Documento: {{data.item.numeroDocumento}}</v-list-item-subtitle>                    
                     </v-list-item-content>
                 </template>
                 </v-autocomplete> 
-
+                 
                 <v-row>
                     <v-col>
-                      <v-select              
-                        :items="itemNivel"
-                        v-model="itemNivel.value"
+                      <v-text-field             
+                        v-model="fichaIngreso.contenido.nivel"
                         label="Nivel"            
-                        outlined      
-                        dense       
-                      ></v-select>
+    
+                        color="#009900"
+                        shaped
+                      ></v-text-field>    
+                      
                     </v-col>
                     <v-col>
-                      <v-select              
-                        :items="itemGrado"
-                        v-model="itemGrado.value"
+                      <v-text-field             
+                        v-model="fichaIngreso.contenido.grado"
                         label="Grado"            
-                        outlined      
-                        dense       
-                      ></v-select>
+                        color="#009900"
+                        shaped     
+                      ></v-text-field>
                     </v-col>
                 </v-row>
-
-                <v-row>
+               
+             
                     <v-textarea
                             label="Situación Académica"
-                            auto-grow
-                            outlined    
-                            v-model="fichaIngreso.situacionescolar"   
+                            v-model="fichaIngreso.contenido.situacionescolar"   
                             color="#009900"
-                            shaped
                         ></v-textarea>
-                </v-row>
+                
 
-                 <v-row>
+                
                     <v-textarea
                             label="Observacion"
-                            auto-grow
-                            outlined       
-                            
+                            v-model="fichaIngreso.contenido.observacion"
                             color="#009900"
-                            shaped
                         ></v-textarea>
-                </v-row>
+              
+
+                <v-card
+                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <v-text-field
+                          v-model="docEscolar"
+                          label="Documentos Escolares"
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarDocEscolar"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+
+                  <v-card
+                    tile
+                    elevation="0"
+                    color="#FAFAFA"
+                    style="margin:5px"
+                    height="60"
+                    v-for="docEscolar in docEscolares"
+                    :key="docEscolar"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <span>{{ docEscolar }}</span>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarDocEscolar(docEscolar)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+
+                <div>
+                  <vue-dropzone
+                    ref="myVueDropzone3"
+                    @vdropzone-success="afterSuccess3"
+                    @vdropzone-removed-file="afterRemoved3"
+                    id="dropzone3"
+                    :options="dropzoneOptions3"
+                  >
+                  </vue-dropzone>
+                </div>
 
                 <v-row>
                     <v-col>
@@ -139,6 +208,7 @@
             <form>
                 <v-text-field
                   label="Nombre de Institución Educativa"
+                  v-model="fichaIngreso.contenido.nombre"
                   auto-grow
                   outlined        
                   color="#009900"
@@ -147,25 +217,30 @@
 
                <v-row>
                     <v-col>
-                      <v-select              
-                        :items="itemModalidad"
-                        v-model="itemModalidad.value"
-                        label="Tipo"            
-                        outlined      
-                        dense       
-                      ></v-select>
+                <v-text-field
+                  label="Tipo"
+                  v-model="fichaIngreso.contenido.tipo"
+                  auto-grow
+                  outlined        
+                  color="#009900"
+                  shaped
+                ></v-text-field>
                     </v-col>
                     <v-col>
-                      <v-autocomplete
-                        label="Modalidad"            
-                        outlined      
-                        dense       
-                      ></v-autocomplete>
+                 <v-text-field
+                  label="Modalidad"
+                  v-model="fichaIngreso.contenido.modalidad"
+                  auto-grow
+                  outlined        
+                  color="#009900"
+                  shaped
+                ></v-text-field>
                     </v-col>
                 </v-row>
 
                 <v-text-field
                   label="Dirección"
+                  v-model="fichaIngreso.contenido.direccion"
                   auto-grow
                   outlined        
                   color="#009900"
@@ -201,9 +276,6 @@
                       ></v-text-field> 
                     </v-col>
                 </v-row>
-
-                
-
                 <v-row>
                     <v-col>
                         <v-btn block @click="cerrarDialogo" color="primary">
@@ -291,7 +363,7 @@
 
                 <div>
                   <vue-dropzone
-                    ref="myVueDropzone"
+                    ref="myVueDropzone2"
                     @vdropzone-success="afterSuccess"
                     @vdropzone-removed-file="afterRemoved"
                     id="dropzone"
@@ -446,7 +518,7 @@
                         </v-btn>
                     </v-col>
                     <v-col>
-                        <v-btn block @click="registrarfichaIngreso" color="success">
+                        <v-btn block @click="registrarFicha" color="success">
                             <v-icon left>mdi-content-save-all-outline</v-icon>
                             <span >Registrar Ficha de Ingreso</span>
                         </v-btn>
@@ -468,6 +540,7 @@ import {mapMutations, mapState} from "vuex";
 import { required, minLength,maxLength,email,helpers,numeric } from 'vuelidate/lib/validators'
 import Vuelidate from 'vuelidate'
 import moment from 'moment'
+
 
 export default {
         
@@ -515,23 +588,36 @@ export default {
             headers: { "My-Awesome-Header": "header value" },
             addRemoveLinks: true,
             dictDefaultMessage:
-              "Seleccione un archivo anexo de su dispositivo o arrástrela aquí",
+              "Seleccione una observacion de su dispositivo o arrástrela aquí",
           },
-          dropzoneOptions2: {
+         dropzoneOptions2: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFilesize: 3.0,
+        maxFiles: 1,
+        acceptedFiles: ".jpg, .png, jpeg",
+        headers: { "My-Awesome-Header": "header value" },
+        addRemoveLinks: true,
+        dictDefaultMessage:
+          "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
+      },
+      dropzoneOptions3: {
             url: "https://httpbin.org/post",
             thumbnailWidth: 250,
-            maxFilesize: 5.0,
-            maxFiles: 1,
-            acceptedFiles: ".png",
+            maxFilesize: 10.0,
+            maxFiles: 10,
+            acceptedFiles: ".pdf",
             headers: { "My-Awesome-Header": "header value" },
             addRemoveLinks: true,
             dictDefaultMessage:
-              "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
+              "Seleccione una observacion de su dispositivo o arrástrela aquí",
           },
           conclusion: "",
           conclusiones: [],
-          urlfirma: "",
+          
           firmas: { urlfirma: "", nombre: "", cargo: "" },
+           imagen: "",
+
           fichaIngreso: {
             id: "",
             tipo: "FichaEducativaIngreso",
@@ -557,12 +643,12 @@ export default {
                 situacionescolar: ""
               },
               responsableturno: "",
-              conclusiones: [],
-              firmas: [],
+              conclusiones:[],
+              firmas:[],
               codigodocumento: "",
             },
           },
-          imagen: "",
+         
 
         }
         
@@ -570,6 +656,8 @@ export default {
     async created() {
       this.conclusiones = "";
       this.conclusion = "";
+      this.docEscolar = "";
+      this.docEscolares = "";
     },
     methods:{
       afterSuccess(){
@@ -579,6 +667,10 @@ export default {
       },afterSuccess2(){
 
       },afterRemoved2(){
+        
+      },afterSuccess3(){
+
+      },afterRemoved3(){
         
       },
         cerrarDialogo(){     
@@ -597,6 +689,23 @@ export default {
             }).catch(err => console.log(err));*/
             
         },
+        ///registrar ficha
+        async  registrarFicha(){
+          console.log(this.fichaIngreso)  
+        await axios
+          .post("/Documento/all/fichaingresoeducativacrear", this.fichaIngreso)
+          .then((res) => {
+            this.addFichaIngreso(res.data);
+            this.cerrarDialogo();
+          })
+          .catch((err) => console.log(err));
+        await this.mensaje(
+          "success",
+          "listo",
+          "Informe Seguimiento educativo registrado Satisfactoriamente",
+          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+        );    
+        },
         agregarConclusion() {
           let conclusiones = this.conclusion;
           this.fichaIngreso.contenido.conclusiones.push(conclusiones);
@@ -611,13 +720,26 @@ export default {
             }
           });
         },
+        agregarDocEscolar(){
+          let docEscolares = this.docEscolar;
+          this.fichaIngreso.contenido.documentosescolares.push(docEscolares);
+          this.docEscolares = this.fichaIngreso.contenido.documentosescolares;
+          this.docEscolar = "";
+        },
+        eliminarDocEscolar(docEscolar){
+          this.docEscolares.forEach(function(car, index, object) {
+            if (car === docEscolar) {
+              object.splice(index, 1);
+            }
+          });
+        }, 
         agregarFirma() {
-          let firmas = {
-            urlfirma: this.urlfirma,
+          let firmad = {
+            urlfirma: this.firmas.urlfirma,
             nombre: this.firmas.nombre,
             cargo: this.firmas.cargo,
           };
-          this.fichaIngreso.contenido.firmas.push(firmas);
+          this.fichaIngreso.contenido.firmas.push(firmad);
           this.$refs.myVueDropzone.removeAllFiles();
 
           this.urlfirma = "";

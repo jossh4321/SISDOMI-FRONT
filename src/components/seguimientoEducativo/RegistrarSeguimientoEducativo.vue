@@ -93,7 +93,7 @@
                                   <v-avatar left color="#b3b3ff" size="24">
                                     <span style="font-size:12px">RT</span>
                                   </v-avatar>
-                                  {{ data.item.datos.nombre }}
+                                  {{ data.item.datos.nombre + " " +  data.item.datos.apellido  }}
                                 </v-chip>
                               </template>
                               <template v-slot:item="data">
@@ -205,13 +205,19 @@
                                v-model="firma.cargo"
                                 label="Cargo"
                                 outlined  
+                               @input="$v.firma.cargo.$touch()"
+                               @blur="$v.firma.cargo.$touch()"
+                              :error-messages="errorCargoFirma"
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                v-model="firma.nombre"
                                 label="Nombre"
                                 outlined  
-                                color="#009900"
+                                color="#009900"  
+                              @input="$v.firma.nombre.$touch()"
+                              @blur="$v.firma.nombre.$touch()"
+                              :error-messages="errorNombreFirma"
                                 ></v-text-field>
                         <div>
                                 <vue-dropzone
@@ -414,6 +420,9 @@
                                 v-model="trimestre.orden"
                                 label="N°Puesto"
                                 outlined  
+                            @input="$v.trimestre.orden.$touch()"
+                            @blur="$v.trimestre.orden.$touch()"
+                            :error-messages="errorOrdenTrimestre"
                                 color="#009900"
                                 ></v-text-field>
                                 
@@ -421,12 +430,18 @@
                                 v-model="trimestre.analisiseducativo"
                                 label="Analisis Educativo"
                                 outlined  
+                            @input="$v.trimestre.analisiseducativo.$touch()"
+                            @blur="$v.trimestre.analisiseducativo.$touch()"
+                            :error-messages="errorAnalisisTrimestre"
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="trimestre.recomendaciones"
                                 label="Recomendaciones"
                                 outlined  
+                            @input="$v.trimestre.recomendaciones.$touch()"
+                            @blur="$v.trimestre.recomendaciones.$touch()"
+                            :error-messages="errorRecomendacionTrimestre"
                                 color="#009900"
                                 ></v-text-field>
 
@@ -505,10 +520,31 @@
                           style="margin-right:15px;margin-top:-5px"
                           dark
                           color="#2E9CCF"
-                          @click="abrirDialogoNotas(item.puntajes)"
+                          @click="abrirDialogoNotas(item.puntajes,index)"
                         >
                           Añadir Notas
                         </v-btn>  
+                      </div>
+                    </v-col>
+
+                      <v-col :cols="1">
+                       <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarTrimestre(index)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                  </v-row>
+                </v-card>
+              </v-card>
           <!--Card de  trimestre nOTAS  nose cual es--> 
           <v-row justify="center">
                 <v-dialog v-model="dialog1" persistent max-width="850px">
@@ -521,12 +557,18 @@
                                 v-model="puntajes.area"
                                 label="Nombre del Curso:"
                                 outlined  
+                                @input="$v.puntajes.area.$touch()"
+                                @blur="$v.puntajes.area.$touch()"
+                                :error-messages="errorAreaPuntajes"
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="puntajes.promedio"
                                 label="Nota obtenida:"
                                 outlined  
+                                @input="$v.puntajes.promedio.$touch()"
+                                @blur="$v.puntajes.promedio.$touch()"
+                                :error-messages="errorPromedioPuntajes"
                                 color="#009900"
                                 ></v-text-field>
                                 <v-btn 
@@ -630,11 +672,7 @@
                 </v-dialog>
               </v-row>
        
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-card>
+                    
 
 
                     <!--Botones de card -->
@@ -642,7 +680,7 @@
                         <v-col>
                           <v-btn block @click="registrarSeguimiento" color="success">
                             <v-icon left>mdi-page-next-outline</v-icon>
-                            <span>Continuar</span>
+                            <span>Registrar Seguimiento </span>
                           </v-btn>
                         </v-col>
                         <v-col>
@@ -670,7 +708,7 @@ Vue.use(Vuelidate)
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import { required, minLength, email, helpers } from "vuelidate/lib/validators";
+import { required, minLength, email, helpers,numeric } from "vuelidate/lib/validators";
 import moment from "moment";
 export default {
 name:'RegistrarSeguimientoEducativo',
@@ -715,6 +753,7 @@ data(){
          trimestre:{orden:"",puntajes:[],analisiseducativo:"",recomendaciones:""},
          puntajes:{area:"",promedio:""},
          notas:[], 
+         index:"",
 
     seguimiento:{
       id:"",
@@ -748,10 +787,11 @@ methods:{
       cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
     },
-    abrirDialogoNotas(notas){
+    abrirDialogoNotas(notas,index){
         this.notas=notas;
+        this.index=index;
         this.dialog1=true;
-        console.log(this.notas)
+        console.log(this.notas,index)
         
       },
      
@@ -801,12 +841,15 @@ methods:{
           "success",
           "listo",
           "Informe Seguimiento educativo registrado Satisfactoriamente",
-          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+          "<strong>Se redirigira a la Interfaz de Gestion<strong>",      
         );
+         location.reload();//metodo de js para refrescar la pagina
       }
+      
     },
     ///metodo para agregar firma residente
     guardarFirma(){
+         
    let firmad = {urlfirma:this.firma.urlfirma,nombre:this.firma.nombre,cargo:this.firma.cargo};
 
    this.seguimiento.contenido.firmas.push(firmad);
@@ -816,6 +859,7 @@ methods:{
    this.firma.urlfirma="";
    this.firma.nombre="";
    this.firma.cargo="";
+   !this.$v.firma.$reset();
     },
     eliminarFirma(index) {
       this.seguimiento.contenido.firmas.splice(index, 1);
@@ -837,23 +881,27 @@ methods:{
       this.trimestre.puntajes="";
       this.trimestre.analisiseducativo="";
       this.trimestre.recomendaciones="";
+      !this.$v.trimestre.$reset();
     },
     eliminarTrimestre(index){
-      this.trimestre.puntajes.splice(index);
+      this.seguimiento.contenido.trimestre.splice(index,1);
     },
     guardarNotas(){
       let puntajesd={area:this.puntajes.area,promedio:this.puntajes.promedio};
-       this.seguimiento.contenido.trimestre[0].puntajes.push(puntajesd);
+       this.seguimiento.contenido.trimestre[this.index].puntajes.push(puntajesd);
+       
       
        console.log(this.trimestre.puntajes)
 
        this.puntajes.area="";
        this.puntajes.promedio="";
+       !this.$v.puntajes.$reset();
     },
     eliminarNotas(index){
-     this.seguimiento.contenido.trimestre[0].puntajes.splice(index)
+     this.seguimiento.contenido.trimestre[0].puntajes.splice(index,1)
      
     },
+    
   },
  computed: {
     verifyColor() {
@@ -887,7 +935,7 @@ methods:{
 
       return errors;
     },
-    errorModalidad() {
+   errorModalidad() {
       const errors = [];
       if (!this.$v.seguimiento.contenido.modalidad.$dirty) return errors;
       !this.$v.seguimiento.contenido.modalidad.required &&
@@ -923,6 +971,78 @@ methods:{
         errors.push("El Año escolar  debe tener al menos 4 caracteres");
       return errors;
     },
+    errorCargoFirma(){
+    const errors = [];
+    if(!this.$v.firma.cargo.$dirty) return errors;
+    !this.$v.firma.cargo.required &&
+      errors.push("Debe ingresar un Cargo");
+    !this.$v.firma.cargo.minLength &&
+      errors.push("El cargo al menos 4 caracteres");
+    return errors;
+
+    },
+    errorNombreFirma(){
+    const errors = [];
+    if(!this.$v.firma.nombre.$dirty) return errors;
+    !this.$v.firma.nombre.required &&
+      errors.push("Debe ingresar un nombre");
+    !this.$v.firma.nombre.minLength &&
+      errors.push("El nombre debe tener  al menos 4 caracteres");
+    return errors;
+    },
+    errorOrdenTrimestre(){
+    const errors = [];
+    if(!this.$v.trimestre.orden.$dirty) return errors;
+    !this.$v.trimestre.orden.required &&
+      errors.push("Debe ingresar un orden");
+    !this.$v.trimestre.orden.minLength &&
+      errors.push("El trimestre debe tener  al menos 1 caracteres");
+    return errors;
+    !this.$v.trimestre.orden.numeric &&
+        errors.push(
+          "Debe Ingresar valores Numericos"
+        );
+    },
+    errorAnalisisTrimestre(){
+   const errors = [];
+    if(!this.$v.trimestre.analisiseducativo.$dirty) return errors;
+    !this.$v.trimestre.analisiseducativo.required &&
+      errors.push("Debe ingresar un analisis educativo");
+    !this.$v.trimestre.analisiseducativo.minLength &&
+      errors.push("El analisis educativo debe tener al menos 4 caracteres");
+    return errors;
+    },
+    errorRecomendacionTrimestre(){
+    const errors = [];
+    if(!this.$v.trimestre.recomendaciones.$dirty) return errors;
+    !this.$v.trimestre.recomendaciones.required &&
+      errors.push("Debe ingresar una recomendacion");
+    !this.$v.trimestre.recomendaciones.minLength &&
+      errors.push("La recomendacion debe tener al menos 4 caracteres");
+    return errors;
+    },
+    errorAreaPuntajes(){
+    const errors = [];
+    if(!this.$v.puntajes.area.$dirty) return errors;
+    !this.$v.puntajes.area.required &&
+      errors.push("Debe ingresar un Curso");
+    !this.$v.puntajes.area.minLength &&
+      errors.push("El puntaje debe tener 2 caracteres");
+    return errors;
+    !this.$v.trimestre.orden.numeric &&
+      errors.push("Debe Ingresar valores Numericos");
+    
+    },
+    errorPromedioPuntajes(){
+    const errors = [];
+    if(!this.$v.puntajes.promedio.$dirty) return errors;
+    !this.$v.puntajes.promedio.required &&
+      errors.push("Debe ingresar un promedio");
+    !this.$v.puntajes.promedio.minLength &&
+      errors.push("el puntaje  debe tener al menos 2 caracteres");
+    return errors;
+    
+    }
   },
   validations(){
         return{
@@ -959,7 +1079,45 @@ methods:{
            firmas:[],
            codigodocumento:""
       },
-    }
+    },
+    firma:{
+     cargo:{
+       required,
+        minLength: minLength(4),
+     },
+     nombre:{
+       required,
+        minLength: minLength(4),
+     }
+    },
+    trimestre:{
+      orden:{
+        required,
+        minLength: minLength(1),
+        numeric
+        }
+        ,analisiseducativo:{
+          required,
+        minLength: minLength(4),
+        },
+        recomendaciones:{
+          required,
+        minLength: minLength(4),
+        }
+        },
+    puntajes:{
+          area:{
+            required,
+            minLength: minLength(4),
+          },
+          promedio:{
+            required,
+            minLength: minLength(2),
+            numeric
+          }
+      }
+
+
         
             }
         }

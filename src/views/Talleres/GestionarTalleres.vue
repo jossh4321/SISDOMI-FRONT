@@ -83,10 +83,19 @@
               ></component>
             </v-dialog>
 
+            <!--Actualizar Modal-->
+            <v-dialog v-model="dialogTallerVisualizar" persistent max-width="880">
+              <component
+                :is="typeTallerSelected"
+                :taller="taller"
+                @close-dialog="closeDialogVisualizar"
+              ></component>
+            </v-dialog>
+
           </v-toolbar>
         </template>
-        <template v-slot:[`item.fechacreacion`]="{ item }">
-          {{ item.fechacreacion | moment("DD/MM/YYYY") }}
+        <template v-slot:[`item.fechaCreacion`]="{ item }">
+          {{ item.fechaCreacion | moment("DD/MM/YYYY") }}
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
@@ -96,7 +105,7 @@
             </v-btn>
 
             <v-btn color="info" dark @click="detailItem(item)">
-              <v-icon left> mdi-pencil </v-icon>
+              <v-icon left> mdi-file-eye </v-icon>
               <span>Visualizar</span>
             </v-btn>
           </v-row>
@@ -109,13 +118,25 @@
 import axios from "axios";
 import RegistrarTallerEscuelaPadres from "@/components/talleres/escuelapadres/RegistrarTallerEscuelaPadres.vue";
 import RegistrarTallerEducativo from "@/components/talleres/educativo/RegistrarTallerEducativo.vue";
+import RegistrarTallerFormativoEgreso from "@/components/talleres/formativoegreso/RegistrarTallerFormativoEgreso.vue";
 import ActualizarTallerEscuelaPadres from "@/components/talleres/escuelapadres/ActualizarTallerEscuelaPadres.vue";
+import ActualizarTallerEducativo from "@/components/talleres/educativo/ActualizarTallerEducativo.vue";
+import ActualizarTallerFormativoEgreso from "@/components/talleres/formativoegreso/ActualizarTallerFormativoEgreso.vue";
+import VisualizarTallerEscuelaPadres from "@/components/talleres/escuelapadres/VisualizarTallerEscuelaPadres.vue";
+import VisualizarTallerEducativo from "@/components/talleres/educativo/VisualizarTallerEducativo.vue";
+import VisualizarTallerFormativoEgreso from "@/components/talleres/formativoegreso/VisualizarTallerFormativoEgreso.vue";
 export default {
   name: "GestionarTalleres",
   components: {
      RegistrarTallerEscuelaPadres,
+     RegistrarTallerEducativo,
+     RegistrarTallerFormativoEgreso,
      ActualizarTallerEscuelaPadres,
-     RegistrarTallerEducativo
+     ActualizarTallerEducativo,
+     ActualizarTallerFormativoEgreso,
+     VisualizarTallerEscuelaPadres,
+     VisualizarTallerEducativo,
+     VisualizarTallerFormativoEgreso
   },
   data() {
     return {
@@ -130,7 +151,7 @@ export default {
         { text: "Tipo", value: "tipo" },
         { text: "Área", value: "area" },
         { text: "Fase", value: "fase" },
-        { text: "Fecha registro", value: "fechacreacion" },
+        { text: "Fecha registro", value: "fechaCreacion" },
         { text: "Actions", value: "actions", sortable: false },
       ],
       talleres: [],
@@ -157,6 +178,7 @@ export default {
       dialogRegister: false,
       dialogTallerRegister: false,
       dialogTallerModify: false,
+      dialogTallerVisualizar: false,
     };
   },
   methods: {
@@ -166,14 +188,18 @@ export default {
         .then((res) => {
           this.taller = res.data;
 
-          this.typeTallerSelected = "ActualizarTallerEscuelaPadres";
-          /*if (res.data.area == "social" && res.data.fase == "desarrollo") {
-            this.typePlanSelected = "ActualizarTallerEscuelaPadres";
-          } else if (res.data.area == "social") {
-            this.typePlanSelected = "ModificarPlanIntervencionSocial";
-          } else if (res.data.area == "psicologica") {
-            this.typePlanSelected = "ModificarPlanIntervencionPsicologico";
-          }*/
+          if (res.data.tipo == "TallerEscuelaPadres") {
+            this.typeTallerSelected = "ActualizarTallerEscuelaPadres";
+            this.taller.contenido.fechainicio = res.data.contenido.fechainicio.split("T")[0];
+            this.taller.contenido.fechafin = res.data.contenido.fechafin.split("T")[0];
+          } else if (res.data.tipo == "TallerEducativo") {
+            this.typeTallerSelected = "ActualizarTallerEducativo";
+            this.taller.contenido.fecharealizacion = res.data.contenido.fecharealizacion.split("T")[0];
+            
+          } else if (res.data.tipo == "TallerFormativoEgreso") {
+            this.typeTallerSelected = "ActualizarTallerFormativoEgreso";
+            this.taller.contenido.fecharealizacion = res.data.contenido.fecharealizacion.split("T")[0];
+          }
 
           this.dialogTallerModify = true;
         })
@@ -181,8 +207,29 @@ export default {
           console.error(err);
         });
     },
-    detailItem(item) {
-      console.log(item);
+    async detailItem(item) {
+      await axios
+        .get("/Taller/" + item.id)
+        .then((res) => {
+          this.taller = res.data;
+
+          if (res.data.tipo == "TallerEscuelaPadres") {
+            this.typeTallerSelected = "VisualizarTallerEscuelaPadres";
+            this.taller.contenido.fechainicio = res.data.contenido.fechainicio.split("T")[0];
+            this.taller.contenido.fechafin = res.data.contenido.fechafin.split("T")[0];
+          } else if (res.data.tipo == "TallerEducativo") {
+            this.typeTallerSelected = "VisualizarTallerEducativo";
+            this.taller.contenido.fecharealizacion = res.data.contenido.fecharealizacion.split("T")[0];
+          } else if (res.data.tipo == "TallerFormativoEgreso") {
+            this.typeTallerSelected = "VisualizarTallerFormativoEgreso";
+            this.taller.contenido.fecharealizacion = res.data.contenido.fecharealizacion.split("T")[0];
+          }
+
+          this.dialogTallerVisualizar = true;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
     listTalleres() {
       axios
@@ -190,6 +237,7 @@ export default {
         .then((res) => {
           //this.loading = false;
           this.talleres = res.data;
+          
         })
         .catch((err) => {
           console.error(err);
@@ -218,6 +266,10 @@ export default {
     },
     closeDialogModify() {
       this.dialogTallerModify = false;
+      this.typeTallerSelected = "";
+    },
+    closeDialogVisualizar() {
+      this.dialogTallerVisualizar = false;
       this.typeTallerSelected = "";
     },
   },

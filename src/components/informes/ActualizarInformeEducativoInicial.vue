@@ -274,17 +274,17 @@
                   background-color: #eaeaea;
                 "
               >
-              <div>
-                <vue-dropzone
-                  ref="myVueDropzone"
-                  @vdropzone-success="afterSuccess"
-                  @vdropzone-removed-file="afterRemoved"
-                  id="dropzone"
-                  :options="dropzoneOptions"
-                >
-                </vue-dropzone>
-              </div>
-              <!-- <v-card
+                <div>
+                  <vue-dropzone
+                    ref="myVueDropzone"
+                    @vdropzone-success="afterSuccess"
+                    @vdropzone-removed-file="afterRemoved"
+                    id="dropzone"
+                    :options="dropzoneOptions"
+                  >
+                  </vue-dropzone>
+                </div>
+                <!-- <v-card
                 tile
                 elevation="0"
                 color="#FAFAFA"
@@ -312,77 +312,94 @@
                   </v-col>
                 </v-row>
               </v-card> -->
-            </v-card>
+              </v-card>
               <v-card
-                style="
-                  margin-top: 30px;
-                  padding: 5px 5px;
-                  background-color: #eaeaea;
-                "
-              >
-                <v-card
-                  elevation="0"
-                  style="background-color: #eaeaea"
-                  height="70"
+                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
-                  <v-row style="margin: 1%; heigh: 100%" align="center">
-                    <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model="firmas.nombre"
-                        label="Nombre"
-                        color="#009900"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model="firmas.cargo"
-                        label="Cargo"
-                        color="#009900"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col :cols="4" align="right">
-                      <v-btn fab small dark color="green" @click="agregarFirma">
-                        <v-icon dark> mdi-plus </v-icon>
-                      </v-btn>
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="4" align="left">
+                        <v-text-field
+                          v-model="firmas.nombre"
+                          label="Nombre"
+                          color="#009900"
+                          @input="$v.firmas.nombre.$touch()"
+                          @blur="$v.firmas.nombre.$touch()"
+                          :error-messages="errorNombreFirma"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="left">
+                        <v-text-field
+                          v-model="firmas.cargo"
+                          label="Cargo"
+                          color="#009900"
+                          @input="$v.firmas.cargo.$touch()"
+                          @blur="$v.firmas.cargo.$touch()"
+                          :error-messages="errorCargoFirma"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="right">
+                        <v-btn
+                          fab
+                          small
+                          dark
+                          color="green"
+                          @click="agregarFirma"
+                        >
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                  <v-row>
+                    <v-col :cols="12" align="right">
+                      <div>
+                        <vue-dropzone
+                          ref="myVueDropzone"
+                          @vdropzone-success="afterSuccess2"
+                          @vdropzone-removed-file="afterRemoved2"
+                          id="dropzone2"
+                          :options="dropzoneOptions2"
+                        >
+                        </vue-dropzone>
+                      </div>
+                      <v-card v-if="errorUrlFirma" color="red">
+                        <v-card-text class="text-center" style="color: white"
+                          >Debe Subir una imagen de la firma
+                          obligatoriamente</v-card-text
+                        >
+                      </v-card>
+                      <v-divider class="divider-custom"></v-divider>
                     </v-col>
                   </v-row>
-                </v-card>
-                <v-row>
-                  <v-col :cols="12" align="right">
-                    <div>
-                      <vue-dropzone
-                        ref="myVueDropzone"
-                        @vdropzone-success="afterSuccess2"
-                        @vdropzone-removed-file="afterRemoved2"
-                        id="dropzone2"
-                        :options="dropzoneOptions2"
-                      >
-                      </vue-dropzone>
-                    </div>
-                  </v-col>
-                </v-row>
-                <v-card
-                  color="#FAFAFA"
-                  style="margin-top: 5px"
-                  height="60"
-                  v-for="(item, index) in informe.contenido.firmas"
-                  :key="index"
-                >
-                  <v-row style="margin-left: 10px; heigh: 100%" align="center">
-                    <v-col :cols="8">
-                      <article>
-                        <img
-                          style="margin-right: 5px; width: 6%"
-                          src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
-                          alt="imagen usuario"
-                        />
-                        <span style="font-size: 18px">
-                          {{ item.nombre }} - {{ item.cargo }}</span
-                        >
-                      </article>
-                    </v-col>
-                    <v-col :cols="2" align="center">
-                      <template>
+                  <v-card
+                    color="#FAFAFA"
+                    style="margin-top:5px"
+                    height="60"
+                    v-for="(item, index) in informe.contenido.firmas"
+                    :key="index"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8">
+                        <article>
+                          <img
+                            style="margin-right:5px;width:6% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
+                            alt="imagen usuario"
+                          />
+                          <span style="font-size:18px">
+                            {{ item.nombre }} {{ item.cargo }}</span
+                          >
+                        </article>
+                      </v-col>
+                      <v-col :cols="2" align="center">
+                        <template>
                           <v-btn
                             fab
                             icon=""
@@ -392,67 +409,69 @@
                             @click="verFirma(index)"
                           >
                             <img
-                              style="width: 25%"
+                              style="width:25% "
                               src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
                               alt="firma"
                             />
                           </v-btn>
                         </template>
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <div style="margin-right: 20px">
-                        <v-btn
-                          fab
-                          x-small
-                          dark
-                          color="red"
-                          @click="eliminarFirma(index)"
-                        >
-                          <v-icon dark> mdi-minus </v-icon>
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
+                      </v-col>
+                      <v-col :cols="2" align="right">
+                        <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarFirma(index)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card>
                 </v-card>
-              </v-card>
 
               <v-dialog
-                        v-model="dialogVistaPreviaFirma"
-                        persistent
-                        max-width="600px"
-                      >
-                        <v-card align="center">
-                          <v-card-title>
-                            <span class="headline">Vista previa</span>
-                          </v-card-title>
-                          <v-card-text>
-                            <img
-                              v-if="imagen.includes('http')"
-                              width="100%"
-                              height="100%"
-                              :src="imagen"
-                              alt=""
-                            />
-                            <img
-                              v-else
-                              width="100%"
-                              height="100%"
-                              :src="'data:image/jpeg;base64,' + imagen"
-                              alt=""
-                            />
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              color="blue darken-1"
-                              text
-                              @click="cerrarVistaPreviaFirma()"
-                            >
-                              Cerrar
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
+                v-model="dialogVistaPreviaFirma"
+                persistent
+                max-width="600px"
+              >
+                <v-card align="center">
+                  <v-card-title>
+                    <span class="headline">Vista previa</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <img
+                      v-if="imagen.includes('http')"
+                      width="100%"
+                      height="100%"
+                      :src="imagen"
+                      alt=""
+                    />
+                    <img
+                      v-else
+                      width="100%"
+                      height="100%"
+                      :src="'data:image/jpeg;base64,' + imagen"
+                      alt=""
+                    />
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="cerrarVistaPreviaFirma()"
+                    >
+                      Cerrar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
 
               <v-row>
                 <v-col>
@@ -488,6 +507,15 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 import ActualizarInformeEducativoEvolutivoVue from "./ActualizarInformeEducativoEvolutivo.vue";
+
+function esTexto(value) {
+  return /^[A-Za-z\s]+$/.test(value); //acepta solo texto y espacios en blanco
+}
+
+function esParrafo(value) {
+  return /^[A-Za-z\d\s.,;]+$/.test(value); //acepta tambien . , ;
+}
+
 export default {
   props: ["informe", "listaresidentes", "listaeducadores"],
   components: {
@@ -537,8 +565,8 @@ export default {
   methods: {
     ...mapMutations(["replaceInforme"]),
     async actualizarInformeEducativoInicial() {
-      this.$v.$touch();
-      if (this.$v.$invalid) {
+      this.$v.informe.$touch();
+      if (this.$v.informe.$invalid) {
         console.log("hay errores");
         this.mensaje(
           "error",
@@ -665,8 +693,8 @@ export default {
     },
     errorCreador() {
       const errors = [];
-      if (!this.$v.informe.creadordocumento.$dirty) return errors;
-      !this.$v.informe.creadordocumento.required &&
+      if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
+      !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un educador obligatoriamente");
       return errors;
     },
@@ -701,6 +729,10 @@ export default {
         errors.push(
           "La situación académica debe tener al menos 100 caracteres"
         );
+      !this.$v.informe.contenido.situacionacademica.esParrafo &&
+        errors.push(
+          "La situación académica no debe contener caracteres especiales"
+        );
       return errors;
     },
     errorAnalisisAcademico() {
@@ -710,6 +742,45 @@ export default {
         errors.push("Debe ingresar el análisis académico obligatoriamente");
       !this.$v.informe.contenido.analisisacademico.minLength &&
         errors.push("El análisis académico debe tener al menos 100 caracteres");
+      !this.$v.informe.contenido.analisisacademico.esParrafo &&
+        errors.push(
+          "El análisis académico no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorNombreFirma() {
+      const errors = [];
+      if (!this.$v.firmas.nombre.$dirty) return errors;
+      !this.$v.firmas.nombre.required &&
+        errors.push("Debe registrar el nombre obligatoriamente");
+      !this.$v.firmas.nombre.esTexto &&
+        errors.push("Debe registrar el nombre correctamente");
+      return errors;
+    },
+    errorCargoFirma() {
+      const errors = [];
+      if (!this.$v.firmas.cargo.$dirty) return errors;
+      !this.$v.firmas.cargo.required &&
+        errors.push("Debe registrar el cargo obligatoriamente");
+      !this.$v.firmas.cargo.esTexto &&
+        errors.push("Debe registrar el cargo correctamente");
+      return errors;
+    },
+    errorUrlFirma() {
+      return this.$v.urlfirma.required == false &&
+        this.$v.urlfirma.$dirty == true
+        ? true
+        : false;
+    },
+    errorConclusion() {
+      const errors = [];
+      if (!this.$v.conclusion.$dirty) return errors;
+      !this.$v.conclusion.required &&
+        errors.push("Debe registrar la conclusión obligatoriamente");
+      !this.$v.conclusion.esParrafo &&
+        errors.push(
+          "La conclusión o recomendación no debe contener caracteres especiales"
+        );
       return errors;
     },
   },
@@ -717,9 +788,6 @@ export default {
     return {
       informe: {
         idresidente: {
-          required,
-        },
-        creadordocumento: {
           required,
         },
         fechacreacion: {
@@ -730,14 +798,36 @@ export default {
             required,
             minLength: minLength(10),
           },
+          evaluador: {
+            required,
+          },
           situacionacademica: {
             required,
             minLength: minLength(100),
+            esParrafo,
           },
           analisisacademico: {
             required,
             minLength: minLength(100),
+            esParrafo,
           },
+        },
+      },
+      conclusion: {
+        required,
+        esParrafo,
+      },
+      urlfirma: {
+        required,
+      },
+      firmas: {
+        nombre: {
+          required,
+          esTexto,
+        },
+        cargo: {
+          required,
+          esTexto,
         },
       },
     };

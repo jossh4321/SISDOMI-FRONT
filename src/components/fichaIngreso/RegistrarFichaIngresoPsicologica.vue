@@ -302,13 +302,17 @@ export default {
             }).catch(err => console.log(err));
             
       }
-      }, async mensaje(icono,titulo,texto,footer){
+      , async mensaje(icono,titulo,texto,footer){
       await this.$swal({
         icon: icono,
         title: titulo,
         text: texto,
         footer:footer
       });
+    },
+    async registrarInforme(){
+
+    },
     },
     computed: {
     show: {

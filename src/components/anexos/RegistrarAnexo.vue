@@ -144,7 +144,7 @@ export default {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
         maxFilesize: 3.0,
-        maxFiles: 1,
+        maxFiles: 5,
         acceptedFiles: ".pdf",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,

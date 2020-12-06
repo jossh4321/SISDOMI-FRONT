@@ -65,9 +65,16 @@
           <v-icon left>mdi-page-next-outline</v-icon>
           <span>Continuar</span>
         </v-btn>
+        <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
       </form>
     </div>
       </v-stepper-content>
+     
       <v-stepper-content step="2">
         <div  class="container-user">
       <form>
@@ -127,8 +134,14 @@
 
         <v-btn block color="accent">
           <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
-          <span >Registrar Acta</span>
+          <span >Visualizar Acta</span>
         </v-btn>
+        <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
       </form>
         </div>
       </v-stepper-content>
@@ -173,7 +186,18 @@ export default {
     afterSuccess(file,response){
        this.usuario.datos.imagen = file.dataURL;
        this.$v.usuario.datos.imagen.$model = file.dataURL;
-    },afterRemoved(file, error, xhr){
+    },
+    resetUsuarioValidationState() {
+      this.$refs.myVueDropzone.removeAllFiles();
+      this.$v.actaI.$reset();
+    },
+      cerrarDialogo() {
+      this.actaI = this.limpiarUsuario();
+      this.step = 1;
+      this.resetUsuarioValidationState();
+      this.$emit("close-dialog-save");
+      },
+    afterRemoved(file, error, xhr){
       this.usuario.datos.imagen = "";
        this.$v.usuario.datos.imagen.$model = "";
     }
@@ -184,7 +208,23 @@ export default {
         text: texto,
         footer:footer
       });
-    }
+    },
+    limpiarUsuario() {
+      return {
+        
+        datos: {
+          
+        nombreusuaria:" ",
+        nombreplan:" ",
+        objetivogeneral:" ",
+        objetivoespecifico:" ",        
+        actividades_estrategias:" ",
+        indicadores:" ",
+        meta:" ",
+        },
+      };
+    },
+  
   },
   computed:{
 

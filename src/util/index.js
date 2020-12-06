@@ -22,8 +22,22 @@ const toggleFullScreen = () => {
     }
 };
 
+const esTexto = (value) => {
+    return (
+        /^[A-Za-z\s]+$/.test(value) //acepta solo texto y espacios en blanco
+    );
+};
+
+const esParrafo = (value) => {
+    return (
+        /^[A-Za-z\d\s.,;]+$/.test(value) //acepta tambien . , ;
+    );
+};
+
 export default {
     randomElement,
     toggleFullScreen,
-    kebab
+    kebab,
+    esTexto,
+    esParrafo
 };

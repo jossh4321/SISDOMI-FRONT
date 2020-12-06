@@ -188,7 +188,7 @@
                     style="margin-left:2%"
                     dark
                     color="red"
-                    @click="eliminarParticipante(item.idparticipante)"
+                    @click="eliminarParticipante(encontrarResidentePorId(item.idparticipante),item.idparticipante)"
                   >
                     <v-icon dark>
                       mdi-delete
@@ -282,6 +282,7 @@ export default {
       datemenu:false,
       dialogVistaPreviaFirma:false,
       imagen:"",
+      nombreCreador:"",
       residente:{},
       residenteArray:[],
       participantes:[],
@@ -341,11 +342,18 @@ export default {
       console.log("Residentes filtrados finales")
       console.log(this.residentes);
     },
-    eliminarParticipante(id){
+    eliminarParticipante(item,id){
       var index =  this.participantes.findIndex(function(o){
         return o.idparticipante === id;
       })
-      if (index !== -1) { this.participantes.splice(index, 1);}
+      if (index !== -1) { 
+        this.participantes.splice(index, 1);
+        //this.sesioneducativa.contenido.participantes.splice(index, 1);
+        this.residentes.push(item);
+      }
+      console.log("Residentes filtrados finales")
+      console.log(this.residentes);
+      
     },
     evaluarArregloParticipantes(){
       if(this.participantes.length===0) {return true}
@@ -383,6 +391,22 @@ export default {
         }
       })
       return nombreCompletoResidente;
+
+    },
+    encontrarResidentePorId(id){
+      var residenteObject = {};
+      this.residenteArray.forEach((residente)=>{
+        if(residente.id === id){
+          //LOS RETURN DENTRO DE UN FOREACH NO FUNCIONAN :D
+          residenteObject = {
+            id: residente.id,
+            nombre: residente.nombre,
+            apellido: residente.apellido,
+            numeroDocumento: residente.numeroDocumento
+          }
+        }
+      })
+      return residenteObject;
 
     },
     filtrarParticipantesInterno(){
@@ -463,15 +487,26 @@ export default {
       console.log(this.sesioneducativa.contenido.participantes)
       this.sesioneducativa.contenido.participantes = this.sesioneducativa.contenido.participantes.concat(participanteSemiListo);
       console.log(this.sesioneducativa);
-      var info = "";
       await axios
         .put("/SesionesEducativas", this.sesioneducativa)
         .then((res) => {
-          info = res.data
+          var info ={
+            id: res.data.id,
+            titulo: res.data.titulo,
+            fechaCreacion: res.data.fechaCreacion.split("T")[0],
+            area: res.data.area,
+            tipo: res.data.tipo,
+            idCreador: res.data.idCreador,
+            datoscreador:{
+              usuario: this.nombreCreador
+            }
+          }
+          console.log("Modificado xd")
+          console.log(info);
           this.replaceSesionesEducativas(info);
           this.cerrarDialogo();
         })
-        .catch((err) => {console.log(info);console.log(err)});
+        .catch((err) => {console.log(err)});
     },
     //Lista de Residentes para agregar participantes
     async obtenerResidentes() {
@@ -511,13 +546,13 @@ export default {
     }
   },
   async created(){
-    console.log("Componente Participante creado")
     await this.obtenerResidentes();
     //Filtrar a los participantes ya agregados previamente
-    this.filtrarParticipantes();
+    this.filtrarParticipantes()
     console.log("Residentes filtrados finales")
     console.log(this.residentes);
     this.residenteArray = this.residentes;
+    this.nombreCreador = this.sesioneducativa.datoscreador
   },
 }
 </script>

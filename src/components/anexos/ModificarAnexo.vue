@@ -60,7 +60,7 @@
           color="#009900"
         ></v-textarea>
 
-        <v-combobox
+        <v-autocomplete
           filled
           v-model="anexo.area"
           label="Ingrese el área del anexo"
@@ -71,7 +71,7 @@
           @blur="$v.anexo.area.$touch()"
           :error-messages="errorArea"
         >
-        </v-combobox>
+        </v-autocomplete>
 
         <div>
           <vue-dropzone
@@ -79,6 +79,7 @@
             id="dropzone"
             @vdropzone-success="afterSuccess"
             @vdropzone-removed-file="afterRemoved"
+            @vdropzone-file-added="vfileAdded"
             :options="dropzoneOptions"
           >
           </vue-dropzone>
@@ -114,7 +115,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, between } from "vuelidate/lib/validators";
 export default {
-  props: ["anexo","residente"],
+  props: ["anexo"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -124,13 +125,15 @@ export default {
       areas: [
         { text: "Psicológica", value: "psicologica" },
         { text: "Social", value: "social" },
-        { text: "Educativa", value: "educativa" }
+        { text: "Educativa", value: "educativa" },
       ],
+      residente: {
+        residente: "",
+        id: "",
+      },
       dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
-        maxFilesize: 3.0,
-        maxFiles: 1,
         acceptedFiles: ".pdf",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
@@ -142,15 +145,54 @@ export default {
     };
   },
   mounted() {
-    /*
-    var file = { size: 250, name: "icon", type: "application/pdf" };
-    for (let index = 0; index < this.anexosAux.length; index++) {
-      var url = this.anexo.enlaces.firmas[index].link;
+    console.log('ptm help');
+    this.$refs.myVueDropzone.removeAllFiles();
+    for (let index = 0; index < this.anexo.enlaces.length; index++) {
+      var file = {
+        size: 250,
+        name: `${this.anexo.enlaces[index].descripcion}.pdf`,
+        type: "application/pdf",
+        url: `${this.anexo.enlaces[index].link}`,
+        accepted: true,
+      };
+      var url = this.anexo.enlaces[index].link;
       this.$refs.myVueDropzone.manuallyAddFile(file, url);
-    } */
+      this.anexosAux.push(
+        this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[index]
+      );
+    }
+    axios
+      .get("/residente/all")
+      .then((res) => {
+        let residentesMap = res.data.map(function (res) {
+          return {
+            residente: res.nombre + " " + res.apellido,
+            numeroDocumento: res.numeroDocumento,
+            id: res.id,
+          };
+        });
+        this.listResidentes = residentesMap;
+        if (residentesMap !== undefined) {
+          let residente_temporal = residentesMap.find(
+            (element) => element.id === this.anexo.idresidente
+          );
+          this.residente = {
+            residente:
+              residente_temporal.nombre + " " + residente_temporal.apellido,
+            id: residente_temporal.id,
+          };
+        }
+        this.loadingSearch = false;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   },
   methods: {
     ...mapMutations(["setResidentes"]),
+    vfileAdded(file) {
+      //console.log(file);
+    },
     async modificarAnexo() {
       this.$v.$touch();
       if (this.$v.$invalid) {
@@ -162,26 +204,34 @@ export default {
           false
         );
       } else {
+        this.anexo.enlaces = [];
         for (let index = 0; index < this.anexosAux.length; index++) {
-          let formData = new FormData();
+          if (this.anexosAux[index].url !== undefined) {
+            this.anexo.enlaces.push({link: this.anexosAux[index].url, descripcion: "Enlace " + (index + 1)})
+            /*this.anexo.enlaces[index].link = this.anexosAux[index].url;
+            this.anexo.enlaces[index].descripcion = "Enlace " + (index + 1);*/
+          } else {
+            let formData = new FormData();
 
-          formData.append("file", this.anexosAux[index]);
+            formData.append("file", this.anexosAux[index]);
 
-          await axios
-            .post("/Media/archivos/pdf", formData)
-            .then((res) => {
-              this.anexo.enlaces[index].link = res.data;
-              this.anexo.enlaces[index].descripcion = "Enlace " + (index + 1);
-            })
-            .catch((err) => {
-              console.error(err);
-            });
+            await axios
+              .post("/Media/archivos/pdf", formData)
+              .then((res) => {
+                this.anexo.enlaces.push({link: res.data, descripcion: "Enlace " + (index + 1)})
+                /*this.anexo.enlaces[index].link = res.data;
+                this.anexo.enlaces[index].descripcion = "Enlace " + (index + 1);*/
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+          }
         }
 
         this.anexo.idresidente = this.residente.id;
 
         await axios
-          .put("/Anexo", anexo)
+          .put("/Anexo", this.anexo)
           .then((res) => {
             this.anexo = res.data;
             if (this.anexo.id !== "") {
@@ -194,7 +244,7 @@ export default {
               );
             }
           })
-          .catch((err) => console.log(err)); 
+          .catch((err) => console.log(err));
       }
     },
     afterSuccess(file, response) {
@@ -202,7 +252,6 @@ export default {
     },
     afterRemoved(file, error, xhr) {
       let indexFile = this.anexosAux.findIndex((document) => document == file);
-
       if (indexFile != -1) {
         this.anexosAux.splice(indexFile, 1);
       }

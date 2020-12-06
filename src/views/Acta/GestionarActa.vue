@@ -34,9 +34,8 @@
                   <span>Registrar nueva Acta</span>
                 </v-btn>
               </template>
-             <RegistrarActa v-if="dialogoregistro" :actaI="actaI" @close-dialog-detail="closeDialogRegistrar()">
-                
-              ></RegistrarActa>
+             <RegistrarActa 
+                  @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
             </v-dialog>
           </v-toolbar>
         </template>
@@ -44,13 +43,19 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
              <v-dialog v-model="dialogoactualizacion" max-width="880px">
-               <ActualizarActa v-if="dialogoactualizacion" :actaI="actaI" @close-dialog-detail="closeDialogActualizar()">
+               <ActualizarActa v-if="dialogoactualizacion" 
+        :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()">
           </ActualizarActa></v-dialog> -->
-            <v-btn color="warning" dark @click="editItem(item)">
+            <v-btn color="warning" dark @click="abrirDialogoActualizar(item.id)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
                  <!-- <v-dialog v-model="Visualizarplan" max-width="880px">-->
+                   
+                  <v-dialog persistent v-model="dialogodetalle" max-width="880px">
+          <VisualizarActa :usuario="usuario" @close-dialog-detail="closeDialogDetalle()">
+          </VisualizarActa>
+      </v-dialog>
                   <v-btn color="info" @click="abrirDialogoDetalle(item.id)" >
                   <v-icon left> mdi-pencil </v-icon>
                        <span>Visualizar</span>
@@ -58,15 +63,7 @@
                <!--   </v-dialog> -->
           </v-row>
         </template>
-      </v-data-table>
-       
-            <v-dialog persistent
-                v-model="dialogodetalle" 
-                max-width="880px">
-          <VisualizarActa :plan="plan" @close-dialog-detail="closeDialogDetalle()">
-          </VisualizarActa>
-      </v-dialog>
-      
+      </v-data-table>             
     </v-card>
   </div>
 </template>
@@ -89,7 +86,7 @@ export default {
     return {
       search: "",
       plan: {},
-      planA: [],
+    
       headers: [
         {
           text: "Nombre Acta Externamiento",
@@ -106,7 +103,7 @@ export default {
           nombre: "ActaI_Edu_Xiomara_1",
           usuaria: "Xiomara Paredes Guerra",
           fechaRegistro: "15/09/2019",
-          id: "5facd2e1bd5f87ed3632aa12",
+          id: "5f7d0906845dc60be0f02949",
         },
         {
           nombre: "ActaI_Psico_Xiomara_1",
@@ -124,7 +121,7 @@ export default {
       ],
       dialogodetalle: false,
       dialogoregistro: false,
-      Visualizarplan: false,
+      VisualizarActa: false,
       dialogoactualizacion: false
     };
     
@@ -149,22 +146,22 @@ export default {
       this.dialogoactualizacion = false;
     },
     closeDialogDetalle(){
-      this.dialogodetalle = false;
+      this.VisualizarActa = false;
     },
-    editItem(item) {
-      console.log(item);
+  editItem(item) {
+    console.log(item);
     },
     deleteItem(item) {
       console.log(item);
     },
 
     async regitem(item){
-      this.plan = await this.reg(item);
-      this.dialogoregistro=!this.dialogoregistro;
-   
+      this.plan = await this.reg(id);
+     this.dialogoregistro=!this.dialogoregistro;
+    console.log(item);
 
     },
- async reg(item){
+ async reg(id){
       var user = {};
       await axios.get("/actas/id?id="+id)//prueba
       .then(res => {
@@ -175,36 +172,34 @@ export default {
       return user;
     },
 
-    async editItem(item) {
-      this.plan =  await this.actu(item); 
+    async abrirDialogoActualizar(id) {
+      this.plan =  await this.actu(id); 
       this.dialogoactualizacion=!this.dialogoactualizacion;
-      
+      console.log(id);
    //   console.log(item);
     },
-    async actu(item){
+    async actu(id){
    
       var user = {};
-      await axios.get("/actas/id?id="+item)//prueba
+      await axios.get("/actas/id?id="+id)//prueba
       .then(res => {
          user = res.data; 
       })
       .catch(err => console.log(err));
       return user;
     },
-    detailItem(item) {
+    detailItem(id) {
            
  // console.log(item.id);
     },
     /////////////////////////////////////
-    closeDialogDetalle() {
-      this.dialogodetalle = false;
-    },
+  
     ///abrir dialogo de detalle
-    async abrirDialogoDetalle(idPlanI){
+    async abrirDialogoDetalle(id){
      
-       this.plan =  await this.obtenerCualquiercosa(idPlanI); 
+       this.plan =  await this.obtenerCualquiercosa(id); 
         this.dialogodetalle = !this.dialogodetalle;
-        console.log(this.plan);
+       console.log(id);
         },
         
       async obtenerCualquiercosa(id){
@@ -222,12 +217,6 @@ export default {
 
   },
    computed:{
-     
-     
-          
-     
-     
-     
     ...mapState(["planesD"])
   }
 };

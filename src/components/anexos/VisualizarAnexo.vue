@@ -31,11 +31,41 @@
           readonly
         ></v-textarea>
 
+        <v-text-field
+          :value="areaAux"
+          label="Area"
+          outlined
+          color="#009900"
+          readonly
+        ></v-text-field>
+
         <div>
-          <div v-for="(item, index) in anexo.enlaces" :key="item.index">
-            <a :href="item.link">{{ item.descripcion }}</a>
-          </div>
+          <v-list>
+            <v-list-item v-for="(item, index) in anexo.enlaces" :key="index">
+              <v-list-item-content>
+                <v-list-item-title
+                  >Documento Anexado N° {{ index+1 }}</v-list-item-title
+                >
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-btn icon @click="openFrameDialog(item.link)">
+                  <v-icon color="info" large>mdi-information</v-icon>
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
         </div>
+
+        <v-dialog v-model="showFrameDocument" persistent max-width="900">
+          <v-card>
+          <iframe :src="actualUrl" height="550" width="900"> </iframe>
+          <v-btn color="error" elevation="2" block @click="closeFrameDialog">
+            <v-icon left>mdi-close-outline</v-icon>
+            Cerrar
+          </v-btn>
+          </v-card>
+        </v-dialog>
+
         <v-divider class="divider-custom"></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -68,6 +98,9 @@ export default {
         residente: "",
         id: "",
       },
+      areaAux: "",
+      actualUrl: "",
+      showFrameDocument: false
     };
   },
   async created() {
@@ -84,11 +117,35 @@ export default {
         this.residente.residente = selected.apellido + " " + selected.nombre;
       })
       .catch((err) => console.log(err));
+    this.getAreaText(this.anexo.area);
   },
   methods: {
     ...mapMutations(["setResidentes"]),
     closeDialog() {
       this.$emit("close-dialog-detail");
+    },
+    openFrameDialog(url){
+      this.actualUrl = url;
+      this.showFrameDocument = true;
+    },
+    closeFrameDialog(){
+      this.actualUrl = "";
+      this.showFrameDocument = false;
+    },
+    getAreaText(texto) {
+      switch (this.anexo.area) {
+        case "social":
+          this.areaAux = "Social";
+          break;
+        case "psicologica":
+          this.areaAux = "Psicológica";
+          break;
+        case "educativa":
+          this.areaAux = "Educativa";
+          break;
+        default:
+          this.areaAux = "";
+      }
     },
   },
   computed: {
