@@ -314,7 +314,7 @@
                           </v-card >
                                <v-card class="subcard" color="#e6f3ff">
                                    <v-text-field
-                                    v-model="incidencia.firma.nombre"
+                                    v-model="incidencia.firma.cargo"
                                     label="Autor del Informe de Incidencia"
                                     outlined
                                     color="info"

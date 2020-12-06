@@ -1,8 +1,6 @@
 <template>
   <v-card >
     <v-card-title class="justify-center">Modificacion de Perfil</v-card-title>
-
-      
       <form>
         <v-text-field
            v-model="usuario.datos.nombre"

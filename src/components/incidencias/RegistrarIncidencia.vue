@@ -302,7 +302,7 @@
                           <v-card-title>Datos del Informante</v-card-title>
                           <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
                               <v-text-field
-                                  v-model="incidencia.firma.nombre"
+                                  v-model="this.user.usuario"
                                   label="Autor del Informe de Incidencia"
                                   outlined
                                   color="info"
@@ -311,8 +311,8 @@
                           </v-card >
                                <v-card class="subcard" color="#e6f3ff">
                                    <v-text-field
-                                    v-model="incidencia.firma.nombre"
-                                    label="Autor del Informe de Incidencia"
+                                    v-model="this.user.rol.nombre"
+                                    label="Cargo del Autor"
                                     outlined
                                     color="info"
                                     readonly
@@ -397,8 +397,8 @@ export default {
              residentes:[],
              firma:{
                urlfirma:"",
-               nombre:"Jose Alejandro Paredes Masias",
-               cargo:"Director del Area Educativa"
+               nombre:"",
+               cargo:""
              }
             },
         observacionesAux:"",
@@ -472,8 +472,12 @@ export default {
                 "<strong>Verifique los campos Ingresados<strong>"
               );
           }else{
-            var urlfirma = await this.registrarFirma(this.incidencia.firma.urlfirma);
-            this.incidencia.firma.urlfirma = urlfirma;
+            var url = await this.registrarFirma(this.incidencia.firma.urlfirma);
+            this.incidencia.firma={
+              urlfirma : url,
+              nombre: this.user.usuario,
+              cargo: this.user.rol.nombre
+            }
             this.incidencia.usuario = this.user.id;
             var fecha = new Date(this.incidencia.fecha);
             fecha.setHours(this.incidencia.hora.split(":")[0]);
