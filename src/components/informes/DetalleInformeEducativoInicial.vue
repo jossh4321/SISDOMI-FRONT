@@ -353,15 +353,13 @@ export default {
     },
     async obtenerEducador() {
       await axios
-        .get("/usuario/id?id=" + this.informe.creadordocumento)
-        .then((res) => {          
-          console.log(res);
+        .get("/usuario/id?id=" + this.informe.contenido.evaluador)
+        .then((res) => {                    
           this.educador = res.data.datos.nombre + " " + res.data.datos.apellido;
         })
         .catch((err) => console.log(err));        
     },
-    verFirma(index) {
-      console.log(this.informe.contenido.firmas[index].urlfirma);
+    verFirma(index) {      
       this.imagen = this.informe.contenido.firmas[index].urlfirma;
       this.dialogVistaPreviaFirma = true;
     },
@@ -370,7 +368,7 @@ export default {
     },
     verAnexo(index) {
       this.pdf = this.informe.contenido.anexos[index].url;
-      console.log(this.pdf), (this.dialogVistaPreviaAnexos = true);
+      (this.dialogVistaPreviaAnexos = true);
     },
     cerrarVistaPreviaAnexo() {
       this.dialogVistaPreviaAnexos = false;

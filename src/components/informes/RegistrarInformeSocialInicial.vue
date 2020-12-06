@@ -82,6 +82,56 @@
                     style="margin-top:5px"
                   ></v-textarea>
                 </div>
+
+               <v-autocomplete
+                  :items="listasociales"
+                  filled
+                  chips
+                  dense
+                  outlined
+                  v-model="informe.contenido.evaluador"
+                  color="#009900"
+                  label="Evaluador"
+                  item-text="usuario"
+                  item-value="id"
+                  :error-messages="errorEvaluador"
+                >
+                  <template v-slot:selection="data">
+                    <v-chip
+                      v-bind="data.attrs"
+                      :input-value="data.selected"
+                      style="margin-top:5px"
+                    >
+                      <v-avatar left color="#b3b3ff" size="24">
+                        <span style="font-size:12px">RT</span>
+                      </v-avatar>
+                      {{ data.item.datos.nombre }}
+                      {{ data.item.datos.apellido }}
+                    </v-chip>
+                  </template>
+                  <template v-slot:item="data">
+                    <template>
+                      <v-list-item-avatar>
+                        <v-avatar left color="#b3b3ff" size="24">
+                          <span style="font-size:12px">UC</span>
+                        </v-avatar>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          >Nombre completo: {{ data.item.datos.nombre }}
+                          {{ data.item.datos.apellido }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle
+                          >Nro. Documento:
+                          {{
+                            data.item.datos.numerodocumento
+                          }}</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </template>
+                  </template>
+                </v-autocomplete>
+
                 <v-textarea
                   v-model="informe.contenido.antecedentes"
                   label="Antecedentes"
@@ -433,7 +483,7 @@
                 ></v-textarea>
                 <v-textarea
                   v-model="informe.contenido.situacionactual"
-                  label="Descripción de la situacion social"
+                  label="Descripción de la situacion actual"
                   outlined
                   color="#009900"
                   rows="1"
@@ -729,18 +779,17 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers, numeric, between } from "vuelidate/lib/validators";
 import moment from "moment";
-
+import { mapGetters } from "vuex";
 
 function esTexto(value) {
-  return /^[A-Za-z\s]+$/.test(value); //acepta solo texto y espacios en blanco
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
 
 function esParrafo(value) {
-  return /^[A-Za-z\d\s.,;]+$/.test(value); //acepta tambien . , ;
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
-
 export default {
-  props: ["listaresidentes", "visible"],
+  props: ["listaresidentes", "visible", "listasociales"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -774,7 +823,7 @@ export default {
         tipo: "InformeSocialInicial",
         historialcontenido: [],
         creadordocumento: "",
-        fechacreacion: "2020-08-13T09:35:12.748+00:00",
+        fechacreacion: "",
         area: "social",
         fase: "acogida",
         idresidente: "",
@@ -818,10 +867,7 @@ export default {
       imagen: "",
       fileList: [],
     };
-  },
-  created() {
-    console.log("Siganme en twitch.tv/anderasdfg c:");
-  },
+  },  
   methods: {
     ...mapMutations(["addInforme"]),
     async sendPDFFiles() {
@@ -847,8 +893,8 @@ export default {
       console.log(this.informe.contenido.anexos);
     },
     async registrarInforme() {
-        await this.sendPDFFiles();
-      //this.informe.creadordocumento = this.user.id;
+      await this.sendPDFFiles();
+      this.informe.creadordocumento = this.user.id;
       console.log(this.informe);
       this.$v.informe.$touch();
       if (this.$v.informe.$invalid) {
@@ -887,53 +933,14 @@ export default {
           "Informe registrado Satisfactoriamente",
           "<strong>Se redirigira a la interfaz de gestión<strong>"
         );
-      }
-      // await this.sendPDFFiles();
-      // console.log(this.informe);
-      // this.$v.informe.$touch();      
-      // if (this.$v.informe.$invalid) {
-      //   console.log("Hay errores :c");
-      //   this.mensaje(
-      //     "error",
-      //     "..Oops",
-      //     "Se encontraron errores en el formulario",
-      //     "<strong>Verifique los campos Ingresados<strong>"
-      //   );
-      // } else {
-      //   console.log("no hay errores");
-      //   await axios
-      //     .post("/informe/informesi", this.informe)
-      //     .then((res) => {
-      //       this.informe = res.data;
-      //       var resi = this.listaresidentes.filter(function(residente) {
-      //         return residente.id == res.data.idresidente;
-      //       });
-      //       var info = {
-      //         id: res.data.id,
-      //         tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-      //         fechacreacion: res.data.fechacreacion.split("T")[0],
-      //         codigodocumento: res.data.contenido.codigodocumento,
-      //         nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
-      //       };
-      //       this.addInforme(info);
-      //       this.cerrarDialogo();
-      //     })
-      //     .catch((err) => console.log(err));
-      //   await this.mensaje(
-      //     "success",
-      //     "Listo",
-      //     "Informe registrado satisfactoriamente",
-      //     "<strong>Se redirigira a la interfaz de gestión<strong>"
-      //   );
-      // }
+      }     
     },
     resetInformeValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
       this.$v.informe.$reset();
       this.$v.firmas.$reset();
     },
-    cerrarDialogo() {
-    //  this.informe = this.limpiarInforme();
+    cerrarDialogo() {    
       this.step = 1;
       this.$emit("close");
     },
@@ -1159,6 +1166,7 @@ export default {
         }
       },
     },
+    ...mapGetters(["user"]),
     errorResidente() {
       const errors = [];
       if (!this.$v.informe.idresidente.$dirty) return errors;
@@ -1295,7 +1303,7 @@ export default {
       const errors = [];
       if (!this.$v.informe.contenido.situacionactual.$dirty) return errors;
       !this.$v.informe.contenido.situacionactual.required &&
-        errors.push("Debe registrar la situación social obligatoriamente");
+        errors.push("Debe registrar la situación actual obligatoriamente");
       !this.$v.informe.contenido.situacionactual.esParrafo &&
         errors.push("No se aceptan caracteres especiales");
       return errors;
@@ -1342,6 +1350,13 @@ export default {
         ? true
         : false;
     },
+    errorEvaluador() {
+      const errors = [];
+      if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
+      !this.$v.informe.contenido.evaluador.required &&
+        errors.push("Debe seleccionar un evaluador obligatoriamente");
+      return errors;
+    },
     isDisabled() {
       if (this.accion == "consultar") {
         return true;
@@ -1385,6 +1400,9 @@ export default {
             required,
             esParrafo
           },
+          evaluador:{
+            required,
+          }
         },
       },
       familiar: {

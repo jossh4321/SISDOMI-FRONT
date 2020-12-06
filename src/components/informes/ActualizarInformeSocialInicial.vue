@@ -81,6 +81,56 @@
                   style="margin-top:5px"
                 ></v-textarea>
               </div>
+
+              <v-autocomplete
+                  :items="listasociales"
+                  filled
+                  chips
+                  dense
+                  outlined
+                  v-model="informe.contenido.evaluador"
+                  color="#009900"
+                  label="Evaluador"
+                  item-text="usuario"
+                  item-value="id"
+                  :error-messages="errorEvaluador"
+                >
+                  <template v-slot:selection="data">
+                    <v-chip
+                      v-bind="data.attrs"
+                      :input-value="data.selected"
+                      style="margin-top:5px"
+                    >
+                      <v-avatar left color="#b3b3ff" size="24">
+                        <span style="font-size:12px">RT</span>
+                      </v-avatar>
+                      {{ data.item.datos.nombre }}
+                      {{ data.item.datos.apellido }}
+                    </v-chip>
+                  </template>
+                  <template v-slot:item="data">
+                    <template>
+                      <v-list-item-avatar>
+                        <v-avatar left color="#b3b3ff" size="24">
+                          <span style="font-size:12px">UC</span>
+                        </v-avatar>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          >Nombre completo: {{ data.item.datos.nombre }}
+                          {{ data.item.datos.apellido }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle
+                          >Nro. Documento:
+                          {{
+                            data.item.datos.numerodocumento
+                          }}</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </template>
+                  </template>
+                </v-autocomplete>
+
               <v-textarea
                 v-model="informe.contenido.antecedentes"
                 label="Antecedentes"
@@ -545,6 +595,7 @@
                   >
                   </vue-dropzone>
                 </div>
+
                 <v-card
                   color="#FAFAFA"
                   style="margin-top:5px"
@@ -804,17 +855,19 @@ import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import {
-  required,
-  minLength,
-  email,
-  helpers,
-  numeric,
-} from "vuelidate/lib/validators";
+import { required, minLength, email, helpers, numeric, between } from "vuelidate/lib/validators";
 import moment from "moment";
 
+function esTexto(value) {
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+}
+
+function esParrafo(value) {
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+}
+
 export default {
-  props: ["listaresidentes", "visible", "informe"],
+  props: ["listaresidentes", "visible", "informe", "listasociales"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -1188,6 +1241,8 @@ export default {
       if (!this.$v.informe.contenido.antecedentes.$dirty) return errors;
       !this.$v.informe.contenido.antecedentes.required &&
         errors.push("Debe completar los antecedentes obligatoriamente");
+      !this.$v.informe.contenido.antecedentes.esParrafo &&
+        errors.push("No se aceptan caracteres especiales");
       return errors;
     },
     errorNumeroDocumentoFamiliar() {
@@ -1195,6 +1250,8 @@ export default {
       if (!this.$v.familiar.numerodocumento.$dirty) return errors;
       !this.$v.familiar.numerodocumento.required &&
         errors.push("Debe escribir el número de documento obligatoriamente");
+      !this.$v.familiar.numerodocumento.esParrafo &&
+        errors.push("No se aceptan caracteres especiales");
       return errors;
     },
     errorNombreFamiliar() {
@@ -1202,6 +1259,8 @@ export default {
       if (!this.$v.familiar.nombre.$dirty) return errors;
       !this.$v.familiar.nombre.required &&
         errors.push("Debe escribir el nombre del familiar obligatoriamente");
+      !this.$v.familiar.nombre.esTexto &&
+        errors.push("No se aceptan números ni caracteres especiales");
       return errors;
     },
     errorApellidoFamiliar() {
@@ -1209,6 +1268,8 @@ export default {
       if (!this.$v.familiar.apellido.$dirty) return errors;
       !this.$v.familiar.apellido.required &&
         errors.push("Debe escribir el apellido del familiar obligatoriamente");
+      !this.$v.familiar.apellido.esTexto &&
+        errors.push("No se aceptan números ni caracteres especiales");
       return errors;
     },
     errorParentescoFamiliar() {
@@ -1218,6 +1279,8 @@ export default {
         errors.push(
           "Debe escribir el parentesco del familiar obligatoriamente"
         );
+      !this.$v.familiar.parentesco.esTexto &&
+        errors.push("No se aceptan números ni caracteres especiales");
       return errors;
     },
     errorEdadFamiliar() {
@@ -1227,15 +1290,17 @@ export default {
         errors.push("Debe escribir la edad del familiar obligatoriamente");
       !this.$v.familiar.edad.numeric &&
         errors.push("Debe Ingresar valores Numericos");
+      !this.$v.familiar.edad.between &&
+        errors.push("La edad debe estar entre 0 y 150 años");
       return errors;
     },
     errorEstadoCivil() {
       const errors = [];
       if (!this.$v.familiar.estadocivil.$dirty) return errors;
       !this.$v.familiar.estadocivil.required &&
-        errors.push(
-          "Debe escribir el estado civil del familiar obligatoriamente"
-        );
+        errors.push("Debe escribir el estado civil del familiar obligatoriamente");
+      !this.$v.familiar.estadocivil.esTexto &&
+        errors.push("No se aceptan números ni caracteres especiales");
       return errors;
     },
     errorGradoInstruccionFamiliar() {
@@ -1245,6 +1310,8 @@ export default {
         errors.push(
           "Debe escribir el grado de instrucción del familiar obligatoriamente"
         );
+      !this.$v.familiar.gradoinstruccion.esTexto &&
+        errors.push("No se aceptan números ni caracteres especiales");
       return errors;
     },
     errorOcupacionFamiliar() {
@@ -1252,6 +1319,8 @@ export default {
       if (!this.$v.familiar.ocupacion.$dirty) return errors;
       !this.$v.familiar.ocupacion.required &&
         errors.push("Debe escribir la ocupación del familiar obligatoriamente");
+      !this.$v.familiar.ocupacion.esParrafo &&
+        errors.push("No se aceptan caracteres especiales");
       return errors;
     },
     errorSituacionVivienda() {
@@ -1261,6 +1330,8 @@ export default {
         errors.push(
           "Debe registrar la situación de la vivienda obligatoriamente"
         );
+      !this.$v.informe.contenido.situacionvivienda.esParrafo &&
+        errors.push("No se aceptan caracteres especiales");
       return errors;
     },
     errorSituacionEconomica() {
@@ -1268,6 +1339,8 @@ export default {
       if (!this.$v.informe.contenido.situacioneconomica.$dirty) return errors;
       !this.$v.informe.contenido.situacioneconomica.required &&
         errors.push("Debe registrar la situación económica obligatoriamente");
+      !this.$v.informe.contenido.situacioneconomica.esParrafo &&
+        errors.push("No se aceptan caracteres especiales");
       return errors;
     },
     errorSituacionSalud() {
@@ -1275,6 +1348,8 @@ export default {
       if (!this.$v.informe.contenido.situacionsalud.$dirty) return errors;
       !this.$v.informe.contenido.situacionsalud.required &&
         errors.push("Debe registrar la situación de salud obligatoriamente");
+      !this.$v.informe.contenido.situacionsalud.esParrafo &&
+        errors.push("No se aceptan caracteres especiales");
       return errors;
     },
     errorSituacionEducativa() {
@@ -1282,13 +1357,17 @@ export default {
       if (!this.$v.informe.contenido.educacion.$dirty) return errors;
       !this.$v.informe.contenido.educacion.required &&
         errors.push("Debe registrar la situación educativa obligatoriamente");
+      !this.$v.informe.contenido.educacion.esParrafo &&
+        errors.push("No se aceptan caracteres especiales");
       return errors;
     },
     errorSituacionActual() {
       const errors = [];
       if (!this.$v.informe.contenido.situacionactual.$dirty) return errors;
       !this.$v.informe.contenido.situacionactual.required &&
-        errors.push("Debe registrar la situación social obligatoriamente");
+        errors.push("Debe registrar la situación actual obligatoriamente");
+      !this.$v.informe.contenido.situacionactual.esParrafo &&
+        errors.push("No se aceptan caracteres especiales");
       return errors;
     },
     errorSituacionFamiliar() {
@@ -1296,6 +1375,8 @@ export default {
       if (!this.$v.informe.contenido.situacionfamiliar.$dirty) return errors;
       !this.$v.informe.contenido.situacionfamiliar.required &&
         errors.push("Debe registrar la situación familiar obligatoriamente");
+      !this.$v.informe.contenido.situacionfamiliar.esParrafo &&
+        errors.push("No se aceptan caracteres especiales");
       return errors;
     },
     errorRecomendacion() {
@@ -1303,6 +1384,8 @@ export default {
       if (!this.$v.recomendacion.$dirty) return errors;
       !this.$v.recomendacion.required &&
         errors.push("Debe registrar la recomendación obligatoriamente");
+    !this.$v.recomendacion.esParrafo &&
+        errors.push("La recomendación no debe contener caracteres especiales.");  
       return errors;
     },
     errorNombreFirma() {
@@ -1310,6 +1393,8 @@ export default {
       if (!this.$v.firmas.nombre.$dirty) return errors;
       !this.$v.firmas.nombre.required &&
         errors.push("Debe registrar el nombre obligatoriamente");
+      !this.$v.firmas.nombre.esTexto &&
+        errors.push("El nombre debe contener solo texto.");
       return errors;
     },
     errorCargoFirma() {
@@ -1317,6 +1402,8 @@ export default {
       if (!this.$v.firmas.cargo.$dirty) return errors;
       !this.$v.firmas.cargo.required &&
         errors.push("Debe registrar el cargo obligatoriamente");
+      !this.$v.firmas.cargo.esTexto &&
+        errors.push("El cargo debe contener solo texto.");
       return errors;
     },
     errorUrlFirma() {
@@ -1324,6 +1411,13 @@ export default {
         this.$v.urlfirma.$dirty == true
         ? true
         : false;
+    },
+    errorEvaluador() {
+      const errors = [];
+      if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
+      !this.$v.informe.contenido.evaluador.required &&
+        errors.push("Debe seleccionar un evaluador obligatoriamente");
+      return errors;
     },
     isDisabled() {
       if (this.accion == "consultar") {
@@ -1335,63 +1429,82 @@ export default {
   },
   validations() {
     return {
-      informe: {
+       informe: {
         idresidente: {
           required,
         },
         contenido: {
           antecedentes: {
             required,
+            esParrafo
           },
           situacionvivienda: {
             required,
+            esParrafo
           },
           situacioneconomica: {
             required,
+            esParrafo
           },
           situacionsalud: {
             required,
+            esParrafo
           },
           situacionfamiliar: {
             required,
+            esParrafo
           },
           educacion: {
             required,
+            esParrafo
           },
           situacionactual: {
             required,
+            esParrafo
           },
+          evaluador:{
+            required,
+          }
         },
       },
       familiar: {
         nombre: {
           required,
+          esTexto
         },
         apellido: {
           required,
+          esTexto
         },
         numerodocumento: {
           required,
+          esParrafo
         },
         parentesco: {
           required,
+          esTexto
         },
         edad: {
           required,
           numeric,
+          between: between(0, 150)
         },
         estadocivil: {
           required,
+          esTexto
         },
         gradoinstruccion: {
           required,
+          esTexto
         },
         ocupacion: {
           required,
+          esParrafo
         },
       },
       recomendacion: {
         required,
+        esParrafo
       },
       urlfirma: {
         required,
@@ -1399,12 +1512,14 @@ export default {
       firmas: {
         nombre: {
           required,
+          esTexto
         },
         cargo: {
           required,
+          esTexto
         },
       },
-    };
+    }
   },
 };
 </script>

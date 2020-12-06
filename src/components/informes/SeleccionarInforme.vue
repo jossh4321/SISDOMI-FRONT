@@ -40,6 +40,7 @@
                             v-if="showRegistrarInformeSI"
                             :listaresidentes="listaresidentes" 
                             :visible="showRegistrarInformeSI"  
+                            :listasociales="listasociales"
                             @close="showRegistrarInformeSI=false"/>
                         <RegistrarInformeSocialEvolutivo                 
                             v-if="showRegistrarInformeSE"
@@ -49,6 +50,7 @@
                             @close="showRegistrarInformeSE=false"/>
                         <RegistrarInformePsicologicoInicial        
                             :listaresidentes="listaresidentes"    
+                            :listapsicologos="listapsicologos"
                             v-if="showRegistrarInformePI" 
                             :visible="showRegistrarInformePI"                                 
                             @close="showRegistrarInformePI=false"/>
@@ -75,7 +77,7 @@ import RegistrarInformePsicologicoInicial from '@/components/informes/RegistrarI
 import RegistrarInformePsicologicoEvolutivo from '@/components/informes/RegistrarInformePsicologicoEvolutivo.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
-    props:["listaresidentes", "listaeducadores"],
+    props:["listaresidentes", "listaeducadores","listasociales", "listapsicologos"],
     components: {
         RegistrarInformeEducativoInicial,
         RegistrarInformeEducativoEvolutivo,
