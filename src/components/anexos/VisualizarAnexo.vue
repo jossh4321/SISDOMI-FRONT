@@ -44,7 +44,7 @@
             <v-list-item v-for="(item, index) in anexo.enlaces" :key="index">
               <v-list-item-content>
                 <v-list-item-title
-                  >Documento Anexado N° {{ index }}</v-list-item-title
+                  >Documento Anexado N° {{ index+1 }}</v-list-item-title
                 >
               </v-list-item-content>
               <v-list-item-action>
