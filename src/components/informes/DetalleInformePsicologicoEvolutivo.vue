@@ -1,6 +1,6 @@
 <template>
     <v-card>
-      <v-card-title class="justify-center">{{titulo}}</v-card-title>
+      <v-card-title class="justify-center">{{ titulo }}</v-card-title>
       <v-stepper v-model="step">
         <v-stepper-header>
           <v-stepper-step editable step="1">
@@ -11,121 +11,60 @@
             Análisis y Diagnóstico
           </v-stepper-step>
         </v-stepper-header>
+        <!-- fdsfs -->
         <v-stepper-items>
           <v-stepper-content step="1">
             <div class="container-user">
               <form>
                 <v-text-field
-                    v-model="residente"
-                    label="Usuaria CAR"
-                    outlined
+                v-model="residente"
+                label="Usuaria CAR"
+                outlined
+                readonly
+                color="#009900"
+              ></v-text-field>
+                <v-menu
+                v-model="datemenu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="informe.fechacreacion"
+                    label="Fecha de Evaluación"
+                    prepend-icon="mdi-calendar"
                     readonly
+                    v-bind="attrs"
+                    v-on="on"
                     color="#009900"
-                ></v-text-field>
-                <v-text-field
-                    v-model="educador"
-                    label="Educador Responsable"
-                    outlined
-                    readonly
-                    color="#009900"
-                ></v-text-field>  
-                <v-text-field
-                    v-model="informe.contenido.iereinsersion.nombre"
-                    label="Instirución Educativa"
-                    outlined
-                    readonly
-                    color="#009900"
-                ></v-text-field>
-        <v-row>
-          <v-col
-            cols="12"
-            md="4"
-          >
-            <v-text-field
-              v-model="informe.contenido.iereinsersion.modalidad"
-              label="Modalidad"
-              outlined
-              readonly
-              color="#009900"
-            ></v-text-field>
-          </v-col>
-          <v-col
-            cols="12"
-            md="4"
-          >
-            <v-text-field
-              v-model="informe.contenido.iereinsersion.nivel"
-              label="Nivel Educativo"
-              outlined
-              readonly
-              color="#009900"
-            ></v-text-field>
-          </v-col>
-          <v-col
-            cols="12"
-            md="4"
-          >
-            <v-text-field
-              v-model="informe.contenido.iereinsersion.grado"
-              label="Grado"
-              outlined
-              readonly
-              color="#009900"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-textarea
-          v-model="informe.contenido.antecedentes"        
-          label="Antecedentes"
-          auto-grow
-          outlined
-          readonly
-          rows="2"
-          row-height="40"                    
-          color="#009900"
-          shaped
-        ></v-textarea>
-        <v-textarea
-          v-model="informe.contenido.situacionactual"        
-          label="Situación Educativa Actual"
-          auto-grow
-          outlined
-          readonly
-          rows="2"
-          row-height="40"                    
-          color="#009900"
-          shaped
-        ></v-textarea>                
-        <v-row>
-          <v-col>
-            <v-btn block @click="step = 2" color="success">
-              <v-icon left>mdi-page-next-outline</v-icon>
-              <span>Continuar</span>
-            </v-btn>
-          </v-col>
-          <v-col>
-             <v-btn block @click="cerrarDialogo()" color="primary">
-              <v-icon left>mdi-close-outline</v-icon>
-              <span>Cerrar</span>
-            </v-btn>
-          </v-col>
-        </v-row>
-              </form>
-            </div>
-          </v-stepper-content>
-          <v-stepper-content step="2">
-            <div class="container-user">
-              <form>
+                  ></v-text-field>
+                </template>
+              </v-menu>
+                <v-textarea
+                  v-model="informe.contenido.observacionesgenerales"
+                  label="Observaciones generales de conducta"
+                  auto-grow
+                  outlined
+                  readonly
+                  rows="2"
+                  row-height="40"
+                  color="#009900"
+                  shaped
+                ></v-textarea>
+
                 <v-card
-                  style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
+                  style="margin-bottom:5%;padding-bottom:1%;background-color:#EAEAEA"
                 >
                   <v-card
                     elevation="0"
                     style="background-color:#EAEAEA"
                     height="70"
                   >
-                    <v-card-title>
-                    Logros Alcanzados
+                  <v-card-title>
+                    Pruebas Psicologicas Aplicadas
                   </v-card-title>
                   </v-card>
 
@@ -135,12 +74,84 @@
                     color="#FAFAFA"
                     style="margin:5px"
                     height="60"
-                    v-for="logro in informe.contenido.logroalcanzado"
-                    :key="logro"
+                    v-for="prueba in informe.contenido.pruebasaplicadas"
+                    :key="prueba"
                   >
                     <v-row style="margin-left:10px;heigh:100%" align="center">
                       <v-col :cols="8" align="left">
-                        <span>{{ logro }}</span>
+                        <span>{{ prueba }}</span>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+
+                <v-textarea
+                  v-model="informe.contenido.interpretacionresultados"
+                  label="Interpretación de resultados"
+                  auto-grow
+                  outlined
+                  readonly
+                  rows="2"
+                  row-height="40"
+                  color="#009900"
+                  shaped
+                ></v-textarea>
+                <v-textarea
+                  v-model="informe.contenido.diagnostico"
+                  label="Diagnostico Psicologico"
+                  auto-grow
+                  outlined
+                  readonly
+                  rows="2"
+                  row-height="40"
+                  color="#009900"
+                  shaped
+                ></v-textarea>
+                <v-row>
+                  <v-col>
+                    <v-btn block @click="step = 2" color="success">
+                      <v-icon left>mdi-page-next-outline</v-icon>
+                      <span>Continuar</span>
+                    </v-btn>
+                  </v-col>
+                  <v-col>
+                    <v-btn block @click="cerrarDialogo()" color="primary">
+                      <v-icon left>mdi-close-outline</v-icon>
+                      <span>Cerrar</span>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </form>
+            </div>
+          </v-stepper-content>
+          <v-stepper-content step="2">
+            <div class="container-user">
+              <form>
+                <v-card
+                  style="margin-top:1%;margin-bottom:5%;padding-bottom:1%;background-color:#EAEAEA"
+                >
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                  <v-card-title>
+                    Conclusiones
+                  </v-card-title>
+                  </v-card>
+
+                  <v-card
+                    tile
+                    elevation="0"
+                    color="#FAFAFA"
+                    style="margin:5px"
+                    height="60"
+                    v-for="conclusion in informe.contenido.conclusiones"
+                    :key="conclusion"
+                  >
+                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                      <v-col :cols="8" align="left">
+                        <span>{{ conclusion }}</span>
                       </v-col>
                     </v-row>
                   </v-card>
@@ -149,15 +160,14 @@
                   style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
                 >
                   <v-card
-                    elevation="0"
-                    style="background-color:#EAEAEA"
-                    height="70"
-                  >
-                    <v-card-title>
+                  elevation="0"
+                  style="background-color:#EAEAEA"
+                  height="50"
+                >
+                  <v-card-title>
                     Recomendaciones
                   </v-card-title>
-                  </v-card>
-
+                </v-card>
                   <v-card
                     tile
                     elevation="0"
@@ -174,8 +184,8 @@
                     </v-row>
                   </v-card>
                 </v-card>
-                 
-                 <v-card
+
+                <v-card
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
                     <v-card
@@ -257,7 +267,7 @@
                 </v-dialog>
 
                 <v-card
-                style="margin-top:30px;margin-bottom:3%;padding:5px 5px;background-color:#EAEAEA"
+                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
               >
                 <v-card
                   elevation="0"
@@ -347,10 +357,15 @@
                           </v-card>
                 </v-dialog>
 
-                    <v-btn block @click="cerrarDialogo()" color="primary">
-                      <v-icon left>mdi-close-outline</v-icon>
-                      <span>Cerrar</span>
-                    </v-btn>
+              <v-row>
+                <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              
               </form>
             </div>
           </v-stepper-content>
@@ -358,70 +373,69 @@
       </v-stepper>
     </v-card>
 </template>
-<script> 
-import axios from 'axios';
-import { mapMutations, mapState} from "vuex";
-import moment from 'moment'
+<script>
+import axios from "axios";
+import { mapMutations, mapState } from "vuex";
+import moment from "moment";
 
 export default {
-    name:"DetalleInformeEducativoEvolutivo",
-    props:["informe","titulo"],
-    data () {
-      return {                
-        datemenu: false,
-        step:1,
-        residente:"",
-        educador:"",
-        logro:"",
-        recomendacion:"",
-        urlfirma: "",
-        firmas: { urlfirma: "", nombre: "", cargo: "" },
-        imagen: "",
-        pdf: "",
-        dialogVistaPreviaFirma: false,
-        dialogVistaPreviaAnexos: false,
-      }
+  props: ["informe", "titulo"],
+  data() {
+    return {
+      datemenu: false,
+      dialogVistaPreviaFirma: false,
+      dialogVistaPreviaAnexos: false,
+      step: 1,
+      recomendacion: "",
+      recomendaciones: [],
+      urlfirma: "",
+      firmas: { urlfirma: "", nombre: "", cargo: "" },
+      imagen: "",
+      pdf: "",
+      residente: "",
+      pruebas:[],
+      prueba:"",
+      conclusion:"",
+      conclusiones:[],
+    };
+  },
+  async created() {
+    this.obtenerResidente()
+  },
+  methods: {
+    cerrarDialogo() {
+      this.$emit("close-dialog-detail");
     },
-    async created() {
-      this.obtenerResidente();
-      this.obtenerEducador();
+    async obtenerResidente() {
+      await axios
+        .get("/residente/id?id=" + this.informe.idresidente)
+        .then((x) => {
+          this.residente = x.data.nombre + " " + x.data.apellido;
+        })
+        .catch((err) => console.log(err));
     },
-    methods:{
-        cerrarDialogo(){
-            this.$emit("close-dialog-detail");
-        },
-        async obtenerResidente(){
-          await axios.get("/residente/id?id="+this.informe.idresidente)
-                  .then( x => {
-                            this.residente = x.data.nombre + " " +x.data.apellido;
-                  }).catch(err => console.log(err));
-        },
-        async obtenerEducador(){
-          await axios.get("/usuario/id?id="+this.informe.creadordocumento)
-            .then(res => {
-                    this.educador = res.data.datos.nombre + " "+res.data.datos.apellido;
-            }).catch(err => console.log(err));
-       },
-        verFirma(index) {
-        console.log(this.informe.contenido.firmas[index].urlfirma);
-        this.imagen = this.informe.contenido.firmas[index].urlfirma;
-        this.dialogVistaPreviaFirma = true;
-        },
-        cerrarVistaPreviaFirma() {
-          this.dialogVistaPreviaFirma = false;
-        },
-        verAnexo(index) {
-          this.pdf = this.informe.contenido.anexos[index].url;
-          console.log(this.pdf),
-          this.dialogVistaPreviaAnexos = true;
-        },
-        cerrarVistaPreviaAnexo() {
-          this.dialogVistaPreviaAnexos = false;
-        },
-    }
-}
+    verFirma(index) {
+      console.log(this.informe.contenido.firmas[index].urlfirma);
+      this.imagen = this.informe.contenido.firmas[index].urlfirma;
+      this.dialogVistaPreviaFirma = true;
+    },
+    cerrarVistaPreviaFirma() {
+      this.dialogVistaPreviaFirma = false;
+    },
+    verAnexo(index) {
+      this.pdf = this.informe.contenido.anexos[index].url;
+      console.log(this.pdf),
+      this.dialogVistaPreviaAnexos = true;
+    },
+    cerrarVistaPreviaAnexo() {
+      this.dialogVistaPreviaAnexos = false;
+    },
+   
+  },
+};
 </script>
-<style  scoped>
+
+<style scoped>
 .container-user {
   margin: 15px;
 }
@@ -442,12 +456,12 @@ export default {
 .subtitle {
   color: #314b5f;
 }
-.divider-custom{
-  margin-top:7px;
-  margin-bottom:7px
+.divider-custom {
+  margin-top: 7px;
+  margin-bottom: 7px;
 }
 
-.inputTextField{
+.inputTextField {
   border-color: green;
 }
 </style>

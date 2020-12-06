@@ -150,9 +150,7 @@
                   >
                   </vue-dropzone>
                 </div>
-
                 
-
                 <v-row>
                     <v-col>
                       <v-select              
@@ -209,24 +207,7 @@
                   shaped
                 ></v-text-field> 
 
-               <v-row>
-                    <v-col>
-                      <v-select              
-                        :items="itemModalidad"
-                        v-model="itemModalidad.value"
-                        label="Tipo"            
-                        outlined      
-                        dense       
-                      ></v-select>
-                    </v-col>
-                    <v-col>
-                      <v-autocomplete
-                        label="Modalidad"            
-                        outlined      
-                        dense       
-                      ></v-autocomplete>
-                    </v-col>
-                </v-row>
+               
 
                 <v-text-field
                   label="Dirección"
@@ -289,24 +270,7 @@
                   shaped
                 ></v-text-field> 
 
-               <v-row>
-                    <v-col>
-                      <v-select              
-                        :items="itemModalidad"
-                        v-model="itemModalidad.value"
-                        label="Tipo"            
-                        outlined      
-                        dense       
-                      ></v-select>
-                    </v-col>
-                    <v-col>
-                      <v-autocomplete
-                        label="Modalidad"            
-                        outlined      
-                        dense       
-                      ></v-autocomplete>
-                    </v-col>
-                </v-row>
+               
 
                 <v-text-field
                   label="Dirección"

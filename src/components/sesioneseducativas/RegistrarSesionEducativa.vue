@@ -395,6 +395,7 @@ export default {
   watch:{
     dialogoregistro: async function(dialogoregistro){
       if(dialogoregistro){
+        await this.obtenerResidentes();
         this.residenteArray = this.residentes;
         console.log("Residentes filtrados finales")
         console.log(this.residentes);
@@ -545,11 +546,17 @@ export default {
           var info ={
             id: res.data.id,
             titulo: res.data.titulo,
+            contenido:res.data.contenido,
             fechaCreacion: res.data.fechaCreacion.split("T")[0],
             area: res.data.area,
             tipo: res.data.tipo,
-            idCreador: res.data.idCreador
+            idCreador: res.data.idCreador,
+            datoscreador:{
+              usuario: this.user.usuario
+            }
           }
+          console.log("Registrado xd")
+          console.log(info)
           this.addSesionesEducativas(info);
           this.limpiar();
           this.cerrarTodo();

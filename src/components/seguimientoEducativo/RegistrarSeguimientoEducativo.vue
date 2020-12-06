@@ -505,10 +505,31 @@
                           style="margin-right:15px;margin-top:-5px"
                           dark
                           color="#2E9CCF"
-                          @click="abrirDialogoNotas(item.puntajes)"
+                          @click="abrirDialogoNotas(item.puntajes,index)"
                         >
                           Añadir Notas
                         </v-btn>  
+                      </div>
+                    </v-col>
+
+                      <v-col :cols="1">
+                       <div style="margin-right:20px">
+                          <v-btn
+                            fab
+                            x-small
+                            dark
+                            color="red"
+                            @click="eliminarTrimestre(index)"
+                          >
+                            <v-icon dark>
+                              mdi-minus
+                            </v-icon>
+                          </v-btn>
+                        </div>
+                      </v-col>
+                  </v-row>
+                </v-card>
+              </v-card>
           <!--Card de  trimestre nOTAS  nose cual es--> 
           <v-row justify="center">
                 <v-dialog v-model="dialog1" persistent max-width="850px">
@@ -630,11 +651,7 @@
                 </v-dialog>
               </v-row>
        
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-card>
+                    
 
 
                     <!--Botones de card -->
@@ -642,7 +659,7 @@
                         <v-col>
                           <v-btn block @click="registrarSeguimiento" color="success">
                             <v-icon left>mdi-page-next-outline</v-icon>
-                            <span>Continuar</span>
+                            <span>Registrar Seguimiento </span>
                           </v-btn>
                         </v-col>
                         <v-col>
@@ -715,6 +732,7 @@ data(){
          trimestre:{orden:"",puntajes:[],analisiseducativo:"",recomendaciones:""},
          puntajes:{area:"",promedio:""},
          notas:[], 
+         index:"",
 
     seguimiento:{
       id:"",
@@ -748,10 +766,11 @@ methods:{
       cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
     },
-    abrirDialogoNotas(notas){
+    abrirDialogoNotas(notas,index){
         this.notas=notas;
+        this.index=index;
         this.dialog1=true;
-        console.log(this.notas)
+        console.log(this.notas,index)
         
       },
      
@@ -801,9 +820,11 @@ methods:{
           "success",
           "listo",
           "Informe Seguimiento educativo registrado Satisfactoriamente",
-          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+          "<strong>Se redirigira a la Interfaz de Gestion<strong>",      
         );
+         location.reload();//metodo de js para refrescar la pagina
       }
+      
     },
     ///metodo para agregar firma residente
     guardarFirma(){
@@ -839,11 +860,12 @@ methods:{
       this.trimestre.recomendaciones="";
     },
     eliminarTrimestre(index){
-      this.trimestre.puntajes.splice(index);
+      this.seguimiento.contenido.trimestre.splice(index,1);
     },
     guardarNotas(){
       let puntajesd={area:this.puntajes.area,promedio:this.puntajes.promedio};
-       this.seguimiento.contenido.trimestre[0].puntajes.push(puntajesd);
+       this.seguimiento.contenido.trimestre[this.index].puntajes.push(puntajesd);
+       
       
        console.log(this.trimestre.puntajes)
 
@@ -851,9 +873,10 @@ methods:{
        this.puntajes.promedio="";
     },
     eliminarNotas(index){
-     this.seguimiento.contenido.trimestre[0].puntajes.splice(index)
+     this.seguimiento.contenido.trimestre[0].puntajes.splice(index,1)
      
     },
+    
   },
  computed: {
     verifyColor() {
@@ -887,7 +910,7 @@ methods:{
 
       return errors;
     },
-    errorModalidad() {
+   errorModalidad() {
       const errors = [];
       if (!this.$v.seguimiento.contenido.modalidad.$dirty) return errors;
       !this.$v.seguimiento.contenido.modalidad.required &&

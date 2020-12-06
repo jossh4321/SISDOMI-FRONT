@@ -76,10 +76,7 @@
                   color="#009900"
                   label="Educador responsable"
                   item-text="usuario"
-                  item-value="id"
-                  @input="$v.informe.contenido.evaluador.$touch()"
-                  @blur="$v.informe.contenido.evaluador.$touch()"
-                  :error-messages="errorCreador"
+                  item-value="id"                  
                 >
                   <template v-slot:selection="data">
                     <v-chip
@@ -220,6 +217,9 @@
                           v-model="conclusion"
                           label="Conclusiones y recomendaciones"
                           color="#009900"
+                          @input="$v.conclusion.$touch()"
+                          @blur="$v.conclusion.$touch()"
+                          :error-messages="errorConclusion"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -295,6 +295,9 @@
                           v-model="firmas.nombre"
                           label="Nombre"
                           color="#009900"
+                          @input="$v.firmas.nombre.$touch()"
+                          @blur="$v.firmas.nombre.$touch()"
+                          :error-messages="errorNombreFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="left">
@@ -302,6 +305,9 @@
                           v-model="firmas.cargo"
                           label="Cargo"
                           color="#009900"
+                          @input="$v.firmas.cargo.$touch()"
+                          @blur="$v.firmas.cargo.$touch()"
+                          :error-messages="errorCargoFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -396,6 +402,7 @@
                     </v-row>
                   </v-card>
                 </v-card>
+                <!-- asasdad -->
                 <v-dialog
                   v-model="dialogVistaPreviaFirma"
                   persistent
@@ -456,6 +463,14 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 import { mapGetters } from "vuex";
+
+function esTexto(value) {
+  return /^[A-Za-z\s]+$/.test(value); //acepta solo texto y espacios en blanco
+}
+
+function esParrafo(value) {
+  return /^[A-Za-z\d\s.,;]+$/.test(value); //acepta tambien . , ;
+}
 
 export default {
   props: ["listaresidentes", "listaeducadores", "visible"],
@@ -520,16 +535,18 @@ export default {
       imagen: "",
     };
   },
-  async created() {
+  async created() {   
     this.conclusiones = "";
     this.conclusion = "";
   },
   methods: {
     ...mapMutations(["addInforme"]),
     async sendPDFFiles() {
+      let listaTitulos = [];
       let listaanexos = this.fileList;
       for (let index = 0; index < this.fileList.length; index++) {
         let formData = new FormData();
+        listaTitulos.push(this.fileList[index].name);
         formData.append("file", this.fileList[index]);
         await axios
           .post("/Media/archivos/pdf", formData)
@@ -538,14 +555,20 @@ export default {
           })
           .catch((err) => console.log(err));
       }
-      this.informe.contenido.anexos = listaanexos;
-      console.log(listaanexos);
+      for (let index = 0; index < this.fileList.length; index++) {
+        this.informe.contenido.anexos.push({
+          url: listaanexos[index],
+          titulo: listaTitulos[index],
+        });
+      }
+      console.log(this.informe.contenido.anexos);
     },
     async registrarInforme() {
       await this.sendPDFFiles();
+      this.informe.creadordocumento = this.user.id;
       console.log(this.informe);
-      this.$v.$touch();
-      if (this.$v.$invalid) {
+      this.$v.informe.$touch();
+      if (this.$v.informe.$invalid) {
         console.log("hay errores");
         this.mensaje(
           "error",
@@ -554,28 +577,27 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        console.log("no hay errores");
-        console.log(this.informe);
-        await axios
-          .post("/informe/informeei", this.informe)
-          .then((res) => {
-            this.informe = res.data;
-            this.informe.creadordocumento = this.user;
-            var resi = this.listaresidentes.filter(function(residente) {
-              return residente.id == res.data.idresidente;
-            });
-            console.log(resi);
-            var info = {
-              id: res.data.id,
-              tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-              fechacreacion: res.data.fechacreacion.split("T")[0],
-              codigodocumento: res.data.contenido.codigodocumento,
-              nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
-            };
-            this.addInforme(info);
-            this.cerrarDialogo();
-          })
-          .catch((err) => console.log(err));
+          console.log("no hay errores");
+          console.log(this.informe);
+          await axios
+            .post("/informe/informeei", this.informe)
+            .then((res) => {
+              this.informe = res.data;
+              var resi = this.listaresidentes.filter(function(residente) {
+                return residente.id == res.data.idresidente;
+              });
+              console.log(resi);
+              var info = {
+                id: res.data.id,
+                tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
+                fechacreacion: res.data.fechacreacion.split("T")[0],
+                codigodocumento: res.data.contenido.codigodocumento,
+                nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
+              };
+              this.addInforme(info);
+              this.cerrarDialogo();
+            })
+            .catch((err) => console.log(err));
         await this.mensaje(
           "success",
           "Listo",
@@ -583,10 +605,16 @@ export default {
           "<strong>Se redirigira a la interfaz de gestión<strong>"
         );
       }
+      this.$v.firmas.$reset();
+      this.$v.urlfirma.$reset();
+      this.$v.conclusion.$reset();
+
     },
     resetInformeValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
-      this.$v.informe.$reset();
+      this.$v.informe.$reset();      
+      this.$v.firmas.$reset();
+      this.$v.urlfirma.$reset();
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -602,13 +630,14 @@ export default {
       this.$emit("close");
     },
     agregarConclusion() {
-      // this.$v.conclusion.$touch();
-      // if (!this.$v.conclusion.$invalid) {
+      this.$v.conclusion.$touch();
+      if (!this.$v.conclusion.$invalid) {
         let conclusiones = this.conclusion;
         this.informe.contenido.conclusiones.push(conclusiones);
         this.conclusiones = this.informe.contenido.conclusiones;
         this.conclusion = "";
-      // }
+        this.$v.conclusion.$reset();
+      }
     },
     eliminarConclusion(conclusion) {
       // this.informe.contenido.conclusiones.splice(conclusion, 1);
@@ -619,10 +648,10 @@ export default {
       });
     },
     agregarFirma() {
-      // this.$v.firmas.$touch();
-      // this.$v.urlfirma.$touch();
+      this.$v.firmas.$touch();
+      this.$v.urlfirma.$touch();
 
-      // if (!this.$v.firmas.$invalid && !this.errorUrlFirma) {
+      if (!this.$v.firmas.$invalid && !this.$v.urlfirma.$invalid) {
         let firmas = {
           urlfirma: this.urlfirma,
           nombre: this.firmas.nombre,
@@ -634,13 +663,14 @@ export default {
         this.urlfirma = "";
         this.firmas.nombre = "";
         this.firmas.cargo = "";
-      // }
+        this.$v.firmas.$reset();
+        this.$v.urlfirma.$reset();
+      }
     },
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
     },
     verFirma(index) {
-      console.log(this.informe.contenido.firmas[index].urlfirma);
       this.imagen = this.informe.contenido.firmas[index].urlfirma;
       this.dialogVistaPreviaFirma = true;
     },
@@ -660,7 +690,7 @@ export default {
     },
     afterSuccess2(file, response) {
       this.urlfirma = file.dataURL.split(",")[1];
-      console.log(this.urlfirma);
+      //console.log(this.urlfirma);
     },
     afterRemoved2(file, error, xhr) {
       this.urlfirma = "";
@@ -708,6 +738,7 @@ export default {
         }
       },
     },
+
     ...mapGetters(["user"]),
     errorResidente() {
       const errors = [];
@@ -716,13 +747,13 @@ export default {
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
     },
-    errorCreador() {
-      const errors = [];
-      if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
-      !this.$v.informe.contenido.evaluador.required &&
-        errors.push("Debe seleccionar un educador obligatoriamente");
-      return errors;
-    },
+    // errorCreador() {
+    //   const errors = [];
+    //   if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
+    //   !this.$v.informe.contenido.evaluador.required &&
+    //     errors.push("Debe seleccionar un educador obligatoriamente");
+    //   return errors;
+    // },
     errorLugarEvaluacion() {
       const errors = [];
       if (!this.$v.informe.contenido.lugarevaluacion.$dirty) return errors;
@@ -754,6 +785,10 @@ export default {
         errors.push(
           "La situación académica debe tener al menos 100 caracteres"
         );
+      !this.$v.informe.contenido.situacionacademica.esParrafo &&
+        errors.push(
+          "La situación académica no debe contener caracteres especiales"
+        );
       return errors;
     },
     errorAnalisisAcademico() {
@@ -763,35 +798,47 @@ export default {
         errors.push("Debe ingresar el análisis académico obligatoriamente");
       !this.$v.informe.contenido.analisisacademico.minLength &&
         errors.push("El análisis académico debe tener al menos 100 caracteres");
+      !this.$v.informe.contenido.analisisacademico.esParrafo &&
+        errors.push(
+          "El análisis académico no debe contener caracteres especiales"
+        );
       return errors;
     },
-    // errorNombreFirma() {
-    //   const errors = [];
-    //   if (!this.$v.firmas.nombre.$dirty) return errors;
-    //   !this.$v.firmas.nombre.required &&
-    //     errors.push("Debe registrar el nombre obligatoriamente");
-    //   return errors;
-    // },
-    // errorCargoFirma() {
-    //   const errors = [];
-    //   if (!this.$v.firmas.cargo.$dirty) return errors;
-    //   !this.$v.firmas.cargo.required &&
-    //     errors.push("Debe registrar el cargo obligatoriamente");
-    //   return errors;
-    // },
-    // errorUrlFirma() {
-    //   return this.$v.urlfirma.required == false &&
-    //     this.$v.urlfirma.$dirty == true
-    //     ? true
-    //     : false;
-    // },
-    // errorConclusion() {
-    //   const errors = [];
-    //   if (!this.$v.conclusion.$dirty) return errors;
-    //   !this.$v.conclusion.required &&
-    //     errors.push("Debe registrar la conclusión obligatoriamente");
-    //   return errors;
-    // },
+    errorNombreFirma() {
+      const errors = [];
+      if (!this.$v.firmas.nombre.$dirty) return errors;
+      !this.$v.firmas.nombre.required &&
+        errors.push("Debe registrar el nombre obligatoriamente");
+      !this.$v.firmas.nombre.esTexto &&
+        errors.push("Debe registrar el nombre correctamente");
+      return errors;
+    },
+    errorCargoFirma() {
+      const errors = [];
+      if (!this.$v.firmas.cargo.$dirty) return errors;
+      !this.$v.firmas.cargo.required &&
+        errors.push("Debe registrar el cargo obligatoriamente");
+      !this.$v.firmas.cargo.esTexto &&
+        errors.push("Debe registrar el cargo correctamente");
+      return errors;
+    },
+    errorUrlFirma() {
+      return this.$v.urlfirma.required == false &&
+        this.$v.urlfirma.$dirty == true
+        ? true
+        : false;
+    },
+    errorConclusion() {
+      const errors = [];
+      if (!this.$v.conclusion.$dirty) return errors;
+      !this.$v.conclusion.required &&
+        errors.push("Debe registrar la conclusión obligatoriamente");
+      !this.$v.conclusion.esParrafo &&
+        errors.push(
+          "La conclusión o recomendación no debe contener caracteres especiales"
+        );
+      return errors;
+    },
   },
   validations() {
     return {
@@ -806,34 +853,36 @@ export default {
           lugarevaluacion: {
             required,
             minLength: minLength(10),
-          },
-          evaluador: {
-            required,
-          },
+          },         
           situacionacademica: {
             required,
             minLength: minLength(100),
+            esParrafo,
           },
           analisisacademico: {
             required,
             minLength: minLength(100),
+            esParrafo,
           },
         },
       },
-      // urlfirma: {
-      //   required,
-      // },
-      // firmas: {
-      //   nombre: {
-      //     required,
-      //   },
-      //   cargo: {
-      //     required,
-      //   },
-      // },
-      // conclusion: {
-      //   required,
-      // },
+      conclusion: {
+        required,
+        esParrafo,
+      },
+      urlfirma: {
+        required,
+      },
+      firmas: {
+        nombre: {
+          required,
+          esTexto,
+        },
+        cargo: {
+          required,
+          esTexto,
+        },
+      },
     };
   },
 };

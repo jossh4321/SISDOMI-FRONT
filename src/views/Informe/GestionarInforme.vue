@@ -88,6 +88,16 @@
           @close-dialog-update="closeDialogActualizar()">
         </ActualizarInformeSocialInicial>
       </v-dialog>
+       <v-dialog persistent
+                v-model="dialogoIPIactualizacion" 
+                max-width="880px">
+        <ActualizarInformePsicologicoInicial
+          v-if="dialogoIPIactualizacion"
+          :informe="informe" 
+          :listaresidentes="listaresidentes"          
+          @close-dialog-update="closeDialogActualizar()">
+        </ActualizarInformePsicologicoInicial>
+      </v-dialog>
       <v-dialog persistent
                 v-model="dialogoIEEactualizacion" 
                 max-width="880px">
@@ -110,6 +120,17 @@
           :listaresidentes="listaresidentes"
           @close-dialog-update="closeDialogActualizar()">
         </ActualizarInformeSocialEvolutivo>
+      </v-dialog>
+      <v-dialog persistent
+                v-model="dialogoIPEactualizacion" 
+                max-width="880px">
+        <ActualizarInformePsicologicoEvolutivo
+          v-if="dialogoIPEactualizacion"
+          :informe="informe"
+          :titulo="titulo"
+          :listaresidentes="listaresidentes"
+          @close-dialog-update="closeDialogActualizar()">
+        </ActualizarInformePsicologicoEvolutivo>
       </v-dialog>
       <v-dialog persistent
                 v-model="dialogoIEIdetalle" 
@@ -149,6 +170,25 @@
           @close-dialog-detail="closeDialogDetalle()">
         </DetalleInformeSocialEvolutivo>
       </v-dialog>
+       <v-dialog persistent
+                v-model="dialogoIPIdetalle" 
+                max-width="880px">
+        <DetalleInformePsicologicoInicial
+          v-if="dialogoIPIdetalle"
+          :informe="informe"            
+          @close-dialog-detail="closeDialogDetalle()">
+        </DetalleInformePsicologicoInicial>
+      </v-dialog>
+      <v-dialog persistent
+                v-model="dialogoIPEdetalle" 
+                max-width="880px">
+        <DetalleInformePsicologicoEvolutivo
+          v-if="dialogoIPEdetalle"
+          :informe="informe"
+          :titulo="titulo"  
+          @close-dialog-detail="closeDialogDetalle()">
+        </DetalleInformePsicologicoEvolutivo>
+      </v-dialog>
       <!----->
     </v-card>
   </div>
@@ -161,10 +201,14 @@ import ActualizarInformeEducativoInicial from "@/components/informes/ActualizarI
 import ActualizarInformeEducativoEvolutivo from "@/components/informes/ActualizarInformeEducativoEvolutivo.vue";
 import ActualizarInformeSocialInicial from "@/components/informes/ActualizarInformeSocialInicial.vue";
 import ActualizarInformeSocialEvolutivo from "@/components/informes/ActualizarInformeSocialEvolutivo.vue";
+import ActualizarInformePsicologicoInicial from "@/components/informes/ActualizarInformePsicologicoInicial.vue";
+import ActualizarInformePsicologicoEvolutivo from "@/components/informes/ActualizarInformePsicologicoEvolutivo.vue";
 import DetalleInformeEducativoInicial from "@/components/informes/DetalleInformeEducativoInicial.vue";
 import DetalleInformeEducativoEvolutivo from "@/components/informes/DetalleInformeEducativoEvolutivo.vue";
 import DetalleInformeSocialInicial from "@/components/informes/DetalleInformeSocialInicial.vue";
 import DetalleInformeSocialEvolutivo from "@/components/informes/DetalleInformeSocialEvolutivo.vue";
+import DetalleInformePsicologicoInicial from "@/components/informes/DetalleInformePsicologicoInicial.vue";
+import DetalleInformePsicologicoEvolutivo from "@/components/informes/DetalleInformePsicologicoEvolutivo.vue";
 import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarInforme",
@@ -174,10 +218,14 @@ export default {
     ActualizarInformeEducativoEvolutivo,
     ActualizarInformeSocialInicial,
     ActualizarInformeSocialEvolutivo,
+    ActualizarInformePsicologicoInicial,
+    ActualizarInformePsicologicoEvolutivo,
     DetalleInformeEducativoInicial,
     DetalleInformeEducativoEvolutivo,
     DetalleInformeSocialInicial,
-    DetalleInformeSocialEvolutivo
+    DetalleInformeSocialEvolutivo,
+    DetalleInformePsicologicoInicial,
+    DetalleInformePsicologicoEvolutivo
   },
   data() {
     return {
@@ -203,10 +251,14 @@ export default {
       dialogoIEEactualizacion: false,
       dialogoISIactualizacion: false,
       dialogoISEactualizacion: false,
+      dialogoIPIactualizacion: false,
+      dialogoIPEactualizacion: false,
       dialogoIEIdetalle:false,
       dialogoIEEdetalle:false,
       dialogoISIdetalle:false,
       dialogoISEdetalle:false,
+      dialogoIPIdetalle:false,
+      dialogoIPEdetalle:false,
       listaresidentes: [],
       loading:true
     };
@@ -226,12 +278,16 @@ export default {
       this.dialogoIEEactualizacion = false;
       this.dialogoISEactualizacion = false;
       this.dialogoISIactualizacion = false;
+      this.dialogoIPIactualizacion = false;
+      this.dialogoIPEactualizacion = false;
     },
     closeDialogDetalle() {
       this.dialogoIEIdetalle = false;
       this.dialogoIEEdetalle = false;
       this.dialogoISIdetalle = false;
-      this.dialogoISEdetalle = false;      
+      this.dialogoISEdetalle = false;
+      this.dialogoIPIdetalle = false;
+      this.dialogoIPEdetalle = false;      
     },
     async obtenerInformes() {
       await axios
@@ -273,7 +329,18 @@ export default {
                 case "Informe Social Final":
                     this.titulo = "Modificar Informe Social Final";
                     this.dialogoISEactualizacion = !this.dialogoISEactualizacion;
-                    break;                
+                    break;
+                case "Informe Psicologico Inicial":                    
+                    this.dialogoIPIactualizacion = !this.dialogoIPIactualizacion;
+                    break;
+                case "Informe Psicologico Evolutivo":
+                    this.titulo = "Modificar Informe Psicologico Evolutivo";
+                    this.dialogoIPEactualizacion = !this.dialogoIPEactualizacion;
+                    break;
+                case "Informe Psicologico Final":
+                    this.titulo = "Modificar Informe Psicologico Final";
+                    this.dialogoIPEactualizacion = !this.dialogoIPEactualizacion;
+                    break;                 
                 default: 
                    console.log("Ayuda mi codigo no funciona :c")
         }
@@ -304,7 +371,18 @@ export default {
                 case "Informe Social Final":
                     this.titulo = "Detalle del Informe Social Final";
                     this.dialogoISEdetalle = !this.dialogoISEdetalle;
-                    break;                
+                    break;
+                case "Informe Psicologico Inicial":                    
+                    this.dialogoIPIdetalle = !this.dialogoIPIdetalle;
+                    break;
+                case "Informe Psicologico Evolutivo":
+                    this.titulo = "Detalle del Informe Psicologico Evolutivo";
+                    this.dialogoIPEdetalle = !this.dialogoIPEdetalle;
+                    break;
+                case "Informe Psicologico Final":
+                    this.titulo = "Detalle del Informe Psicologico Final";
+                    this.dialogoIPEdetalle = !this.dialogoIPEdetalle;
+                    break;                 
                 default: 
                    console.log("Ayuda mi codigo no funciona :c")
             }   

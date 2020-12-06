@@ -327,6 +327,7 @@ export default {
       participantesFiltrados: [],
       search:"",
       urlfirma:"",
+      nombreCreador:"",
       botonCambiarFirma:true,
       step:1,
       dialogVistaPreviaFirma:false,
@@ -458,19 +459,33 @@ export default {
       await axios
         .put("/SesionesEducativas", this.sesioneducativa)
         .then((res) => {
-          var info = res.data
-          info.fechaCreacion = info.fechaCreacion.split("T")[0];
+          var info ={
+            id: res.data.id,
+            titulo: res.data.titulo,
+            fechaCreacion: res.data.fechaCreacion.split("T")[0],
+            area: res.data.area,
+            tipo: res.data.tipo,
+            idCreador: res.data.idCreador,
+            datoscreador:{
+              usuario: this.nombreCreador
+            }
+          }
+          console.log("part añadido xd")
+          console.log(info);
           this.replaceSesionesEducativas(info);
           this.cerrarDialogo();
         })
-        .catch((err) => {console.log(info);console.log(err)});
+        .catch((err) => {console.log(err)});
     },
   },
   async mounted() {
+    console.log("Entrando:")
+    console.log(this.sesioneducativa);
     this.participantesFiltrados = await this.datoSesion.contenido.participantes;
     this.participantesFiltrados.forEach((part)=>{
       part.EdicionFirmas=false;
     })
+    this.nombreCreador = this.sesioneducativa.datoscreador
   },
 
 }

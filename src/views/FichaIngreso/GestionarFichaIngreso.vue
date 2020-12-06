@@ -66,21 +66,58 @@
         </template>
       </v-data-table>
       <!--Dialogo de Modificar-->
-      <!--<v-dialog persistent
+      <v-dialog persistent
                 v-model="dialogoactualizacion" 
                 max-width="880px">
-        <ModificarFichaIngreso
-        v-if="dialogoactualizacion" 
-        :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()">
-        </ModificarFichaIngreso>  
-      </v-dialog>-->
-
+        <ModificarFichaIngresoEducativa
+        v-if="dialogoaFIEctualizacion" 
+        :fichaIngresos="fichaIngresos" 
+          :listaroles="listaroles" 
+          :listaresidentes="listaresidentes"
+          :listaeducadores="listaeducadores" 
+        @close-dialog-update="closeDialogActualizar()">
+        </ModificarFichaIngresoEducativa>  
+      </v-dialog>
+      <v-dialog persistent
+                v-model="dialogoactualizacion" 
+                max-width="880px">
+        <ModificarFichaIngresoSocial
+        v-if="dialogoaFIEctualizacion" 
+        :fichaIngresos="fichaIngresos" 
+          :listaroles="listaroles" 
+          :listaresidentes="listaresidentes"
+          :listaeducadores="listaeducadores" 
+        @close-dialog-update="closeDialogActualizar()">
+        </ModificarFichaIngresoSocial>  
+      </v-dialog>
+      <v-dialog persistent
+                v-model="dialogoactualizacion" 
+                max-width="880px">
+        <ModificarFichaIngresoPsicologica
+        v-if="dialogoaFIPctualizacion" 
+        :fichaIngresos="fichaIngresos" 
+          :listaroles="listaroles" 
+          :listaresidentes="listaresidentes"
+          :listaeducadores="listaeducadores" 
+        @close-dialog-update="closeDialogActualizar()">
+        </ModificarFichaIngresoPsicologica>  
+      </v-dialog>
      <!--Dialogo de Consultar-->
-      <!--<v-dialog persistent
-          v-model="dialogoconsultar" 
+      <v-dialog persistent
+          v-model="dialogoFIPconsultar" 
           max-width="880px">
-        <ConsultarFichaIngreso :fichaIngreso="fichaIngreso" @close-dialog-detail="closeDialogDetalle()"/>
-      </v-dialog>-->
+        <ConsultarFichaIngresoPsicologica ::fichaIngresos="fichaIngresos" @close-dialog-detail="closeDialogDetalle()"/>
+      </v-dialog>
+       <v-dialog persistent
+          v-model="dialogoFISconsultar" 
+          max-width="880px">
+        <ConsultarFichaIngresoSocial ::fichaIngresos="fichaIngresos"  @close-dialog-detail="closeDialogDetalle()"/>
+      </v-dialog>
+      <v-dialog persistent
+          v-model="dialogoFIEconsultar" 
+          max-width="880px">
+        <ConsultarFichaIngresoEducativa ::fichaIngresos="fichaIngresos"  @close-dialog-detail="closeDialogDetalle()"/>
+      </v-dialog>
     </v-card>
   </div>
 </template>
@@ -88,6 +125,10 @@
 import axios from 'axios';
 //import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
 import SeleccionarFichaIngreso from '@/components/fichaIngreso/SeleccionarFichaIngreso.vue'
+import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue'
+import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/ModificarFichaIngresoPsicologica.vue'
+import ModificarFichaIngresoSocial  from '@/components/fichaIngreso/ModificarFichaIngresoSocial.vue'
+import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
 
 import {mapMutations, mapState} from "vuex";
 export default {
@@ -133,10 +174,13 @@ export default {
     detailItem(item) {
     },
     closeDialogDetalle() {
-      this.dialogodetalle = false;
+      this.dialogoFIEconsultar=false
+
     },
-    closeDialogModificar() {
-      this.dialogoactualizacion = false;
+   closeDialogActualizar() {
+   this.dialogoaFIEctualizacion=false
+   this.dialogoaFISctualizacion=false
+   this.dialogoaFIPctualizacion=false
     },
 
     closeDialogNuevaFichaIngreso()
