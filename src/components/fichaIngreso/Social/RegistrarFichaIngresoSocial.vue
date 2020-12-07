@@ -28,7 +28,7 @@
         <v-stepper-step
           editable
           step="4"
-        >
+          >
         Encargado
         </v-stepper-step>
       </v-stepper-header>    
@@ -496,7 +496,6 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import {mapMutations, mapState} from "vuex";
 import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
-import RegistrarInformeEducativoEvolutivoVue from '../informes/RegistrarInformeEducativoEvolutivo.vue';
 
 export default {
         
