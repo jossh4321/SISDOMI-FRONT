@@ -1,5 +1,4 @@
 <template>
-<v-dialog v-model="show" max-width="65%">
     <v-card >
       <v-card-title class="justify-center">Resgistrar Ficha de Ingreso Educativa</v-card-title>
       <v-stepper v-model="step">
@@ -182,7 +181,7 @@
 
                 <v-row>
                     <v-col>
-                        <v-btn block @click="show=false" color="primary">
+                        <v-btn block @click="cerrarDialogo" color="primary">
                             <v-icon left>mdi-close-outline</v-icon>
                             <span>Cerrar</span>
                         </v-btn>
@@ -253,7 +252,10 @@
                     <v-col>
                       <v-text-field
                         label="Celular/Telefono"
-                        v-model="fichaIngreso.contenido.telefono"
+                        v-model="fichaIngreso.contenido.ieprocedencia.telefono"
+                        :error-messages="errorTelefono"
+                        @input="$v.fichaIngreso.contenido.ieprocedencia.telefono.$touch()"
+                        @blur="$v.fichaIngreso.contenido.ieprocedencia.telefono.$touch()"
                         auto-grow
                         outlined        
                         color="#009900"
@@ -263,7 +265,10 @@
                     <v-col>
                       <v-text-field
                         label="Correo"
-                        v-model="fichaIngreso.contenido.correo"
+                        v-model="fichaIngreso.contenido.ieprocedencia.correo"
+                        :error-messages="errorCorreo"
+                        @input="$v.fichaIngreso.contenido.ieprocedencia.correo.$touch()"
+                        @blur="$v.fichaIngreso.contenido.ieprocedencia.correo.$touch()"
                         auto-grow
                         outlined        
                         color="#009900"
@@ -271,12 +276,9 @@
                       ></v-text-field> 
                     </v-col>
                 </v-row>
-
-                
-
                 <v-row>
                     <v-col>
-                        <v-btn block @click="show=false" color="primary">
+                        <v-btn block @click="cerrarDialogo" color="primary">
                             <v-icon left>mdi-close-outline</v-icon>
                             <span>Cerrar</span>
                         </v-btn>
@@ -510,7 +512,7 @@
 
               <v-row>
                     <v-col>
-                        <v-btn block @click="show=false" color="primary">
+                        <v-btn block @click="cerrarDialogo" color="primary">
                             <v-icon left>mdi-close-outline</v-icon>
                             <span>Cerrar</span>
                         </v-btn>
@@ -528,7 +530,6 @@
       </v-stepper-items>
       </v-stepper>        
     </v-card>
-  </v-dialog>
 </template>
 <script> 
 
@@ -536,7 +537,8 @@ import axios from 'axios';
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import {mapMutations, mapState} from "vuex";
-import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
+import { required, minLength,maxLength,email,helpers,numeric } from 'vuelidate/lib/validators'
+import Vuelidate from 'vuelidate'
 import moment from 'moment'
 
 
@@ -658,78 +660,33 @@ export default {
       this.docEscolares = "";
     },
     methods:{
-      ...mapMutations(["addFichaIngreso"]),
+      afterSuccess(){
+
+      },afterRemoved(){
+
+      },afterSuccess2(){
+
+      },afterRemoved2(){
+        
+      },afterSuccess3(){
+
+      },afterRemoved3(){
+        
+      },
         cerrarDialogo(){     
             this.step = 1;       
-            this.$emit("close-dialog-fichaIngreso");
+            this.$emit("cerrar-modal-registro-ficha-ingreso");
+            console.log("hola");
         }, 
-        afterSuccess2(file, response) {
-      console.log(file);
-      this.firmas.urlfirma = file.dataURL.split(",")[1];
-      //this.$v.firma.urlfirma.$model = file.dataURL.split(",")[1];
-      //console.log(file.dataURL.split(",")[1]);
-    },
-    
-    afterRemoved2(file, error, xhr) {
-      this.firmas.urlfirma = "";
-      
-    },
-    afterSuccess(file, response) {
-      // console.log(file);
-      // console.log(file.dataURL);
-      // console.log(this.$refs.myVueDropzone);
-
-      this.fileList.push(file);
-    },
-    afterRemoved(file, error, xhr) {
-      this.this.fichaIngreso.contenido.documentosescolares = "";
-      
-    },
-    afterSuccess3(file, response) {
-      // console.log(file);
-      // console.log(file.dataURL);
-      // console.log(this.$refs.myVueDropzone);
-
-      this.fileList.push(file);
-    },
-    afterRemoved3(file, error, xhr) {
-      this.this.fichaIngreso.contenido.documentosescolares = "";
-      
-    },
-    
-    async sendPDFFiles() {
-      let listaanexos = this.fileList;
-      for (let index = 0; index < this.fileList.length; index++) {
-        let formData = new FormData();
-        formData.append("file", this.fileList[index]);
-        await axios
-          .post("/Media/archivos/pdf", formData)
-          .then((res) => {
-            listaanexos[index] = res.data;
-          })
-          .catch((err) => console.log(err));
-      }
-      this.fichaIngreso.contenido.documentosescolares = listaanexos;
-      console.log(listaanexos);
-    },
-    async mensaje(icono, titulo, texto, footer) {
-      await this.$swal({
-        icon: icono,
-        title: titulo,
-        text: texto,
-        footer: footer,
-      });
-    },
-
-
-        async rFichaIngresoE(){
+        async registrarfichaIngreso(){
             
-            await axios.post("Documento/all/fichaingresoeducativacrear")
+
+            /*await axios.post("Documento/all/fichaingresoeducativacrear")
               .then(res => {
                   this.fichaIngreso=res.data;
               this.rFichaIngresoE(res.data);
               this.addFichaIngreso(this.fichaIngreso)
-            }).catch(err => console.log(err));
+            }).catch(err => console.log(err));*/
             
         },
         ///registrar ficha
@@ -810,6 +767,7 @@ export default {
     },
 
     limpiarFichaIngreso() {
+
       return {
         fichaIngreso: {
             id: "",
@@ -845,17 +803,65 @@ export default {
     },
     
     computed: {
-    show: {
-      get () {
-        return this.visible
+      errorTelefono() {
+        const errors = [];
+        if (!this.$v.fichaIngreso.contenido.ieprocedencia.telefono.$dirty) return errors;
+        !this.$v.fichaIngreso.contenido.ieprocedencia.telefono.required &&
+          errors.push("Debe ingresar un Telefono Obligatoriamente");
+        !this.$v.fichaIngreso.contenido.ieprocedencia.telefono.numeric &&
+          errors.push("Debe Ingresar solo caracteres Numericos");
+        !this.$v.fichaIngreso.contenido.ieprocedencia.telefono.length &&
+          errors.push("El telefono debe poseer 9 Caracteres Obligatoriamente");
+        return errors;
+      },errorCorreo() {
+        const errors = [];
+        if (!this.$v.fichaIngreso.contenido.ieprocedencia.correo.$dirty) return errors;
+        !this.$v.fichaIngreso.contenido.ieprocedencia.correo.required &&
+          errors.push("Debe Ingresar el e-mail obligatoriamente");
+        !this.$v.fichaIngreso.contenido.ieprocedencia.correo.email &&
+          errors.push("Debe poseer el formato sample@domain.something");
+        return errors;
       },
-      set (value) {
-        if (!value) {
-          this.$emit('close-dialog-fichaIngreso')
-        }
+
+  },validations(){
+    const length= (value) => value.length == 9
+    return {
+      fichaIngreso:{
+        contenido: {
+              ieprocedencia:{
+                nombre: {
+                   required,
+                   minLength: minLength(5),
+                   maxLength: maxLength(50)
+                },
+                tipo: {required},
+                modalidad: {required},
+                nivel: {required},
+                grado: {required},
+                observacion: {
+                   required,
+                   minLength: minLength(10),
+                   maxLength: maxLength(200)
+                },
+                direccion:{
+                   required,
+                   minLength: minLength(5),
+                   maxLength: maxLength(100)
+                },
+                telefono: {required, length, numeric},
+                correo: {required,email},
+                documentosescolares: [],
+                situacionescolar: ""
+              },
+              responsableturno: "",
+              conclusiones: [],
+              firmas: [],
+              codigodocumento: "",
+            },
       }
     }
   }
+
 }
 </script>
 

@@ -1,5 +1,4 @@
 <template>
-<v-dialog v-model="show" max-width="65%">
     <v-card >
       <v-card-title class="justify-center">Resgistrar Ficha de Ingreso Social</v-card-title>
       <v-stepper v-model="step">
@@ -243,7 +242,7 @@
 
                 <v-row>
                     <v-col>
-                        <v-btn block @click="show=false" color="primary">
+                        <v-btn block @click="cerrarDialogo" color="primary">
                             <v-icon left>mdi-close-outline</v-icon>
                             <span>Cerrar</span>
                         </v-btn>
@@ -283,30 +282,59 @@
 
                  <v-row>
                     <v-col>
-                      <v-text-field
-                        label="Celular/Telefono"
-                        auto-grow
-                        outlined        
-                        color="#009900"
-                        shaped
-                      ></v-text-field> 
+                        <v-menu
+                            v-model="datemenu"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="290px"
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                    label="Fecha de Ingreso"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    color="#009900"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker
+                                @input="menu2 = false"
+                                locale="es-es"
+                            ></v-date-picker> 
+                        </v-menu>
                     </v-col>
                     <v-col>
-                      <v-text-field
-                        label="Correo"
-                        auto-grow
-                        outlined        
-                        color="#009900"
-                        shaped
-                      ></v-text-field> 
+                        <v-menu
+                            v-model="datemenu"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="290px"
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                    label="Fecha de Entrevista"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    color="#009900"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker
+                                @input="menu2 = false"
+                                locale="es-es"
+                            ></v-date-picker> 
+                        </v-menu>
                     </v-col>
                 </v-row>
-
-                
-
-                <v-row>
+              <v-row>
                     <v-col>
-                        <v-btn block @click="show=false" color="primary">
+                        <v-btn block @click="cerrarDialogo" color="primary">
                             <v-icon left>mdi-close-outline</v-icon>
                             <span>Cerrar</span>
                         </v-btn>
@@ -485,7 +513,6 @@
       </v-stepper-items>
       </v-stepper>        
     </v-card>
-  </v-dialog>
 </template>
 
 <script> 
@@ -705,203 +732,15 @@ export default {
             this.step = 1;       
             this.$emit("close-dialog-fichaIngreso");
         }, 
-        async rFichaIngresoS(){
+        async registrarFichaIngresoSocial(){
 
-           await axios.get("Documento/all/fichaingresosocialcrear")
-            .then(res => {
-              //console.log( "porfavor" )
-              this.fichaIngreso=res.data;
-              this.rFichaIngresoS(res.data);
-              this.addFichaIngreso(this.fichaIngreso)
-            }).catch(err => console.log(err));            
+               
     
-        }, afterSuccess(file, response) {
-      
-    },
-    afterRemoved(file, error, xhr) {
-     
-      
-    },
-
-        agregarMotivoIngreso() {
-          let motivosIngreso = this.motivoIngreso;
-          this.fichaIngreso.contenido.motivoingreso.push(motivosIngreso);
-          this.motivosIngreso = this.fichaIngreso.contenido.motivoingreso;
-          this.motivoIngreso = "";
-        },
-        eliminarMotivoIngreso(motivoIngreso) {
-          this.motivosIngreso.forEach(function(car, index, object) {
-            if (car === motivoIngreso) {
-              object.splice(index, 1);
-            }
-          });
-        },
-
-        agregarHabitante() {
-          let habitantes = this.habitante;
-          this.fichaIngreso.contenido.habitantes.push(habitantes);
-          this.habitantes = this.fichaIngreso.contenido.habitantes;
-          this.habitante = "";
-        },
-        eliminarHabitante(habitante) {
-          this.habitantes.forEach(function(car, index, object) {
-            if (car === habitante) {
-              object.splice(index, 1);
-            }
-          });
-        },
-
-        agregarIngreso() {
-          let ingresos = this.ingreso;
-          this.fichaIngreso.contenido.ingresos.push(ingresos);
-          this.ingresos = this.fichaIngreso.contenido.ingresos;
-          this.ingreso = "";
-        },
-        eliminarIngreso(ingreso) {
-          this.ingresos.forEach(function(car, index, object) {
-            if (car === ingreso) {
-              object.splice(index, 1);
-            }
-          });
-        },
-
-        agregarEgreso() {
-          let egresos = this.egreso;
-          this.fichaIngreso.contenido.egresos.push(egresos);
-          this.egresos = this.fichaIngreso.contenido.egresos;
-          this.egreso = "";
-        },
-        eliminarEgreso(egreso) {
-          this.egresos.forEach(function(car, index, object) {
-            if (car === egreso) {
-              object.splice(index, 1);
-            }
-          });
-        },
-
-        agregarFamiliar() {
-          let familiares = { 
-              nombreCompleto : this.familiares.nombreCompleto,
-              parentezco : this.familiares.parentezco,
-              edad : this.familiares.edad,
-              estadoCivil : this.familiares.estadoCivil,
-              gradoInstruccion : this.familiares.gradoInstruccion,
-              ocupacion : this.familiares.ocupacion,
-              observacion : this.familiares.observacion
-          };
-          this.fichaIngreso.contenido.familiares.push(familiares);
-          this.$refs.myVueDropzone.removeAllFiles();
-
-          this.familiares.nombreCompleto = "";
-          this.familiares.parentezco= "";
-          this.familiares.edad= "";
-          this.familiares.estadoCivil= "";
-          this.familiares.gradoInstruccion= "";
-          this.familiares.ocupacion= "";
-          this.familiares.observacion= "";
-        },
-        eliminarFamiliar(index) {
-          this.fichaIngreso.contenido.familiares.splice(index, 1);
-        },
-        verDatosFamiliar(index) {
-          this.familiares = { 
-              nombreCompleto : this.fichaIngreso.contenido.familiares[index].nombreCompleto,
-              parentezco : this.fichaIngreso.contenido.familiares[index].parentezco,
-              edad : this.fichaIngreso.contenido.familiares[index].edad,
-              estadoCivil : this.fichaIngreso.contenido.familiares[index].estadoCivil,
-              gradoInstruccion : this.fichaIngreso.contenido.familiares[index].gradoInstruccion,
-              ocupacion : this.fichaIngreso.contenido.familiares[index].ocupacion,
-              observacion : this.fichaIngreso.contenido.familiares[index].observacion
-            },
-          this.dialogoVistaFamiliares = true;
-        },
-        cerrarVistaDatosFamiliar() {
-          this.dialogoVistaFamiliares = false;
-        },
-
-        agregarServicio() {
-          let servicios = { 
-            servicio: servicios.servicio, 
-            tipo: servicios.tipo,
-          };
-          this.fichaIngreso.contenido.servicios.push(servicios);
-          this.$refs.myVueDropzone.removeAllFiles();
-
-          this.servicios.servicio = "";
-          this.servicios.tipo = "";
-        },
-        eliminarServicio(index) {
-          this.fichaIngreso.contenido.servicios.splice(index, 1);
-        },
-
-        agregarPenal() {
-          let penales = { 
-            familiar: penales.familiar, 
-            motivo: penales.motivo,
-          };
-          this.fichaIngreso.contenido.penales.push(penales);
-          this.$refs.myVueDropzone.removeAllFiles();
-
-          this.penales.familiar = "";
-          this.penales.motivo = "";
-        },
-        eliminarPenal(index) {
-          this.fichaIngreso.contenido.penales.splice(index, 1);
-        },
-
-        agregarFirma() {
-          let firmas = {
-            urlfirma: this.urlfirma,
-            nombre: this.firmas.nombre,
-            cargo: this.firmas.cargo,
-          };
-          this.fichaIngreso.contenido.firmas.push(firmas);
-          this.$refs.myVueDropzone.removeAllFiles();
-
-          this.urlfirma = "";
-          this.firmas.nombre = "";
-          this.firmas.cargo = "";
-        },
-        eliminarFirma(index) {
-          this.fichaIngreso.contenido.firmas.splice(index, 1);
-        },
-        verFirma(index) {
-          console.log(this.fichaIngreso.contenido.firmas[index].urlfirma);
-          this.imagen = this.fichaIngreso.contenido.firmas[index].urlfirma;
-          this.dialogVistaPreviaFirma = true;
-        },
-        cerrarVistaPreviaFirma() {
-          this.dialogVistaPreviaFirma = false;
-        },
-
-
-        agregarFirma() {
-          let firmas = {
-            urlfirma: this.urlfirma,
-            nombre: this.firmas.nombre,
-            cargo: this.firmas.cargo,
-          };
-          this.fichaIngreso.contenido.firmas.push(firmas);
-          this.$refs.myVueDropzone.removeAllFiles();
-
-          this.urlfirma = "";
-          this.firmas.nombre = "";
-          this.firmas.cargo = "";
-        },
-        eliminarFirma(index) {
-          this.fichaIngreso.contenido.firmas.splice(index, 1);
-        },
-        verFirma(index) {
-          console.log(this.fichaIngreso.contenido.firmas[index].urlfirma);
-          this.imagen = this.fichaIngreso.contenido.firmas[index].urlfirma;
-          this.dialogVistaPreviaFirma = true;
-        },
-        cerrarVistaPreviaFirma() {
-          this.dialogVistaPreviaFirma = false;
-        },
-
-
-
+      }, cerrarDialogo(){     
+            this.step = 1;       
+            this.$emit("cerrar-modal-registro-ficha-ingreso");
+            console.log("hola");
+        }
       }, async mensaje(icono,titulo,texto,footer){
       await this.$swal({
         icon: icono,
@@ -964,16 +803,6 @@ export default {
     },
 
     computed: {
-    show: {
-      get () {
-        return this.visible
-      },
-      set (value) {
-        if (!value) {
-          this.$emit('close-dialog-fichaIngreso')
-        }
-      }
-    }
   }
 }
 

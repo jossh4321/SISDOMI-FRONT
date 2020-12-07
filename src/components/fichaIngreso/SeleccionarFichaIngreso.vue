@@ -25,6 +25,7 @@
                 <RegistrarFichaIngresoEducativa :listaresidentes="listaresidentes" :visible="RFichaIngresoEducativa_Visible"  @close-dialog-fichaIngreso="RFichaIngresoEducativa_Visible=false"/>
                 <RegistrarFichaIngresoPsicologica :listaresidentes="listaresidentes" :visible="RFichaIngresoPsicologica_Visible"  @close-dialog-fichaIngreso="RFichaIngresoPsicologica_Visible=false"/>
                 <RegistrarFichaIngresoSocial :listaresidentes="listaresidentes" :visible="RFichaIngresoSocial_Visible"  @close-dialog-fichaIngreso="RFichaIngresoSocial_Visible=false"/>
+<!--<RegistrarFichaIngresoSocial: :listaresidentes="listaresidentes" :visible="RFichaIngresoSocial_Visible_Visible"  @close="RFichaIngresoSocial_Visible_Visible=false" />-->
             </v-col>
         </v-row>
             </v-card-text>                       

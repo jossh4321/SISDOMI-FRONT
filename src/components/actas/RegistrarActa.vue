@@ -1,159 +1,195 @@
 <template>
-    <v-card>
+  <v-card>
     <v-card-title class="justify-center">Registrar Acta de externamiento</v-card-title>
 
     <v-stepper v-model="step">
-    <v-stepper-header>
-      <v-stepper-step
-        editable
-        step="1"
-      >
-        Datos Generales
-      </v-stepper-step>
+      <v-stepper-header>
+        <v-stepper-step editable step="1"> Datos Generales </v-stepper-step>
 
-      <v-divider></v-divider>
+        <v-divider></v-divider>
 
-      <v-stepper-step
-        editable
-        step="2"
-      >
-        Registro de Datos
-      </v-stepper-step>
-    </v-stepper-header>
+        <v-stepper-step editable step="2">     Registro de Datos </v-stepper-step>
+      </v-stepper-header>
 
-    <v-stepper-items>
-      <v-stepper-content step="1">
-        <div class="container-actaI">
-      <form>
-        <v-text-field
-          v-model="actaI.nombreplan"
+      <v-stepper-items>
+        <v-stepper-content step="1">
+          <div class="container-user">
+            <form>
+              <v-text-field
+                v-model="usuario.datos.nombreusuaria"
           label="Ingrese el nombre del Acta"
-          outlined
-          color="#009900"
-          
-        ></v-text-field>
-
-        <v-text-field
-          v-model="actaI.nombreusuaria"
+                outlined
+                @input="$v.usuario.datos.nombreusuaria.$touch()"
+                @blur="$v.usuario.datos.nombreusuaria.$touch()"
+                :error-messages="errorNombreusuaria"
+                color="#009900"
+              ></v-text-field>
+              <v-text-field
+                v-model="usuario.datos.nombreplan"
           label="Ingrese el nombre-dni de la usuaria"
-          outlined
-          color="#009900"
-          
-        ></v-text-field>
-
-        <v-text-field
-          v-model="actaI.objetivogeneral"
+                outlined
+                @input="$v.usuario.datos.nombreplan.$touch()"
+                @blur="$v.usuario.datos.nombreplan.$touch()"
+                :error-messages="errorNombreplan"
+                color="#009900"
+              ></v-text-field>
+                <v-text-field
+                v-model="usuario.datos.objetivogeneral"
           label="Ingrese el objetivo general"
-          outlined
-          color="#009900"
-          
-        ></v-text-field>
-
-        <v-textarea
-          v-model="actaI.objetivoespecifico"
+                outlined
+                @input="$v.usuario.datos.objetivogeneral.$touch()"
+                @blur="$v.usuario.datos.objetivogeneral.$touch()"
+                :error-messages="errorObjetivogeneral"
+                color="#009900"
+              ></v-text-field>
+            
+              <v-text-field
+                v-model="usuario.datos.objetivoespecifico"
           label="Ingrese los objetivos específicos"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-          
-        ></v-textarea>
-
-        <v-btn block @click="step = 2" color="primary">
-          <v-icon left>mdi-page-next-outline</v-icon>
-          <span>Continuar</span>
-        </v-btn>
-      </form>
-    </div>
-      </v-stepper-content>
-      <v-col>
+                outlined
+                @input="$v.usuario.datos.objetivoespecifico.$touch()"
+                @blur="$v.usuario.datos.objetivoespecifico.$touch()"
+                :error-messages="errorObjetivoespecifico"
+                color="#009900"
+              ></v-text-field>
+            
+             
+              <v-row>
+                <v-col>
+                  <v-btn block @click="step = 2" color="success">
+                    <v-icon left>mdi-page-next-outline</v-icon>
+                    <span>Continuar</span>
+                  </v-btn>
+                </v-col>
+                <v-col>
                   <v-btn block @click="cerrarDialogo()" color="primary">
                     <v-icon left>mdi-close-outline</v-icon>
                     <span>Cerrar</span>
                   </v-btn>
                 </v-col>
-      <v-stepper-content step="2">
-        <div  class="container-user">
-      <form>
-        <br />
-        <v-textarea
-          v-model="actaI.nombre_acta"
+              </v-row>
+            </form>
+          </div>
+        </v-stepper-content>
+        <v-stepper-content step="2">
+          <div class="container-user">
+            <form>
+              <v-text-field
+                v-model="usuario.nombre_acta"
           label="Ingrese nuevo nombre de Acta"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-                    
-        ></v-textarea>
+                outlined
+                @input="$v.usuario.nombre_acta.$touch()"
+                @blur="$v.usuario.nombre_acta.$touch()"
+                :error-messages="errorNombre_acta"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
 
-        <v-textarea
-         v-model="actaI.actividades_estrategias"
+                <v-text-field
+                v-model="usuario.actividades_estrategias"
           label="Ingrese nuevo nombre-dni de Usuario"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-        ></v-textarea>
+                outlined
+                @input="$v.usuario.actividades_estrategias.$touch()"
+                @blur="$v.usuario.actividades_estrategias.$touch()"
+                :error-messages="errorActividades_estrategias"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
 
-        <v-textarea
-          v-model="actaI.indicadores"
+                <v-text-field
+                v-model="usuario.indicadores"
           label="Ingrese nuevo objetivo general"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-        ></v-textarea>
+                outlined
+                @input="$v.usuario.indicadores.$touch()"
+                @blur="$v.usuario.indicadores.$touch()"
+                :error-messages="errorIndicadores"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
 
-        <v-textarea
-         v-model="actaI.meta"
+                <v-text-field
+                v-model="usuario.meta"
           label="Ingrese nuevos objetivos especificos"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-        ></v-textarea>
-    <div>
-          <vue-dropzone ref="myVueDropzone"
-            @vdropzone-success="afterSuccess"
-            @vdropzone-removed-file="afterRemoved"
-            id="dropzone" :options="dropzoneOptions" >
-          </vue-dropzone>
-        </div>
-        <v-divider class="divider-custom"></v-divider>
+                outlined
+                @input="$v.usuario.meta.$touch()"
+                @blur="$v.usuario.meta.$touch()"
+                :error-messages="errorMeta"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
 
-        <v-btn block color="accent">
-          <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
-          <span >Registrar Acta</span>
-        </v-btn>
-      </form>
-        </div>
-      </v-stepper-content>
-    </v-stepper-items>
+              <div>
+                <vue-dropzone
+                  ref="myVueDropzone"
+                  @vdropzone-success="afterSuccess"
+                  @vdropzone-removed-file="afterRemoved"
+                  id="dropzone"
+                  :options="dropzoneOptions"
+                >
+                </vue-dropzone>
+              </div>
+              <v-card v-if="errorImagen" color="red">
+                <v-card-text class="text-center" style="color: white"
+                  >Debe Subir una imagen del usuario
+                  Obligatoriamente</v-card-text
+                >
+              </v-card>
+              <v-divider class="divider-custom"></v-divider>
+              <v-row>
+                <v-col>
+                  <v-btn block @click="registrarUsuario" color="success">
+                    <v-icon left>mdi-content-save-all-outline</v-icon>
+                    <span>Registrar Acta</span>
+                  </v-btn>
+                </v-col>
+                <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </form>
+          </div>
+        </v-stepper-content>
+      </v-stepper-items>
     </v-stepper>
   </v-card>
 </template>
 <script>
 import axios from "axios";
+import Vue from 'vue'
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
+import { mapMutations, mapState } from "vuex";
+import { required, minLength, email, helpers } from "vuelidate/lib/validators";
+import moment from "moment";
 export default {
-   components: {
-     vueDropzone: vue2Dropzone,
+  props: ["listaroles"],
+  components: {
+    vueDropzone: vue2Dropzone,
   },
   data() {
-      return {
-      actaI: {
-        nombreusuaria:" ",
+    return {
+      datemenu: false,
+      step: 1,
+      dropzoneOptions: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFilesize: 3.0,
+        maxFiles: 1,
+        acceptedFiles: ".jpg, .png, jpeg",
+        headers: { "My-Awesome-Header": "header value" },
+        addRemoveLinks: true,
+        dictDefaultMessage:
+          "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
+      }, //utilizado en los formularios como un prop
+      usuario: {
+        
+        datos: {
+          nombreusuaria:" ",
         nombreplan:" ",
         objetivogeneral:" ",
         objetivoespecifico:" ", 
@@ -161,77 +197,248 @@ export default {
         actividades_estrategias:" ",
         indicadores:" ",
         meta:" ",
-      },
-      datemenu: false,
-      step:1,
-      dropzoneOptions: {
-        url: "https://httpbin.org/post",
-        thumbnailWidth: 250,
-        maxFilesize: 3.0,
-        maxFiles:1,
-        acceptedFiles:".jpg",
-        headers: { "My-Awesome-Header": "header value" },
-        addRemoveLinks: true,
-         dictDefaultMessage: "Seleccione la firma del responsable o Arrastrela Aqui"
+        },
       },
     };
   },
-  methods:{
-    afterSuccess(file,response){
-       this.usuario.datos.imagen = file.dataURL;
-       this.$v.usuario.datos.imagen.$model = file.dataURL;
+  created() {},
+  methods: {
+    ...mapMutations(["setUsuarios", "addUsuario"]),
+    async registrarUsuario() {
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        console.log("hay errores");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
+        console.log("no hay errores");
+        await axios
+          .post("/usuario", this.usuario)
+          .then((res) => {
+            console.log(this.usuario)
+            this.usuario = res.data;
+            this.addUsuario(this.usuario);
+            this.cerrarDialogo();
+          })
+          .catch((err) => console.log(err));
+        await this.mensaje(
+          "success",
+          "listo",
+          "Acta registrada Satisfactoriamente",
+          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+        );
+      }
     },
     resetUsuarioValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
-      this.$v.actaI.$reset();
+      this.$v.usuario.$reset();
     },
-      cerrarDialogo() {
-      this.actaI = this.limpiarUsuario();
+    cerrarDialogo() {
+      this.usuario = this.limpiarUsuario();
       this.step = 1;
       this.resetUsuarioValidationState();
       this.$emit("close-dialog-save");
-      },
-    afterRemoved(file, error, xhr){
+    },
+    afterSuccess(file, response) {
+      console.log(file);
+      this.usuario.datos.imagen = file.dataURL.split(",")[1];
+      this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
+      //console.log(file.dataURL.split(",")[1]);
+    },
+    afterRemoved(file, error, xhr) {
       this.usuario.datos.imagen = "";
-       this.$v.usuario.datos.imagen.$model = "";
-    }
-    ,mensaje(icono,titulo,texto,footer){
-      this.$swal({
+      this.$v.usuario.datos.imagen.$model = "";
+    },
+    async mensaje(icono, titulo, texto, footer) {
+      await this.$swal({
         icon: icono,
         title: titulo,
         text: texto,
-        footer:footer
+        footer: footer,
       });
     },
     limpiarUsuario() {
       return {
-        
+       
         datos: {
-          
-        nombreusuaria:" ",
+           nombreusuaria:" ",
         nombreplan:" ",
         objetivogeneral:" ",
-        objetivoespecifico:" ",    
-        nombre_acta:" ",    
+        objetivoespecifico:" ", 
+        nombre_acta:" ",       
         actividades_estrategias:" ",
         indicadores:" ",
         meta:" ",
         },
       };
     },
-  
   },
-  computed:{
+  computed: {
+    ...mapState(["usuarios"]),
+    verifyColor() {
+      return "red";
+    },
+    errorNombreUsuario() {
+      const errors = [];
+      if (!this.$v.usuario.usuario.$dirty) return errors;
+      !this.$v.usuario.usuario.required &&
+        errors.push("Debe ingresar un Nombre de Usuario Obligatoriamente");
+      !this.$v.usuario.usuario.minLength &&
+        errors.push("El Nombre de Usuario debe poseer al menos 4 caracteres");
 
-  }
+      return errors;
+    },
+    errorNombre() {
+      const errors = [];
+      if (!this.$v.usuario.datos.nombreusuaria.$dirty) return errors;
+      !this.$v.usuario.datos.nombreusuaria.required &&
+        errors.push("Debe ingresar un Nombre Obligatoriamente");
+      !this.$v.usuario.datos.nombreusuaria.minLength &&
+        errors.push("El Nombre debe tener al menos 3 caracteres");
+      return errors;
+    },
+    errorApellido() {
+      const errors = [];
+      if (!this.$v.usuario.datos.nombreplan.$dirty) return errors;
+      !this.$v.usuario.datos.nombreplan.required &&
+        errors.push("Debe ingresar un nombre Obligatoriamente");
+      !this.$v.usuario.datos.nombreplan.minLength &&
+        errors.push("El nombre debe tener al menos 3 caracteres");
+      return errors;
+    },
+    errorNumeroDocumento() {
+      const errors = [];
+      if (!this.$v.usuario.datos.objetivogeneral.$dirty) return errors;
+      !this.$v.usuario.datos.objetivogeneral.required &&
+        errors.push("Debe ingresar el Numero de Documento Obligatoriamente");
+      !this.usuario.datos.objetivogeneral != "" &&
+        errors.push("debe tener al menos 3 caracteres");
+      
+      return errors;
+    },
+    errorTipoDocumento() {
+      const errors = [];
+      if (!this.$v.usuario.datos.objetivoespecifico.$dirty) return errors;
+      !this.$v.usuario.datos.objetivoespecifico.required &&
+        errors.push("Debe seleccionar el objetivoespecifico Obligatoriamente");
+      return errors;
+    },
+    errorFechaNacimiento() {
+      const errors = [];
+      if (!this.$v.usuario.datos.nombre_acta.$dirty) return errors;
+      !this.$v.usuario.datos.nombre_acta.required &&
+        errors.push("Debe ingresar un nombre Obligatoriamente");
+      !this.$v.usuario.datos.nombre_acta.minLength &&
+        errors.push("El nombre debe tener al menos 3 caracteres");
+      return errors;
 
-}
+      
+    },
+    errorEmail() {
+      const errors = [];
+      if (!this.$v.usuario.datos.actividades_estrategias.$dirty) return errors;
+      !this.$v.usuario.datos.actividades_estrategias.required &&
+        errors.push("Debe ingresar actividades_estrategias Obligatoriamente");
+      !this.$v.usuario.datos.actividades_estrategias.email &&
+        errors.push("Debe ingresar el formato example@example.something");
+      return errors;
+    },
+    errorDireccion() {
+      const errors = [];
+      if (!this.$v.usuario.datos.indicadores.$dirty) return errors;
+      !this.$v.usuario.datos.indicadores.required &&
+        errors.push("Debe ingresar una direccion Obligatoriamente");
+      !this.$v.usuario.datos.indicadores.minLength &&
+        errors.push("La direccion debe tener al menos 10 caracteres");
+      return errors;
+    },
+      
+    errorRol() {
+      const errors = [];
+      if (!this.$v.usuario.meta.$dirty) return errors;
+      !this.$v.usuario.meta.required &&
+        errors.push("Debe seleccionar un meta obligatoriamente");
+      return errors;
+    },
+    errorEstado() {
+      const errors = [];
+      if (!this.$v.usuario.nombre_acta.$dirty) return errors;
+      !this.$v.usuario.nombre_acta.required &&
+        errors.push("Debe seleccionar un nombre_acta obligatoriamente");
+      return errors;
+    },
+    errorImagen() {
+      return this.$v.usuario.datos.imagen.required == false &&
+        this.$v.usuario.datos.imagen.$dirty == true
+        ? true
+        : false; 
+    },
+  },
+  validations() {
+    return {
+      usuario: {
+        usuario: {
+          required,
+          minLength: minLength(4),
+        },
+        rol: {
+          required,
+        },
+        estado: {
+          required,
+        },
+        datos: {
+          nombre: {
+            required,
+            minLength: minLength(3),
+          },
+          apellido: {
+            required,
+            minLength: minLength(3),
+          },
+          fechanacimiento: {
+            required, //cumplio? false
+          },
+          tipodocumento: {
+            required,
+             minLength: minLength(3),
+          },
+          numerodocumento: {
+            required,
+            
+          },
+          email: {
+            required,
+            email,
+          },
+          direccion: {
+            required,
+            minLength: minLength(10),
+          },
+          fechanacimiento: {
+            required,
+          },
+          direccion: {
+            required,
+            minLength: minLength(10),
+          },
+          imagen: {
+            required,
+          },
+        },
+      },
+    };
+  },
+};
 </script>
 <style  scoped>
-.container-actaI {
+.container-user {
   margin: 15px;
 }
-
 
 .dropzone-custom-content {
   position: absolute;
@@ -249,13 +456,12 @@ export default {
 .subtitle {
   color: #314b5f;
 }
-.divider-custom{
-  margin-top:7px;
-  margin-bottom:7px
+.divider-custom {
+  margin-top: 7px;
+  margin-bottom: 7px;
 }
 
-.inputTextField{
+.inputTextField {
   border-color: green;
 }
 </style>
-     

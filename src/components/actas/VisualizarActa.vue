@@ -65,15 +65,16 @@
           <v-icon left>mdi-page-next-outline</v-icon>
           <span>Continuar</span>
         </v-btn>
-      </form>
-    </div>
-      </v-stepper-content>
-      <v-col>
+        <v-col>
                   <v-btn block @click="cerrarDialogo()" color="primary">
                     <v-icon left>mdi-close-outline</v-icon>
                     <span>Cerrar</span>
                   </v-btn>
                 </v-col>
+      </form>
+    </div>
+      </v-stepper-content>
+     
       <v-stepper-content step="2">
         <div  class="container-user">
       <form>
@@ -133,8 +134,14 @@
 
         <v-btn block color="accent">
           <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
-          <span >Registrar Acta</span>
+          <span >Visualizar Acta</span>
         </v-btn>
+        <v-col>
+                  <v-btn block @click="cerrarDialogo()" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
       </form>
         </div>
       </v-stepper-content>

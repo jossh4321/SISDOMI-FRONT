@@ -134,8 +134,6 @@ export default {
       dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
-        maxFilesize: 3.0,
-        maxFiles: 5,
         acceptedFiles: ".pdf",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
@@ -147,6 +145,8 @@ export default {
     };
   },
   mounted() {
+    console.log('ptm help');
+    this.$refs.myVueDropzone.removeAllFiles();
     for (let index = 0; index < this.anexo.enlaces.length; index++) {
       var file = {
         size: 250,
@@ -157,7 +157,6 @@ export default {
       };
       var url = this.anexo.enlaces[index].link;
       this.$refs.myVueDropzone.manuallyAddFile(file, url);
-      this.$refs.myVueDropzone.$el.dropzone.files.push(file);
       this.anexosAux.push(
         this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[index]
       );
@@ -192,7 +191,7 @@ export default {
   methods: {
     ...mapMutations(["setResidentes"]),
     vfileAdded(file) {
-      console.log(file);
+      //console.log(file);
     },
     async modificarAnexo() {
       this.$v.$touch();
@@ -253,7 +252,6 @@ export default {
     },
     afterRemoved(file, error, xhr) {
       let indexFile = this.anexosAux.findIndex((document) => document == file);
-
       if (indexFile != -1) {
         this.anexosAux.splice(indexFile, 1);
       }

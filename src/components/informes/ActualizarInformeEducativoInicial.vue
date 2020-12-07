@@ -69,13 +69,13 @@
                 chips
                 dense
                 outlined
-                v-model="informe.creadordocumento"
+                v-model="informe.contenido.evaluador"
                 color="#009900"
                 label="Educador responsable"
                 item-text="usuario"
                 item-value="id"
-                @input="$v.informe.creadordocumento.$touch()"
-                @blur="$v.informe.creadordocumento.$touch()"
+                @input="$v.informe.contenido.evaluador.$touch()"
+                @blur="$v.informe.contenido.evaluador.$touch()"
                 :error-messages="errorCreador"
               >
                 <template v-slot:selection="data">
@@ -87,7 +87,7 @@
                     <v-avatar left color="#b3b3ff" size="24">
                       <span style="font-size: 12px">RT</span>
                     </v-avatar>
-                    {{ data.item.datos.nombre }}
+                    {{ data.item.datos.nombre }} {{ data.item.datos.apellido }}
                   </v-chip>
                 </template>
                 <template v-slot:item="data">
@@ -268,11 +268,7 @@
                 </v-card>
               </v-card>
               <v-card
-                style="
-                  margin-top: 30px;
-                  padding: 5px 5px;
-                  background-color: #eaeaea;
-                "
+                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
               >
                 <div>
                   <vue-dropzone
@@ -284,35 +280,87 @@
                   >
                   </vue-dropzone>
                 </div>
-                <!-- <v-card
-                tile
-                elevation="0"
-                color="#FAFAFA"
-                style="margin: 5px"
-                height="60"
-                v-for="anexo in anexos"
-                :key="anexo"
-              >
-                <v-row style="margin-left: 10px; heigh: 100%" align="center">
-                  <v-col :cols="8" align="left">
-                    <span>{{ anexo }}</span>
-                  </v-col>
-                  <v-col :cols="4" align="right">
-                    <div style="margin-right: 20px">
-                      <v-btn
-                        fab
-                        x-small
-                        dark
-                        color="red"
-                        @click="eliminarAnexo(anexo)"
-                      >
-                        <v-icon dark> mdi-minus </v-icon>
-                      </v-btn>
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-card> -->
+                
+                <v-card
+                  color="#FAFAFA"
+                  style="margin-top:5px"
+                  height="60"
+                  v-for="(item, index) in informe.contenido.anexos"
+                  :key="index"
+                >
+                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                    <v-col :cols="8">
+                      <article>
+                        <img
+                          style="margin-right:5px;width:6% "
+                          src="https://www.flaticon.es/svg/static/icons/svg/2991/2991112.svg"
+                          alt="imagen documento"
+                        />
+                        <span style="font-size:18px"> {{ item.titulo }}</span>
+                      </article>
+                    </v-col>
+                    <v-col :cols="2" align="center">
+                      <template>
+                        <v-btn
+                          fab
+                          icon=""
+                          x-small
+                          dark
+                          color="#EAEAEA"
+                          @click="verAnexo(index)"
+                        >
+                          <img
+                            style="width:25% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/709/709612.svg"
+                            alt="visualizar"
+                          />
+                        </v-btn>
+                      </template>
+                    </v-col>
+                    <v-col :cols="2" align="right">
+                      <div style="margin-right:20px">
+                        <v-btn
+                          fab
+                          x-small
+                          dark
+                          color="red"
+                          @click="eliminarAnexo(index)"
+                        >
+                          <v-icon dark>
+                            mdi-minus
+                          </v-icon>
+                        </v-btn>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-card>
               </v-card>
+
+              <v-dialog
+                v-model="dialogVistaPreviaAnexos"
+                persistent
+                max-width="600px"
+              >
+                <v-card align="center">
+                  <v-card-title>
+                    <span class="headline">Vista previa</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <iframe :src="pdf" width="100%" height="600"></iframe>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="cerrarVistaPreviaAnexo()"
+                    >
+                      Cerrar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+
               <v-card
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
@@ -394,7 +442,7 @@
                             alt="imagen usuario"
                           />
                           <span style="font-size:18px">
-                            {{ item.nombre }} {{ item.cargo }}</span
+                            {{ item.nombre }} - {{ item.cargo }}</span
                           >
                         </article>
                       </v-col>
@@ -509,11 +557,11 @@ import moment from "moment";
 import ActualizarInformeEducativoEvolutivoVue from "./ActualizarInformeEducativoEvolutivo.vue";
 
 function esTexto(value) {
-  return /^[A-Za-z\s]+$/.test(value); //acepta solo texto y espacios en blanco
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
 
 function esParrafo(value) {
-  return /^[A-Za-z\d\s.,;]+$/.test(value); //acepta tambien . , ;
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
 
 export default {
@@ -556,15 +604,39 @@ export default {
       urlfirma: "",
       firmas: { urlfirma: "", nombre: "", cargo: "" },
       imagen: "",
+      fileList: [],
+      dialogVistaPreviaAnexos : false,
     };
   },
   async created() {
     this.cargarConclusiones();
     this.cargarAnexos();
   },
-  methods: {
+  methods: {    
     ...mapMutations(["replaceInforme"]),
+    async sendPDFFiles() {
+      let listaTitulos = [];
+      let listaanexos = this.fileList;
+      for (let index = 0; index < this.fileList.length; index++) {
+        let formData = new FormData();
+        listaTitulos.push(this.fileList[index].name);
+        formData.append("file", this.fileList[index]);
+        await axios
+          .post("/Media/archivos/pdf", formData)
+          .then((res) => {
+            listaanexos[index] = res.data;
+          })
+          .catch((err) => console.log(err));
+      }
+      for (let index = 0; index < this.fileList.length; index++) {
+        this.informe.contenido.anexos.push({
+          url: listaanexos[index],
+          titulo: listaTitulos[index],
+        });
+      }      
+    },
     async actualizarInformeEducativoInicial() {
+      await this.sendPDFFiles();
       this.$v.informe.$touch();
       if (this.$v.informe.$invalid) {
         console.log("hay errores");
@@ -579,12 +651,10 @@ export default {
         await axios
           .put("/informe/informeei", this.informe)
           .then((res) => {
-            this.informe = res.data;
-            console.log(this.listaresidentes);
+            this.informe = res.data;            
             var resi = this.listaresidentes.filter(function(residente) {
               return residente.id == res.data.idresidente;
-            });
-            console.log(resi);
+            });            
             var info = {
               id: res.data.id,
               tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
@@ -609,10 +679,14 @@ export default {
       this.$emit("close-dialog-update");
     },
     agregarConclusion() {
-      let conclusiones = this.conclusion;
-      this.informe.contenido.conclusiones.push(conclusiones);
-      this.conclusiones = this.informe.contenido.conclusiones;
-      this.conclusion = "";
+      this.$v.conclusion.$touch();
+      if (!this.$v.conclusion.$invalid) {
+        let conclusiones = this.conclusion;
+        this.informe.contenido.conclusiones.push(conclusiones);
+        this.conclusiones = this.informe.contenido.conclusiones;
+        this.conclusion = "";
+        this.$v.conclusion.$reset();
+      }
     },
     eliminarConclusion(conclusion) {
       this.conclusiones.forEach(function(car, index, object) {
@@ -627,6 +701,13 @@ export default {
     cargarAnexos() {
       this.anexos = this.informe.contenido.anexos;
     },
+    verAnexo(index) {
+      this.pdf = this.informe.contenido.anexos[index].url;
+      (this.dialogVistaPreviaAnexos = true);
+    },
+    cerrarVistaPreviaAnexo() {
+      this.dialogVistaPreviaAnexos = false;
+    },
     eliminarAnexo(anexo) {
       this.anexos.forEach(function(car, index, object) {
         if (car === anexo) {
@@ -635,30 +716,36 @@ export default {
       });
     },
     agregarFirma() {
-      let firmas = {
-        urlfirma: this.urlfirma,
-        nombre: this.firmas.nombre,
-        cargo: this.firmas.cargo,
-      };
-      this.informe.contenido.firmas.push(firmas);
-      this.$refs.myVueDropzone.removeAllFiles();
+      this.$v.firmas.$touch();
+      this.$v.urlfirma.$touch();
 
-      this.urlfirma = "";
-      this.firmas.nombre = "";
-      this.firmas.cargo = "";
+      if (!this.$v.firmas.$invalid && !this.$v.urlfirma.$invalid) {
+        let firmas = {
+          urlfirma: this.urlfirma,
+          nombre: this.firmas.nombre,
+          cargo: this.firmas.cargo,
+        };
+        this.informe.contenido.firmas.push(firmas);
+        this.$refs.myVueDropzone.removeAllFiles();
+
+        this.urlfirma = "";
+        this.firmas.nombre = "";
+        this.firmas.cargo = "";
+        this.$v.firmas.$reset();
+        this.$v.urlfirma.$reset();
+      }
     },
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
     },
-    verFirma(index) {
-      console.log(this.informe.contenido.firmas[index].urlfirma);
+    verFirma(index) {      
       this.imagen = this.informe.contenido.firmas[index].urlfirma;
       this.dialogVistaPreviaFirma = true;
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
     },
-    afterSuccess(file, response) {
+     afterSuccess(file, response) {
       this.fileList.push(file);
     },
     afterRemoved(file, error, xhr) {
@@ -666,8 +753,7 @@ export default {
       this.$v.informe.contenido.anexos.$model = "";
     },
     afterSuccess2(file, response) {
-      this.urlfirma = file.dataURL.split(",")[1];
-      console.log(this.urlfirma);
+      this.urlfirma = file.dataURL.split(",")[1];      
     },
     afterRemoved2(file, error, xhr) {
       this.urlfirma = "";

@@ -176,11 +176,13 @@ export default {
     },
     closeDialogModify() {
       this.dialogModify = false;
+      this.ismodifier="";
     },
     closeDialogDetail() {
       this.dialogDetail = false;
     },
     async updateAnexo(item) {
+      this.ismodifier="ModificarAnexo";
       await axios
         .get("/Anexo/" + item.id)
         .then((res) => {
@@ -194,6 +196,7 @@ export default {
       this.dialogModify = true;
     },
     async detailAnexo(item) {
+      this.ismodifier="RegistrarAnexo";
       await axios
         .get("/Anexo/" + item.id)
         .then((res) => {

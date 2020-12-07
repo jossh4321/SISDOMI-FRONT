@@ -42,7 +42,7 @@
                       <v-avatar left color="#b3b3ff" size="24">
                         <span style="font-size:12px">RT</span>
                       </v-avatar>
-                      {{ data.item.nombre }}
+                      {{ data.item.nombre }} {{ data.item.apellido }}
                     </v-chip>
                   </template>
                   <template v-slot:item="data">
@@ -76,7 +76,8 @@
                   color="#009900"
                   label="Educador responsable"
                   item-text="usuario"
-                  item-value="id"                  
+                  item-value="id"
+                  :error-messages="errorCreador"
                 >
                   <template v-slot:selection="data">
                     <v-chip
@@ -88,6 +89,7 @@
                         <span style="font-size:12px">RT</span>
                       </v-avatar>
                       {{ data.item.datos.nombre }}
+                      {{ data.item.datos.apellido }}
                     </v-chip>
                   </template>
                   <template v-slot:item="data">
@@ -465,13 +467,12 @@ import moment from "moment";
 import { mapGetters } from "vuex";
 
 function esTexto(value) {
-  return /^[A-Za-z\s]+$/.test(value); //acepta solo texto y espacios en blanco
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
 
 function esParrafo(value) {
-  return /^[A-Za-z\d\s.,;]+$/.test(value); //acepta tambien . , ;
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
-
 export default {
   props: ["listaresidentes", "listaeducadores", "visible"],
   components: {
@@ -479,9 +480,7 @@ export default {
   },
   data() {
     return {
-      //para probar
       fileList: [],
-      ///
       dialogVistaPreviaFirma: false,
       datemenu: false,
       step: 1,
@@ -535,7 +534,7 @@ export default {
       imagen: "",
     };
   },
-  async created() {   
+  async created() {
     this.conclusiones = "";
     this.conclusion = "";
   },
@@ -560,13 +559,11 @@ export default {
           url: listaanexos[index],
           titulo: listaTitulos[index],
         });
-      }
-      console.log(this.informe.contenido.anexos);
+      }      
     },
     async registrarInforme() {
       await this.sendPDFFiles();
-      this.informe.creadordocumento = this.user.id;
-      console.log(this.informe);
+      this.informe.creadordocumento = this.user.id;      
       this.$v.informe.$touch();
       if (this.$v.informe.$invalid) {
         console.log("hay errores");
@@ -577,27 +574,26 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-          console.log("no hay errores");
-          console.log(this.informe);
-          await axios
-            .post("/informe/informeei", this.informe)
-            .then((res) => {
-              this.informe = res.data;
-              var resi = this.listaresidentes.filter(function(residente) {
-                return residente.id == res.data.idresidente;
-              });
-              console.log(resi);
-              var info = {
-                id: res.data.id,
-                tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-                fechacreacion: res.data.fechacreacion.split("T")[0],
-                codigodocumento: res.data.contenido.codigodocumento,
-                nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
-              };
-              this.addInforme(info);
-              this.cerrarDialogo();
-            })
-            .catch((err) => console.log(err));
+        console.log("no hay errores");
+        console.log(this.informe);
+        await axios
+          .post("/informe/informeei", this.informe)
+          .then((res) => {
+            this.informe = res.data;
+            var resi = this.listaresidentes.filter(function(residente) {
+              return residente.id == res.data.idresidente;
+            });            
+            var info = {
+              id: res.data.id,
+              tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
+              fechacreacion: res.data.fechacreacion.split("T")[0],
+              codigodocumento: res.data.contenido.codigodocumento,
+              nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
+            };
+            this.addInforme(info);
+            this.cerrarDialogo();
+          })
+          .catch((err) => console.log(err));
         await this.mensaje(
           "success",
           "Listo",
@@ -608,11 +604,10 @@ export default {
       this.$v.firmas.$reset();
       this.$v.urlfirma.$reset();
       this.$v.conclusion.$reset();
-
     },
     resetInformeValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
-      this.$v.informe.$reset();      
+      this.$v.informe.$reset();
       this.$v.firmas.$reset();
       this.$v.urlfirma.$reset();
     },
@@ -640,7 +635,6 @@ export default {
       }
     },
     eliminarConclusion(conclusion) {
-      // this.informe.contenido.conclusiones.splice(conclusion, 1);
       this.conclusiones.forEach(function(car, index, object) {
         if (car === conclusion) {
           object.splice(index, 1);
@@ -678,10 +672,6 @@ export default {
       this.dialogVistaPreviaFirma = false;
     },
     afterSuccess(file, response) {
-      // console.log(file);
-      // console.log(file.dataURL);
-      // console.log(this.$refs.myVueDropzone);
-
       this.fileList.push(file);
     },
     afterRemoved(file, error, xhr) {
@@ -690,12 +680,9 @@ export default {
     },
     afterSuccess2(file, response) {
       this.urlfirma = file.dataURL.split(",")[1];
-      //console.log(this.urlfirma);
     },
     afterRemoved2(file, error, xhr) {
       this.urlfirma = "";
-      //this.informe.contenido.firmas.urlfirma = "";
-      // this.$v.informe.contenido.firmas.urlfirma.$model = "";
     },
     limpiarInforme() {
       return {
@@ -747,13 +734,13 @@ export default {
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
     },
-    // errorCreador() {
-    //   const errors = [];
-    //   if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
-    //   !this.$v.informe.contenido.evaluador.required &&
-    //     errors.push("Debe seleccionar un educador obligatoriamente");
-    //   return errors;
-    // },
+    errorCreador() {
+      const errors = [];
+      if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
+      !this.$v.informe.contenido.evaluador.required &&
+        errors.push("Debe seleccionar un educador obligatoriamente");
+      return errors;
+    },
     errorLugarEvaluacion() {
       const errors = [];
       if (!this.$v.informe.contenido.lugarevaluacion.$dirty) return errors;
@@ -853,7 +840,7 @@ export default {
           lugarevaluacion: {
             required,
             minLength: minLength(10),
-          },         
+          },
           situacionacademica: {
             required,
             minLength: minLength(100),
@@ -863,6 +850,9 @@ export default {
             required,
             minLength: minLength(100),
             esParrafo,
+          },
+          evaluador: {
+            required,            
           },
         },
       },

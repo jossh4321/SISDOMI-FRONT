@@ -35,6 +35,13 @@
                 readonly
                 color="#009900"
               ></v-text-field>
+              <v-text-field
+                v-model="evaluador"
+                label="Evaluador"
+                outlined
+                readonly
+                color="#009900"
+              ></v-text-field>
               <v-textarea
                 v-model="informe.contenido.antecedentes"
                 label="Antecedentes"
@@ -523,6 +530,7 @@ export default {
     return {
       step: 1,
       residente: "",
+      evaluador: "",
       motivoIngreso: "",
       urlfirma: "",
       firmas: { urlfirma: "", nombre: "", cargo: "" },
@@ -552,7 +560,7 @@ export default {
   },
   created() {
     this.obtenerResidente();
-    console.log("Siganme en twitch.tv/anderasdfg c:");
+    this.obtenerEvaluador();
   },
   methods: {
     ...mapMutations(["addInforme"]),
@@ -564,6 +572,14 @@ export default {
           this.motivoIngreso = x.data.motivoIngreso;
         })
         .catch((err) => console.log(err));
+    },
+    async obtenerEvaluador() {
+      await axios
+        .get("/usuario/id?id=" + this.informe.contenido.evaluador)
+        .then((res) => {                    
+          this.evaluador = res.data.datos.nombre + " " + res.data.datos.apellido;
+        })
+        .catch((err) => console.log(err));        
     },
     resetInformeValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
