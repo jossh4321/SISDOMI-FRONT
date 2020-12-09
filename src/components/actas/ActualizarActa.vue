@@ -1,6 +1,6 @@
 <template>
     <v-card>
-    <v-card-title class="justify-center">Registrar Acta de externamiento</v-card-title>
+    <v-card-title class="justify-center">Actualizar Acta de externamiento</v-card-title>
 
     <v-stepper v-model="step">
     <v-stepper-header>
