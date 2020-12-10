@@ -150,9 +150,10 @@
 </template>
 <script>
 import axios from 'axios';
-import SeleccionarFichaIngreso from '@/components/fichaIngreso/SeleccionarFichaIngreso.vue'/* 
+import SeleccionarFichaIngreso from '@/components/fichaIngreso/SeleccionarFichaIngreso.vue'
+//import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/ModificarFichaIngresoPsicologica.vue'
+/* 
 import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue'
-import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/ModificarFichaIngresoPsicologica.vue'
 import ModificarFichaIngresoSocial  from '@/components/fichaIngreso/ModificarFichaIngresoSocial.vue'
 import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue' */
 //import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
@@ -160,7 +161,6 @@ import RegistrarFichaIngresoEducativa from '@/components/fichaIngreso/RegistrarF
 import RegistrarFichaIngresoPsicologica from '@/components/fichaIngreso/RegistrarFichaIngresoPsicologica.vue'
 import RegistrarFichaIngresoSocial from '@/components/fichaIngreso/Social/RegistrarFichaIngresoSocial.vue'
 import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue'
-import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/ModificarFichaIngresoPsicologica.vue'
 import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
 import ConsultarFichaIngresoPsicologica from '@/components/fichaIngreso/ConsultarFichaIngresoPsicologica.vue'
 import ConsultarFichaIngresoSocial from '@/components/fichaIngreso/Social/ConsultarFichaIngresoSocial.vue'
