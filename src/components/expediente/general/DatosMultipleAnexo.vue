@@ -16,7 +16,11 @@
           <label class="font-weight-medium label-title">{{
             anexo.titulo
           }}</label>
-          <v-btn color="success" class="d-block mt-2">
+          <v-btn
+            color="success"
+            class="d-block mt-2"
+            @click="showAnnexe(anexo)"
+          >
             Ver anexo
             <v-icon right dark>mdi-file-pdf</v-icon>
           </v-btn>
@@ -35,6 +39,14 @@
         No se ha registrado ningún anexo al documento
       </v-alert>
     </template>
+    <v-dialog v-model="dialogPDF" max-width="600">
+      <v-card>
+        <v-card-title>Visualización del documento en PDF</v-card-title>
+        <v-card-text>
+          <iframe :src="urlAnnexe" width="100%" height="600"></iframe>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -42,12 +54,21 @@
 export default {
   name: "datos-multiple-anexo",
   data() {
-    return {};
+    return {
+      dialogPDF: false,
+      urlAnnexe: "",
+    };
   },
   props: {
     anexos: {
       type: Array,
       default: [],
+    },
+  },
+  methods: {
+    showAnnexe(enlace) {
+      this.dialogPDF = true;
+      this.urlAnnexe = enlace.url;
     },
   },
 };

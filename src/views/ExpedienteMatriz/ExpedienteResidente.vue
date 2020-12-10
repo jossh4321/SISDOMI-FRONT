@@ -222,7 +222,11 @@
                 <label class="font-weight-medium label-title">
                   {{ anexo.titulo }}
                 </label>
-                <v-btn color="success" class="d-block mt-2 mx-auto mx-sm-0">
+                <v-btn
+                  color="success"
+                  class="d-block mt-2 mx-auto mx-sm-0"
+                  @click="showAnnexes(anexo)"
+                >
                   Ver {{ anexo.titulo }}
                   <v-icon right dark>mdi-file-pdf</v-icon>
                 </v-btn>
@@ -287,13 +291,52 @@
       <v-dialog v-model="dialogDocuments" max-width="500">
         <detalle-documentos :areaDocuments="areaDocuments"></detalle-documentos>
       </v-dialog>
+      <v-dialog v-model="dialogPDFs" max-width="500" persistent>
+        <v-card>
+          <v-card-title>Visualización de los anexos</v-card-title>
+          <v-card-subtitle
+            >Visualice todos los archivos en formato pdf del anexo
+            seleccionado</v-card-subtitle
+          >
+          <v-card-text>
+            <v-row>
+              <v-col
+                cols="12"
+                sm="6"
+                md="6"
+                lg="4"
+                xl="4"
+                v-for="(annexe, index) in lstAnnexes"
+                :key="index"
+              >
+                <v-btn color="success" block @click="showAnnexe(annexe)">
+                  {{ annexe.descripcion }}
+                  <v-icon right dark>mdi-file-pdf</v-icon></v-btn
+                >
+              </v-col>
+            </v-row>
+            <v-btn block color="error" @click="dialogPDFs = false" class="mt-2">
+              <v-icon left>mdi-close</v-icon>
+              <span>Cerrar</span>
+            </v-btn>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+      <v-dialog v-model="dialogPDF" max-width="600">
+        <v-card>
+          <v-card-title>Visualización del documento en PDF</v-card-title>
+          <v-card-text>
+            <iframe :src="urlAnnexe" width="100%" height="600"></iframe>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </template>
   </v-card>
 </template>
 
 <script>
 import axios from "axios";
-import DetalleDocumentos from '@/components/expediente/general/DetalleDocumentos.vue';
+import DetalleDocumentos from "@/components/expediente/general/DetalleDocumentos.vue";
 
 export default {
   name: "app-expediente-residente",
@@ -302,6 +345,8 @@ export default {
       residente: null,
       showInfo: true,
       dialogDocuments: false,
+      dialogPDFs: false,
+      dialogPDF: false,
       headerDocuments: [
         {
           text: "Área",
@@ -321,6 +366,8 @@ export default {
         },
       ],
       areaDocuments: [],
+      lstAnnexes: [],
+      urlAnnexe: "",
     };
   },
   props: {
@@ -340,6 +387,14 @@ export default {
           console.error(err);
         });
     },
+    showAnnexes(anexo) {
+      this.dialogPDFs = true;
+      this.lstAnnexes = anexo.enlaces;
+    },
+    showAnnexe(enlace) {
+      this.dialogPDF = true;
+      this.urlAnnexe = enlace.link;
+    }
   },
   filters: {
     toPhoneReference(value) {
@@ -352,7 +407,7 @@ export default {
     },
     toCapitalize(value) {
       return value.charAt(0).toUpperCase() + value.substring(1);
-    }
+    },
   },
   created() {
     axios
@@ -367,8 +422,8 @@ export default {
       });
   },
   components: {
-    DetalleDocumentos
-  }
+    DetalleDocumentos,
+  },
 };
 </script>
 
