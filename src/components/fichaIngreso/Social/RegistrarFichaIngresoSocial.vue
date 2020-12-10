@@ -27,7 +27,10 @@
                     color="#009900"
                     label="Residente"
                     item-text="nombre"
-                    item-value="residenteSeleccionado"
+                    item-value="id"
+                    @input="$v.fichaIngreso.idresidente.$touch()"
+                    @blur="$v.fichaIngreso.idresidente.$touch()"
+                    :error-messages="errorResidente"
                   >
                     <template v-slot:selection="data">
                       <v-chip
@@ -62,9 +65,12 @@
                 <v-col>
                   <v-select
                     :items="itemFamilias"
-                    v-model="itemFamilias.value"
+                    v-model="fichaIngreso.contenido.familiar.tipofamilia"
                     label="Tipo de familia"
                     outlined
+                    @input="$v.fichaIngreso.contenido.familiar.tipofamilia.$touch()"
+                    @blur="$v.fichaIngreso.contenido.familiar.tipofamilia.$touch()"
+                    :error-messages="errorTipofamilia"
                   ></v-select>
                 </v-col>
                 <v-col>
@@ -75,6 +81,9 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    @input="$v.fichaIngreso.contenido.familiar.problematicafam.$touch()"
+                    @blur="$v.fichaIngreso.contenido.familiar.problematicafam.$touch()"
+                    :error-messages="errorProblematicafamiliar"
                   ></v-textarea>
                 </v-col>
               </v-row>
@@ -118,8 +127,193 @@
                   </v-row>
                 </v-card>
               </v-card>
+              <div>
+                <h4
+                  v-if="$v.fichaIngreso.contenido.familiar.motivoingreso.$error"
+                  class="red--text"
+                >Debe tener como mínimo un motivo de ingreso registrado</h4>
+              </div>
 
-              <!--Falta familiares del residente-->
+              <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
+                <v-card-title>
+                  <v-row>
+                    <v-col :cols="8">Composición Familiar</v-col>
+                    <v-col :cols="4" align="right">
+                      <v-btn fab small dark color="green" @click="modalRegistrar()">
+                        <v-icon dark>mdi-plus</v-icon>
+                      </v-btn>
+                      <v-dialog v-model="dialogAgregarFamiliar" persistent max-width="600px">
+                        <v-card align="center">
+                          <v-card-title>
+                            <span class="headline">Datos familiar</span>
+                          </v-card-title>
+                          <v-card-text>
+                            <v-textarea
+                              label="Nombres"
+                              v-model="familiar.nombre"
+                              outlined
+                              color="#009900"
+                              rows="1"
+                              auto-grow
+                            ></v-textarea>
+                            <v-textarea
+                              label="Apellidos"
+                              v-model="familiar.apellido"
+                              outlined
+                              color="#009900"
+                              rows="1"
+                              auto-grow
+                            ></v-textarea>
+                            <v-row>
+                              <v-col>
+                                <v-textarea
+                                  label="Nro. Documento"
+                                  v-model="familiar.numerodocumento"
+                                  outlined
+                                  color="#009900"
+                                  rows="1"
+                                  auto-grow
+                                ></v-textarea>
+                              </v-col>
+                              <v-col>
+                                <v-textarea
+                                  label="Edad"
+                                  v-model="familiar.edad"
+                                  outlined
+                                  color="#009900"
+                                  rows="1"
+                                  auto-grow
+                                ></v-textarea>
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col>
+                                <v-textarea
+                                  label="Parentesco"
+                                  v-model="familiar.parentesco"
+                                  outlined
+                                  color="#009900"
+                                  rows="1"
+                                  auto-grow
+                                ></v-textarea>
+                              </v-col>
+                              <v-col>
+                                <v-textarea
+                                  label="Grado instrucción"
+                                  v-model="familiar.gradoinstruccion"
+                                  outlined
+                                  color="#009900"
+                                  rows="1"
+                                  auto-grow
+                                ></v-textarea>
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col>
+                                <v-textarea
+                                  label="Ocupación"
+                                  v-model="familiar.ocupacion"
+                                  outlined
+                                  color="#009900"
+                                  rows="1"
+                                  auto-grow
+                                ></v-textarea>
+                              </v-col>
+                              <v-col>
+                                <v-textarea
+                                  label="Estado civil"
+                                  v-model="familiar.estadocivil"
+                                  outlined
+                                  color="#009900"
+                                  rows="1"
+                                  auto-grow
+                                ></v-textarea>
+                              </v-col>
+                            </v-row>
+
+                            <v-textarea
+                              label="Observaciones"
+                              v-model="familiar.observaciones"
+                              outlined
+                              color="#009900"
+                              rows="1"
+                              auto-grow
+                            ></v-textarea>
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              v-if="accion == 'registrar'"
+                              color="success"
+                              @click="agregarFamiliar()"
+                            >
+                              <v-icon left class="mr-0 icon-plan">mdi-check</v-icon>Agregar
+                            </v-btn>
+                            <v-btn
+                              v-if="accion == 'actualizar'"
+                              color="yellow"
+                              @click="actualizarFamiliar(indice)"
+                            >
+                              <v-icon left class="mr-0 icon-plan">mdi-pencil</v-icon>Actualizar
+                            </v-btn>
+                            <v-btn color="error" @click="cerrarAgregarFamiliar()">
+                              <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>Cerrar
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </v-col>
+                  </v-row>
+                </v-card-title>
+
+                <v-card-text style="background-color:#FAFAFA">
+                  <v-row>
+                    <v-col>
+                      <h3>Nombre</h3>
+                    </v-col>
+                    <v-col>
+                      <h3>Parentesco</h3>
+                    </v-col>
+                    <v-col>
+                      <h3>Acciones</h3>
+                    </v-col>
+                  </v-row>
+                  <div
+                    v-for="(item, index) in fichaIngreso.contenido.familiar.familiares"
+                    :key="index"
+                  >
+                    <v-row>
+                      <v-col>{{ item.nombre }} {{ item.apellido }}</v-col>
+                      <v-col>{{ item.parentesco }}</v-col>
+                      <v-col>
+                        <v-row style="padding:0;margin:0">
+                          <v-col style="padding:0;margin:0">
+                            <v-btn fab x-small dark color="yellow" @click="modalActualizar(index)">
+                              <v-icon dark>mdi-pen</v-icon>
+                            </v-btn>
+                          </v-col>
+                          <v-col style="padding:0;margin:0">
+                            <v-btn fab x-small dark color="blue" @click="modalConsultar(index)">
+                              <v-icon dark>mdi-eye</v-icon>
+                            </v-btn>
+                          </v-col>
+                          <v-col style="padding:0;margin:0">
+                            <v-btn fab x-small dark color="red" @click="eliminarFamiliar(index)">
+                              <v-icon dark>mdi-minus</v-icon>
+                            </v-btn>
+                          </v-col>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </div>
+                </v-card-text>
+              </v-card>
+              <div>
+                <h4
+                  v-if="$v.fichaIngreso.contenido.familiar.familiares.$error"
+                  class="red--text"
+                >Debe tener como mínimo un familiar registrado</h4>
+              </div>
 
               <v-row>
                 <v-col>
@@ -151,6 +345,9 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    @input="$v.fichaIngreso.contenido.vivienda.ubicacion.$touch()"
+                    @blur="$v.fichaIngreso.contenido.vivienda.ubicacion.$touch()"
+                    :error-messages="errorUbicacion"
                   ></v-textarea>
                 </v-col>
                 <v-col>
@@ -161,6 +358,9 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    @input="$v.fichaIngreso.contenido.vivienda.descripcionubicacion.$touch()"
+                    @blur="$v.fichaIngreso.contenido.vivienda.descripcionubicacion.$touch()"
+                    :error-messages="errorDescripcionubicacion"
                   ></v-textarea>
                 </v-col>
               </v-row>
@@ -174,6 +374,9 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    @input="$v.fichaIngreso.contenido.vivienda.habitacionesdormir.$touch()"
+                    @blur="$v.fichaIngreso.contenido.vivienda.habitacionesdormir.$touch()"
+                    :error-messages="errorHabitacionesdormir"
                   ></v-textarea>
                 </v-col>
                 <v-col>
@@ -184,6 +387,9 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    @input="$v.fichaIngreso.contenido.vivienda.tipopropiedad.$touch()"
+                    @blur="$v.fichaIngreso.contenido.vivienda.tipopropiedad.$touch()"
+                    :error-messages="errorTipopropiedad"
                   ></v-textarea>
                 </v-col>
               </v-row>
@@ -197,6 +403,9 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    @input="$v.fichaIngreso.contenido.vivienda.tipo.$touch()"
+                    @blur="$v.fichaIngreso.contenido.vivienda.tipo.$touch()"
+                    :error-messages="errorTipo"
                   ></v-textarea>
                 </v-col>
                 <v-col>
@@ -207,6 +416,9 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    @input="$v.fichaIngreso.contenido.vivienda.material.$touch()"
+                    @blur="$v.fichaIngreso.contenido.vivienda.material.$touch()"
+                    :error-messages="errorMaterial"
                   ></v-textarea>
                 </v-col>
               </v-row>
@@ -220,6 +432,9 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    @input="$v.fichaIngreso.contenido.vivienda.tipopiso.$touch()"
+                    @blur="$v.fichaIngreso.contenido.vivienda.tipopiso.$touch()"
+                    :error-messages="errorTipopiso"
                   ></v-textarea>
                 </v-col>
                 <v-col>
@@ -230,6 +445,9 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    @input="$v.fichaIngreso.contenido.vivienda.tipotecho.$touch()"
+                    @blur="$v.fichaIngreso.contenido.vivienda.tipotecho.$touch()"
+                    :error-messages="errorTipotecho"
                   ></v-textarea>
                 </v-col>
               </v-row>
@@ -277,6 +495,12 @@
                   </v-row>
                 </v-card>
               </v-card>
+              <div>
+                <h4
+                  v-if="$v.fichaIngreso.contenido.vivienda.habitantes.$error"
+                  class="red--text"
+                >Debe tener como mínimo un habitante registrado</h4>
+              </div>
 
               <v-card style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA">
                 <v-card elevation="0" style="background-color:#EAEAEA" height="70">
@@ -319,6 +543,12 @@
                   </v-row>
                 </v-card>
               </v-card>
+              <div>
+                <h4
+                  v-if="$v.fichaIngreso.contenido.vivienda.servicios.$error"
+                  class="red--text"
+                >Debe tener como mínimo un servicio registrado</h4>
+              </div>
 
               <v-row>
                 <v-col>
@@ -350,6 +580,9 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    @input="$v.fichaIngreso.contenido.economico.condicionlaboral.$touch()"
+                    @blur="$v.fichaIngreso.contenido.economico.condicionlaboral.$touch()"
+                    :error-messages="errorCondicionlaboral"
                   ></v-textarea>
                 </v-col>
                 <v-col>
@@ -360,6 +593,9 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    @input="$v.fichaIngreso.contenido.economico.ocupacion.$touch()"
+                    @blur="$v.fichaIngreso.contenido.economico.ocupacion.$touch()"
+                    :error-messages="errorOcupacion"
                   ></v-textarea>
                 </v-col>
               </v-row>
@@ -367,7 +603,7 @@
               <v-row>
                 <v-col>
                   <v-textarea
-                    label="Observacion"
+                    label="Observacion (Opcional)"
                     v-model.trim="fichaIngreso.contenido.economico.observacion"
                     outlined
                     color="#009900"
@@ -383,6 +619,9 @@
                     color="#009900"
                     rows="1"
                     auto-grow
+                    @input="$v.fichaIngreso.contenido.salud.$touch()"
+                    @blur="$v.fichaIngreso.contenido.salud.$touch()"
+                    :error-messages="errorSalud"
                   ></v-textarea>
                 </v-col>
               </v-row>
@@ -426,6 +665,12 @@
                   </v-row>
                 </v-card>
               </v-card>
+              <div>
+                <h4
+                  v-if="$v.fichaIngreso.contenido.economico.ingresos.$error"
+                  class="red--text"
+                >Debe tener como mínimo un ingreso registrado</h4>
+              </div>
 
               <v-card
                 style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
@@ -466,6 +711,12 @@
                   </v-row>
                 </v-card>
               </v-card>
+              <div>
+                <h4
+                  v-if="$v.fichaIngreso.contenido.economico.egresos.$error"
+                  class="red--text"
+                >Debe tener como mínimo un egreso registrado</h4>
+              </div>
 
               <v-row>
                 <v-col>
@@ -495,6 +746,9 @@
                 color="#009900"
                 rows="1"
                 auto-grow
+                @input="$v.fichaIngreso.contenido.legal.apoyolocal.$touch()"
+                @blur="$v.fichaIngreso.contenido.legal.apoyolocal.$touch()"
+                :error-messages="errorApoyolocal"
               ></v-textarea>
 
               <v-row>
@@ -507,6 +761,9 @@
                     rows="1"
                     auto-grow
                     shaped
+                    @input="$v.fichaIngreso.contenido.diagnosticosocial.$touch()"
+                    @blur="$v.fichaIngreso.contenido.diagnosticosocial.$touch()"
+                    :error-messages="errorDiagnosticosocial"
                   ></v-textarea>
                 </v-col>
                 <v-col>
@@ -518,6 +775,9 @@
                     rows="1"
                     auto-grow
                     shaped
+                    @input="$v.fichaIngreso.contenido.planintervencion.$touch()"
+                    @blur="$v.fichaIngreso.contenido.planintervencion.$touch()"
+                    :error-messages="errorPlanintervencion"
                   ></v-textarea>
                 </v-col>
               </v-row>
@@ -527,9 +787,7 @@
                   class="ma-2"
                   color="green"
                   text-color="white"
-                >
-                  Antecedentes penales en familares del residente
-                </v-chip>
+                >Antecedentes penales en familares del residente</v-chip>
                 <v-card elevation="0" style="background-color:#EAEAEA" height="70">
                   <v-row style="margin:1%;heigh:100%" align="center">
                     <v-col :cols="4" align="left">
@@ -568,28 +826,14 @@
               </v-card>
 
               <v-card style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA">
-                <v-chip
-                  class="ma-2"
-                  color="green"
-                  text-color="white"
-                >
-                  Firmas de encargados
-                </v-chip>
+                <v-chip class="ma-2" color="green" text-color="white">Firmas de encargados</v-chip>
                 <v-card elevation="0" style="background-color:#EAEAEA" height="70">
                   <v-row style="margin:1%;heigh:100%" align="center">
                     <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model="firmas.nombre"
-                        label="Nombre"
-                        color="#009900"
-                      ></v-text-field>
+                      <v-text-field v-model="firmas.nombre" label="Nombre" color="#009900"></v-text-field>
                     </v-col>
                     <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model="firmas.cargo"
-                        label="Cargo"
-                        color="#009900"
-                      ></v-text-field>
+                      <v-text-field v-model="firmas.cargo" label="Cargo" color="#009900"></v-text-field>
                     </v-col>
                     <v-col :cols="4" align="right">
                       <v-btn fab small dark color="green" @click="agregarFirma">
@@ -614,7 +858,7 @@
                         Debe Subir una imagen de la firma
                         obligatoriamente
                       </v-card-text>
-                    </v-card> -->
+                    </v-card>-->
                     <v-divider class="divider-custom"></v-divider>
                   </v-col>
                 </v-row>
@@ -624,7 +868,7 @@
                   height="60"
                   v-for="(item, index) in fichaIngreso.contenido.firmas"
                   :key="index"
-                  >
+                >
                   <v-row style="margin-left:10px;heigh:100%" align="center">
                     <v-col :cols="8">
                       <article>
@@ -657,52 +901,43 @@
                   </v-row>
                 </v-card>
               </v-card>
+              <div>
+                <h4
+                  v-if="$v.fichaIngreso.contenido.firmas.$error"
+                  class="red--text"
+                >Debe tener como mínimo una firma registrada</h4>
+              </div>
 
-              <v-dialog
-                  v-model="dialogVistaPreviaFirma"
-                  persistent
-                  max-width="600px"
-                >
-                  <v-card align="center">
-                    <v-card-title>
-                      <span class="headline">Vista previa</span>
-                    </v-card-title>
-                    <v-card-text>
-                      <img
-                        width="100%"
-                        height="100%"
-                        :src="'data:image/jpeg;base64,' + imagen"
-                        alt=""
-                      />
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="cerrarVistaPreviaFirma()"
-                      >
-                        Cerrar
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
+              <v-dialog v-model="dialogVistaPreviaFirma" persistent max-width="600px">
+                <v-card align="center">
+                  <v-card-title>
+                    <span class="headline">Vista previa</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <img width="100%" height="100%" :src="'data:image/jpeg;base64,' + imagen" alt />
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="cerrarVistaPreviaFirma()">Cerrar</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
 
-                <v-row>
-                  <v-col>
-                    <v-btn block @click="cerrarDialogo" color="primary">
-                      <v-icon left>mdi-close-outline</v-icon>
-                      <span>Cerrar</span>
-                    </v-btn>
-                  </v-col>
+              <v-row>
+                <v-col>
+                  <v-btn block @click="cerrarDialogo" color="primary">
+                    <v-icon left>mdi-close-outline</v-icon>
+                    <span>Cerrar</span>
+                  </v-btn>
+                </v-col>
 
-                  <v-col>
-                    <v-btn block @click="registrarFichaIngresoSocial" color="success">
-                      <v-icon left>mdi-content-save-all-outline</v-icon>
-                      <span>Registrar Informe</span>
-                    </v-btn>
-                  </v-col>
-                </v-row>
+                <v-col>
+                  <v-btn block @click="registrarFichaIngresoSocial" color="success">
+                    <v-icon left>mdi-content-save-all-outline</v-icon>
+                    <span>Registrar Informe</span>
+                  </v-btn>
+                </v-col>
+              </v-row>
             </form>
           </div>
         </v-stepper-content>
@@ -719,26 +954,42 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 
+import { mapGetters } from "vuex";
+
 export default {
-  props: ["listaresidentes", "visible", "listaeducadores"],
+  props: ["listaresidentes"],
   ...mapMutations(["setFichaIngreso", "addFichaIngreso"]),
   components: {
-    vueDropzone: vue2Dropzone,
+    vueDropzone: vue2Dropzone
   },
   data() {
     return {
+      //modal composicion familiar
+      accion: "registrar",
+      dialogAgregarFamiliar: false,
+      familiar: {
+        nombre: "",
+        apellido: "",
+        numerodocumento: "",
+        parentesco: "",
+        edad: "",
+        estadocivil: "",
+        gradoinstruccion: "",
+        ocupacion: "",
+        observaciones: ""
+      },
+      //fin modal composicion familiar
       itemFamilias: [
-        { value: "1", text: "Nuclear" },
-        { value: "2", text: "Extensa" },
-        { value: "3", text: "Monoparental" },
-        { value: "4", text: "Homoparental" },
-        { value: "5", text: "Desintegrada" },
-        { value: "6", text: "Reconstruida" },
-        { value: "7", text: "Acogida" }
+        { value: "Nuclear", text: "Nuclear" },
+        { value: "Extensa", text: "Extensa" },
+        { value: "Monoparental", text: "Monoparental" },
+        { value: "Homoparental", text: "Homoparental" },
+        { value: "Desintegrada", text: "Desintegrada" },
+        { value: "Reconstruida", text: "Reconstruida" },
+        { value: "Acogida", text: "Acogida" }
       ],
 
       dialogVistaPreviaFirma: false,
-      dialogoVistaFamiliares: false,
       datemenu: false,
       step: 1,
 
@@ -751,22 +1002,11 @@ export default {
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
         dictDefaultMessage:
-          "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
+          "Seleccione la imagen de la firma su dispositivo o arrástrela aquí"
       },
 
       motivoIngreso: "",
       motivosIngreso: [],
-
-      familiar: "",
-      familiares: {
-        nombreCompleto: "",
-        parentezco: "",
-        edad: "",
-        estadoCivil: "",
-        gradoInstruccion: "",
-        ocupacion: "",
-        observacion: ""
-      },
 
       habitante: "",
       habitantes: [],
@@ -845,8 +1085,60 @@ export default {
       this.limpiarCampos();
       //limpiar los campos que contienen los datos acumulados
     },
+    /*async sendPDFFiles() {
+      let listaTitulos = [];
+      let listaanexos = this.fileList;
+      for (let index = 0; index < this.fileList.length; index++) {
+        let formData = new FormData();
+        listaTitulos.push(this.fileList[index].name)
+        formData.append("file", this.fileList[index]);
+        await axios
+          .post("/Media/archivos/pdf", formData)
+          .then((res) => {
+            listaanexos[index] = res.data;
+          })
+          .catch((err) => console.log(err));
+      }
+      for (let index = 0; index < this.fileList.length; index++) {
+        this.informe.contenido.anexos.push(
+          {
+            url: listaanexos[index],
+            titulo: listaTitulos[index],
+          }
+        )
+      }
+      console.log(this.informe.contenido.anexos);
+    },*/
     async registrarFichaIngresoSocial() {
-      console.log(this.fichaIngreso);
+      //await this.sendPDFFiles();
+      this.fichaIngreso.creadordocumento = this.user.id;
+
+      this.$v.fichaIngreso.$touch();
+      if (this.$v.fichaIngreso.$invalid) {
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
+
+      let ficha = this.fichaIngreso;
+
+      await axios
+        .post("/documento/fichaingresosocialcrear", ficha)
+        .then(res => {
+          this.mensaje(
+            "success",
+            "Listo",
+            "Ficha de ingreso social registrada satisfactoriamente",
+            "<strong>Se redirigira a la interfaz de fichas<strong>"
+          );
+
+          this.cerrarDialogo();
+        })
+        .catch(err => console.log(err));
+      }
     },
     agregarMotivoIngreso() {
       let motivoIngresoR = this.motivoIngreso;
@@ -913,19 +1205,19 @@ export default {
       //this.$v.urlfirma.$touch();
 
       //if (!this.$v.firmas.$invalid && !this.$v.urlfirma.$invalid) {
-        let firmas = {
-          urlfirma: this.urlfirma,
-          nombre: this.firmas.nombre,
-          cargo: this.firmas.cargo,
-        };
-        this.fichaIngreso.contenido.firmas.push(firmas);
-        this.$refs.myVueDropzone.removeAllFiles();
+      let firmas = {
+        urlfirma: this.urlfirma,
+        nombre: this.firmas.nombre,
+        cargo: this.firmas.cargo
+      };
+      this.fichaIngreso.contenido.firmas.push(firmas);
+      this.$refs.myVueDropzone.removeAllFiles();
 
-        this.urlfirma = "";
-        this.firmas.nombre = "";
-        this.firmas.cargo = "";
-        //this.$v.firmas.$reset();
-        //this.$v.urlfirma.$reset();
+      this.urlfirma = "";
+      this.firmas.nombre = "";
+      this.firmas.cargo = "";
+      //this.$v.firmas.$reset();
+      //this.$v.urlfirma.$reset();
       //}
     },
     eliminarFirma(index) {
@@ -944,6 +1236,162 @@ export default {
     afterRemoved2(file, error, xhr) {
       this.urlfirma = "";
     },
+    //Del modal de composicion familiar
+    modalRegistrar() {
+      this.accion = "registrar";
+      this.dialogAgregarFamiliar = true;
+    },
+    agregarFamiliar() {
+      /*this.$v.familiar.$touch();
+      if (this.$v.familiar.$invalid) {
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Debe completar los datos del familiar",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {*/
+      let familiar = {
+        nombre: this.familiar.nombre,
+        apellido: this.familiar.apellido,
+        numerodocumento: this.familiar.numerodocumento,
+        parentesco: this.familiar.parentesco,
+        edad: this.familiar.edad,
+        estadocivil: this.familiar.estadocivil,
+        gradoinstruccion: this.familiar.gradoinstruccion,
+        ocupacion: this.familiar.ocupacion,
+        observaciones: this.familiar.observaciones
+      };
+
+      this.fichaIngreso.contenido.familiar.familiares.push(familiar);
+
+      this.familiar.nombre = "";
+      this.familiar.apellido = "";
+      this.familiar.parentesco = "";
+      this.familiar.edad = "";
+      this.familiar.estadocivil = "";
+      this.familiar.gradoinstruccion = "";
+      this.familiar.ocupacion = "";
+      this.familiar.observaciones = "";
+      this.familiar.numerodocumento = "";
+
+      this.dialogAgregarFamiliar = false;
+
+      //   this.$v.familiar.$reset();
+      //}
+    },
+    cerrarAgregarFamiliar() {
+      this.dialogAgregarFamiliar = false;
+
+      this.familiar.nombre = "";
+      this.familiar.apellido = "";
+      this.familiar.parentesco = "";
+      this.familiar.edad = "";
+      this.familiar.estadocivil = "";
+      this.familiar.gradoinstruccion = "";
+      this.familiar.ocupacion = "";
+      this.familiar.observaciones = "";
+      this.familiar.numerodocumento = "";
+    },
+    modalActualizar(index) {
+      this.accion = "actualizar";
+      this.dialogAgregarFamiliar = true;
+      this.familiar.nombre = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].nombre;
+      this.familiar.apellido = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].apellido;
+      this.familiar.parentesco = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].parentesco;
+      this.familiar.edad = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].edad;
+      this.familiar.estadocivil = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].estadocivil;
+      this.familiar.gradoinstruccion = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].gradoinstruccion;
+      this.familiar.ocupacion = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].ocupacion;
+      this.familiar.observaciones = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].observaciones;
+      this.familiar.numerodocumento = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].numerodocumento;
+
+      this.indice = index;
+    },
+    actualizarFamiliar(index) {
+      this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].nombre = this.familiar.nombre;
+      this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].apellido = this.familiar.apellido;
+      this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].parentesco = this.familiar.parentesco;
+      this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].edad = this.familiar.edad;
+      this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].estadocivil = this.familiar.estadocivil;
+      this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].gradoinstruccion = this.familiar.gradoinstruccion;
+      this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].ocupacion = this.familiar.ocupacion;
+      this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].observaciones = this.familiar.observaciones;
+      this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].numerodocumento = this.familiar.numerodocumento;
+
+      this.dialogAgregarFamiliar = false;
+    },
+    eliminarFamiliar(index) {
+      this.fichaIngreso.contenido.familiar.familiares.splice(index, 1);
+    },
+    modalConsultar(index) {
+      this.accion = "consultar";
+      this.dialogAgregarFamiliar = true;
+      this.familiar.nombre = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].nombre;
+      this.familiar.apellido = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].apellido;
+      this.familiar.parentesco = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].parentesco;
+      this.familiar.edad = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].edad;
+      this.familiar.estadocivil = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].estadocivil;
+      this.familiar.gradoinstruccion = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].gradoinstruccion;
+      this.familiar.ocupacion = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].ocupacion;
+      this.familiar.observaciones = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].observaciones;
+      this.familiar.numerodocumento = this.fichaIngreso.contenido.familiar.familiares[
+        index
+      ].numerodocumento;
+    },
+    //fin modal composicion familiar
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
         icon: icono,
@@ -1014,7 +1462,335 @@ export default {
     }
   },
 
-  computed: {}
+  computed: {
+    ...mapGetters(["user"]),
+    errorResidente() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.idresidente.$dirty) return errors;
+      !this.$v.fichaIngreso.idresidente.required &&
+        errors.push("Debe seleccionar un residente");
+      return errors;
+    },
+    errorMotivoIngreso() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.familiar.motivoingreso.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.familiar.motivoingreso.required &&
+        errors.push(
+          "Debe ingresar al menos un motivo por el cual el residente fue ingresado"
+        );
+      return errors;
+    },
+    errorFamiliares() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.familiar.familiares.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.familiar.familiares.required &&
+        errors.push("Debe ingresar al menos un familiar del residente");
+      return errors;
+    },
+    errorTipofamilia() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.familiar.tipofamilia.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.familiar.tipofamilia.required &&
+        errors.push("Debe ingresar el tipo de familia del residente");
+      return errors;
+    },
+    errorProblematicafamiliar() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.familiar.problematicafam.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.familiar.problematicafam.required &&
+        errors.push("Debe ingresar la problemática familiar del residente");
+      return errors;
+    },
+    errorUbicacion() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.vivienda.ubicacion.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.vivienda.ubicacion.required &&
+        errors.push("Debe ingresar la ubicación de la vivienda del residente");
+      return errors;
+    },
+    errorDescripcionubicacion() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.vivienda.descripcionubicacion.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.vivienda.descripcionubicacion.required &&
+        errors.push(
+          "Debe ingresar una descripción de la ubicación de la vivienda del residente"
+        );
+      return errors;
+    },
+    errorHabitacionesdormir() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.vivienda.habitacionesdormir.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.vivienda.habitacionesdormir.required &&
+        errors.push(
+          "Debe ingresar número de habitaciones para dormir en la vivienda del residente"
+        );
+      return errors;
+    },
+    errorTipopropiedad() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.vivienda.tipopropiedad.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.vivienda.tipopropiedad.required &&
+        errors.push(
+          "Debe ingresar el tipo de propiedad de la vivienda del residente"
+        );
+      return errors;
+    },
+    errorTipo() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.vivienda.tipo.$dirty) return errors;
+      !this.$v.fichaIngreso.contenido.vivienda.tipo.required &&
+        errors.push("Debe ingresar el tipo de vivienda del residente");
+      return errors;
+    },
+    errorMaterial() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.vivienda.material.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.vivienda.material.required &&
+        errors.push("Debe ingresar el material de la vivienda del residente");
+      return errors;
+    },
+    errorTipopiso() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.vivienda.tipopiso.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.vivienda.tipopiso.required &&
+        errors.push(
+          "Debe ingresar el tipo de piso de la vivienda del residente"
+        );
+      return errors;
+    },
+    errorTipotecho() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.vivienda.tipotecho.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.vivienda.tipotecho.required &&
+        errors.push(
+          "Debe ingresar el tipo de techo de la vivienda del residente"
+        );
+      return errors;
+    },
+    errorHabitantes() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.vivienda.habitantes.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.vivienda.habitantes.required &&
+        errors.push(
+          "Debe ingresar al menos un habitante de la vivienda del residente"
+        );
+      return errors;
+    },
+    errorServicios() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.vivienda.servicios.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.vivienda.servicios.required &&
+        errors.push(
+          "Debe ingresar al menos un servicio de la vivienda del residente"
+        );
+      return errors;
+    },
+    errorCondicionlaboral() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.economico.condicionlaboral.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.economico.condicionlaboral.required &&
+        errors.push(
+          "Debe ingresar la condicion laboral del residente"
+        );
+      return errors;
+    },
+    errorOcupacion() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.economico.ocupacion.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.economico.ocupacion.required &&
+        errors.push(
+          "Debe ingresar la ocupación del residente"
+        );
+      return errors;
+    },
+    errorOcupacion() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.economico.ocupacion.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.economico.ocupacion.required &&
+        errors.push(
+          "Debe ingresar la ocupación del residente"
+        );
+      return errors;
+    },
+    errorIngresos() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.economico.ingresos.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.economico.ingresos.required &&
+        errors.push(
+          "Debe ingresar al menos 1 ingreso del residente"
+        );
+      return errors;
+    },
+    errorEgresos() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.economico.egresos.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.economico.egresos.required &&
+        errors.push(
+          "Debe ingresar al menos 1 egreso del residente"
+        );
+      return errors;
+    },
+    errorSalud() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.salud.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.salud.required &&
+        errors.push(
+          "Debe ingresar el estado de salud del residente"
+        );
+      return errors;
+    },
+    errorApoyolocal() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.legal.apoyolocal.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.legal.apoyolocal.required &&
+        errors.push(
+          "Debe ingresar si el residente recibio apoyo local"
+        );
+      return errors;
+    },
+    errorDiagnosticosocial() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.diagnosticosocial.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.diagnosticosocial.required &&
+        errors.push(
+          "Debe ingresar un diagnóstico social para el residente"
+        );
+      return errors;
+    },
+    errorPlanintervencion() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.planintervencion.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.planintervencion.required &&
+        errors.push(
+          "Debe ingresar un plan de intervención para el residente"
+        );
+      return errors;
+    },
+    errorFirmas() {
+      const errors = [];
+      if (!this.$v.fichaIngreso.contenido.firmas.$dirty)
+        return errors;
+      !this.$v.fichaIngreso.contenido.firmas.required &&
+        errors.push(
+          "Debe ingresar al menos una firma del encargado"
+        );
+      return errors;
+    },
+  },
+
+  validations() {
+    return {
+      fichaIngreso: {
+        idresidente: {
+          required
+        },
+        contenido: {
+          familiar: {
+            motivoingreso: {
+              required
+            }, //[]
+            familiares: {
+              required
+            }, //[]
+            tipofamilia: {
+              required
+            },
+            problematicafam: {
+              required
+            }
+          },
+          vivienda: {
+            ubicacion: {
+              required
+            },
+            descripcionubicacion: {
+              required
+            },
+            habitantes: {
+              required
+            }, //[]
+            habitacionesdormir: {
+              required
+            },
+            tipopropiedad: {
+              required
+            },
+            tipo: {
+              required
+            },
+            material: {
+              required
+            },
+            tipopiso: {
+              required
+            },
+            tipotecho: {
+              required
+            },
+            servicios: {
+              required
+            } //[]
+          },
+          economico: {
+            condicionlaboral: {
+              required
+            },
+            ocupacion: {
+              required
+            },
+            ingresos: {
+              required
+            }, //[]
+            egresos: {
+              required
+            }, //[]
+          },
+          salud: {
+            required
+          },
+          legal: {
+            //penales: {
+            //  required
+            //}, [] - puede no tener antecedentees penales
+            apoyolocal: {
+              required
+            }
+          },
+          diagnosticosocial: {
+            required
+          },
+          planintervencion: {
+            required
+          },
+          firmas: {
+            required
+          } //[]
+        }
+      }
+    };
+  }
 };
 </script>
 
