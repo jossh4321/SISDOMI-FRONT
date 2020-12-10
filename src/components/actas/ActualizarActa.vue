@@ -16,39 +16,39 @@
           <div class="container-user">
             <form>
               <v-text-field
-               v-model="usuario.datos.tipo"
+               v-model="usuario.tipo"
           label="Ingrese el tipo"
                 outlined
-                @input="$v.usuario.datos.tipo.$touch()"
-                @blur="$v.usuario.datos.tipo.$touch()"
+                @input="$v.usuario.tipo.$touch()"
+                @blur="$v.usuario.tipo.$touch()"
                 :error-messages="errortipo"
                 color="#009900"
               ></v-text-field>
               <v-text-field
-                 v-model="usuario.datos.fechacreacion"
+                 v-model="usuario.fechacreacion"
           label="Ingrese fecha creacion"
                 outlined
-                @input="$v.usuario.datos.fechacreacion.$touch()"
-                @blur="$v.usuario.datos.fechacreacion.$touch()"
+                @input="$v.usuario.fechacreacion.$touch()"
+                @blur="$v.usuario.fechacreacion.$touch()"
                 :error-messages="errorfechacreacion"
                 color="#009900"
               ></v-text-field>
                 <v-text-field
-                v-model="usuario.datos.area"
+                v-model="usuario.area"
           label="Ingrese el area"
                 outlined
-                @input="$v.usuario.datos.area.$touch()"
-                @blur="$v.usuario.datos.area.$touch()"
+                @input="$v.usuario.area.$touch()"
+                @blur="$v.usuario.area.$touch()"
                 :error-messages="errorarea"
                 color="#009900"
               ></v-text-field>
             
               <v-text-field
-                v-model="usuario.datos.fase"
+                v-model="usuario.fase"
           label="Ingrese la fase"
                 outlined
-                 @input="$v.usuario.datos.fase.$touch()"
-                @blur="$v.usuario.datos.fase.$touch()"
+                 @input="$v.usuario.fase.$touch()"
+                @blur="$v.usuario.fase.$touch()"
                 :error-messages="errorfase"
                 color="#009900"
               ></v-text-field>
