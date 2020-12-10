@@ -16,39 +16,39 @@
           <div class="container-user">
             <form>
               <v-text-field
-               v-model="usuario.datos.CreadorDocumento"
+               v-model="usuario.tipo.CreadorDocumento"
           label="Ingrese el Creador Documento"
                 outlined
-                @input="$v.usuario.datos.nombreusuaria.$touch()"
-                @blur="$v.usuario.datos.nombreusuaria.$touch()"
+                @input="$v.usuario.tipo.nombreusuaria.$touch()"
+                @blur="$v.usuario.tipo.nombreusuaria.$touch()"
                 :error-messages="errorNombreusuaria"
                 color="#009900"
               ></v-text-field>
               <v-text-field
-                 v-model="usuario.datos.fechacreacion"
+                 v-model="usuario.tipo.fechacreacion"
           label="Ingrese fecha creacion"
                 outlined
-                @input="$v.usuario.datos.nombreplan.$touch()"
-                @blur="$v.usuario.datos.nombreplan.$touch()"
+                @input="$v.usuario.tipo.nombreplan.$touch()"
+                @blur="$v.usuario.tipo.nombreplan.$touch()"
                 :error-messages="errorNombreplan"
                 color="#009900"
               ></v-text-field>
                 <v-text-field
-                v-model="usuario.datos.area"
+                v-model="usuario.tipo.area"
           label="Ingrese el area"
                 outlined
-                @input="$v.usuario.datos.objetivogeneral.$touch()"
-                @blur="$v.usuario.datos.objetivogeneral.$touch()"
+                @input="$v.usuario.tipo.objetivogeneral.$touch()"
+                @blur="$v.usuario.tipo.objetivogeneral.$touch()"
                 :error-messages="errorObjetivogeneral"
                 color="#009900"
               ></v-text-field>
             
               <v-text-field
-                v-model="usuario.datos.fase"
+                v-model="usuario.tipo.fase"
           label="Ingrese la fase"
                 outlined
-                @input="$v.usuario.datos.objetivoespecifico.$touch()"
-                @blur="$v.usuario.datos.objetivoespecifico.$touch()"
+                @input="$v.usuario.tipo.objetivoespecifico.$touch()"
+                @blur="$v.usuario.tipo.objetivoespecifico.$touch()"
                 :error-messages="errorObjetivoespecifico"
                 color="#009900"
               ></v-text-field>
@@ -146,7 +146,7 @@ export default {
    components: {
     vueDropzone: vue2Dropzone,
   },
-  datos() {
+  data() {
     return {
       datemenu: false,
       step:1,
@@ -169,7 +169,7 @@ export default {
     ...mapMutations(["setUsuarios","addUsuario","replaceUsuario"]),
     mounteddropzone(){
       var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg" };
-      this.$refs.myVueDropzone.manuallyAddFile(file, this.usuario.datos.imagen,null,null,true);      
+      this.$refs.myVueDropzone.manuallyAddFile(file, this.usuario.tipo.imagen,null,null,true);      
     },
     async actualizarUsuario(){
        this.$v.$touch();
@@ -196,13 +196,13 @@ export default {
       this.$emit("close-dialog-update");
     },
     afterSuccess(file,response){
-       this.usuario.datos.imagen = file.dataURL.split(",")[1];
-       this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
+       this.usuario.tipo.imagen = file.dataURL.split(",")[1];
+       this.$v.usuario.tipo.imagen.$model = file.dataURL.split(",")[1];
        this.imagen ={ tipo: "base64", modificado:"si"};
     },
     afterRemoved(file, error, xhr){
-      this.usuario.datos.imagen = "";
-       this.$v.usuario.datos.imagen.$model = "";
+      this.usuario.tipo.imagen = "";
+       this.$v.usuario.tipo.imagen.$model = "";
     }
     ,async mensaje(icono,titulo,texto,footer){
       await this.$swal({
@@ -229,31 +229,31 @@ export default {
     },
     errorNombre () {
       const errors = []
-      if (!this.$v.usuario.datos.CreadorDocumento.$dirty) return errors
-          !this.$v.usuario.datos.CreadorDocumento.required && errors.push('Debe ingresar un Nombre Obligatoriamente')
-          !this.$v.usuario.datos.CreadorDocumento.minLength && errors.push('El Nombre debe tener al menos 3 caracteres')
+      if (!this.$v.usuario.tipo.CreadorDocumento.$dirty) return errors
+          !this.$v.usuario.tipo.CreadorDocumento.required && errors.push('Debe ingresar un Nombre Obligatoriamente')
+          !this.$v.usuario.tipo.CreadorDocumento.minLength && errors.push('El Nombre debe tener al menos 3 caracteres')
       return errors
     },
     errorApellido () {
       const errors = []
-      if (!this.$v.usuario.datos.area.$dirty) return errors
-          !this.$v.usuario.datos.area.required && errors.push('Debe ingresar un area Obligatoriamente')
-          !this.$v.usuario.datos.area.minLength && errors.push('El area debe tener al menos 3 caracteres')
+      if (!this.$v.usuario.tipo.area.$dirty) return errors
+          !this.$v.usuario.tipo.area.required && errors.push('Debe ingresar un area Obligatoriamente')
+          !this.$v.usuario.tipo.area.minLength && errors.push('El area debe tener al menos 3 caracteres')
       return errors
     },
     errorNumeroDocumento () {
       const errors = []
-      if (!this.$v.usuario.datos.idresidente.$dirty) return errors
-          !this.$v.usuario.datos.idresidente.required && errors.push('Debe ingresar el idresidente Obligatoriamente')
+      if (!this.$v.usuario.tipo.idresidente.$dirty) return errors
+          !this.$v.usuario.tipo.idresidente.required && errors.push('Debe ingresar el idresidente Obligatoriamente')
           
       return errors
       },
     errorFechaNacimiento () {
       const errors = []
-      if (!this.$v.usuario.datos.fechacreacion.$dirty) return errors
-          !this.$v.usuario.datos.fechacreacion.required && errors.push('Debe Ingresar una Fecha de Creacion Obligatoriamente')
+      if (!this.$v.usuario.tipo.fechacreacion.$dirty) return errors
+          !this.$v.usuario.tipo.fechacreacion.required && errors.push('Debe Ingresar una Fecha de Creacion Obligatoriamente')
           //validating whether the user are an adult
-          var dateselected =  new Date(this.usuario.datos.fechacreacion);
+          var dateselected =  new Date(this.usuario.tipo.fechacreacion);
           var maxdate = new Date();
           maxdate.setFullYear(maxdate.getFullYear());
           
@@ -261,8 +261,8 @@ export default {
     },
      errorEmail () {
       const errors = []
-      if (!this.$v.usuario.datos.fase.$dirty) return errors
-          !this.$v.usuario.datos.fase.required && errors.push('Debe ingresar la fase Obligatoriamente')
+      if (!this.$v.usuario.tipo.fase.$dirty) return errors
+          !this.$v.usuario.tipo.fase.required && errors.push('Debe ingresar la fase Obligatoriamente')
           
       return errors
        
@@ -272,7 +272,7 @@ export default {
           !this.$v.usuario.estado.required && errors.push('Debe seleccionar un Estado obligatoriamente')
           return errors
     },errorImagen(){
-      return this.$v.usuario.datos.imagen.required == false && this.$v.usuario.datos.imagen.$dirty == true ?true:false;
+      return this.$v.usuario.tipo.imagen.required == false && this.$v.usuario.tipo.imagen.$dirty == true ?true:false;
     }
   },
   validations() {

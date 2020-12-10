@@ -26,14 +26,14 @@
         <div class="container-user">
       <form>
         <v-text-field
-           v-model="usuario.datos.CreadorDocumento"
+           v-model="usuario.tipo.CreadorDocumento"
           label="Ingrese el Creador Documento"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-text-field
-          v-model="usuario.datos.fechacreacion"
+          v-model="usuario.tipo.fechacreacion"
           label="Ingrese fecha creacion"
           outlined
           readonly
@@ -42,7 +42,7 @@
                       
        
         <v-text-field
-           v-model="usuario.datos.area"
+           v-model="usuario.tipo.area"
           label="Ingrese el area"
           outlined
           readonly
@@ -50,7 +50,7 @@
         ></v-text-field>
 
          <v-text-field
-           v-model="usuario.datos.fase"
+           v-model="usuario.tipo.fase"
           label="Ingrese la fase"
           outlined
           readonly
@@ -79,7 +79,7 @@
         <div  class="container-user">
       <form>
         <v-text-field
-          v-model="usuario.idresidente"
+          v-model="usuario.residente"
           label="Ingrese nuevo idresidente"
           outlined
           readonly
@@ -137,8 +137,8 @@ import axios from 'axios';
 import { mapMutations, mapState} from "vuex";
 import moment from 'moment'
 export default {
-    name:"DetalleUsuario",
-   props:["usuario","listaroles"],
+    name:"visualizarActa",
+   props:["usuario"],
    components: {
   },
   data() {

@@ -36,7 +36,7 @@
                 >  <v-icon left>mdi-account-multiple-plus-outline</v-icon> <span>Registrar Acta</span>
                  </v-btn>       
                    </template>
-                <RegistrarActa :listaroles="listaroles"  @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
+                <RegistrarActa   @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -103,17 +103,17 @@ export default {
       //lsita de cabeceras de la data table
       headers: [
         {
-          text: "Creador Documento",
+          text: "Tipo",
           align: "start",
           sortable: false,
-          value: "actaExternamiento",
+          value: "tipo",
         },
      
-      { text: "fechacreacion", value: "actaExternamiento.fechacreacion" },
-      { text: "area", value: "actaExternamiento.area" },
-      { text: "fase", value: "actaExternamiento.fase" },
-      { text: "idresidente", value: "actaExternamiento.idresidente" },
-      { text: "estado", value: "actaExternamiento.estado" },
+      { text: "fechacreacion", value: "fechacreacion" },
+      { text: "area", value: "area" },
+      { text: "fase", value: "fase" },
+      { text: "residente", value: "residente" },
+      { text: "estado", value: "estado" },
  
         
         { text: "Actions", value: "actions", sortable: false },
@@ -121,12 +121,12 @@ export default {
       dialogoregistro: false,
       dialogoactualizacion: false,
       dialogodetalle:false,
-      listaroles:[]
+      
     };
   },
   async created(){
       this.obtenerUsuarios();
-      this.obtenerRoles();
+      
   },
   methods: {
     ...mapMutations(["setUsuarios","replaceUsuario"]),
@@ -182,16 +182,11 @@ export default {
       .catch(err => console.log(err));
       console.log(user);
       return user;
-    },async obtenerRoles(){
-          await axios.get("/usuario/sistema/rol")
-                  .then( x => {
-                            this.listaroles = x.data;
-                            console.log(this.listaroles);
-                  }).catch(err => console.log(err));
+    
     }, async obtenerUsuarios(){
-           await axios.get("/usuario/all")
+           await axios.get("/actaexternamiento/all") ////////OBTENER ACTA EXTERNAMIENTO
             .then(res => {
-                    this.setUsuarios(res.data);
+                   this.setUsuarios(res.data);
             }).catch(err => console.log(err));
     }, async cambiarEstadoUsuario(usuario){
        await this.$swal({
