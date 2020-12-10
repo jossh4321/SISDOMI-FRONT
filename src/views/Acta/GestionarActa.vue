@@ -173,7 +173,7 @@ export default {
       return user;
     },async loadUsuarioDetalle(idusuario){
       var user = {};
-      await axios.get("/usuario/rol/permiso?id="+idusuario)
+      await axios.get("/actaexternamiento/id?id="+idusuario)
       .then(res => {
          user = res.data; // devuelve
          user.datos.fechanacimiento = res.data.datos
