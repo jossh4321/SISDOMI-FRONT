@@ -74,16 +74,7 @@
         <v-stepper-content step="2">
           <div class="container-user">
             <form>
-              <v-text-field
-               v-model="usuario.idresidente"
-          label="Ingrese nuevo idresidente"
-                outlined
-               @input="$v.usuario.idresidente.$touch()"
-                @blur="$v.usuario.idresidente.$touch()"
-                :error-messages="erroridresidente"
-                class="inputTextField"
-                color="#009900"
-              ></v-text-field>
+             
 
                     <v-select
                 v-model="usuario.estado"
