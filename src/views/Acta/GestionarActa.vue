@@ -33,14 +33,10 @@
                   class="mb-2"
                   v-bind="attrs"
                   v-on="on"
-                >
-                <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar Acta</span>
-                </v-btn>
-              </template>
-                <RegistrarUsuario
-                  :listaroles="listaroles"
-                  @close-dialog-save="closeDialogRegistrar()"></RegistrarUsuario>
+                >  <v-icon left>mdi-account-multiple-plus-outline</v-icon> <span>Registrar Acta</span>
+                 </v-btn>       
+                   </template>
+                <RegistrarUsuario :listaroles="listaroles"  @close-dialog-save="closeDialogRegistrar()"></RegistrarUsuario>
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -73,10 +69,7 @@
       <v-dialog persistent
                 v-model="dialogoactualizacion" 
                 max-width="880px">
-        <ActualizarUsuario
-        v-if="dialogoactualizacion" 
-        :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()">
-        </ActualizarUsuario>
+        <ActualizarUsuario v-if="dialogoactualizacion" :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()"></ActualizarUsuario>
 
       </v-dialog>
       <!-----><!--Hola -->
@@ -84,8 +77,7 @@
       <v-dialog persistent
                 v-model="dialogodetalle" 
                 max-width="880px">
-          <ConsultarUsuario :usuario="usuario" @close-dialog-detail="closeDialogDetalle()">
-          </ConsultarUsuario>
+          <ConsultarUsuario :usuario="usuario" @close-dialog-detail="closeDialogDetalle()"></ConsultarUsuario>
       </v-dialog>
       <!----->
     </v-card>
@@ -111,14 +103,18 @@ export default {
       //lsita de cabeceras de la data table
       headers: [
         {
-          text: "Nombre Acta Externamiento",
+          text: "Creador Documento",
           align: "start",
           sortable: false,
           value: "usuario",
         },
-        { text: "Tipo Doc.", value:"datos.tipodocumento"},
-        { text: "Nro. Doc", value: "datos.numerodocumento" },
-      
+     
+      { text: "fechacreacion", value: "datos.fechacreacion" },
+      { text: "area", value: "datos.area" },
+      { text: "fase", value: "datos.fase" },
+      { text: "idresidente", value: "datos.idresidente" },
+      { text: "estado", value: "datos.estado" },
+ 
         
         { text: "Actions", value: "actions", sortable: false },
       ],
