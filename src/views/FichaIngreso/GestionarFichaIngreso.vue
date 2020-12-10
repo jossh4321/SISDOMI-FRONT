@@ -161,6 +161,7 @@ import RegistrarFichaIngresoEducativa from '@/components/fichaIngreso/RegistrarF
 import RegistrarFichaIngresoPsicologica from '@/components/fichaIngreso/RegistrarFichaIngresoPsicologica.vue'
 import RegistrarFichaIngresoSocial from '@/components/fichaIngreso/Social/RegistrarFichaIngresoSocial.vue'
 import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue'
+// import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/ModificarFichaIngresoPsicologica.vue'
 import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
 import ConsultarFichaIngresoPsicologica from '@/components/fichaIngreso/ConsultarFichaIngresoPsicologica.vue'
 import ConsultarFichaIngresoSocial from '@/components/fichaIngreso/Social/ConsultarFichaIngresoSocial.vue'
