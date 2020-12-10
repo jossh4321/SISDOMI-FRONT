@@ -1,16 +1,16 @@
 <template>
   <div>
     <v-card class="card">
-      <v-card-title> Gestionar Seguimiento Educativo </v-card-title>
+      <v-card-title> Gestionar Ficha Evaluacion Educativa </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="seguimientoEducativo"
+        :items="fichaEvaluacionEduativa"
         :search="search"
         class="elevation-1"
       >
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>Informes de Seguimiento Educativo actuales</v-toolbar-title>
+            <v-toolbar-title>Ficha Evaluacion Educativa actuales</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-text-field
@@ -31,7 +31,7 @@
                   v-on="on"
                 >
                   <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar Seguimiento  Educativo</span>
+                  <span>Registrar Ficha Evaluacion Educativa</span>
                 </v-btn>
               </template>
              <RegistrarSeguimientoEducativo
@@ -132,12 +132,12 @@ export default {
     };
   },
   async created(){
- this.obtenerSeguimiento();
+ this.obtenerEvaluacionDiagnosticoEducativo();
  this.obtenerResidentes();
  this.obtenerEducadores();
   },
   methods: {
-    ...mapMutations(["setSeguimiento"]),
+    ...mapMutations(["setEvaluacion"]),
     editItem(item) {
     },
     detailItem(item) {
@@ -164,9 +164,9 @@ export default {
       this.dialogoactualizacion = !this.dialogoactualizacion;
     },
   /////////////////Consumo de  apis 
-    async obtenerSeguimiento() {
+    async obtenerEvaluacionDiagnosticoEducativo() {
       await axios
-        .get("/SeguimientoEducativo/all")
+        .get("EvaluacionDiagnosticoEducativo/all")
         .then((res) => {
           var info = {};
           info = res.data;
@@ -175,7 +175,7 @@ export default {
               info[x].fechacreacion = res.data[x].fechacreacion.split("T")[0];
           }
           
-          this.setSeguimiento(info);
+          this.setEvaluacion(info);
         })
         .catch((err) => console.log(err));
     },
@@ -226,7 +226,7 @@ export default {
   },
   
    computed:{
- ...mapState(["seguimientoEducativo"])
+ ...mapState(["fichaEvaluacionEduativa"])
   }
 }
 

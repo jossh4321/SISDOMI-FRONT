@@ -135,7 +135,7 @@ import DatosMultipleAnexo from "@/components/expediente/general/DatosMultipleAne
 import axios from "axios";
 
 export default {
-  name: "detalle-informe-inicia-educativo",
+  name: "detalle-informe-inicial-educativo",
   data() {
     return {
       step: 1,

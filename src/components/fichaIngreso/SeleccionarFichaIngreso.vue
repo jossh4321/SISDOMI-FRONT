@@ -9,8 +9,7 @@
                     label="Seleccione la Ficha de Ingreso"            
                     outlined      
                     dense       
-                ></v-select>      
-
+                    ></v-select>
            <v-row>
             <v-col>
                 <v-btn block @click="cerrarDialogo()" color="primary">
@@ -23,9 +22,10 @@
                 <v-icon left>mdi-page-next-outline</v-icon>
                 <span>Continuar</span>
                 </v-btn>
-                
-                
-                <!--<RegistrarFichaIngresoSocial: :listaresidentes="listaresidentes" :visible="RFichaIngresoSocial_Visible_Visible"  @close="RFichaIngresoSocial_Visible_Visible=false" />-->
+                <RegistrarFichaIngresoEducativa :listaresidentes="listaresidentes" :visible="RFichaIngresoEducativa_Visible"  @close-dialog-fichaIngreso="RFichaIngresoEducativa_Visible=false"/>
+                <RegistrarFichaIngresoPsicologica :listaresidentes="listaresidentes" :visible="RFichaIngresoPsicologica_Visible"  @close-dialog-fichaIngreso="RFichaIngresoPsicologica_Visible=false"/>
+                <RegistrarFichaIngresoSocial :listaresidentes="listaresidentes" :visible="RFichaIngresoSocial_Visible"  @close-dialog-fichaIngreso="RFichaIngresoSocial_Visible=false"/>
+<!--<RegistrarFichaIngresoSocial: :listaresidentes="listaresidentes" :visible="RFichaIngresoSocial_Visible_Visible"  @close="RFichaIngresoSocial_Visible_Visible=false" />-->
             </v-col>
         </v-row>
             </v-card-text>                       
@@ -38,7 +38,7 @@
 import axios from 'axios';
 import RegistrarFichaIngresoEducativa from '@/components/fichaIngreso/RegistrarFichaIngresoEducativa.vue'
 import RegistrarFichaIngresoPsicologica from '@/components/fichaIngreso/RegistrarFichaIngresoPsicologica.vue'
-import RegistrarFichaIngresoSocial from '@/components/fichaIngreso/RegistrarFichaIngresoSocial.vue'
+import RegistrarFichaIngresoSocial from '@/components/fichaIngreso/Social/RegistrarFichaIngresoSocial.vue'
 import {mapMutations, mapState} from "vuex";
 
 export default {

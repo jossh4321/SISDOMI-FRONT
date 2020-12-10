@@ -16,40 +16,40 @@
           <div class="container-user">
             <form>
               <v-text-field
-                v-model="usuario.datos.nombreusuaria"
-          label="Ingrese el nombre del Acta"
+                v-model="usuario.datos.CreadorDocumento"
+          label="Ingrese el tipo"
                 outlined
-                @input="$v.usuario.datos.nombreusuaria.$touch()"
-                @blur="$v.usuario.datos.nombreusuaria.$touch()"
-                :error-messages="errorNombreusuaria"
+                @input="$v.usuario.datos.tipo.$touch()"
+                @blur="$v.usuario.datos.tipo.$touch()"
+                :error-messages="errortipo"
                 color="#009900"
               ></v-text-field>
               <v-text-field
-                v-model="usuario.datos.nombreplan"
-          label="Ingrese el nombre-dni de la usuaria"
+                v-model="usuario.datos.fechacreacion"
+          label="Ingrese fecha creacion"
                 outlined
-                @input="$v.usuario.datos.nombreplan.$touch()"
-                @blur="$v.usuario.datos.nombreplan.$touch()"
-                :error-messages="errorNombreplan"
+                @input="$v.usuario.datos.fechacreacion.$touch()"
+                @blur="$v.usuario.datos.fechacreacion.$touch()"
+                :error-messages="errorfechacreacion"
                 color="#009900"
               ></v-text-field>
                 <v-text-field
-                v-model="usuario.datos.objetivogeneral"
-          label="Ingrese el objetivo general"
+                v-model="usuario.datos.area"
+          label="Ingrese el area"
                 outlined
-                @input="$v.usuario.datos.objetivogeneral.$touch()"
-                @blur="$v.usuario.datos.objetivogeneral.$touch()"
-                :error-messages="errorObjetivogeneral"
+                @input="$v.usuario.datos.area.$touch()"
+                @blur="$v.usuario.datos.area.$touch()"
+                :error-messages="errorarea"
                 color="#009900"
               ></v-text-field>
             
               <v-text-field
-                v-model="usuario.datos.objetivoespecifico"
-          label="Ingrese los objetivos específicos"
+                v-model="usuario.datos.fase"
+          label="Ingrese la fase"
                 outlined
-                @input="$v.usuario.datos.objetivoespecifico.$touch()"
-                @blur="$v.usuario.datos.objetivoespecifico.$touch()"
-                :error-messages="errorObjetivoespecifico"
+                @input="$v.usuario.datos.fase.$touch()"
+                @blur="$v.usuario.datos.fase.$touch()"
+                :error-messages="errorfase"
                 color="#009900"
               ></v-text-field>
             
@@ -75,49 +75,29 @@
           <div class="container-user">
             <form>
               <v-text-field
-                v-model="usuario.nombre_acta"
-          label="Ingrese nuevo nombre de Acta"
+                v-model="usuario.idresidente"
+          label="Ingrese nuevo idresidente"
                 outlined
-                @input="$v.usuario.nombre_acta.$touch()"
-                @blur="$v.usuario.nombre_acta.$touch()"
-                :error-messages="errorNombre_acta"
+                @input="$v.usuario.idresidente.$touch()"
+                @blur="$v.usuario.idresidente.$touch()"
+                :error-messages="erroridresidente"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
-                <v-text-field
-                v-model="usuario.actividades_estrategias"
-          label="Ingrese nuevo nombre-dni de Usuario"
+                <v-select
+                v-model="usuario.estado"
+          :items="['creado', 'modificado']"
+           label="Ingrese el Estado"
                 outlined
-                @input="$v.usuario.actividades_estrategias.$touch()"
-                @blur="$v.usuario.actividades_estrategias.$touch()"
-                :error-messages="errorActividades_estrategias"
+                 @input="$v.usuario.estado.$touch()"
+                @blur="$v.usuario.estado.$touch()"
+                :error-messages="errorestado"
                 class="inputTextField"
                 color="#009900"
-              ></v-text-field>
+              ></v-select>
 
-                <v-text-field
-                v-model="usuario.indicadores"
-          label="Ingrese nuevo objetivo general"
-                outlined
-                @input="$v.usuario.indicadores.$touch()"
-                @blur="$v.usuario.indicadores.$touch()"
-                :error-messages="errorIndicadores"
-                class="inputTextField"
-                color="#009900"
-              ></v-text-field>
-
-                <v-text-field
-                v-model="usuario.meta"
-          label="Ingrese nuevos objetivos especificos"
-                outlined
-                @input="$v.usuario.meta.$touch()"
-                @blur="$v.usuario.meta.$touch()"
-                :error-messages="errorMeta"
-                class="inputTextField"
-                color="#009900"
-              ></v-text-field>
-
+                
               <div>
                 <vue-dropzone
                   ref="myVueDropzone"
@@ -130,7 +110,7 @@
               </div>
               <v-card v-if="errorImagen" color="red">
                 <v-card-text class="text-center" style="color: white"
-                  >Debe Subir una imagen del usuario
+                  >Debe Subir una imagen del Usuario
                   Obligatoriamente</v-card-text
                 >
               </v-card>
@@ -167,7 +147,7 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 export default {
-  props: ["listaroles"],
+  props: ["actaexternamiento"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -189,14 +169,13 @@ export default {
       usuario: {
         
         datos: {
-          nombreusuaria:" ",
-        nombreplan:" ",
-        objetivogeneral:" ",
-        objetivoespecifico:" ", 
-        nombre_acta:" ",       
-        actividades_estrategias:" ",
-        indicadores:" ",
-        meta:" ",
+          CreadorDocumento:" ",
+        fechacreacion:" ",
+        area:" ",
+        fase:" ", 
+        idresidente:" ",       
+        estado:" ",
+        
         },
       },
     };
@@ -265,14 +244,12 @@ export default {
       return {
        
         datos: {
-           nombreusuaria:" ",
-        nombreplan:" ",
-        objetivogeneral:" ",
-        objetivoespecifico:" ", 
-        nombre_acta:" ",       
-        actividades_estrategias:" ",
-        indicadores:" ",
-        meta:" ",
+          CreadorDocumento:" ",
+        fechacreacion:" ",
+        area:" ",
+        fase:" ", 
+        idresidente:" ",       
+        estado:" ",
         },
       };
     },
@@ -292,84 +269,50 @@ export default {
 
       return errors;
     },
-    errorNombre() {
-      const errors = [];
-      if (!this.$v.usuario.datos.nombreusuaria.$dirty) return errors;
-      !this.$v.usuario.datos.nombreusuaria.required &&
-        errors.push("Debe ingresar un Nombre Obligatoriamente");
-      !this.$v.usuario.datos.nombreusuaria.minLength &&
-        errors.push("El Nombre debe tener al menos 3 caracteres");
-      return errors;
+    errortipo () {
+      const errors = []
+      if (!this.$v.usuario.datos.CreadorDocumento.$dirty) return errors
+          !this.$v.usuario.datos.CreadorDocumento.required && errors.push('Debe ingresar el tipo Obligatoriamente')
+          !this.$v.usuario.datos.CreadorDocumento.minLength && errors.push('El Nombre debe tener al menos 3 caracteres')
+      return errors
     },
-    errorApellido() {
-      const errors = [];
-      if (!this.$v.usuario.datos.nombreplan.$dirty) return errors;
-      !this.$v.usuario.datos.nombreplan.required &&
-        errors.push("Debe ingresar un nombre Obligatoriamente");
-      !this.$v.usuario.datos.nombreplan.minLength &&
-        errors.push("El nombre debe tener al menos 3 caracteres");
-      return errors;
+    errorarea () {
+      const errors = []
+      if (!this.$v.usuario.datos.area.$dirty) return errors
+          !this.$v.usuario.datos.area.required && errors.push('Debe ingresar un area Obligatoriamente')
+          !this.$v.usuario.datos.area.minLength && errors.push('El area debe tener al menos 3 caracteres')
+      return errors
     },
-    errorNumeroDocumento() {
-      const errors = [];
-      if (!this.$v.usuario.datos.objetivogeneral.$dirty) return errors;
-      !this.$v.usuario.datos.objetivogeneral.required &&
-        errors.push("Debe ingresar el Numero de Documento Obligatoriamente");
-      !this.usuario.datos.objetivogeneral != "" &&
-        errors.push("debe tener al menos 3 caracteres");
-      
-      return errors;
+    erroridresidente () {
+      const errors = []
+      if (!this.$v.usuario.datos.idresidente.$dirty) return errors
+          !this.$v.usuario.datos.idresidente.required && errors.push('Debe ingresar el idresidente Obligatoriamente')
+          
+      return errors
+      },
+    errorfechacreacion () {
+      const errors = []
+      if (!this.$v.usuario.datos.fechacreacion.$dirty) return errors
+          !this.$v.usuario.datos.fechacreacion.required && errors.push('Debe Ingresar una Fecha de Creacion Obligatoriamente')
+          //validating whether the user are an adult
+          var dateselected =  new Date(this.usuario.fechacreacion);
+          var maxdate = new Date();
+          maxdate.setFullYear(maxdate.getFullYear());
+          
+      return errors
     },
-    errorTipoDocumento() {
-      const errors = [];
-      if (!this.$v.usuario.datos.objetivoespecifico.$dirty) return errors;
-      !this.$v.usuario.datos.objetivoespecifico.required &&
-        errors.push("Debe seleccionar el objetivoespecifico Obligatoriamente");
-      return errors;
-    },
-    errorFechaNacimiento() {
-      const errors = [];
-      if (!this.$v.usuario.datos.nombre_acta.$dirty) return errors;
-      !this.$v.usuario.datos.nombre_acta.required &&
-        errors.push("Debe ingresar un nombre Obligatoriamente");
-      !this.$v.usuario.datos.nombre_acta.minLength &&
-        errors.push("El nombre debe tener al menos 3 caracteres");
-      return errors;
-
-      
-    },
-    errorEmail() {
-      const errors = [];
-      if (!this.$v.usuario.datos.actividades_estrategias.$dirty) return errors;
-      !this.$v.usuario.datos.actividades_estrategias.required &&
-        errors.push("Debe ingresar actividades_estrategias Obligatoriamente");
-      !this.$v.usuario.datos.actividades_estrategias.email &&
-        errors.push("Debe ingresar el formato example@example.something");
-      return errors;
-    },
-    errorDireccion() {
-      const errors = [];
-      if (!this.$v.usuario.datos.indicadores.$dirty) return errors;
-      !this.$v.usuario.datos.indicadores.required &&
-        errors.push("Debe ingresar una direccion Obligatoriamente");
-      !this.$v.usuario.datos.indicadores.minLength &&
-        errors.push("La direccion debe tener al menos 10 caracteres");
-      return errors;
-    },
-      
-    errorRol() {
-      const errors = [];
-      if (!this.$v.usuario.meta.$dirty) return errors;
-      !this.$v.usuario.meta.required &&
-        errors.push("Debe seleccionar un meta obligatoriamente");
-      return errors;
-    },
-    errorEstado() {
-      const errors = [];
-      if (!this.$v.usuario.nombre_acta.$dirty) return errors;
-      !this.$v.usuario.nombre_acta.required &&
-        errors.push("Debe seleccionar un nombre_acta obligatoriamente");
-      return errors;
+     errorfase () {
+      const errors = []
+      if (!this.$v.usuario.datos.fase.$dirty) return errors
+          !this.$v.usuario.datos.fase.required && errors.push('Debe ingresar la fase Obligatoriamente')
+          
+      return errors
+       
+    },errorestado(){
+                const errors = []
+      if (!this.$v.usuario.estado.$dirty) return errors
+          !this.$v.usuario.estado.required && errors.push('Debe seleccionar un Estado obligatoriamente')
+          return errors
     },
     errorImagen() {
       return this.$v.usuario.datos.imagen.required == false &&
@@ -392,42 +335,29 @@ export default {
           required,
         },
         datos: {
-          nombre: {
-            required,
-            minLength: minLength(3),
-          },
-          apellido: {
-            required,
-            minLength: minLength(3),
-          },
-          fechanacimiento: {
-            required, //cumplio? false
-          },
-          tipodocumento: {
-            required,
-             minLength: minLength(3),
-          },
-          numerodocumento: {
-            required,
-            
-          },
-          email: {
-            required,
-            email,
-          },
-          direccion: {
-            required,
-            minLength: minLength(10),
-          },
-          fechanacimiento: {
-            required,
-          },
-          direccion: {
-            required,
-            minLength: minLength(10),
-          },
-          imagen: {
-            required,
+          CreadorDocumento:{
+                required,
+                minLength: minLength(3)
+              },
+              area:{
+                required,
+                minLength: minLength(3)
+                             
+                
+                },
+              idresidente:{
+                  required
+                                
+                },fase:{
+                  required,
+                  minLength: minLength(10)
+                },fechacreacion:{
+                  required
+                },estado:{
+                  required,
+                  minLength: minLength(10)
+                },imagen:{
+                  required,
           },
         },
       },

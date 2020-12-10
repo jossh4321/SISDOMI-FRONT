@@ -88,7 +88,8 @@ export default {
           href: "#",
           title: "Perfil",
           click: (e) => {
-            console.log(e);
+           //
+           this.$router.push('/dashboard/ModificarPerfil')
           },
         },
         {

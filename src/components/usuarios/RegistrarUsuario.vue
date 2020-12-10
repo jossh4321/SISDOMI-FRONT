@@ -267,6 +267,7 @@ export default {
         usuario: "",
         rol: "",
         estado: "",
+        clave: "",
         datos: {
           nombre: "",
           apellido: "",
@@ -284,6 +285,7 @@ export default {
   methods: {
     ...mapMutations(["setUsuarios", "addUsuario"]),
     async registrarUsuario() {
+      this.usuario.clave = this.usuario.datos.numerodocumento;
       this.$v.$touch();
       if (this.$v.$invalid) {
         console.log("hay errores");
@@ -294,7 +296,7 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        console.log("no hay errores");
+        console.log("no hay errores");        
         await axios
           .post("/usuario", this.usuario)
           .then((res) => {

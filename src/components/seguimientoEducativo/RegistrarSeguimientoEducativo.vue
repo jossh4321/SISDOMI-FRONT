@@ -205,9 +205,7 @@
                                v-model="firma.cargo"
                                 label="Cargo"
                                 outlined  
-                               @input="$v.firma.cargo.$touch()"
-                               @blur="$v.firma.cargo.$touch()"
-                              :error-messages="errorCargoFirma"
+                               
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
@@ -215,9 +213,7 @@
                                 label="Nombre"
                                 outlined  
                                 color="#009900"  
-                              @input="$v.firma.nombre.$touch()"
-                              @blur="$v.firma.nombre.$touch()"
-                              :error-messages="errorNombreFirma"
+                              
                                 ></v-text-field>
                         <div>
                                 <vue-dropzone
@@ -420,9 +416,7 @@
                                 v-model="trimestre.orden"
                                 label="N°Puesto"
                                 outlined  
-                            @input="$v.trimestre.orden.$touch()"
-                            @blur="$v.trimestre.orden.$touch()"
-                            :error-messages="errorOrdenTrimestre"
+                            
                                 color="#009900"
                                 ></v-text-field>
                                 
@@ -430,18 +424,14 @@
                                 v-model="trimestre.analisiseducativo"
                                 label="Analisis Educativo"
                                 outlined  
-                            @input="$v.trimestre.analisiseducativo.$touch()"
-                            @blur="$v.trimestre.analisiseducativo.$touch()"
-                            :error-messages="errorAnalisisTrimestre"
+                            
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="trimestre.recomendaciones"
                                 label="Recomendaciones"
                                 outlined  
-                            @input="$v.trimestre.recomendaciones.$touch()"
-                            @blur="$v.trimestre.recomendaciones.$touch()"
-                            :error-messages="errorRecomendacionTrimestre"
+                            
                                 color="#009900"
                                 ></v-text-field>
 
@@ -557,18 +547,14 @@
                                 v-model="puntajes.area"
                                 label="Nombre del Curso:"
                                 outlined  
-                                @input="$v.puntajes.area.$touch()"
-                                @blur="$v.puntajes.area.$touch()"
-                                :error-messages="errorAreaPuntajes"
+                                
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="puntajes.promedio"
                                 label="Nota obtenida:"
                                 outlined  
-                                @input="$v.puntajes.promedio.$touch()"
-                                @blur="$v.puntajes.promedio.$touch()"
-                                :error-messages="errorPromedioPuntajes"
+                                
                                 color="#009900"
                                 ></v-text-field>
                                 <v-btn 
@@ -1080,42 +1066,7 @@ methods:{
            codigodocumento:""
       },
     },
-    firma:{
-     cargo:{
-       required,
-        minLength: minLength(4),
-     },
-     nombre:{
-       required,
-        minLength: minLength(4),
-     }
-    },
-    trimestre:{
-      orden:{
-        required,
-        minLength: minLength(1),
-        numeric
-        }
-        ,analisiseducativo:{
-          required,
-        minLength: minLength(4),
-        },
-        recomendaciones:{
-          required,
-        minLength: minLength(4),
-        }
-        },
-    puntajes:{
-          area:{
-            required,
-            minLength: minLength(4),
-          },
-          promedio:{
-            required,
-            minLength: minLength(2),
-            numeric
-          }
-      }
+   
 
 
         

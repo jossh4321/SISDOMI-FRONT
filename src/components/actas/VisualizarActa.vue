@@ -1,6 +1,6 @@
 <template>
-    <v-card>
-    <v-card-title class="justify-center">Visualizar Acta de externamiento</v-card-title>
+  <v-card >
+    <v-card-title class="justify-center">Detalle de Acta</v-card-title>
 
     <v-stepper v-model="step">
     <v-stepper-header>
@@ -17,131 +17,105 @@
         editable
         step="2"
       >
-        Registro de Datos
+        Datos de Cuenta
       </v-stepper-step>
     </v-stepper-header>
 
     <v-stepper-items>
       <v-stepper-content step="1">
-        <div class="container-actaI">
+        <div class="container-user">
       <form>
         <v-text-field
-          v-model="actaI.nombreplan"
-          label="Ingrese el nombre del Acta"
+           v-model="usuario.tipo"
+          label="Ingrese el tipo"
           outlined
+          readonly
           color="#009900"
-          disabled
         ></v-text-field>
-
         <v-text-field
-          v-model="actaI.nombreusuaria"
-          label="Ingrese el nombre-dni de la usuaria"
+          v-model="usuario.fechacreacion"
+          label="Ingrese fechacreacion"
           outlined
+          readonly
           color="#009900"
-          disabled
         ></v-text-field>
-
+                      
+       
         <v-text-field
-          v-model="actaI.objetivogeneral"
-          label="Ingrese el objetivo general"
+          v-model="usuario.area"
+          label="Ingrese el area"
           outlined
+          readonly
           color="#009900"
-          disabled
         ></v-text-field>
-
         <v-textarea
-          v-model="actaI.objetivoespecifico"
-          label="Ingrese los objetivos específicos"
+          v-model="usuario.fase"
+          label="Ingrese la fase"
           auto-grow
           outlined
           rows="2"
           row-height="25"
+          readonly
           color="#009900"
           shaped
-          disabled
         ></v-textarea>
-
-        <v-btn block @click="step = 2" color="primary">
-          <v-icon left>mdi-page-next-outline</v-icon>
-          <span>Continuar</span>
-        </v-btn>
-        <v-col>
-                  <v-btn block @click="cerrarDialogo()" color="primary">
-                    <v-icon left>mdi-close-outline</v-icon>
-                    <span>Cerrar</span>
-                  </v-btn>
-                </v-col>
+      
+        
+       
+        <v-row>
+          <v-col>
+            <v-btn block @click="step = 2" color="success">
+              <v-icon left>mdi-page-next-outline</v-icon>
+              <span>Continuar</span>
+            </v-btn>
+          </v-col>
+          <v-col>
+             <v-btn block @click="cerrarDialogo()" color="primary">
+              <v-icon left>mdi-close-outline</v-icon>
+              <span>Cerrar</span>
+            </v-btn>
+          </v-col>
+        </v-row>
       </form>
     </div>
       </v-stepper-content>
-     
       <v-stepper-content step="2">
         <div  class="container-user">
       <form>
-        <br />
-        <v-textarea
-          v-model="actaI"
-          label="Ingrese nuevo nombre de Acta"
-          auto-grow
+        <v-text-field
+          v-model="usuario.residente"
+          label="Ingrese el nombre de residente"
           outlined
-          rows="2"
-          row-height="25"
+          readonly
+          class="inputTextField"
           color="#009900"
-          shaped
-          editable          
-        ></v-textarea>
-
-        <v-textarea
-         v-model="actaI.actividades_estrategias"
-          label="Ingrese nuevo nombre-dni de Usuario"
-          auto-grow
+        ></v-text-field>
+        
+        
+          
+      
+           
+        
+        <v-select
+        v-model="usuario.estado"
+          :items="['creado', 'modificado']"
+          label="Ingrese el Estado"
+          dense
           outlined
-          rows="2"
-          row-height="25"
+          readonly
           color="#009900"
-          shaped
-        ></v-textarea>
-
-        <v-textarea
-          v-model="actaI.indicadores"
-          label="Ingrese nuevo objetivo general"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-        ></v-textarea>
-
-        <v-textarea
-         v-model="actaI.meta"
-          label="Ingrese nuevos objetivos especificos"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-        ></v-textarea>
-    <div>
-          <vue-dropzone ref="myVueDropzone"
-            @vdropzone-success="afterSuccess"
-            @vdropzone-removed-file="afterRemoved"
-            id="dropzone" :options="dropzoneOptions" >
-          </vue-dropzone>
-        </div>
-        <v-divider class="divider-custom"></v-divider>
-
-        <v-btn block color="accent">
-          <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
-          <span >Visualizar Acta</span>
-        </v-btn>
+        ></v-select>
+        
+       
+          <v-divider class="divider-custom"></v-divider>
+        <v-row>
         <v-col>
-                  <v-btn block @click="cerrarDialogo()" color="primary">
-                    <v-icon left>mdi-close-outline</v-icon>
-                    <span>Cerrar</span>
-                  </v-btn>
-                </v-col>
+             <v-btn block @click="cerrarDialogo()" color="primary">
+              <v-icon left>mdi-close-outline</v-icon>
+              <span>Cerrar</span>
+            </v-btn>
+          </v-col>
+        </v-row>
       </form>
         </div>
       </v-stepper-content>
@@ -150,93 +124,38 @@
   </v-card>
 </template>
 <script>
-import axios from "axios";
-import vue2Dropzone from "vue2-dropzone";
-import "vue2-dropzone/dist/vue2Dropzone.min.css";
+import axios from 'axios';
+import { mapMutations, mapState} from "vuex";
+import moment from 'moment'
 export default {
+    name:"VisualizarActa",
+   props:["usuario"],
    components: {
-     vueDropzone: vue2Dropzone,
   },
   data() {
-      return {
-      actaI: {
-        nombreusuaria:" ",
-        nombreplan:" ",
-        objetivogeneral:" ",
-        objetivoespecifico:" ",        
-        actividades_estrategias:" ",
-        indicadores:" ",
-        meta:" ",
-      },
+    return {
       datemenu: false,
-      step:1,
-      dropzoneOptions: {
-        url: "https://httpbin.org/post",
-        thumbnailWidth: 250,
-        maxFilesize: 3.0,
-        maxFiles:1,
-        acceptedFiles:".jpg",
-        headers: { "My-Awesome-Header": "header value" },
-        addRemoveLinks: true,
-         dictDefaultMessage: "Seleccione la firma del responsable o Arrastrela Aqui"
-      },
+      step:1
     };
+  },async created(){
+  },
+  mounted(){
   },
   methods:{
-    afterSuccess(file,response){
-       this.usuario.datos.imagen = file.dataURL;
-       this.$v.usuario.datos.imagen.$model = file.dataURL;
-    },
-    resetUsuarioValidationState() {
-      this.$refs.myVueDropzone.removeAllFiles();
-      this.$v.actaI.$reset();
-    },
-      cerrarDialogo() {
-      this.actaI = this.limpiarUsuario();
-      this.step = 1;
-      this.resetUsuarioValidationState();
-      this.$emit("close-dialog-save");
-      },
-    afterRemoved(file, error, xhr){
-      this.usuario.datos.imagen = "";
-       this.$v.usuario.datos.imagen.$model = "";
+    cerrarDialogo(){
+      this.$emit("close-dialog-detail");
     }
-    ,mensaje(icono,titulo,texto,footer){
-      this.$swal({
-        icon: icono,
-        title: titulo,
-        text: texto,
-        footer:footer
-      });
-    },
-    limpiarUsuario() {
-      return {
-        
-        datos: {
-          
-        nombreusuaria:" ",
-        nombreplan:" ",
-        objetivogeneral:" ",
-        objetivoespecifico:" ",        
-        actividades_estrategias:" ",
-        indicadores:" ",
-        meta:" ",
-        },
-      };
-    },
-  
+  },
+  watch:{
   },
   computed:{
-
-  }
-
-}
+  },
+};
 </script>
 <style  scoped>
-.container-actaI {
+.container-user {
   margin: 15px;
 }
-
 
 .dropzone-custom-content {
   position: absolute;
@@ -263,4 +182,3 @@ export default {
   border-color: green;
 }
 </style>
-     

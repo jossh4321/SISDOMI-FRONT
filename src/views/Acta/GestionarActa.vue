@@ -1,140 +1,137 @@
 <template>
   <div>
     <v-card class="card">
-      <v-card-title> Gestionar Acta de Externamiento </v-card-title>
+      <v-card-title> Gestion de Acta </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="actaI"
+        :items="usuarios"
         :search="search"
         class="elevation-1"
       >
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>Actas de Externamiento actuales</v-toolbar-title>
+            <v-toolbar-title>Residentes SISDOMI</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-text-field
               v-model="search"
               append-icon="mdi-magnify"
               label="Search"
-              single-line0
+              single-line
               hide-details
             ></v-text-field>
             <v-spacer></v-spacer>
-            <v-dialog v-model="dialogoregistro" max-width="880px">
+            <!--Dialogo de Registro-->
+            <v-dialog 
+              persistent
+              v-model="dialogoregistro" 
+              max-width="880px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   color="success"
-                  darkdark @click="regitem(actaI)"
+                  dark
                   class="mb-2"
                   v-bind="attrs"
                   v-on="on"
-                >
-                  <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar nueva Acta</span>
-                </v-btn>
-              </template>
-             <RegistrarActa 
-                  @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
+                >  <v-icon left>mdi-account-multiple-plus-outline</v-icon> <span>Registrar Acta</span>
+                 </v-btn>       
+                   </template>
+                <RegistrarActa   @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
             </v-dialog>
+            <!---->
           </v-toolbar>
         </template>
-
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
-             <v-dialog v-model="dialogoactualizacion" max-width="880px">
-               <ActualizarActa v-if="dialogoactualizacion" 
-        :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()">
-          </ActualizarActa></v-dialog> -->
-            <v-btn color="warning" dark @click="abrirDialogoActualizar(item.id)">
-              <v-icon left> mdi-pencil </v-icon>
-              <span>Actualizar</span>
-            </v-btn>
-                 <!-- <v-dialog v-model="Visualizarplan" max-width="880px">-->
-                   
-                  <v-dialog persistent v-model="dialogodetalle" max-width="880px">
-          <VisualizarActa :usuario="usuario" @close-dialog-detail="closeDialogDetalle()">
-          </VisualizarActa>
-      </v-dialog>
-                  <v-btn color="info" @click="abrirDialogoDetalle(item.id)" >
-                  <v-icon left> mdi-pencil </v-icon>
-                       <span>Visualizar</span>
-                  </v-btn>  
-               <!--   </v-dialog> -->
+                <v-btn
+                  color="warning"
+                  dark
+                  @click="abrirDialogoActualizar(item.id)"
+                >
+                <v-icon left>mdi-briefcase-edit</v-icon>
+                  <span>Actualizar</span>
+                </v-btn>
+                <v-btn
+                  color="info"
+                  dark
+                  @click="abrirDialogoDetalle(item.id)"
+                >
+                <v-icon left>mdi-file-eye</v-icon>
+                  <span>Detalle</span>
+                </v-btn>
+            
+
+            
           </v-row>
         </template>
-      </v-data-table>             
+      </v-data-table>
+      <!--Dialogo de Actualizacion-->
+      <v-dialog persistent
+                v-model="dialogoactualizacion" 
+                max-width="880px">
+        <ActualizarActa v-if="dialogoactualizacion" :usuario="usuario"  @close-dialog-update="closeDialogActualizar()"></ActualizarActa>
+
+      </v-dialog>
+      <!-----><!--Hola -->
+      <!--Dialogo de Detalle-->
+      <v-dialog persistent
+                v-model="dialogodetalle" 
+                max-width="880px">
+          <ConsultarActa :usuario="usuario" @close-dialog-detail="closeDialogDetalle()"></ConsultarActa>
+      </v-dialog>
+      <!----->
     </v-card>
   </div>
 </template>
 <script>
-import axios from "axios";
-import RegistrarActa from "@/components/actas/RegistrarActa.vue";
-import ActualizarActa from "@/components/actas/ActualizarActa.vue";
-import VisualizarActa from "@/components/actas/VisualizarActa.vue";
-import { mapMutations, mapState } from "vuex";
-
+import axios from 'axios';
+//import { mdiCardAccountDetailsStarOutline } from '../../../node_modules/@mdi/font';
+import RegistrarActa from '@/components/actas/RegistrarActa.vue'
+import ActualizarActa from '@/components/actas/ActualizarActa.vue'
+import ConsultarActa from  '@/components/actas/VisualizarActa.vue'
+import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarActaI",
   components: {
-    RegistrarActa,
-    ActualizarActa,
-    VisualizarActa
-   
+    RegistrarActa,ActualizarActa, ConsultarActa
   },
   data() {
     return {
       search: "",
-      plan: {},
-    
+      //obj usado para almacenar datos de usuario en la actualizacion y consulta
+      usuario:{},
+      //lsita de cabeceras de la data table
       headers: [
         {
-          text: "Nombre Acta Externamiento",
+          text: "Tipo",
           align: "start",
           sortable: false,
-          value: "nombre",
+          value: "tipo",
         },
-        { text: "Usuaria", value: "usuaria" },
-        { text: "Fecha registro", value: "fechaRegistro" },
+     
+      { text: "fechacreacion", value: "fechacreacion" },
+      { text: "area", value: "area" },
+      { text: "fase", value: "fase" },
+      { text: "residente", value: "residente" },
+      { text: "estado", value: "estado" },
+ 
+        
         { text: "Actions", value: "actions", sortable: false },
       ],
-      actaI: [
-        {
-          nombre: "ActaI_Edu_Xiomara_1",
-          usuaria: "Xiomara Paredes Guerra",
-          fechaRegistro: "15/09/2019",
-          id: "5f7d0906845dc60be0f02949",
-        },
-        {
-          nombre: "ActaI_Psico_Xiomara_1",
-          usuaria: "Xiomara Paredes Guerra",
-          fechaRegistro: "16/09/2019",
-          id:2
-
-        },
-        {
-          nombre: "ActaI_Edu_Marlyn_1",
-          usuaria: "Marlyn Candela Peña",
-          fechaRegistro: "20/10/2019",
-          id:3
-        }
-      ],
-      dialogodetalle: false,
       dialogoregistro: false,
-      VisualizarActa: false,
-      dialogoactualizacion: false
+      dialogoactualizacion: false,
+      dialogodetalle:false,
+      
     };
-    
   },
-  async crated(){
-    this.obtenerplan();
-    
+  async created(){
+      this.obtenerUsuarios();
+      
   },
-
   methods: {
-     ...mapMutations(["setplan","replaceplan"]),
-      testing2(){
-        axios.get("/plan/saludos")
+    ...mapMutations(["setUsuarios","replaceUsuario"]),
+    testing2(){
+        axios.get("/usuario/saludos")
         .then(x => {
           console.log(x.data);
         }).catch(err => console.log(err));
@@ -146,78 +143,83 @@ export default {
       this.dialogoactualizacion = false;
     },
     closeDialogDetalle(){
-      this.VisualizarActa = false;
+      this.dialogodetalle = false;
     },
-  editItem(item) {
-    console.log(item);
+    editItem(item) {
+      console.log(item);
     },
     deleteItem(item) {
       console.log(item);
     },
-
-    async regitem(item){
-      this.plan = await this.reg(id);
-     this.dialogoregistro=!this.dialogoregistro;
-    console.log(item);
-
+    //llamando al API para obtener los datos de un usuario especifico
+    async abrirDialogoActualizar(id){
+        this.usuario = await this.loadUsuarioModificacion(id);
+        this.dialogoactualizacion = !this.dialogoactualizacion;
     },
- async reg(id){
-      var user = {};
-      await axios.get("/actas/id?id="+id)//prueba
-      .then(res => {
-         user = res.data; 
-  
-      })
-      .catch(err => console.log(err));
-      return user;
-    },
-
-    async abrirDialogoActualizar(id) {
-      this.plan =  await this.actu(id); 
-      this.dialogoactualizacion=!this.dialogoactualizacion;
-      console.log(id);
-   //   console.log(item);
-    },
-    async actu(id){
-   
-      var user = {};
-      await axios.get("/actas/id?id="+id)//prueba
-      .then(res => {
-         user = res.data; 
-      })
-      .catch(err => console.log(err));
-      return user;
-    },
-    detailItem(id) {
-           
- // console.log(item.id);
-    },
-    /////////////////////////////////////
-  
-    ///abrir dialogo de detalle
+    // Abre
     async abrirDialogoDetalle(id){
-     
-       this.plan =  await this.obtenerCualquiercosa(id); 
+        this.usuario = await this.loadUsuarioDetalle(id); //Pide
         this.dialogodetalle = !this.dialogodetalle;
-       console.log(id);
-        },
-        
-      async obtenerCualquiercosa(id){
-   
+    },
+    async loadUsuarioModificacion(id){
       var user = {};
-      await axios.get("/actas/id?id="+id)//prueba
+      await axios.get("/actaexternamiento/id?id="+id)
       .then(res => {
          user = res.data; 
-  
+         user.datos.fechanacimiento = res.data.datos
+                  .fechanacimiento.split("T")[0];
       })
       .catch(err => console.log(err));
       return user;
-    },
-
-
-  },
-   computed:{
-    ...mapState(["planesD"])
+    },async loadUsuarioDetalle(id){
+      var user = {};
+      await axios.get("/actaexternamiento/id?id="+id)
+      .then(res => {
+         user = res.data; // devuelve
+         user.datos.fechacreacion = res.data.tipo
+                  .fechacreacion.split("T")[0];
+      })
+      .catch(err => console.log(err));
+      console.log(user);
+      return user;
+    
+    }, async obtenerUsuarios(){
+           await axios.get("/actaexternamiento/all") ////////OBTENER ACTA EXTERNAMIENTO
+            .then(res => {
+                   this.setUsuarios(res.data);
+            }).catch(err => console.log(err));
+    }, async cambiarEstadoUsuario(usuario){
+       await this.$swal({
+            title: 'Esta Seguro?',
+            text: usuario.estado=="activo"?
+                    "Se desactivara el usuario "+usuario.usuario:
+                    "Se activara el usuario "+usuario.usuario,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: usuario.estado=="activo"?'Desactivar':'Activar',
+            cancelButtonText:"Cancelar"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              var estadonuevo= usuario.estado=="activo"?
+                    "inactivo":"activo";
+              axios.put("/usuario/estado?id="+usuario.id+"&nuevoestado="+estadonuevo,usuario)
+                .then(res => {
+                     this.replaceUsuario(res.data);
+                     this.mensaje("success","Listo","Estado del Usuario modificado Satisfactoriamente")
+                }).catch(err => console.log(err));
+            }
+          })
+    },async mensaje(icono,titulo,texto){
+      await this.$swal({
+        icon: icono,
+        title: titulo,
+        text: texto
+      });
+    }
+  },computed:{
+    ...mapState(["usuarios"])
   }
 };
 </script>

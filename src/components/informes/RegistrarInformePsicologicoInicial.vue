@@ -29,6 +29,9 @@
                   label="Usuaria CAR"
                   item-text="nombre"
                   item-value="id"
+                  @input="$v.informe.idresidente.$touch()"
+                  @blur="$v.informe.idresidente.$touch()"
+                  :error-messages="errorResidente"
                 >
                   <template v-slot:selection="data">
                     <v-chip
@@ -63,6 +66,55 @@
                   </template>
                 </v-autocomplete>
 
+                <v-autocomplete
+                  :items="listapsicologos"
+                  filled
+                  chips
+                  dense
+                  outlined
+                  v-model="informe.contenido.evaluador"
+                  color="#009900"
+                  label="Evaluador"
+                  item-text="usuario"
+                  item-value="id"
+                  :error-messages="errorEvaluador"
+                >
+                  <template v-slot:selection="data">
+                    <v-chip
+                      v-bind="data.attrs"
+                      :input-value="data.selected"
+                      style="margin-top:5px"
+                    >
+                      <v-avatar left color="#b3b3ff" size="24">
+                        <span style="font-size:12px">RT</span>
+                      </v-avatar>
+                      {{ data.item.datos.nombre }}
+                      {{ data.item.datos.apellido }}
+                    </v-chip>
+                  </template>
+                  <template v-slot:item="data">
+                    <template>
+                      <v-list-item-avatar>
+                        <v-avatar left color="#b3b3ff" size="24">
+                          <span style="font-size:12px">UC</span>
+                        </v-avatar>
+                      </v-list-item-avatar>
+                      <v-list-item-content>
+                        <v-list-item-title
+                          >Nombre completo: {{ data.item.datos.nombre }}
+                          {{ data.item.datos.apellido }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle
+                          >Nro. Documento:
+                          {{
+                            data.item.datos.numerodocumento
+                          }}</v-list-item-subtitle
+                        >
+                      </v-list-item-content>
+                    </template>
+                  </template>
+                </v-autocomplete>
+
                 <v-menu
                   v-model="datemenu"
                   :close-on-content-click="false"
@@ -79,7 +131,10 @@
                       readonly
                       v-bind="attrs"
                       v-on="on"
-                      color="#009900"                      
+                      color="#009900"
+                      @input="$v.informe.fechacreacion.$touch()"
+                      @blur="$v.informe.fechacreacion.$touch()"
+                      :error-messages="errorFechaEvaluacion"
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -88,7 +143,6 @@
                     locale="es-es"
                   ></v-date-picker>
                 </v-menu>
-
 
                 <v-textarea
                   label="Antecedentes"
@@ -99,6 +153,9 @@
                   row-height="25"
                   color="#009900"
                   shaped
+                  @input="$v.informe.contenido.antecedentes.$touch()"
+                  @blur="$v.informe.contenido.antecedentes.$touch()"
+                  :error-messages="errorAntecedentes"
                 ></v-textarea>
 
                 <v-textarea
@@ -110,6 +167,9 @@
                   row-height="25"
                   color="#009900"
                   shaped
+                  @input="$v.informe.contenido.contextopsicologico.$touch()"
+                  @blur="$v.informe.contenido.contextopsicologico.$touch()"
+                  :error-messages="errorContextoPsicologico"
                 ></v-textarea>
 
                 <v-textarea
@@ -121,6 +181,9 @@
                   row-height="25"
                   color="#009900"
                   shaped
+                  @input="$v.informe.contenido.analisisactual.$touch()"
+                  @blur="$v.informe.contenido.analisisactual.$touch()"
+                  :error-messages="errorAnalisisActual"
                 ></v-textarea>
 
                 <v-card
@@ -137,6 +200,9 @@
                           v-model="transtorno"
                           label="Transtornos posibles"
                           color="#009900"
+                          @input="$v.transtorno.$touch()"
+                          @blur="$v.transtorno.$touch()"
+                          :error-messages="errorTranstorno"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -221,6 +287,9 @@
                           v-model="conclusion"
                           label="Conclusiones"
                           color="#009900"
+                          @input="$v.conclusion.$touch()"
+                          @blur="$v.conclusion.$touch()"
+                          :error-messages="errorConclusion"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -285,6 +354,9 @@
                           v-model="recomendacion"
                           label="Recomendaciones"
                           color="#009900"
+                          @input="$v.recomendacion.$touch()"
+                          @blur="$v.recomendacion.$touch()"
+                          :error-messages="errorRecomendacion"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -349,6 +421,9 @@
                           v-model="firmas.nombre"
                           label="Nombre"
                           color="#009900"
+                          @input="$v.firmas.nombre.$touch()"
+                          @blur="$v.firmas.nombre.$touch()"
+                          :error-messages="errorNombreFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="left">
@@ -356,6 +431,9 @@
                           v-model="firmas.cargo"
                           label="Cargo"
                           color="#009900"
+                          @input="$v.firmas.cargo.$touch()"
+                          @blur="$v.firmas.cargo.$touch()"
+                          :error-messages="errorCargoFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -385,12 +463,12 @@
                         >
                         </vue-dropzone>
                       </div>
-                      <!-- <v-card v-if="errorUrlFirma" color="red">
+                      <v-card v-if="errorUrlFirma" color="red">
                         <v-card-text class="text-center" style="color: white"
                           >Debe Subir una imagen de la firma
                           obligatoriamente</v-card-text
                         >
-                      </v-card> -->
+                      </v-card>
                       <v-divider class="divider-custom"></v-divider>
                     </v-col>
                   </v-row>
@@ -450,7 +528,7 @@
                     </v-row>
                   </v-card>
                 </v-card>
-               
+
                 <v-dialog
                   v-model="dialogVistaPreviaFirma"
                   persistent
@@ -504,15 +582,31 @@
   </v-dialog>
 </template>
 <script>
-
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapGetters, mapMutations, mapState } from "vuex";
+import { mapMutations, mapState } from "vuex";
+import {
+  required,
+  minLength,
+  email,
+  helpers,
+  numeric,
+  between,
+} from "vuelidate/lib/validators";
 import moment from "moment";
+import { mapGetters } from "vuex";
+
+function esTexto(value) {
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value);
+}
+
+function esParrafo(value) {
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+}
 
 export default {
-  props: ["listaresidentes", "visible"],
+  props: ["listaresidentes", "visible", "listapsicologos"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -566,47 +660,46 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["addInforme"]),
     async registrarInforme() {
-      this.informe.creadordocumento = this.user.id;
-      console.log(this.informe);
-      // this.$v.informe.$touch();
-      // if (this.$v.informe.$invalid) {
-      //   console.log("hay errores");
-      //   this.mensaje(
-      //     "error",
-      //     "..Oops",
-      //     "Se encontraron errores en el formulario",
-      //     "<strong>Verifique los campos Ingresados<strong>"
-      //   );
-      // } else {
-      //     console.log("no hay errores");
-      //     console.log(this.informe);
-          await axios
-            .post("/informe/informepi", this.informe)
-            .then((res) => {
-              this.informe = res.data;
-              var resi = this.listaresidentes.filter(function(residente) {
-                return residente.id == res.data.idresidente;
-              });
-              console.log(resi);
-              var info = {
-                id: res.data.id,
-                tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-                fechacreacion: res.data.fechacreacion.split("T")[0],
-                codigodocumento: res.data.contenido.codigodocumento,
-                nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
-              };
-              this.addInforme(info);
-              this.cerrarDialogo();
-            })
-            .catch((err) => console.log(err));
-        await this.mensaje(
-          "success",
-          "Listo",
-          "Informe registrado Satisfactoriamente",
-          "<strong>Se redirigira a la interfaz de gestión<strong>"
+      this.informe.creadordocumento = this.user.id;      
+      this.$v.informe.$touch();
+      if (this.$v.informe.$invalid) {
+        console.log("hay errores");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
         );
-      // }
+      } else {
+          console.log("no hay errores");          
+      await axios
+        .post("/informe/informepi", this.informe)
+        .then((res) => {
+          this.informe = res.data;
+          var resi = this.listaresidentes.filter(function(residente) {
+            return residente.id == res.data.idresidente;
+          });
+          console.log(resi);
+          var info = {
+            id: res.data.id,
+            tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
+            fechacreacion: res.data.fechacreacion.split("T")[0],
+            codigodocumento: res.data.contenido.codigodocumento,
+            nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
+          };
+          this.addInforme(info);
+          this.cerrarDialogo();
+        })
+        .catch((err) => console.log(err));
+      await this.mensaje(
+        "success",
+        "Listo",
+        "Informe registrado Satisfactoriamente",
+        "<strong>Se redirigira a la interfaz de gestión<strong>"
+      );
+     }
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -617,10 +710,15 @@ export default {
       });
     },
     agregarTranstorno() {
+      this.$v.transtorno.$touch();
+      if (!this.$v.transtorno.$invalid) {
       let transtornos = this.transtorno;
       this.informe.contenido.transtornos.push(transtornos);
       this.transtornos = this.informe.contenido.transtornos;
       this.transtorno = "";
+      this.$v.transtorno.$reset();
+
+      }
     },
     eliminarTranstorno(transtorno) {
       this.transtornos.forEach(function(car, index, object) {
@@ -630,10 +728,14 @@ export default {
       });
     },
     agregarConclusion() {
-      let conclusiones = this.conclusion;
-      this.informe.contenido.conclusiones.push(conclusiones);
-      this.conclusiones = this.informe.contenido.conclusiones;
-      this.conclusion = "";
+      this.$v.conclusion.$touch();
+      if (!this.$v.conclusion.$invalid) {
+        let conclusiones = this.conclusion;
+        this.informe.contenido.conclusiones.push(conclusiones);
+        this.conclusiones = this.informe.contenido.conclusiones;
+        this.conclusion = "";
+        this.$v.conclusion.$reset();
+      }
     },
     eliminarConclusion(conclusion) {
       this.conclusiones.forEach(function(car, index, object) {
@@ -643,11 +745,14 @@ export default {
       });
     },
     agregarRecomendacion() {
+       this.$v.conclusion.$touch();
+      if (!this.$v.conclusion.$invalid) {
       let recomendaciones = this.recomendacion;
       this.informe.contenido.recomendaciones.push(recomendaciones);
       this.recomendaciones = this.informe.contenido.recomendaciones;
       this.recomendacion = "";
-      //this.$v.conclusion.$reset();
+      this.$v.conclusion.$reset();
+      }
     },
     eliminarRecomendacion(recomendacion) {
       this.recomendaciones.forEach(function(car, index, object) {
@@ -657,24 +762,24 @@ export default {
       });
     },
     agregarFirma() {
-      // this.$v.firmas.$touch();
-      // this.$v.urlfirma.$touch();
+      this.$v.firmas.$touch();
+      this.$v.urlfirma.$touch();
 
-      // if (!this.$v.firmas.$invalid && !this.$v.urlfirma.$invalid) {
-      let firmas = {
-        urlfirma: this.urlfirma,
-        nombre: this.firmas.nombre,
-        cargo: this.firmas.cargo,
-      };
-      this.informe.contenido.firmas.push(firmas);
-      this.$refs.myVueDropzone.removeAllFiles();
+      if (!this.$v.firmas.$invalid && !this.$v.urlfirma.$invalid) {
+        let firmas = {
+          urlfirma: this.urlfirma,
+          nombre: this.firmas.nombre,
+          cargo: this.firmas.cargo,
+        };
+        this.informe.contenido.firmas.push(firmas);
+        this.$refs.myVueDropzone.removeAllFiles();
 
-      this.urlfirma = "";
-      this.firmas.nombre = "";
-      this.firmas.cargo = "";
-      //   this.$v.firmas.$reset();
-      //   this.$v.urlfirma.$reset();
-      // }
+        this.urlfirma = "";
+        this.firmas.nombre = "";
+        this.firmas.cargo = "";
+        this.$v.firmas.$reset();
+        this.$v.urlfirma.$reset();
+      }
     },
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
@@ -693,7 +798,6 @@ export default {
       this.urlfirma = "";
     },
     cerrarDialogo() {
-      //this.informe = this.limpiarInforme();
       this.step = 1;
       this.$emit("close");
     },
@@ -710,6 +814,164 @@ export default {
       },
     },
     ...mapGetters(["user"]),
+    errorResidente() {
+      const errors = [];
+      if (!this.$v.informe.idresidente.$dirty) return errors;
+      !this.$v.informe.idresidente.required &&
+        errors.push("Debe seleccionar un residente obligatoriamente");
+      return errors;
+    },
+    errorEvaluador() {
+      const errors = [];
+      if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
+      !this.$v.informe.contenido.evaluador.required &&
+        errors.push("Debe seleccionar un evaluador obligatoriamente");
+      return errors;
+    },
+    errorAntecedentes() {
+      const errors = [];
+      if (!this.$v.informe.contenido.antecedentes.$dirty) return errors;
+      !this.$v.informe.contenido.antecedentes.required &&
+        errors.push("Debe completar los antecedentes obligatoriamente.");
+      !this.$v.informe.contenido.antecedentes.esParrafo &&
+        errors.push("No se aceptan caracteres especiales.");
+      return errors;
+    },
+    errorContextoPsicologico() {
+      const errors = [];
+      if (!this.$v.informe.contenido.contextopsicologico.$dirty) return errors;
+      !this.$v.informe.contenido.contextopsicologico.required &&
+        errors.push("Debe completar el contexto psicológico obligatoriamente.");
+      !this.$v.informe.contenido.contextopsicologico.esParrafo &&
+        errors.push("No se aceptan caracteres especiales.");
+      return errors;
+    },
+    errorAnalisisActual() {
+      const errors = [];
+      if (!this.$v.informe.contenido.analisisactual.$dirty) return errors;
+      !this.$v.informe.contenido.analisisactual.required &&
+        errors.push("Debe completar el análisis actual obligatoriamente.");
+      !this.$v.informe.contenido.analisisactual.esParrafo &&
+        errors.push("No se aceptan caracteres especiales.");
+      return errors;
+    },
+    errorTranstorno() {
+      const errors = [];
+      if (!this.$v.transtorno.$dirty) return errors;
+      !this.$v.transtorno.required &&
+        errors.push("Debe registrar el campo obligatoriamente");
+      !this.$v.transtorno.esParrafo &&
+        errors.push("No se aceptan caracteres especiales.");
+      return errors;
+    },
+    errorRecomendacion() {
+      const errors = [];
+      if (!this.$v.recomendacion.$dirty) return errors;
+      !this.$v.recomendacion.required &&
+        errors.push("Debe registrar la recomendación obligatoriamente");
+      !this.$v.recomendacion.esParrafo &&
+        errors.push("La recomendación no debe contener caracteres especiales.");
+      return errors;
+    },
+    errorConclusion() {
+      const errors = [];
+      if (!this.$v.conclusion.$dirty) return errors;
+      !this.$v.conclusion.required &&
+        errors.push("Debe registrar la conclusión obligatoriamente");
+      !this.$v.conclusion.esParrafo &&
+        errors.push("La conclusión no debe contener caracteres especiales.");
+      return errors;
+    },
+    errorNombreFirma() {
+      const errors = [];
+      if (!this.$v.firmas.nombre.$dirty) return errors;
+      !this.$v.firmas.nombre.required &&
+        errors.push("Debe registrar el nombre obligatoriamente");
+      !this.$v.firmas.nombre.esTexto &&
+        errors.push("El nombre debe contener solo texto.");
+      return errors;
+    },
+    errorCargoFirma() {
+      const errors = [];
+      if (!this.$v.firmas.cargo.$dirty) return errors;
+      !this.$v.firmas.cargo.required &&
+        errors.push("Debe registrar el cargo obligatoriamente");
+      !this.$v.firmas.cargo.esTexto &&
+        errors.push("El cargo debe contener solo texto.");
+      return errors;
+    },
+    errorUrlFirma() {
+      return this.$v.urlfirma.required == false &&
+        this.$v.urlfirma.$dirty == true
+        ? true
+        : false;
+    },
+    errorFechaEvaluacion() {
+      const errors = [];
+      if (!this.$v.informe.fechacreacion.$dirty) return errors;
+      !this.$v.informe.fechacreacion.required &&
+        errors.push("Debe ingresar la fecha de evaluación obligatoriamente");
+      var dateselected = new Date(this.informe.fechacreacion);
+      var maxdate = new Date();
+      !(dateselected.getTime() < maxdate.getTime()) &&
+        errors.push("La fecha no debe ser mayor a la actual");
+
+      return errors;
+    },
   },
+    validations() {
+      return {
+        informe: {
+          idresidente: {
+            required,
+          },
+          fechacreacion: {
+            required,
+          },
+          contenido: {
+            evaluador: {
+              required,
+            },
+            antecedentes: {
+              required,
+              esParrafo,
+            },
+            contextopsicologico: {
+              required,
+              esParrafo,
+            },
+            analisisactual: {
+              required,
+              esParrafo,
+            },
+          },
+        },
+        transtorno: {
+          required,
+          esParrafo,
+        },
+        recomendacion: {
+          required,
+          esParrafo,
+        },
+        conclusion: {
+          required,
+          esParrafo,
+        },
+        urlfirma: {
+          required,
+        },
+        firmas: {
+          nombre: {
+            required,
+            esTexto,
+          },
+          cargo: {
+            required,
+            esTexto,
+          },
+        },
+      };
+    },  
 };
 </script>
