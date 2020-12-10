@@ -164,6 +164,9 @@
                           v-model="recomendacion"
                           label="Recomendaciones"
                           color="#009900"
+                          @input="$v.recomendacion.$touch()"
+                          @blur="$v.recomendacion.$touch()"
+                          :error-messages="errorRecomendacion"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -325,6 +328,9 @@
                           v-model="firmas.nombre"
                           label="Nombre"
                           color="#009900"
+                          @input="$v.firmas.nombre.$touch()"
+                          @blur="$v.firmas.nombre.$touch()"
+                          :error-messages="errorNombreFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="left">
@@ -332,6 +338,9 @@
                           v-model="firmas.cargo"
                           label="Cargo"
                           color="#009900"
+                          @input="$v.firmas.cargo.$touch()"
+                          @blur="$v.firmas.cargo.$touch()"
+                          :error-messages="errorCargoFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -361,6 +370,12 @@
                         >
                         </vue-dropzone>
                       </div>
+                      <v-card v-if="errorUrlFirma" color="red">
+                        <v-card-text class="text-center" style="color: white"
+                          >Debe Subir una imagen de la firma
+                          obligatoriamente</v-card-text
+                        >
+                        </v-card>
                     </v-col>
                   </v-row>
                   <v-card
@@ -485,7 +500,12 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
-
+function esParrafo(value) {
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+}
+function esTexto(value) {
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+}
 export default {
   props: ["listaresidentes", "informe", "titulo"],
   components: {
@@ -559,8 +579,8 @@ export default {
     },
     async actualizarInforme() {
       await this.sendPDFFiles();
-      this.$v.$touch();
-      if (this.$v.$invalid) {
+      this.$v.informe.$touch();
+      if (this.$v.informe.$invalid) {
         console.log("hay errores");
         this.mensaje(
           "error",
@@ -599,10 +619,14 @@ export default {
       }
     },
     agregarRecomendaciones() {
-      let recomendaciones = this.recomendacion;
-      this.informe.contenido.recomendaciones.push(recomendaciones);
-      this.recomendaciones = this.informe.contenido.recomendaciones;
-      this.recomendacion = "";
+      this.$v.recomendacion.$touch();
+      if (!this.$v.recomendacion.$invalid) {
+        let recomendaciones = this.recomendacion;
+        this.informe.contenido.recomendaciones.push(recomendaciones);
+        this.recomendaciones = this.informe.contenido.recomendaciones;
+        this.recomendacion = "";
+        this.$v.recomendacion.$reset();
+      }
     },
     eliminarRecomendaciones(recomendacion) {
       this.recomendaciones.forEach(function(car, index, object) {
@@ -626,17 +650,24 @@ export default {
       });
     },
     agregarFirma() {
-      let firmas = {
-        urlfirma: this.urlfirma,
-        nombre: this.firmas.nombre,
-        cargo: this.firmas.cargo,
-      };
-      this.informe.contenido.firmas.push(firmas);
-      this.$refs.myVueDropzone.removeAllFiles();
+      this.$v.firmas.$touch();
+      this.$v.urlfirma.$touch();
 
-      this.urlfirma = "";
-      this.firmas.nombre = "";
-      this.firmas.cargo = "";
+      if (!this.$v.firmas.$invalid && !this.$v.urlfirma.$invalid) {
+        let firmas = {
+          urlfirma: this.urlfirma,
+          nombre: this.firmas.nombre,
+          cargo: this.firmas.cargo,
+        };
+        this.informe.contenido.firmas.push(firmas);
+        this.$refs.myVueDropzone.removeAllFiles();
+
+        this.urlfirma = "";
+        this.firmas.nombre = "";
+        this.firmas.cargo = "";
+        this.$v.firmas.$reset();
+        this.$v.urlfirma.$reset();
+      }
     },
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
@@ -709,6 +740,8 @@ export default {
       if (!this.$v.informe.contenido.antecedentes.$dirty) return errors;
       !this.$v.informe.contenido.antecedentes.required &&
         errors.push("Debe ingresar un antecedente");
+      !this.$v.informe.contenido.antecedentes.esParrafo &&
+        errors.push("El antecedente no debe contener caracteres especiales");
       return errors;
     },
     errorSituacionSocial() {
@@ -716,6 +749,8 @@ export default {
       if (!this.$v.informe.contenido.situacionactual.$dirty) return errors;
       !this.$v.informe.contenido.situacionactual.required &&
         errors.push("Debe ingresar la situación actual");
+      !this.$v.informe.contenido.situacionactual.esParrafo &&
+        errors.push("La situacion actual no debe contener caracteres especiales");
       return errors;
     },
     errorResidente() {
@@ -730,6 +765,8 @@ export default {
       if (!this.$v.informe.contenido.diagnosticosocial.$dirty) return errors;
       !this.$v.informe.contenido.diagnosticosocial.required &&
         errors.push("Debe ingresar un diagnostico");
+      !this.$v.informe.contenido.diagnosticosocial.esParrafo &&
+        errors.push("El diagnostico social no debe contener caracteres especiales");
       return errors;
     },
     errorFechaEvaluacion() {
@@ -745,6 +782,41 @@ export default {
 
       return errors;
     },
+    errorRecomendacion() {
+      const errors = [];
+      if (!this.$v.recomendacion.$dirty) return errors;
+      !this.$v.recomendacion.required &&
+        errors.push("Debe registrar la recomendacion obligatoriamente");
+      !this.$v.recomendacion.esParrafo &&
+        errors.push(
+          "La recomendacion no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorNombreFirma() {
+      const errors = [];
+      if (!this.$v.firmas.nombre.$dirty) return errors;
+      !this.$v.firmas.nombre.required &&
+        errors.push("Debe registrar el nombre obligatoriamente");
+      !this.$v.firmas.nombre.esTexto &&
+        errors.push("Debe registrar el nombre correctamente");
+      return errors;
+    },
+    errorCargoFirma() {
+      const errors = [];
+      if (!this.$v.firmas.cargo.$dirty) return errors;
+      !this.$v.firmas.cargo.required &&
+        errors.push("Debe registrar el cargo obligatoriamente");
+      !this.$v.firmas.cargo.esTexto &&
+        errors.push("Debe registrar el cargo correctamente");
+      return errors;
+    },
+    errorUrlFirma() {
+      return this.$v.urlfirma.required == false &&
+        this.$v.urlfirma.$dirty == true
+        ? true
+        : false;
+    },
   },
   validations() {
     return {
@@ -758,13 +830,33 @@ export default {
         contenido: {
           antecedentes: {
             required,
+            esParrafo,
           },
           situacionactual: {
             required,
+            esParrafo,
           },
           diagnosticosocial: {
             required,
+            esParrafo,
           },
+        },
+      },
+       recomendacion: {
+        required,
+        esParrafo,
+      },
+      urlfirma: {
+        required,
+      },
+      firmas: {
+        nombre: {
+          required,
+          esTexto,
+        },
+        cargo: {
+          required,
+          esTexto,
         },
       },
     };

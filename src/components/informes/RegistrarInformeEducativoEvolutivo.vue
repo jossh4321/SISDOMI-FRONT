@@ -249,6 +249,9 @@
                           v-model="logro"
                           label="Logros alcanzados"
                           color="#009900"
+                          @input="$v.logro.$touch()"
+                          @blur="$v.logro.$touch()"
+                          :error-messages="errorLogro"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -312,6 +315,9 @@
                           v-model="recomendacion"
                           label="Recomendaciones"
                           color="#009900"
+                          @input="$v.recomendacion.$touch()"
+                          @blur="$v.recomendacion.$touch()"
+                          :error-messages="errorRecomendacion"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -387,6 +393,9 @@
                           v-model="firmas.nombre"
                           label="Nombre"
                           color="#009900"
+                          @input="$v.firmas.nombre.$touch()"
+                          @blur="$v.firmas.nombre.$touch()"
+                          :error-messages="errorNombreFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="left">
@@ -394,6 +403,9 @@
                           v-model="firmas.cargo"
                           label="Cargo"
                           color="#009900"
+                          @input="$v.firmas.cargo.$touch()"
+                          @blur="$v.firmas.cargo.$touch()"
+                          :error-messages="errorCargoFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -423,6 +435,12 @@
                         >
                         </vue-dropzone>
                       </div>
+                      <v-card v-if="errorUrlFirma" color="red">
+                        <v-card-text class="text-center" style="color: white"
+                          >Debe Subir una imagen de la firma
+                          obligatoriamente</v-card-text
+                        >
+                      </v-card>
                     </v-col>
                   </v-row>
                   <v-card
@@ -540,7 +558,12 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
-
+function esTexto(value) {
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+}
+function esParrafo(value) {
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+}
 export default {
   props: ["listaresidentes", "visible", "titulo", "listaeducadores"],
   components: {
@@ -647,8 +670,8 @@ export default {
         this.informe.tipo = "InformeEducativoFinal";
       }
       console.log(this.informe);
-      this.$v.$touch();
-      if (this.$v.$invalid) {
+      this.$v.informe.$touch();
+      if (this.$v.informe.$invalid) {
         console.log("hay errores");
         this.mensaje(
           "error",
@@ -690,10 +713,14 @@ export default {
       }
     },
     agregarLogros() {
-      let logros = this.logro;
-      this.informe.contenido.logroalcanzado.push(logros);
-      this.logros = this.informe.contenido.logroalcanzado;
-      this.logro = "";
+      this.$v.logro.$touch();
+      if (!this.$v.logro.$invalid) {
+        let logros = this.logro;
+        this.informe.contenido.logroalcanzado.push(logros);
+        this.logros = this.informe.contenido.logroalcanzado;
+        this.logro = "";
+        this.$v.logro.$reset();
+      }
     },
     eliminarLogros(logro) {
       this.logros.forEach(function(car, index, object) {
@@ -703,10 +730,14 @@ export default {
       });
     },
     agregarRecomendaciones() {
-      let recomendaciones = this.recomendacion;
-      this.informe.contenido.recomendaciones.push(recomendaciones);
-      this.recomendaciones = this.informe.contenido.recomendaciones;
-      this.recomendacion = "";
+      this.$v.recomendacion.$touch();
+      if (!this.$v.recomendacion.$invalid) {
+        let recomendaciones = this.recomendacion;
+        this.informe.contenido.recomendaciones.push(recomendaciones);
+        this.recomendaciones = this.informe.contenido.recomendaciones;
+        this.recomendacion = "";
+        this.$v.recomendacion.$reset();
+      }
     },
     eliminarRecomendaciones(recomendacion) {
       this.recomendaciones.forEach(function(car, index, object) {
@@ -729,17 +760,24 @@ export default {
       });
     },
     agregarFirma() {
-      let firmas = {
-        urlfirma: this.urlfirma,
-        nombre: this.firmas.nombre,
-        cargo: this.firmas.cargo,
-      };
-      this.informe.contenido.firmas.push(firmas);
-      this.$refs.myVueDropzone.removeAllFiles();
+      this.$v.firmas.$touch();
+      this.$v.urlfirma.$touch();
 
-      this.urlfirma = "";
-      this.firmas.nombre = "";
-      this.firmas.cargo = "";
+      if (!this.$v.firmas.$invalid && !this.$v.urlfirma.$invalid) {
+        let firmas = {
+          urlfirma: this.urlfirma,
+          nombre: this.firmas.nombre,
+          cargo: this.firmas.cargo,
+        };
+        this.informe.contenido.firmas.push(firmas);
+        this.$refs.myVueDropzone.removeAllFiles();
+
+        this.urlfirma = "";
+        this.firmas.nombre = "";
+        this.firmas.cargo = "";
+        this.$v.firmas.$reset();
+        this.$v.urlfirma.$reset();
+      }
     },
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
@@ -808,6 +846,8 @@ export default {
       if (!this.$v.informe.contenido.iereinsersion.nombre.$dirty) return errors;
       !this.$v.informe.contenido.iereinsersion.nombre.required &&
         errors.push("Debe ingresar el nombre de la Institución Educativa");
+      !this.$v.informe.contenido.iereinsersion.nombre.esParrafo &&
+        errors.push("El nombre de la institucion educativa no debe contener caracteres especiales");
       return errors;
     },
     errorModalidadIE() {
@@ -816,6 +856,8 @@ export default {
         return errors;
       !this.$v.informe.contenido.iereinsersion.modalidad.required &&
         errors.push("Debe ingresar la modalidad");
+      !this.$v.informe.contenido.iereinsersion.modalidad.esTexto &&
+        errors.push("La modalidad de la institucion educativa no debe contener caracteres especiales");
       return errors;
     },
     errorNivelIE() {
@@ -823,6 +865,8 @@ export default {
       if (!this.$v.informe.contenido.iereinsersion.nivel.$dirty) return errors;
       !this.$v.informe.contenido.iereinsersion.nivel.required &&
         errors.push("Debe ingresar el nivel");
+      !this.$v.informe.contenido.iereinsersion.nivel.esParrafo &&
+        errors.push("El nivel de la institucion educativa no debe contener caracteres especiales");
       return errors;
     },
     errorGradoIE() {
@@ -830,6 +874,8 @@ export default {
       if (!this.$v.informe.contenido.iereinsersion.grado.$dirty) return errors;
       !this.$v.informe.contenido.iereinsersion.grado.required &&
         errors.push("Debe ingresar el grado");
+      !this.$v.informe.contenido.iereinsersion.grado.esParrafo &&
+        errors.push("El grado de la institucion educativa no debe contener caracteres especiales");
       return errors;
     },
     errorAntecedentes() {
@@ -837,6 +883,8 @@ export default {
       if (!this.$v.informe.contenido.antecedentes.$dirty) return errors;
       !this.$v.informe.contenido.antecedentes.required &&
         errors.push("Debe ingresar un antecedente");
+      !this.$v.informe.contenido.antecedentes.esParrafo &&
+        errors.push("El antecedente no debe contener caracteres especiales");
       return errors;
     },
     errorSituacionEducativa() {
@@ -844,6 +892,8 @@ export default {
       if (!this.$v.informe.contenido.situacionactual.$dirty) return errors;
       !this.$v.informe.contenido.situacionactual.required &&
         errors.push("Debe ingresar la situación actual");
+      !this.$v.informe.contenido.situacionactual.esParrafo &&
+        errors.push("La situacion actual no debe contener caracteres especiales");
       return errors;
     },
     errorResidente() {
@@ -873,6 +923,52 @@ export default {
 
       return errors;
     },
+    errorLogro() {
+      const errors = [];
+      if (!this.$v.logro.$dirty) return errors;
+      !this.$v.logro.required &&
+        errors.push("Debe registrar el logro obligatoriamente");
+      !this.$v.logro.esParrafo &&
+        errors.push(
+          "El logro no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorRecomendacion() {
+      const errors = [];
+      if (!this.$v.recomendacion.$dirty) return errors;
+      !this.$v.recomendacion.required &&
+        errors.push("Debe registrar la recomendacion obligatoriamente");
+      !this.$v.recomendacion.esParrafo &&
+        errors.push(
+          "La recomendacion no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorNombreFirma() {
+      const errors = [];
+      if (!this.$v.firmas.nombre.$dirty) return errors;
+      !this.$v.firmas.nombre.required &&
+        errors.push("Debe registrar el nombre obligatoriamente");
+      !this.$v.firmas.nombre.esTexto &&
+        errors.push("Debe registrar el nombre correctamente");
+      return errors;
+    },
+    errorCargoFirma() {
+      const errors = [];
+      if (!this.$v.firmas.cargo.$dirty) return errors;
+      !this.$v.firmas.cargo.required &&
+        errors.push("Debe registrar el cargo obligatoriamente");
+      !this.$v.firmas.cargo.esTexto &&
+        errors.push("Debe registrar el cargo correctamente");
+      return errors;
+    },
+    errorUrlFirma() {
+      return this.$v.urlfirma.required == false &&
+        this.$v.urlfirma.$dirty == true
+        ? true
+        : false;
+    },
     show: {
       get() {
         return this.visible;
@@ -899,24 +995,51 @@ export default {
         contenido: {
           antecedentes: {
             required,
+            esParrafo,
           },
           situacionactual: {
             required,
+            esParrafo,
           },
           iereinsersion: {
             nombre: {
               required,
+              esParrafo,
             },
             modalidad: {
               required,
+              esTexto,
             },
             nivel: {
               required,
+              esParrafo,
             },
             grado: {
               required,
+              esParrafo,
             },
           },
+        },
+      },
+      logro: {
+        required,
+        esParrafo,
+      },
+      recomendacion: {
+        required,
+        esParrafo,
+      },
+      urlfirma: {
+        required,
+      },
+      firmas: {
+        nombre: {
+          required,
+          esTexto,
+        },
+        cargo: {
+          required,
+          esTexto,
         },
       },
     };

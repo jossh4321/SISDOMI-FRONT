@@ -120,6 +120,9 @@
                           v-model="prueba"
                           label="Pruebas psicologicas aplicadas"
                           color="#009900"
+                          @input="$v.prueba.$touch()"
+                          @blur="$v.prueba.$touch()"
+                          :error-messages="errorPrueba"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -230,6 +233,9 @@
                           v-model="conclusion"
                           label="Conclusiones"
                           color="#009900"
+                          @input="$v.conclusion.$touch()"
+                          @blur="$v.conclusion.$touch()"
+                          :error-messages="errorConclusion"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -293,6 +299,9 @@
                           v-model="recomendacion"
                           label="Recomendaciones"
                           color="#009900"
+                          @input="$v.recomendacion.$touch()"
+                          @blur="$v.recomendacion.$touch()"
+                          :error-messages="errorRecomendacion"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -454,6 +463,9 @@
                           v-model="firmas.nombre"
                           label="Nombre"
                           color="#009900"
+                          @input="$v.firmas.nombre.$touch()"
+                          @blur="$v.firmas.nombre.$touch()"
+                          :error-messages="errorNombreFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="left">
@@ -461,6 +473,9 @@
                           v-model="firmas.cargo"
                           label="Cargo"
                           color="#009900"
+                          @input="$v.firmas.cargo.$touch()"
+                          @blur="$v.firmas.cargo.$touch()"
+                          :error-messages="errorCargoFirma"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
@@ -490,6 +505,12 @@
                         >
                         </vue-dropzone>
                       </div>
+                      <v-card v-if="errorUrlFirma" color="red">
+                        <v-card-text class="text-center" style="color: white"
+                          >Debe Subir una imagen de la firma
+                          obligatoriamente</v-card-text
+                        >
+                      </v-card>
                     </v-col>
                   </v-row>
                   <v-card
@@ -614,7 +635,12 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
-
+function esTexto(value) {
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+}
+function esParrafo(value) {
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+}
 export default {
   props: ["listaresidentes", "informe", "titulo"],
   components: {
@@ -694,8 +720,8 @@ export default {
     },
     async actualizarInforme() {
       await this.sendPDFFiles();
-      this.$v.$touch();
-      if (this.$v.$invalid) {
+      this.$v.informe.$touch();
+      if (this.$v.informe.$invalid) {
         console.log("hay errores");
         this.mensaje(
           "error",
@@ -734,10 +760,14 @@ export default {
       }
     },
     agregarRecomendaciones() {
-      let recomendaciones = this.recomendacion;
-      this.informe.contenido.recomendaciones.push(recomendaciones);
-      this.recomendaciones = this.informe.contenido.recomendaciones;
-      this.recomendacion = "";
+      this.$v.recomendacion.$touch();
+      if (!this.$v.recomendacion.$invalid) {
+        let recomendaciones = this.recomendacion;
+        this.informe.contenido.recomendaciones.push(recomendaciones);
+        this.recomendaciones = this.informe.contenido.recomendaciones;
+        this.recomendacion = "";
+        this.$v.recomendacion.$reset();
+      }
     },
     eliminarRecomendaciones(recomendacion) {
       this.recomendaciones.forEach(function(car, index, object) {
@@ -747,10 +777,14 @@ export default {
       });
     },
     agregarPrueba() {
-      let pruebas = this.prueba;
-      this.informe.contenido.pruebasaplicadas.push(pruebas);
-      this.pruebas = this.informe.contenido.pruebasaplicadas;
-      this.prueba = "";
+      this.$v.prueba.$touch();
+      if (!this.$v.prueba.$invalid) {
+        let pruebas = this.prueba;
+        this.informe.contenido.pruebasaplicadas.push(pruebas);
+        this.pruebas = this.informe.contenido.pruebasaplicadas;
+        this.prueba = "";
+        this.$v.prueba.$reset();
+      }
     },
     eliminarPrueba(prueba) {
       this.pruebas.forEach(function(car, index, object) {
@@ -760,10 +794,14 @@ export default {
       });
     },
     agregarConclusion() {
-      let conclusiones = this.conclusion;
-      this.informe.contenido.conclusiones.push(conclusiones);
-      this.conclusiones = this.informe.contenido.conclusiones;
-      this.conclusion = "";
+      this.$v.conclusion.$touch();
+      if (!this.$v.conclusion.$invalid) {
+        let conclusiones = this.conclusion;
+        this.informe.contenido.conclusiones.push(conclusiones);
+        this.conclusiones = this.informe.contenido.conclusiones;
+        this.conclusion = "";
+        this.$v.conclusion.$reset();
+      }
     },
     eliminarConclusion(conclusion) {
       this.conclusiones.forEach(function(car, index, object) {
@@ -793,17 +831,24 @@ export default {
       });
     },
     agregarFirma() {
-      let firmas = {
-        urlfirma: this.urlfirma,
-        nombre: this.firmas.nombre,
-        cargo: this.firmas.cargo,
-      };
-      this.informe.contenido.firmas.push(firmas);
-      this.$refs.myVueDropzone.removeAllFiles();
+      this.$v.firmas.$touch();
+      this.$v.urlfirma.$touch();
 
-      this.urlfirma = "";
-      this.firmas.nombre = "";
-      this.firmas.cargo = "";
+      if (!this.$v.firmas.$invalid && !this.$v.urlfirma.$invalid) {
+        let firmas = {
+          urlfirma: this.urlfirma,
+          nombre: this.firmas.nombre,
+          cargo: this.firmas.cargo,
+        };
+        this.informe.contenido.firmas.push(firmas);
+        this.$refs.myVueDropzone.removeAllFiles();
+
+        this.urlfirma = "";
+        this.firmas.nombre = "";
+        this.firmas.cargo = "";
+        this.$v.firmas.$reset();
+        this.$v.urlfirma.$reset();
+      }
     },
     eliminarFirma(index) {
       this.informe.contenido.firmas.splice(index, 1);
@@ -871,7 +916,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(["informes"]),
     verifyColor() {
       return "red";
     },
@@ -880,6 +924,10 @@ export default {
       if (!this.$v.informe.contenido.observacionesgenerales.$dirty) return errors;
       !this.$v.informe.contenido.observacionesgenerales.required &&
         errors.push("Debe ingresar una observación general");
+      !this.$v.informe.contenido.observacionesgenerales.esParrafo &&
+        errors.push(
+          "La observacion general no debe contener caracteres especiales"
+        );
       return errors;
     },
     errorInterpretacion() {
@@ -887,6 +935,10 @@ export default {
       if (!this.$v.informe.contenido.interpretacionresultados.$dirty) return errors;
       !this.$v.informe.contenido.interpretacionresultados.required &&
         errors.push("Debe ingresar una interpretación de resultados");
+      !this.$v.informe.contenido.interpretacionresultados.esParrafo &&
+        errors.push(
+          "La interpretacion de resultados no debe contener caracteres especiales"
+        );
       return errors;
     },
     errorDiagnostico() {
@@ -894,6 +946,10 @@ export default {
       if (!this.$v.informe.contenido.diagnostico.$dirty) return errors;
       !this.$v.informe.contenido.diagnostico.required &&
         errors.push("Debe ingresar un diagnostico psicologico");
+      !this.$v.informe.contenido.diagnostico.esParrafo &&
+        errors.push(
+          "El diagnostico psicologico no debe contener caracteres especiales"
+        );
       return errors;
     },
     errorResidente() {
@@ -913,7 +969,65 @@ export default {
       var maxdate = new Date();
       !(dateselected.getTime() < maxdate.getTime()) &&
         errors.push("La fecha no debe ser mayor a la actual");
+
       return errors;
+    },
+    errorPrueba(){
+      const errors = [];
+      if (!this.$v.prueba.$dirty) return errors;
+      !this.$v.prueba.required &&
+        errors.push("Debe registrar la prueba obligatoriamente");
+      !this.$v.prueba.esParrafo &&
+        errors.push(
+          "La prueba no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorConclusion() {
+      const errors = [];
+      if (!this.$v.conclusion.$dirty) return errors;
+      !this.$v.conclusion.required &&
+        errors.push("Debe registrar la conclusion obligatoriamente");
+      !this.$v.conclusion.esParrafo &&
+        errors.push(
+          "La conclusion no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorRecomendacion() {
+      const errors = [];
+      if (!this.$v.recomendacion.$dirty) return errors;
+      !this.$v.recomendacion.required &&
+        errors.push("Debe registrar la recomendacion obligatoriamente");
+      !this.$v.recomendacion.esParrafo &&
+        errors.push(
+          "La recomendacion no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorNombreFirma() {
+      const errors = [];
+      if (!this.$v.firmas.nombre.$dirty) return errors;
+      !this.$v.firmas.nombre.required &&
+        errors.push("Debe registrar el nombre obligatoriamente");
+      !this.$v.firmas.nombre.esTexto &&
+        errors.push("Debe registrar el nombre correctamente");
+      return errors;
+    },
+    errorCargoFirma() {
+      const errors = [];
+      if (!this.$v.firmas.cargo.$dirty) return errors;
+      !this.$v.firmas.cargo.required &&
+        errors.push("Debe registrar el cargo obligatoriamente");
+      !this.$v.firmas.cargo.esTexto &&
+        errors.push("Debe registrar el cargo correctamente");
+      return errors;
+    },
+    errorUrlFirma() {
+      return this.$v.urlfirma.required == false &&
+        this.$v.urlfirma.$dirty == true
+        ? true
+        : false;
     },
   },
   validations() {
@@ -928,13 +1042,41 @@ export default {
         contenido: {
           observacionesgenerales: {
             required,
+            esParrafo,
           },
           interpretacionresultados: {
             required,
+            esParrafo,
           },
           diagnostico: {
             required,
+            esParrafo,
           },
+        },
+      },
+      recomendacion: {
+        required,
+        esParrafo,
+      },
+      prueba: {
+        required,
+        esParrafo,
+      },
+      conclusion: {
+        required,
+        esParrafo,
+      },
+      urlfirma: {
+        required,
+      },
+      firmas: {
+        nombre: {
+          required,
+          esTexto,
+        },
+        cargo: {
+          required,
+          esTexto,
         },
       },
     };
