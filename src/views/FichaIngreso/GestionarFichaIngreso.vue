@@ -52,7 +52,7 @@
 
                     <v-row>
                       <v-col>
-                        <v-btn block @click="cerrarDialogoRegistroFichaIngreso()" color="primary">
+                        <v-btn block @click="cerrarDialogoSeleccion()" color="primary">
                           <v-icon left>mdi-close-outline</v-icon>
                           <span>Cerrar</span>
                         </v-btn>
@@ -151,17 +151,17 @@
 <script>
 import axios from 'axios';
 import SeleccionarFichaIngreso from '@/components/fichaIngreso/SeleccionarFichaIngreso.vue'
-//import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/ModificarFichaIngresoPsicologica.vue'
 /* 
 import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue'
 import ModificarFichaIngresoSocial  from '@/components/fichaIngreso/ModificarFichaIngresoSocial.vue'
-import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue' */
-//import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
+import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue' 
+import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/ModificarFichaIngresoPsicologica.vue'
+import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
+*/
 import RegistrarFichaIngresoEducativa from '@/components/fichaIngreso/RegistrarFichaIngresoEducativa.vue'
 import RegistrarFichaIngresoPsicologica from '@/components/fichaIngreso/RegistrarFichaIngresoPsicologica.vue'
 import RegistrarFichaIngresoSocial from '@/components/fichaIngreso/Social/RegistrarFichaIngresoSocial.vue'
 import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue'
-// import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/ModificarFichaIngresoPsicologica.vue'
 import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
 import ConsultarFichaIngresoPsicologica from '@/components/fichaIngreso/ConsultarFichaIngresoPsicologica.vue'
 import ConsultarFichaIngresoSocial from '@/components/fichaIngreso/Social/ConsultarFichaIngresoSocial.vue'
@@ -176,7 +176,7 @@ export default {
     return {
       search: "",
       residente: {},
-      selectorFichaIngreso:"RegistrarFichaIngresoEducativa",
+      selectorFichaIngreso:"",
       items: [
             { value: 'RegistrarFichaIngresoSocial', text: 'Ficha de Ingreso Social'},
             { value: 'RegistrarFichaIngresoEducativa', text: 'Ficha de Ingreso Educativa'},
@@ -223,12 +223,16 @@ export default {
    this.dialogoaFISctualizacion=false
    this.dialogoaFIPctualizacion=false
     },
+    cerrarDialogoSeleccion(){
+      this.dialogDialogNuevaFichaIngreso = false;
+      this.selectorFichaIngreso = "";
+    },
     abrirDialogoRegistroFichaIngreso(){
+      this.dialogDialogNuevaFichaIngreso = false;
       this.dialogoRegistroFichaIngreso = true;
-    },cerrarDialogoRegistroFichaIngreso(){  
-      
+    },cerrarDialogoRegistroFichaIngreso(){
       this.dialogoRegistroFichaIngreso = false;
-      console.log("hola desde el padre");
+      this.selectorFichaIngreso = "";
     },
     async obtenerfichasIngresos() {
       await axios
