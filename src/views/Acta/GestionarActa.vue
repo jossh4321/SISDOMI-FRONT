@@ -69,7 +69,7 @@
       <v-dialog persistent
                 v-model="dialogoactualizacion" 
                 max-width="880px">
-        <ActualizarActa v-if="dialogoactualizacion" :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()"></ActualizarActa>
+        <ActualizarActa v-if="dialogoactualizacion" :usuario="usuario"  @close-dialog-update="closeDialogActualizar()"></ActualizarActa>
 
       </v-dialog>
       <!-----><!--Hola -->

@@ -16,40 +16,40 @@
           <div class="container-user">
             <form>
               <v-text-field
-               v-model="usuario.tipo.CreadorDocumento"
-          label="Ingrese el Creador Documento"
+               v-model="usuario.datos.CreadorDocumento"
+          label="Ingrese el tipo"
                 outlined
-                @input="$v.usuario.tipo.nombreusuaria.$touch()"
-                @blur="$v.usuario.tipo.nombreusuaria.$touch()"
-                :error-messages="errorNombreusuaria"
+                @input="$v.usuario.datos.tipo.$touch()"
+                @blur="$v.usuario.datos.tipo.$touch()"
+                :error-messages="errortipo"
                 color="#009900"
               ></v-text-field>
               <v-text-field
-                 v-model="usuario.tipo.fechacreacion"
+                 v-model="usuario.datos.fechacreacion"
           label="Ingrese fecha creacion"
                 outlined
-                @input="$v.usuario.tipo.nombreplan.$touch()"
-                @blur="$v.usuario.tipo.nombreplan.$touch()"
-                :error-messages="errorNombreplan"
+                @input="$v.usuario.datos.fechacreacion.$touch()"
+                @blur="$v.usuario.datos.fechacreacion.$touch()"
+                :error-messages="errorfechacreacion"
                 color="#009900"
               ></v-text-field>
                 <v-text-field
-                v-model="usuario.tipo.area"
+                v-model="usuario.datos.area"
           label="Ingrese el area"
                 outlined
-                @input="$v.usuario.tipo.objetivogeneral.$touch()"
-                @blur="$v.usuario.tipo.objetivogeneral.$touch()"
-                :error-messages="errorObjetivogeneral"
+                @input="$v.usuario.datos.area.$touch()"
+                @blur="$v.usuario.datos.area.$touch()"
+                :error-messages="errorarea"
                 color="#009900"
               ></v-text-field>
             
               <v-text-field
-                v-model="usuario.tipo.fase"
+                v-model="usuario.datos.fase"
           label="Ingrese la fase"
                 outlined
-                @input="$v.usuario.tipo.objetivoespecifico.$touch()"
-                @blur="$v.usuario.tipo.objetivoespecifico.$touch()"
-                :error-messages="errorObjetivoespecifico"
+                 @input="$v.usuario.datos.fase.$touch()"
+                @blur="$v.usuario.datos.fase.$touch()"
+                :error-messages="errorfase"
                 color="#009900"
               ></v-text-field>
             
@@ -78,9 +78,9 @@
                v-model="usuario.idresidente"
           label="Ingrese nuevo idresidente"
                 outlined
-                @input="$v.usuario.nombre_acta.$touch()"
-                @blur="$v.usuario.nombre_acta.$touch()"
-                :error-messages="errorNombre_acta"
+               @input="$v.usuario.idresidente.$touch()"
+                @blur="$v.usuario.idresidente.$touch()"
+                :error-messages="erroridresidente"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
@@ -90,7 +90,7 @@
                  :items="['activo', 'inactivo']"
           label="Ingrese nuevo estado"
                 outlined
-               @input="$v.usuario.estado.$touch()"
+                @input="$v.usuario.estado.$touch()"
                 @blur="$v.usuario.estado.$touch()"
                 :error-messages="errorestado"
                 class="inputTextField"
@@ -110,7 +110,10 @@
               </div>
               <v-card v-if="errorImagen" color="red">
              
-        
+        <v-card-text class="text-center" style="color: white"
+                  >Debe Subir una imagen del Usuario
+                  Obligatoriamente</v-card-text
+                >
               </v-card>
               <v-divider class="divider-custom"></v-divider>
         <v-row>
@@ -142,7 +145,7 @@ import { mapMutations, mapState} from "vuex";
 import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
 export default {
-   props:["usuario","listaroles"],
+   props:["usuario"],
    components: {
     vueDropzone: vue2Dropzone,
   },
@@ -169,7 +172,7 @@ export default {
     ...mapMutations(["setUsuarios","addUsuario","replaceUsuario"]),
     mounteddropzone(){
       var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg" };
-      this.$refs.myVueDropzone.manuallyAddFile(file, this.usuario.tipo.imagen,null,null,true);      
+      this.$refs.myVueDropzone.manuallyAddFile(file, this.usuario.datos.imagen,null,null,true);      
     },
     async actualizarUsuario(){
        this.$v.$touch();
@@ -196,13 +199,13 @@ export default {
       this.$emit("close-dialog-update");
     },
     afterSuccess(file,response){
-       this.usuario.tipo.imagen = file.dataURL.split(",")[1];
-       this.$v.usuario.tipo.imagen.$model = file.dataURL.split(",")[1];
+       this.usuario.datos.imagen = file.dataURL.split(",")[1];
+       this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
        this.imagen ={ tipo: "base64", modificado:"si"};
     },
     afterRemoved(file, error, xhr){
-      this.usuario.tipo.imagen = "";
-       this.$v.usuario.tipo.imagen.$model = "";
+      this.usuario.datos.imagen = "";
+       this.$v.usuario.datos.imagen.$model = "";
     }
     ,async mensaje(icono,titulo,texto,footer){
       await this.$swal({
@@ -227,52 +230,52 @@ export default {
           !this.$v.usuario.usuario.minLength && errors.push('El Nombre de Usuario debe poseer al menos 4 caracteres')
       return errors
     },
-    errorNombre () {
+    errortipo () {
       const errors = []
-      if (!this.$v.usuario.tipo.CreadorDocumento.$dirty) return errors
-          !this.$v.usuario.tipo.CreadorDocumento.required && errors.push('Debe ingresar un Nombre Obligatoriamente')
-          !this.$v.usuario.tipo.CreadorDocumento.minLength && errors.push('El Nombre debe tener al menos 3 caracteres')
+      if (!this.$v.usuario.datos.CreadorDocumento.$dirty) return errors
+          !this.$v.usuario.datos.CreadorDocumento.required && errors.push('Debe ingresar un Nombre Obligatoriamente')
+          !this.$v.usuario.datos.CreadorDocumento.minLength && errors.push('El Nombre debe tener al menos 3 caracteres')
       return errors
     },
-    errorApellido () {
+    errorarea () {
       const errors = []
-      if (!this.$v.usuario.tipo.area.$dirty) return errors
-          !this.$v.usuario.tipo.area.required && errors.push('Debe ingresar un area Obligatoriamente')
-          !this.$v.usuario.tipo.area.minLength && errors.push('El area debe tener al menos 3 caracteres')
+      if (!this.$v.usuario.datos.area.$dirty) return errors
+          !this.$v.usuario.datos.area.required && errors.push('Debe ingresar un area Obligatoriamente')
+          !this.$v.usuario.datos.area.minLength && errors.push('El area debe tener al menos 3 caracteres')
       return errors
     },
-    errorNumeroDocumento () {
+    erroridresidente () {
       const errors = []
-      if (!this.$v.usuario.tipo.idresidente.$dirty) return errors
-          !this.$v.usuario.tipo.idresidente.required && errors.push('Debe ingresar el idresidente Obligatoriamente')
+      if (!this.$v.usuario.datos.idresidente.$dirty) return errors
+          !this.$v.usuario.datos.idresidente.required && errors.push('Debe ingresar el idresidente Obligatoriamente')
           
       return errors
       },
-    errorFechaNacimiento () {
+    errorfechacreacion () {
       const errors = []
-      if (!this.$v.usuario.tipo.fechacreacion.$dirty) return errors
-          !this.$v.usuario.tipo.fechacreacion.required && errors.push('Debe Ingresar una Fecha de Creacion Obligatoriamente')
+      if (!this.$v.usuario.datos.fechacreacion.$dirty) return errors
+          !this.$v.usuario.datos.fechacreacion.required && errors.push('Debe Ingresar una Fecha de Creacion Obligatoriamente')
           //validating whether the user are an adult
-          var dateselected =  new Date(this.usuario.tipo.fechacreacion);
+          var dateselected =  new Date(this.usuario.datos.fechacreacion);
           var maxdate = new Date();
           maxdate.setFullYear(maxdate.getFullYear());
           
       return errors
     },
-     errorEmail () {
+     errorfase () {
       const errors = []
-      if (!this.$v.usuario.tipo.fase.$dirty) return errors
-          !this.$v.usuario.tipo.fase.required && errors.push('Debe ingresar la fase Obligatoriamente')
+      if (!this.$v.usuario.datos.fase.$dirty) return errors
+          !this.$v.usuario.datos.fase.required && errors.push('Debe ingresar la fase Obligatoriamente')
           
       return errors
        
-    },errorEstado(){
+    },errorestado(){
                 const errors = []
       if (!this.$v.usuario.estado.$dirty) return errors
           !this.$v.usuario.estado.required && errors.push('Debe seleccionar un Estado obligatoriamente')
           return errors
     },errorImagen(){
-      return this.$v.usuario.tipo.imagen.required == false && this.$v.usuario.tipo.imagen.$dirty == true ?true:false;
+      return this.$v.usuario.datos.imagen.required == false && this.$v.usuario.datos.imagen.$dirty == true ?true:false;
     }
   },
   validations() {

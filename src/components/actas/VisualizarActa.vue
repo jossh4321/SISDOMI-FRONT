@@ -98,7 +98,7 @@
         
         <v-select
         v-model="usuario.estado"
-          :items="['activo', 'inactivo']"
+          :items="['creado', 'modificado']"
           label="Ingrese el Estado"
           dense
           outlined
