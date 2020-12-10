@@ -17,7 +17,7 @@
             <form>
               <v-text-field
                 v-model="usuario.datos.CreadorDocumento"
-          label="Ingrese el Creador Documento"
+          label="Ingrese el tipo"
                 outlined
                 @input="$v.usuario.datos.CreadorDocumento.$touch()"
                 @blur="$v.usuario.datos.CreadorDocumento.$touch()"

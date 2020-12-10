@@ -26,15 +26,15 @@
         <div class="container-user">
       <form>
         <v-text-field
-           v-model="usuario.tipo.CreadorDocumento"
-          label="Ingrese el Creador Documento"
+           v-model="usuario.tipo"
+          label="Ingrese el tipo"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-text-field
-          v-model="usuario.tipo.fechacreacion"
-          label="Ingrese fecha creacion"
+          v-model="usuario.fechacreacion"
+          label="Ingrese fechacreacion"
           outlined
           readonly
           color="#009900"
@@ -42,20 +42,24 @@
                       
        
         <v-text-field
-           v-model="usuario.tipo.area"
+          v-model="usuario.area"
           label="Ingrese el area"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
-
-         <v-text-field
-           v-model="usuario.tipo.fase"
+        <v-textarea
+          v-model="usuario.fase"
           label="Ingrese la fase"
+          auto-grow
           outlined
+          rows="2"
+          row-height="25"
           readonly
           color="#009900"
-        ></v-text-field>
+          shaped
+        ></v-textarea>
+      
         
        
         <v-row>
@@ -80,7 +84,7 @@
       <form>
         <v-text-field
           v-model="usuario.residente"
-          label="Ingrese nuevo idresidente"
+          label="Ingrese el nombre de residente"
           outlined
           readonly
           class="inputTextField"
@@ -88,6 +92,8 @@
         ></v-text-field>
         
         
+          
+      
            
         
         <v-select
@@ -99,23 +105,8 @@
           readonly
           color="#009900"
         ></v-select>
-          <v-card style="margin:5px; padding:5px;border:1px solid #b3b3b3;">
-            <v-row>
-              <v-col >
-                <v-card-subtitle>Imagen del Perfil de {{usuario.datos.nombre}}</v-card-subtitle>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col
-              >
-                <v-img style="display:block"
-                      height="170"
-                    width="170"
-                      :src="usuario.datos.imagen"
-                    ></v-img>
-              </v-col>
-            </v-row>
-          </v-card>
+        
+       
           <v-divider class="divider-custom"></v-divider>
         <v-row>
         <v-col>
@@ -137,7 +128,7 @@ import axios from 'axios';
 import { mapMutations, mapState} from "vuex";
 import moment from 'moment'
 export default {
-    name:"visualizarActa",
+    name:"VisualizarActa",
    props:["usuario"],
    components: {
   },

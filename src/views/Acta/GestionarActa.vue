@@ -157,8 +157,8 @@ export default {
         this.dialogoactualizacion = !this.dialogoactualizacion;
     },
     // Abre
-    async abrirDialogoDetalle(idusuario){
-        this.usuario = await this.loadUsuarioDetalle(idusuario); //Pide
+    async abrirDialogoDetalle(usuario){
+        this.usuario = await this.loadUsuarioDetalle(usuario); //Pide
         this.dialogodetalle = !this.dialogodetalle;
     },
     async loadUsuarioModificacion(idusuario){
@@ -171,12 +171,12 @@ export default {
       })
       .catch(err => console.log(err));
       return user;
-    },async loadUsuarioDetalle(idusuario){
+    },async loadUsuarioDetalle(usuario){
       var user = {};
-      await axios.get("/usuario/rol/permiso?id="+idusuario)
+      await axios.get("/actaexternamiento/id?id="+usuario)
       .then(res => {
          user = res.data; // devuelve
-         user.datos.fechacreacion = res.data.datos
+         user.datos.fechacreacion = res.data.tipo
                   .fechacreacion.split("T")[0];
       })
       .catch(err => console.log(err));
