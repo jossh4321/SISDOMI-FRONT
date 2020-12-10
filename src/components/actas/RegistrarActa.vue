@@ -17,11 +17,11 @@
             <form>
               <v-text-field
                 v-model="usuario.datos.CreadorDocumento"
-          label="Ingrese el Creador Documento"
+          label="Ingrese el tipo"
                 outlined
-                @input="$v.usuario.datos.CreadorDocumento.$touch()"
-                @blur="$v.usuario.datos.CreadorDocumento.$touch()"
-                :error-messages="errorCreadorDocumento"
+                @input="$v.usuario.datos.tipo.$touch()"
+                @blur="$v.usuario.datos.tipo.$touch()"
+                :error-messages="errortipo"
                 color="#009900"
               ></v-text-field>
               <v-text-field
@@ -85,16 +85,17 @@
                 color="#009900"
               ></v-text-field>
 
-                <v-text-field
+                <v-select
                 v-model="usuario.estado"
-          label="Ingrese nuevo estado"
+          :items="['activo', 'inactivo']"
+           label="Ingrese el Estado"
                 outlined
-                @input="$v.usuario.estado.$touch()"
+                 @input="$v.usuario.estado.$touch()"
                 @blur="$v.usuario.estado.$touch()"
-                :error-messages="estado"
+                :error-messages="errorestado"
                 class="inputTextField"
                 color="#009900"
-              ></v-text-field>
+              ></v-select>
 
                 
               <div>
@@ -268,28 +269,28 @@ export default {
 
       return errors;
     },
-    errorNombre () {
+    errortipo () {
       const errors = []
       if (!this.$v.usuario.datos.CreadorDocumento.$dirty) return errors
           !this.$v.usuario.datos.CreadorDocumento.required && errors.push('Debe ingresar un Nombre Obligatoriamente')
           !this.$v.usuario.datos.CreadorDocumento.minLength && errors.push('El Nombre debe tener al menos 3 caracteres')
       return errors
     },
-    errorApellido () {
+    errorarea () {
       const errors = []
       if (!this.$v.usuario.datos.area.$dirty) return errors
           !this.$v.usuario.datos.area.required && errors.push('Debe ingresar un area Obligatoriamente')
           !this.$v.usuario.datos.area.minLength && errors.push('El area debe tener al menos 3 caracteres')
       return errors
     },
-    errorNumeroDocumento () {
+    erroridresidente () {
       const errors = []
       if (!this.$v.usuario.datos.idresidente.$dirty) return errors
           !this.$v.usuario.datos.idresidente.required && errors.push('Debe ingresar el idresidente Obligatoriamente')
           
       return errors
       },
-    errorFechaNacimiento () {
+    errorfechacreacion () {
       const errors = []
       if (!this.$v.usuario.datos.fechacreacion.$dirty) return errors
           !this.$v.usuario.datos.fechacreacion.required && errors.push('Debe Ingresar una Fecha de Creacion Obligatoriamente')
@@ -300,14 +301,14 @@ export default {
           
       return errors
     },
-     errorEmail () {
+     errorfase () {
       const errors = []
       if (!this.$v.usuario.datos.fase.$dirty) return errors
           !this.$v.usuario.datos.fase.required && errors.push('Debe ingresar la fase Obligatoriamente')
           
       return errors
        
-    },errorEstado(){
+    },errorestado(){
                 const errors = []
       if (!this.$v.usuario.estado.$dirty) return errors
           !this.$v.usuario.estado.required && errors.push('Debe seleccionar un Estado obligatoriamente')

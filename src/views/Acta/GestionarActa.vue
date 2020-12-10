@@ -36,7 +36,7 @@
                 >  <v-icon left>mdi-account-multiple-plus-outline</v-icon> <span>Registrar Acta</span>
                  </v-btn>       
                    </template>
-                <RegistrarActa :listaroles="listaroles"  @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
+                <RegistrarActa   @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -121,12 +121,12 @@ export default {
       dialogoregistro: false,
       dialogoactualizacion: false,
       dialogodetalle:false,
-      listaroles:[]
+      
     };
   },
   async created(){
       this.obtenerUsuarios();
-      this.obtenerRoles();
+      
   },
   methods: {
     ...mapMutations(["setUsuarios","replaceUsuario"]),
@@ -157,8 +157,8 @@ export default {
         this.dialogoactualizacion = !this.dialogoactualizacion;
     },
     // Abre
-    async abrirDialogoDetalle(idusuario){
-        this.usuario = await this.loadUsuarioDetalle(idusuario); //Pide
+    async abrirDialogoDetalle(usuario){
+        this.usuario = await this.loadUsuarioDetalle(usuario); //Pide
         this.dialogodetalle = !this.dialogodetalle;
     },
     async loadUsuarioModificacion(idusuario){
@@ -171,23 +171,18 @@ export default {
       })
       .catch(err => console.log(err));
       return user;
-    },async loadUsuarioDetalle(idusuario){
+    },async loadUsuarioDetalle(usuario){
       var user = {};
-      await axios.get("/actaexternamiento/id?id="+idusuario)
+      await axios.get("/actaexternamiento/id?id="+usuario)
       .then(res => {
          user = res.data; // devuelve
-         user.datos.fechanacimiento = res.data.datos
-                  .fechanacimiento.split("T")[0];
+         user.datos.fechacreacion = res.data.tipo
+                  .fechacreacion.split("T")[0];
       })
       .catch(err => console.log(err));
       console.log(user);
       return user;
-    },async obtenerRoles(){
-          await axios.get("/usuario/sistema/rol")
-                  .then( x => {
-                            this.listaroles = x.data;
-                            console.log(this.listaroles);
-                  }).catch(err => console.log(err));
+    
     }, async obtenerUsuarios(){
            await axios.get("/actaexternamiento/all") ////////OBTENER ACTA EXTERNAMIENTO
             .then(res => {
