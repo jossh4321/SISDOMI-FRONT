@@ -87,7 +87,7 @@
 
                 <v-select
                 v-model="usuario.estado"
-          :items="['activo', 'inactivo']"
+          :items="['creado', 'modificado']"
            label="Ingrese el Estado"
                 outlined
                  @input="$v.usuario.estado.$touch()"
@@ -147,7 +147,7 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 export default {
-  props: ["listaroles"],
+  props: ["actaexternamiento"],
   components: {
     vueDropzone: vue2Dropzone,
   },

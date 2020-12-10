@@ -16,7 +16,7 @@
           <div class="container-user">
             <form>
               <v-text-field
-               v-model="usuario.datos.CreadorDocumento"
+               v-model="usuario.datos.tipo"
           label="Ingrese el tipo"
                 outlined
                 @input="$v.usuario.datos.tipo.$touch()"
@@ -87,7 +87,7 @@
 
                     <v-select
                 v-model="usuario.estado"
-                 :items="['activo', 'inactivo']"
+                 :items="['creado', 'modificado']"
           label="Ingrese nuevo estado"
                 outlined
                 @input="$v.usuario.estado.$touch()"
@@ -120,7 +120,7 @@
           <v-col>
               <v-btn block @click="actualizarUsuario()" color="warning">
               <v-icon left>mdi-content-save-all-outline</v-icon>
-              <span >Actualizar Usuario</span>
+              <span >Actualizar Acta</span>
             </v-btn>
           </v-col>
         <v-col>
@@ -232,9 +232,9 @@ export default {
     },
     errortipo () {
       const errors = []
-      if (!this.$v.usuario.datos.CreadorDocumento.$dirty) return errors
-          !this.$v.usuario.datos.CreadorDocumento.required && errors.push('Debe ingresar un Nombre Obligatoriamente')
-          !this.$v.usuario.datos.CreadorDocumento.minLength && errors.push('El Nombre debe tener al menos 3 caracteres')
+      if (!this.$v.usuario.datos.tipo.$dirty) return errors
+          !this.$v.usuario.datos.tipo.required && errors.push('Debe ingresar un Nombre Obligatoriamente')
+          !this.$v.usuario.datos.tipo.minLength && errors.push('El Nombre debe tener al menos 3 caracteres')
       return errors
     },
     errorarea () {
@@ -284,12 +284,11 @@ export default {
           usuario:{
             required,
             minLength: minLength(4)
-          },rol:{
-            required
+          
           },estado:{
             required
           },datos:{
-              CreadorDocumento:{
+              tipo:{
                 required,
                 minLength: minLength(3)
               },

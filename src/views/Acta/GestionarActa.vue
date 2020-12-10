@@ -152,8 +152,8 @@ export default {
       console.log(item);
     },
     //llamando al API para obtener los datos de un usuario especifico
-    async abrirDialogoActualizar(idusuario){
-        this.usuario = await this.loadUsuarioModificacion(idusuario);
+    async abrirDialogoActualizar(id){
+        this.usuario = await this.loadUsuarioModificacion(id);
         this.dialogoactualizacion = !this.dialogoactualizacion;
     },
     // Abre
@@ -161,9 +161,9 @@ export default {
         this.usuario = await this.loadUsuarioDetalle(usuario); //Pide
         this.dialogodetalle = !this.dialogodetalle;
     },
-    async loadUsuarioModificacion(idusuario){
+    async loadUsuarioModificacion(id){
       var user = {};
-      await axios.get("/usuario/id?id="+idusuario)
+      await axios.get("/usuario/id?id="+id)
       .then(res => {
          user = res.data; 
          user.datos.fechanacimiento = res.data.datos
