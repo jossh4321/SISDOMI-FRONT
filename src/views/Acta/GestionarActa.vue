@@ -157,13 +157,13 @@ export default {
         this.dialogoactualizacion = !this.dialogoactualizacion;
     },
     // Abre
-    async abrirDialogoDetalle(usuario){
-        this.usuario = await this.loadUsuarioDetalle(usuario); //Pide
+    async abrirDialogoDetalle(id){
+        this.usuario = await this.loadUsuarioDetalle(id); //Pide
         this.dialogodetalle = !this.dialogodetalle;
     },
     async loadUsuarioModificacion(id){
       var user = {};
-      await axios.get("/usuario/id?id="+id)
+      await axios.get("/actaexternamiento/id?id="+id)
       .then(res => {
          user = res.data; 
          user.datos.fechanacimiento = res.data.datos
@@ -171,9 +171,9 @@ export default {
       })
       .catch(err => console.log(err));
       return user;
-    },async loadUsuarioDetalle(usuario){
+    },async loadUsuarioDetalle(id){
       var user = {};
-      await axios.get("/actaexternamiento/id?id="+usuario)
+      await axios.get("/actaexternamiento/id?id="+id)
       .then(res => {
          user = res.data; // devuelve
          user.datos.fechacreacion = res.data.tipo

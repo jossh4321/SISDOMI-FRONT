@@ -272,7 +272,7 @@ export default {
     errortipo () {
       const errors = []
       if (!this.$v.usuario.datos.CreadorDocumento.$dirty) return errors
-          !this.$v.usuario.datos.CreadorDocumento.required && errors.push('Debe ingresar un Nombre Obligatoriamente')
+          !this.$v.usuario.datos.CreadorDocumento.required && errors.push('Debe ingresar el tipo Obligatoriamente')
           !this.$v.usuario.datos.CreadorDocumento.minLength && errors.push('El Nombre debe tener al menos 3 caracteres')
       return errors
     },
@@ -295,7 +295,7 @@ export default {
       if (!this.$v.usuario.datos.fechacreacion.$dirty) return errors
           !this.$v.usuario.datos.fechacreacion.required && errors.push('Debe Ingresar una Fecha de Creacion Obligatoriamente')
           //validating whether the user are an adult
-          var dateselected =  new Date(this.usuario.datos.fechacreacion);
+          var dateselected =  new Date(this.usuario.fechacreacion);
           var maxdate = new Date();
           maxdate.setFullYear(maxdate.getFullYear());
           
