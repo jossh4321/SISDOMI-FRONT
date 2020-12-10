@@ -89,6 +89,8 @@
       <!--Dialogo de Registro de Fichas de Ingreso-->
       <v-dialog v-model="dialogoRegistroFichaIngreso" persistent > 
         <v-component :is="selectorFichaIngreso" 
+        :listaresidentes="listaresidentes"
+        :listaeducadores="listaeducadores"
         @cerrar-modal-registro-ficha-ingreso="cerrarDialogoRegistroFichaIngreso">
         </v-component>
       </v-dialog>
@@ -193,7 +195,6 @@ export default {
       listaresidentes: [],
       listaeducadores: [],
       dialogoRegistroFichaIngreso:false
-
     };
   },
   async created() {
@@ -215,7 +216,9 @@ export default {
    this.dialogoaFISctualizacion=false
    this.dialogoaFIPctualizacion=false
     },
-    abrirDialogoRegistroFichaIngreso(){
+    async abrirDialogoRegistroFichaIngreso(){
+      await this.obtenerResidentes();
+      await this.obtenerEducadores();
       this.dialogoRegistroFichaIngreso = true;
     },cerrarDialogoRegistroFichaIngreso(){  
       
