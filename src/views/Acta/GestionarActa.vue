@@ -36,7 +36,7 @@
                 >  <v-icon left>mdi-account-multiple-plus-outline</v-icon> <span>Registrar Acta</span>
                  </v-btn>       
                    </template>
-                <RegistrarUsuario :listaroles="listaroles"  @close-dialog-save="closeDialogRegistrar()"></RegistrarUsuario>
+                <RegistrarActa :listaroles="listaroles"  @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -69,7 +69,7 @@
       <v-dialog persistent
                 v-model="dialogoactualizacion" 
                 max-width="880px">
-        <ActualizarUsuario v-if="dialogoactualizacion" :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()"></ActualizarUsuario>
+        <ActualizarActa v-if="dialogoactualizacion" :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()"></ActualizarActa>
 
       </v-dialog>
       <!-----><!--Hola -->
@@ -77,7 +77,7 @@
       <v-dialog persistent
                 v-model="dialogodetalle" 
                 max-width="880px">
-          <ConsultarUsuario :usuario="usuario" @close-dialog-detail="closeDialogDetalle()"></ConsultarUsuario>
+          <ConsultarActa :usuario="usuario" @close-dialog-detail="closeDialogDetalle()"></ConsultarActa>
       </v-dialog>
       <!----->
     </v-card>
@@ -86,14 +86,14 @@
 <script>
 import axios from 'axios';
 //import { mdiCardAccountDetailsStarOutline } from '../../../node_modules/@mdi/font';
-import RegistrarUsuario from '@/components/actas/RegistrarActa.vue'
-import ActualizarUsuario from '@/components/actas/ActualizarActa.vue'
-import ConsultarUsuario from  '@/components/actas/VisualizarActa.vue'
+import RegistrarActa from '@/components/actas/RegistrarActa.vue'
+import ActualizarActa from '@/components/actas/ActualizarActa.vue'
+import ConsultarActa from  '@/components/actas/VisualizarActa.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarActaI",
   components: {
-    RegistrarUsuario,ActualizarUsuario, ConsultarUsuario
+    RegistrarActa,ActualizarActa, ConsultarActa
   },
   data() {
     return {
