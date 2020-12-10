@@ -103,17 +103,17 @@ export default {
       //lsita de cabeceras de la data table
       headers: [
         {
-          text: "Creador Documento",
+          text: "Tipo",
           align: "start",
           sortable: false,
-          value: "usuario",
+          value: "tipo",
         },
      
-      { text: "fechacreacion", value: "datos.fechacreacion" },
-      { text: "area", value: "datos.area" },
-      { text: "fase", value: "datos.fase" },
-      { text: "idresidente", value: "datos.idresidente" },
-      { text: "estado", value: "datos.estado" },
+      { text: "fechacreacion", value: "fechacreacion" },
+      { text: "area", value: "area" },
+      { text: "fase", value: "fase" },
+      { text: "residente", value: "residente" },
+      { text: "estado", value: "estado" },
  
         
         { text: "Actions", value: "actions", sortable: false },
@@ -189,9 +189,9 @@ export default {
                             console.log(this.listaroles);
                   }).catch(err => console.log(err));
     }, async obtenerUsuarios(){
-           await axios.get("/usuario/all")
+           await axios.get("/actaexternamiento/all") ////////OBTENER ACTA EXTERNAMIENTO
             .then(res => {
-                    this.setUsuarios(res.data);
+                   this.setUsuarios(res.data);
             }).catch(err => console.log(err));
     }, async cambiarEstadoUsuario(usuario){
        await this.$swal({
