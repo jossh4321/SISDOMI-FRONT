@@ -33,14 +33,10 @@
                   class="mb-2"
                   v-bind="attrs"
                   v-on="on"
-                >
-                <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar Acta</span>
-                </v-btn>
-              </template>
-                <RegistrarUsuario
-                  :listaroles="listaroles"
-                  @close-dialog-save="closeDialogRegistrar()"></RegistrarUsuario>
+                >  <v-icon left>mdi-account-multiple-plus-outline</v-icon> <span>Registrar Acta</span>
+                 </v-btn>       
+                   </template>
+                <RegistrarActa   @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -73,10 +69,7 @@
       <v-dialog persistent
                 v-model="dialogoactualizacion" 
                 max-width="880px">
-        <ActualizarUsuario
-        v-if="dialogoactualizacion" 
-        :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()">
-        </ActualizarUsuario>
+        <ActualizarActa v-if="dialogoactualizacion" :usuario="usuario"  @close-dialog-update="closeDialogActualizar()"></ActualizarActa>
 
       </v-dialog>
       <!-----><!--Hola -->
@@ -84,8 +77,7 @@
       <v-dialog persistent
                 v-model="dialogodetalle" 
                 max-width="880px">
-          <ConsultarUsuario :usuario="usuario" @close-dialog-detail="closeDialogDetalle()">
-          </ConsultarUsuario>
+          <ConsultarActa :usuario="usuario" @close-dialog-detail="closeDialogDetalle()"></ConsultarActa>
       </v-dialog>
       <!----->
     </v-card>
@@ -94,14 +86,14 @@
 <script>
 import axios from 'axios';
 //import { mdiCardAccountDetailsStarOutline } from '../../../node_modules/@mdi/font';
-import RegistrarUsuario from '@/components/actas/RegistrarActa.vue'
-import ActualizarUsuario from '@/components/actas/ActualizarActa.vue'
-import ConsultarUsuario from  '@/components/actas/VisualizarActa.vue'
+import RegistrarActa from '@/components/actas/RegistrarActa.vue'
+import ActualizarActa from '@/components/actas/ActualizarActa.vue'
+import ConsultarActa from  '@/components/actas/VisualizarActa.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarActaI",
   components: {
-    RegistrarUsuario,ActualizarUsuario, ConsultarUsuario
+    RegistrarActa,ActualizarActa, ConsultarActa
   },
   data() {
     return {
@@ -111,26 +103,30 @@ export default {
       //lsita de cabeceras de la data table
       headers: [
         {
-          text: "Nombre Acta Externamiento",
+          text: "Tipo",
           align: "start",
           sortable: false,
-          value: "usuario",
+          value: "tipo",
         },
-        { text: "Tipo Doc.", value:"datos.tipodocumento"},
-        { text: "Nro. Doc", value: "datos.numerodocumento" },
-      
+     
+      { text: "fechacreacion", value: "fechacreacion" },
+      { text: "area", value: "area" },
+      { text: "fase", value: "fase" },
+      { text: "residente", value: "residente" },
+      { text: "estado", value: "estado" },
+ 
         
         { text: "Actions", value: "actions", sortable: false },
       ],
       dialogoregistro: false,
       dialogoactualizacion: false,
       dialogodetalle:false,
-      listaroles:[]
+      
     };
   },
   async created(){
       this.obtenerUsuarios();
-      this.obtenerRoles();
+      
   },
   methods: {
     ...mapMutations(["setUsuarios","replaceUsuario"]),
@@ -156,18 +152,18 @@ export default {
       console.log(item);
     },
     //llamando al API para obtener los datos de un usuario especifico
-    async abrirDialogoActualizar(idusuario){
-        this.usuario = await this.loadUsuarioModificacion(idusuario);
+    async abrirDialogoActualizar(id){
+        this.usuario = await this.loadUsuarioModificacion(id);
         this.dialogoactualizacion = !this.dialogoactualizacion;
     },
     // Abre
-    async abrirDialogoDetalle(idusuario){
-        this.usuario = await this.loadUsuarioDetalle(idusuario); //Pide
+    async abrirDialogoDetalle(id){
+        this.usuario = await this.loadUsuarioDetalle(id); //Pide
         this.dialogodetalle = !this.dialogodetalle;
     },
-    async loadUsuarioModificacion(idusuario){
+    async loadUsuarioModificacion(id){
       var user = {};
-      await axios.get("/usuario/id?id="+idusuario)
+      await axios.get("/actaexternamiento/id?id="+id)
       .then(res => {
          user = res.data; 
          user.datos.fechanacimiento = res.data.datos
@@ -175,27 +171,22 @@ export default {
       })
       .catch(err => console.log(err));
       return user;
-    },async loadUsuarioDetalle(idusuario){
+    },async loadUsuarioDetalle(id){
       var user = {};
-      await axios.get("/usuario/rol/permiso?id="+idusuario)
+      await axios.get("/actaexternamiento/id?id="+id)
       .then(res => {
          user = res.data; // devuelve
-         user.datos.fechanacimiento = res.data.datos
-                  .fechanacimiento.split("T")[0];
+         user.datos.fechacreacion = res.data.tipo
+                  .fechacreacion.split("T")[0];
       })
       .catch(err => console.log(err));
       console.log(user);
       return user;
-    },async obtenerRoles(){
-          await axios.get("/usuario/sistema/rol")
-                  .then( x => {
-                            this.listaroles = x.data;
-                            console.log(this.listaroles);
-                  }).catch(err => console.log(err));
+    
     }, async obtenerUsuarios(){
-           await axios.get("/usuario/all")
+           await axios.get("/actaexternamiento/all") ////////OBTENER ACTA EXTERNAMIENTO
             .then(res => {
-                    this.setUsuarios(res.data);
+                   this.setUsuarios(res.data);
             }).catch(err => console.log(err));
     }, async cambiarEstadoUsuario(usuario){
        await this.$swal({

@@ -26,15 +26,15 @@
         <div class="container-user">
       <form>
         <v-text-field
-           v-model="usuario.datos.nombre"
-          label="Ingrese los Nombres"
+           v-model="usuario.tipo"
+          label="Ingrese el tipo"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-text-field
-          v-model="usuario.datos.apellido"
-          label="Ingrese los Apellidos"
+          v-model="usuario.fechacreacion"
+          label="Ingrese fechacreacion"
           outlined
           readonly
           color="#009900"
@@ -42,15 +42,15 @@
                       
        
         <v-text-field
-          v-model="usuario.datos.numerodocumento"
-          label="Ingrese el Numero de Documento"
+          v-model="usuario.area"
+          label="Ingrese el area"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-textarea
-          v-model="usuario.datos.direccion"
-          label="Ingrese el la direccion"
+          v-model="usuario.fase"
+          label="Ingrese la fase"
           auto-grow
           outlined
           rows="2"
@@ -59,13 +59,9 @@
           color="#009900"
           shaped
         ></v-textarea>
-        <v-text-field
-          v-model="usuario.datos.email"
-          label="Ingrese el Correo Electronico"
-          outlined
-          readonly
-          color="#009900"
-        ></v-text-field>
+      
+        
+       
         <v-row>
           <v-col>
             <v-btn block @click="step = 2" color="success">
@@ -87,8 +83,8 @@
         <div  class="container-user">
       <form>
         <v-text-field
-          v-model="usuario.usuario"
-          label="Ingrese el nombre de Usuario"
+          v-model="usuario.residente"
+          label="Ingrese el nombre de residente"
           outlined
           readonly
           class="inputTextField"
@@ -98,42 +94,19 @@
         
           
       
-        <v-text-field
-          v-model="usuario.rol.descripcion"
-          label="Descripcion del Rol"
-          outlined
-          readonly
-          class="inputTextField"
-          color="#009900"
-        ></v-text-field>
            
         
         <v-select
         v-model="usuario.estado"
-          :items="['activo', 'inactivo']"
+          :items="['creado', 'modificado']"
           label="Ingrese el Estado"
           dense
           outlined
           readonly
           color="#009900"
         ></v-select>
-          <v-card style="margin:5px; padding:5px;border:1px solid #b3b3b3;">
-            <v-row>
-              <v-col >
-                <v-card-subtitle>Imagen del Perfil de {{usuario.datos.nombre}}</v-card-subtitle>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col
-              >
-                <v-img style="display:block"
-                      height="170"
-                    width="170"
-                      :src="usuario.datos.imagen"
-                    ></v-img>
-              </v-col>
-            </v-row>
-          </v-card>
+        
+       
           <v-divider class="divider-custom"></v-divider>
         <v-row>
         <v-col>
@@ -155,8 +128,8 @@ import axios from 'axios';
 import { mapMutations, mapState} from "vuex";
 import moment from 'moment'
 export default {
-    name:"DetalleUsuario",
-   props:["usuario","listaroles"],
+    name:"VisualizarActa",
+   props:["usuario"],
    components: {
   },
   data() {
