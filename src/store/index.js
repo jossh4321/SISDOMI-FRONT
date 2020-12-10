@@ -23,7 +23,8 @@ export default new Vuex.Store({
         fichaingreso: [],
         seguimientoEducativo: [],
         sesionesEducativas: [],
-        incidencias:[]
+        incidencias:[],
+        fichaEvaluacionEduativa:[],
     },
     mutations: {
         toggleDrawer(state) {
@@ -101,6 +102,15 @@ export default new Vuex.Store({
         },replaceIncidencia(state, value) {
             var index = state.incidencias.findIndex(x => x.id == value.id);
             state.incidencias.splice(index, 1, value);
+        },
+        // Ficha Evaluacion Diagnostico Eductiva
+        setEvaluacion(state,value){
+            state.fichaEvaluacionEduativa=value;
+        },addEvaluacion(state,value){
+        state.fichaEvaluacionEduativa.push(value);
+        },replaceEvaluacion(state, value) {
+        var index = state.fichaEvaluacionEduativa.findIndex(x => x.id == value.id);
+         state.fichaEvaluacionEduativa.splice(index, 1, value);
         },
     },
     modules: {
