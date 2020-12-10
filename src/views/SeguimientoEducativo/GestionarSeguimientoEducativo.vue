@@ -31,7 +31,7 @@
                   v-on="on"
                 >
                   <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar Sesion  Educativo</span>
+                  <span>Registrar Seguimiento  Educativo</span>
                 </v-btn>
               </template>
              <RegistrarSeguimientoEducativo
