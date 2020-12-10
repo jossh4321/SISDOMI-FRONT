@@ -26,15 +26,15 @@
         <div class="container-user">
       <form>
         <v-text-field
-           v-model="usuario.datos.nombre"
-          label="Ingrese los Nombres"
+           v-model="usuario.datos.CreadorDocumento"
+          label="Ingrese el Creador Documento"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-text-field
-          v-model="usuario.datos.apellido"
-          label="Ingrese los Apellidos"
+          v-model="usuario.datos.fechacreacion"
+          label="Ingrese fecha creacion"
           outlined
           readonly
           color="#009900"
@@ -42,30 +42,22 @@
                       
        
         <v-text-field
-          v-model="usuario.datos.numerodocumento"
-          label="Ingrese el Numero de Documento"
+           v-model="usuario.datos.area"
+          label="Ingrese el area"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
-        <v-textarea
-          v-model="usuario.datos.direccion"
-          label="Ingrese el la direccion"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          readonly
-          color="#009900"
-          shaped
-        ></v-textarea>
-        <v-text-field
-          v-model="usuario.datos.email"
-          label="Ingrese el Correo Electronico"
+
+         <v-text-field
+           v-model="usuario.datos.fase"
+          label="Ingrese la fase"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
+        
+       
         <v-row>
           <v-col>
             <v-btn block @click="step = 2" color="success">
@@ -87,8 +79,8 @@
         <div  class="container-user">
       <form>
         <v-text-field
-          v-model="usuario.usuario"
-          label="Ingrese el nombre de Usuario"
+          v-model="usuario.idresidente"
+          label="Ingrese nuevo idresidente"
           outlined
           readonly
           class="inputTextField"
@@ -96,16 +88,6 @@
         ></v-text-field>
         
         
-          
-      
-        <v-text-field
-          v-model="usuario.rol.descripcion"
-          label="Descripcion del Rol"
-          outlined
-          readonly
-          class="inputTextField"
-          color="#009900"
-        ></v-text-field>
            
         
         <v-select

@@ -106,14 +106,14 @@ export default {
           text: "Creador Documento",
           align: "start",
           sortable: false,
-          value: "usuario",
+          value: "actaExternamiento",
         },
      
-      { text: "fechacreacion", value: "datos.fechacreacion" },
-      { text: "area", value: "datos.area" },
-      { text: "fase", value: "datos.fase" },
-      { text: "idresidente", value: "datos.idresidente" },
-      { text: "estado", value: "datos.estado" },
+      { text: "fechacreacion", value: "actaExternamiento.fechacreacion" },
+      { text: "area", value: "actaExternamiento.area" },
+      { text: "fase", value: "actaExternamiento.fase" },
+      { text: "idresidente", value: "actaExternamiento.idresidente" },
+      { text: "estado", value: "actaExternamiento.estado" },
  
         
         { text: "Actions", value: "actions", sortable: false },
@@ -176,8 +176,8 @@ export default {
       await axios.get("/usuario/rol/permiso?id="+idusuario)
       .then(res => {
          user = res.data; // devuelve
-         user.datos.fechanacimiento = res.data.datos
-                  .fechanacimiento.split("T")[0];
+         user.datos.fechacreacion = res.data.datos
+                  .fechacreacion.split("T")[0];
       })
       .catch(err => console.log(err));
       console.log(user);

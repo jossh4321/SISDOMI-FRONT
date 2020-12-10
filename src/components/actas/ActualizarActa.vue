@@ -85,16 +85,17 @@
                 color="#009900"
               ></v-text-field>
 
-                <v-text-field
+                    <v-select
                 v-model="usuario.estado"
+                 :items="['activo', 'inactivo']"
           label="Ingrese nuevo estado"
                 outlined
-                @input="$v.usuario.actividades_estrategias.$touch()"
-                @blur="$v.usuario.actividades_estrategias.$touch()"
-                :error-messages="errorActividades_estrategias"
+               @input="$v.usuario.estado.$touch()"
+                @blur="$v.usuario.estado.$touch()"
+                :error-messages="errorestado"
                 class="inputTextField"
                 color="#009900"
-              ></v-text-field>
+            ></v-select>
 
 
               <div>
@@ -145,7 +146,7 @@ export default {
    components: {
     vueDropzone: vue2Dropzone,
   },
-  data() {
+  datos() {
     return {
       datemenu: false,
       step:1,

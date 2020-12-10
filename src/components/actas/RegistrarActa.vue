@@ -85,16 +85,17 @@
                 color="#009900"
               ></v-text-field>
 
-                <v-text-field
+                <v-select
                 v-model="usuario.estado"
-          label="Ingrese nuevo estado"
+          :items="['activo', 'inactivo']"
+           label="Ingrese el Estado"
                 outlined
-                @input="$v.usuario.estado.$touch()"
+                 @input="$v.usuario.estado.$touch()"
                 @blur="$v.usuario.estado.$touch()"
-                :error-messages="estado"
+                :error-messages="errorestado"
                 class="inputTextField"
                 color="#009900"
-              ></v-text-field>
+              ></v-select>
 
                 
               <div>
