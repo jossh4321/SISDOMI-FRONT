@@ -178,7 +178,7 @@
                     </v-card>
                     
                   </template>
-                  <v-dialog v-model="dialogoDocumentoEscolar" width="600px" persistent>
+                  <v-dialog v-model="dialogoDocumentoEscolar" width="600px" persistent eager>
                       <v-card style="padding:20px">
                          <v-card-title>Registro de Documentos Escolares</v-card-title>
                          <v-form>
