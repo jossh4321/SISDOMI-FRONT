@@ -209,7 +209,15 @@ export default {
           icon: "dashboard",
           name: "GestionarIncidencia",
           href: "/dashboard/incidencias"
-        }
+        },
+        {
+          title: "Gestionar Ficha Evaluacion Educativa",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarFichaEvaluacionEducativa",
+          href: "/dashboard/evaluacionEducativa"
+        },
+
       ],
       scrollSettings: {
         maxScrollbarLength: 160,

@@ -16,6 +16,7 @@ import GestionarIncidencias from "../views/Incidencias/GestionarIncidencias.vue"
 import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 import GestionActa from '../views/Acta/GestionarActa.vue';
 import ModificarPerfil from '../views/perfil/ModificarPerfil.vue';
+import GestionarFichaEvaluacionEducativa from  '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
 //Prueba
 import PruebaActa from '../views/Acta/PruebaActa.vue';
 
@@ -121,6 +122,11 @@ const routes = [{
                 path: 'ModificarPerfil',
                 name: 'Perfil',
                 component: ModificarPerfil
+            },
+            {
+                path:'evaluacionEducativa',
+                name:'GestionarFichaEvaluacionEducativa',
+                component:GestionarFichaEvaluacionEducativa
             }
         ],
 

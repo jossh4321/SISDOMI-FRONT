@@ -208,18 +208,14 @@
                                v-model="firma.cargo"
                                 label="Cargo"
                                 outlined  
-                              @input="$v.firma.cargo.$touch()"
-                               @blur="$v.firma.cargo.$touch()"
-                              :error-messages="errorCargoFirma"
+                              
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                v-model="firma.nombre"
                                 label="Nombre"
                                 outlined  
-                              @input="$v.firma.nombre.$touch()"
-                              @blur="$v.firma.nombre.$touch()"
-                              :error-messages="errorNombreFirma"
+                              
                                 color="#009900"
                                 ></v-text-field>
                        <div>
@@ -433,9 +429,7 @@
                                 v-model="trimestre.orden"
                                 label="N°Puesto"
                                 outlined  
-                            @input="$v.trimestre.orden.$touch()"
-                            @blur="$v.trimestre.orden.$touch()"
-                            :error-messages="errorOrdenTrimestre"
+                           
                                 color="#009900"
                                 ></v-text-field>
                                 
@@ -443,18 +437,14 @@
                                 v-model="trimestre.analisiseducativo"
                                 label="Analisis Educativo"
                                 outlined  
-                            @input="$v.trimestre.analisiseducativo.$touch()"
-                            @blur="$v.trimestre.analisiseducativo.$touch()"
-                            :error-messages="errorAnalisisTrimestre"
+                            
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="trimestre.recomendaciones"
                                 label="Recomendaciones"
                                 outlined  
-                                @input="$v.trimestre.recomendaciones.$touch()"
-                            @blur="$v.trimestre.recomendaciones.$touch()"
-                            :error-messages="errorRecomendacionTrimestre"
+                             
                                 color="#009900"
                                 ></v-text-field>
 
@@ -569,18 +559,14 @@
                                 v-model="puntajes.area"
                                 label="Nombre del Curso:"
                                 outlined  
-                                @input="$v.puntajes.area.$touch()"
-                                @blur="$v.puntajes.area.$touch()"
-                                :error-messages="errorAreaPuntajes"
+                               
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="puntajes.promedio"
                                 label="Nota obtenida:"
                                 outlined 
-                                @input="$v.puntajes.promedio.$touch()"
-                                @blur="$v.puntajes.promedio.$touch()"
-                                :error-messages="errorPromedioPuntajes" 
+                                
                                 color="#009900"
                                 ></v-text-field>
                                 <v-btn 
@@ -719,7 +705,7 @@ Vue.use(Vuelidate)
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import { required, minLength, email, helpers } from "vuelidate/lib/validators";
+import { required, minLength, email, helpers,numeric } from "vuelidate/lib/validators";
 
 export default {
   name:'ActualizarSeguimientoEducativo',
@@ -850,6 +836,7 @@ export default {
        this.seguimiento.contenido.trimestre.splice(index,1);
     },
     guardarNotas(){
+       
       let puntajesd={area:this.puntajes.area,promedio:this.puntajes.promedio};
        this.seguimiento.contenido.trimestre[0].puntajes.push(puntajesd);
       
