@@ -56,7 +56,11 @@
               <v-icon left> info </v-icon>
               <span>Visualizar</span>
             </v-btn>
-            <v-btn color="grey" dark @click="abrirDialogoPromover(item.id)">
+            <v-btn v-if="faseActual(item.progreso)" color="grey" dark @click="abrirDialogoPromover(item.id)">
+              <v-icon left> mdi-page-next-outline </v-icon>
+              <span>Promover</span>
+            </v-btn>
+            <v-btn v-else color="grey" disabled>
               <v-icon left> mdi-page-next-outline </v-icon>
               <span>Promover</span>
             </v-btn>
@@ -161,6 +165,14 @@ export default {
     ...mapMutations(["setResidentes"]),
     editItem(item) {
       console.log(item);
+    },
+    faseActual(array){
+      var ultimoProgreso = array[array.length - 1].fase
+      if(ultimoProgreso === 3){
+        return false
+      }else{
+        return true
+      }
     },
     detailItem(item) {
       console.log(item);

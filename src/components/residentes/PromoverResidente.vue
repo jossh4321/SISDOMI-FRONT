@@ -108,17 +108,21 @@
         <v-card style="padding:1%" elevation="0">
           <form>
             <v-text-field 
-              v-model="documentoFase.contenido.observacion"
+              v-model="contenidoFase.documentotransicion.observaciones"
               style="margin-top:2%"
               label="Observaciones"
               color="#009900"
+              @input="$v.contenidoFase.documentotransicion.observaciones.$touch()"
+              @blur="$v.contenidoFase.documentotransicion.observaciones.$touch()"
             ></v-text-field>
             <v-select
-              v-model="documentoFase.contenido.nuevafase"
-              :items="items"
-              label="Tipo de Documento"
+              v-model="contenidoFase.fase"
+              :items="seleccionItems()"
+              label="Seleccionar la fase a promover"
               dense
               color="#009900"
+              @input="$v.contenidoFase.documentotransicion.observaciones.$touch()"
+              @blur="$v.contenidoFase.documentotransicion.observaciones.$touch()"
             ></v-select>
             <v-card style="margin-top:10px;padding:5px 5px;background-color:#EAEAEA">
               <v-card-actions>Agregar Firma del Residente</v-card-actions>
@@ -224,6 +228,9 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
+function esParrafo(value) {
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+}
 export default {
   name: "PromoverResidente",
   props: ["residente"],
@@ -232,22 +239,39 @@ export default {
   },
   data() {
     return {
-      items:['Fase 1', 'Fase 2', 'Fase 3'],
-      documentoFase:{
-        id:"",
-        tipo:"Transicion de Fase",
-        historialcontenido:[],
-        creadordocumento:"",
-        fechacreacion: moment().format('L'),
-        area:"", // Enviando vacío
-        fase:"", // Enviando vacío
-        idresidente:"",
-        estado:"creado",
-        contenido:{
-          firma:"",
-          observacion:"",
-          nuevafase:""
+      items1:['Fase 2', 'Fase 3'],
+      items2:['Fase 3'],
+      contenidoFase:{
+        educativa:{
+          documentos:[],
+          estado:"incompleto"
+        },
+        social:{
+          documentos:[],
+          estado:"incompleto"
+        },
+        psicologica:{
+          documentos:[],
+          estado:"incompleto"
+        },
+        fase: "",
+        documentotransicion:{
+          fecha:moment().format('L'),
+          idcreador:"",
+          observaciones:"",
+          firma:{
+            urlfirma:"",
+            nombre:"",
+            cargo:""
+          }
         }
+      },
+      progresoResidente:{
+        fase:"",
+        nombre:"",
+        fechaingreso:moment().format('L'),
+        fechafinalizacion:"",
+        estado:""
       },
       dropzoneOptions2: {
         url: "https://httpbin.org/post",
@@ -283,21 +307,16 @@ export default {
         var date = string.split('/');
         return date[2] + '-' + date[1] + '-' + date[0];
     },
-    // agregarFirma(id) {
-    //   this.documentoFase.contenido.firma = this.urlfirma;
-    //   this.urlfirma = "";
-    //   this.botonCambiarFirma = true;
-    //   this.$refs["myVueDropzone"+id][0].removeAllFiles();
-    // },
-    // eliminarFirma(id) {
-    //   this.participantesFiltrados.forEach((part)=>{
-    //     if(part.idparticipante ===id){
-    //       part.firma= "";
-    //     }
-    //   })
-    // },
+    seleccionItems(){
+      var fase =  this.residente.progreso[this.residente.progreso.length - 1].fase;
+      if(fase === 1){
+        return this.items1
+      }else{
+        return this.items2
+      }
+    },
     verFirma(){
-      this.imagen = this.documentoFase.contenido.firma;
+      this.imagen = this.contenidoFase.documentotransicion.firma.urlfirma;
       console.log("imagen: "  + this.imagen);
       this.dialogVistaPreviaFirma = true;
     },
@@ -307,53 +326,86 @@ export default {
     afterSuccess2(file, response) {
       // this.urlfirma = file.dataURL.split(",")[1];
       // console.log(this.urlfirma);
-      this.documentoFase.contenido.firma = file.dataURL.split(",")[1];
-      console.log(this.documentoFase.contenido.firma);
+      this.contenidoFase.documentotransicion.firma.urlfirma = file.dataURL.split(",")[1];
       console.log("urlfirma llenada");
       //this.botonCambiarFirma = false;
     },
     afterRemoved2(file, error, xhr) {
       // this.urlfirma = "";
-      this.documentoFase.contenido.firma = "";
+      this.contenidoFase.documentotransicion.firma.urlfirma = "";
     },
     limpiar(){
       this.$refs.myVueDropzone.removeAllFiles();
     },
     async registrarDocumentoTransicionFase() {
-      this.documentoFase.fechacreacion = this.convertDateFormat(this.documentoFase.fechacreacion)
-      this.documentoFase.idresidente = this.residente.id
-      this.documentoFase.creadordocumento = this.user.id
-      console.log(this.user.id)
-      console.log(this.documentoFase.creadordocumento)
-      //this.limpiar();
-      // await axios
-      //   .post("/SesionesEducativas", this.sesioneducativa)
-      //   .then((res) => {
-      //     var info ={
-      //       id: res.data.id,
-      //       titulo: res.data.titulo,
-      //       contenido:res.data.contenido,
-      //       fechaCreacion: res.data.fechaCreacion.split("T")[0],
-      //       area: res.data.area,
-      //       tipo: res.data.tipo,
-      //       idCreador: res.data.idCreador,
-      //       datoscreador:{
-      //         usuario: this.user.usuario
-      //       }
-      //     }
-      //     console.log("Registrado xd")
-      //     console.log(info)
-      //     this.addSesionesEducativas(info);
-      //     this.limpiar();
-      //     this.cerrarTodo();
-      //   })
-      //   .catch((err) => console.log(err));
-      // },
+      if (this.$v.contenidoFase.$invalid) {
+        console.log("hay errores al modificar p llama");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else{
+        console.log(this.contenidoFase.documentotransicion.fecha);
+        this.contenidoFase.documentotransicion.fecha = this.convertDateFormat(this.contenidoFase.documentotransicion.fecha)
+        this.contenidoFase.documentotransicion.firma.nombre = this.user.datos.nombre +" " +  this.user.datos.apellido
+        this.contenidoFase.documentotransicion.firma.cargo = this.user.rol.nombre
+        this.contenidoFase.documentotransicion.idcreador = this.user.id
+        if(this.contenidoFase.fase === 2){
+          this.progresoResidente.fase = 2
+          this.progresoResidente.nombre = "desarrollo"
+        }else if(this.contenidoFase.fase === 3){
+          this.progresoResidente.fase = 3
+          this.progresoResidente.nombre = "seguimiento"
+        }
+        this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso)
+        this.progresoResidente.estado = "inicio"
+        //Actualizando en Residente
+        this.residente.progreso.push(this.progresoResidente);
+        await axios
+          .put("/Residente", this.residente)
+          .then((res) => {
+            this.replaceResidente(res.data);
+            this.cerrarDialogo();
+          })
+          .catch((err) => console.log(err));
+          await this.mensaje(
+          "success",
+          "Listo",
+          "Sesion Educativa Modificada Satisfactoriamente",
+          "<strong>Se redirigira a la interfaz de Gestión<strong>"
+          );
+          this.$v.progresoResidente.$reset();
+          this.$v.contenidoFase.$reset();
+      }
+
     }
   },
   computed:{
     ...mapGetters(["user"]),
   },
+  validations(){
+    return{
+      contenidoFase:{
+        fase: {
+          required
+        },
+        documentotransicion:{
+          observaciones:{
+            required,
+            esParrafo
+          },
+          firma:{
+            //Falta validar esto y hacer los metodos de error
+            urlfirma:{
+              required
+            },
+          }
+        }
+      },
+    }
+  }
 };
 </script>
 
