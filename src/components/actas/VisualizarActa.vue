@@ -84,7 +84,7 @@
       <form>
         <v-text-field
           v-model="usuario.residente"
-          label="Ingrese el id de residente"
+          label="Ingrese el nombre de residente"
           outlined
           readonly
           class="inputTextField"
