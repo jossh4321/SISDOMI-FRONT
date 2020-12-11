@@ -566,7 +566,7 @@ export default {
             .then((res) => {
               this.planI.contenido.firmas[index].urlfirma = res.data;
               this.planI.contenido.firmas[index].nombre = this.user.usuario;
-              this.planI.contenido.firmas[index].cargo = this.user.rol;
+              this.planI.contenido.firmas[index].cargo = this.user.rol.id;
             })
             .catch((err) => {
               console.error(err);
