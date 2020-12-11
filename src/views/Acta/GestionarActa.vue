@@ -36,7 +36,7 @@
                 >  <v-icon left>mdi-account-multiple-plus-outline</v-icon> <span>Registrar Acta</span>
                  </v-btn>       
                    </template>
-                <RegistrarActa :listaroles="listaroles"  @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
+                <RegistrarActa   @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -69,7 +69,7 @@
       <v-dialog persistent
                 v-model="dialogoactualizacion" 
                 max-width="880px">
-        <ActualizarActa v-if="dialogoactualizacion" :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()"></ActualizarActa>
+        <ActualizarActa v-if="dialogoactualizacion" :usuario="usuario"  @close-dialog-update="closeDialogActualizar()"></ActualizarActa>
 
       </v-dialog>
       <!-----><!--Hola -->
@@ -121,12 +121,12 @@ export default {
       dialogoregistro: false,
       dialogoactualizacion: false,
       dialogodetalle:false,
-      listaroles:[]
+      
     };
   },
   async created(){
       this.obtenerUsuarios();
-      this.obtenerRoles();
+      
   },
   methods: {
     ...mapMutations(["setUsuarios","replaceUsuario"]),
@@ -152,18 +152,18 @@ export default {
       console.log(item);
     },
     //llamando al API para obtener los datos de un usuario especifico
-    async abrirDialogoActualizar(idusuario){
-        this.usuario = await this.loadUsuarioModificacion(idusuario);
+    async abrirDialogoActualizar(id){
+        this.usuario = await this.loadUsuarioModificacion(id);
         this.dialogoactualizacion = !this.dialogoactualizacion;
     },
     // Abre
-    async abrirDialogoDetalle(idusuario){
-        this.usuario = await this.loadUsuarioDetalle(idusuario); //Pide
+    async abrirDialogoDetalle(id){
+        this.usuario = await this.loadUsuarioDetalle(id); //Pide
         this.dialogodetalle = !this.dialogodetalle;
     },
-    async loadUsuarioModificacion(idusuario){
+    async loadUsuarioModificacion(id){
       var user = {};
-      await axios.get("/usuario/id?id="+idusuario)
+      await axios.get("/actaexternamiento/id?id="+id)
       .then(res => {
          user = res.data; 
          user.datos.fechanacimiento = res.data.datos
@@ -171,23 +171,18 @@ export default {
       })
       .catch(err => console.log(err));
       return user;
-    },async loadUsuarioDetalle(idusuario){
+    },async loadUsuarioDetalle(id){
       var user = {};
-      await axios.get("/actaexternamiento/id?id="+idusuario)
+      await axios.get("/actaexternamiento/id?id="+id)
       .then(res => {
          user = res.data; // devuelve
-         user.datos.fechanacimiento = res.data.datos
-                  .fechanacimiento.split("T")[0];
+         user.datos.fechacreacion = res.data.tipo
+                  .fechacreacion.split("T")[0];
       })
       .catch(err => console.log(err));
       console.log(user);
       return user;
-    },async obtenerRoles(){
-          await axios.get("/usuario/sistema/rol")
-                  .then( x => {
-                            this.listaroles = x.data;
-                            console.log(this.listaroles);
-                  }).catch(err => console.log(err));
+    
     }, async obtenerUsuarios(){
            await axios.get("/actaexternamiento/all") ////////OBTENER ACTA EXTERNAMIENTO
             .then(res => {

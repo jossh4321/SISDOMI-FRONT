@@ -26,15 +26,15 @@
         <div class="container-user">
       <form>
         <v-text-field
-           v-model="usuario.residente"
-          label="Ingrese los Nombres"
+           v-model="usuario.tipo"
+          label="Ingrese el tipo"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-text-field
-          v-model="usuario.residente"
-          label="Ingrese los Apellidos"
+          v-model="usuario.fechacreacion"
+          label="Ingrese fechacreacion"
           outlined
           readonly
           color="#009900"
@@ -42,15 +42,15 @@
                       
        
         <v-text-field
-          v-model="usuario.residente"
-          label="Ingrese el Numero de Documento"
+          v-model="usuario.area"
+          label="Ingrese el area"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-textarea
-          v-model="usuario.residente"
-          label="Ingrese el la direccion"
+          v-model="usuario.fase"
+          label="Ingrese la fase"
           auto-grow
           outlined
           rows="2"
@@ -59,13 +59,9 @@
           color="#009900"
           shaped
         ></v-textarea>
-        <v-text-field
-          v-model="usuario.residente"
-          label="Ingrese el Correo Electronico"
-          outlined
-          readonly
-          color="#009900"
-        ></v-text-field>
+      
+        
+       
         <v-row>
           <v-col>
             <v-btn block @click="step = 2" color="success">
@@ -88,19 +84,43 @@
       <form>
         <v-text-field
           v-model="usuario.residente"
-          label="Ingrese el nombre de Usuario"
+          label="Ingrese el nombre de residente"
           outlined
           readonly
           class="inputTextField"
           color="#009900"
         ></v-text-field>
         
-        
-          
-      
         <v-text-field
-          v-model="usuario.residente"
-          label="Descripcion del Rol"
+          v-model="usuario.entidaddisposicion"
+          label="Ingrese nueva entidad disposicion"
+          outlined
+          readonly
+          class="inputTextField"
+          color="#009900"
+        ></v-text-field>
+
+        <v-text-field
+         v-model="usuario.numeroresolucion"
+          label="Ingrese nuevo numero resolucion"
+          outlined
+          readonly
+          class="inputTextField"
+          color="#009900"
+        ></v-text-field>
+
+        <v-text-field
+           v-model="usuario.numerooficio"
+          label="Ingrese nuevo numero oficio"
+          outlined
+          readonly
+          class="inputTextField"
+          color="#009900"
+        ></v-text-field>
+          
+       <v-text-field
+          v-model="usuario.observaciones"
+          label="Ingrese nuevas observaciones"
           outlined
           readonly
           class="inputTextField"
@@ -109,8 +129,8 @@
            
         
         <v-select
-        v-model="usuario.residente"
-          :items="['activo', 'inactivo']"
+        v-model="usuario.estado"
+          :items="['creado', 'modificado']"
           label="Ingrese el Estado"
           dense
           outlined

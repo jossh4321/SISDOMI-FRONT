@@ -16,40 +16,40 @@
           <div class="container-user">
             <form>
               <v-text-field
-               v-model="usuario.datos.CreadorDocumento"
-          label="Ingrese el Creador Documento"
+               v-model="usuario.tipo"
+          label="Ingrese el tipo"
                 outlined
-                @input="$v.usuario.datos.nombreusuaria.$touch()"
-                @blur="$v.usuario.datos.nombreusuaria.$touch()"
-                :error-messages="errorNombreusuaria"
+                @input="$v.usuario.tipo.$touch()"
+                @blur="$v.usuario.tipo.$touch()"
+                :error-messages="errortipo"
                 color="#009900"
               ></v-text-field>
               <v-text-field
-                 v-model="usuario.datos.fechacreacion"
+                 v-model="usuario.fechacreacion"
           label="Ingrese fecha creacion"
                 outlined
-                @input="$v.usuario.datos.nombreplan.$touch()"
-                @blur="$v.usuario.datos.nombreplan.$touch()"
-                :error-messages="errorNombreplan"
+                @input="$v.usuario.fechacreacion.$touch()"
+                @blur="$v.usuario.fechacreacion.$touch()"
+                :error-messages="errorfechacreacion"
                 color="#009900"
               ></v-text-field>
                 <v-text-field
-                v-model="usuario.datos.area"
+                v-model="usuario.area"
           label="Ingrese el area"
                 outlined
-                @input="$v.usuario.datos.objetivogeneral.$touch()"
-                @blur="$v.usuario.datos.objetivogeneral.$touch()"
-                :error-messages="errorObjetivogeneral"
+                @input="$v.usuario.area.$touch()"
+                @blur="$v.usuario.area.$touch()"
+                :error-messages="errorarea"
                 color="#009900"
               ></v-text-field>
             
               <v-text-field
-                v-model="usuario.datos.fase"
+                v-model="usuario.fase"
           label="Ingrese la fase"
                 outlined
-                @input="$v.usuario.datos.objetivoespecifico.$touch()"
-                @blur="$v.usuario.datos.objetivoespecifico.$touch()"
-                :error-messages="errorObjetivoespecifico"
+                 @input="$v.usuario.fase.$touch()"
+                @blur="$v.usuario.fase.$touch()"
+                :error-messages="errorfase"
                 color="#009900"
               ></v-text-field>
             
@@ -75,26 +75,64 @@
           <div class="container-user">
             <form>
               <v-text-field
-               v-model="usuario.idresidente"
-          label="Ingrese nuevo idresidente"
+               v-model="usuario.entidaddisposicion"
+          label="Ingrese nueva entidad disposicion"
                 outlined
-                @input="$v.usuario.nombre_acta.$touch()"
-                @blur="$v.usuario.nombre_acta.$touch()"
-                :error-messages="errorNombre_acta"
+               @input="$v.usuario.entidaddisposicion.$touch()"
+                @blur="$v.usuario.entidaddisposicion.$touch()"
+                :error-messages="errorentidaddisposicion"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
-                <v-text-field
-                v-model="usuario.estado"
-          label="Ingrese nuevo estado"
+
+ <v-text-field
+               v-model="usuario.numeroresolucion"
+          label="Ingrese nuevo numero resolucion"
                 outlined
-                @input="$v.usuario.actividades_estrategias.$touch()"
-                @blur="$v.usuario.actividades_estrategias.$touch()"
-                :error-messages="errorActividades_estrategias"
+               @input="$v.usuario.numeroresolucion.$touch()"
+                @blur="$v.usuario.numeroresolucion.$touch()"
+                :error-messages="errornumeroresolucion"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
+
+
+               <v-text-field
+               v-model="usuario.numerooficio"
+          label="Ingrese nuevo numero oficio"
+                outlined
+               @input="$v.usuario.numerooficio.$touch()"
+                @blur="$v.usuario.numerooficio.$touch()"
+                :error-messages="errornumerooficio"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
+
+
+               <v-text-field
+               v-model="usuario.observaciones"
+          label="Ingrese nuevas observaciones"
+                outlined
+               @input="$v.usuario.observaciones.$touch()"
+                @blur="$v.usuario.observaciones.$touch()"
+                :error-messages="errorobservaciones"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
+
+
+                    <v-select
+                v-model="usuario.estado"
+                 :items="['creado', 'modificado']"
+          label="Ingrese nuevo estado"
+                outlined
+                @input="$v.usuario.estado.$touch()"
+                @blur="$v.usuario.estado.$touch()"
+                :error-messages="errorestado"
+                class="inputTextField"
+                color="#009900"
+            ></v-select>
 
 
               <div>
@@ -109,14 +147,17 @@
               </div>
               <v-card v-if="errorImagen" color="red">
              
-        
+        <v-card-text class="text-center" style="color: white"
+                  >Debe Subir una imagen del Usuario
+                  Obligatoriamente</v-card-text
+                >
               </v-card>
               <v-divider class="divider-custom"></v-divider>
         <v-row>
           <v-col>
               <v-btn block @click="actualizarUsuario()" color="warning">
               <v-icon left>mdi-content-save-all-outline</v-icon>
-              <span >Actualizar Usuario</span>
+              <span >Actualizar Acta</span>
             </v-btn>
           </v-col>
         <v-col>
@@ -141,7 +182,7 @@ import { mapMutations, mapState} from "vuex";
 import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
 export default {
-   props:["usuario","listaroles"],
+   props:["usuario"],
    components: {
     vueDropzone: vue2Dropzone,
   },
@@ -226,46 +267,46 @@ export default {
           !this.$v.usuario.usuario.minLength && errors.push('El Nombre de Usuario debe poseer al menos 4 caracteres')
       return errors
     },
-    errorNombre () {
+    errortipo () {
       const errors = []
-      if (!this.$v.usuario.datos.CreadorDocumento.$dirty) return errors
-          !this.$v.usuario.datos.CreadorDocumento.required && errors.push('Debe ingresar un Nombre Obligatoriamente')
-          !this.$v.usuario.datos.CreadorDocumento.minLength && errors.push('El Nombre debe tener al menos 3 caracteres')
+      if (!this.$v.usuario.datos.tipo.$dirty) return errors
+          !this.$v.usuario.datos.tipo.required && errors.push('Debe ingresar el tipo Obligatoriamente')
+          !this.$v.usuario.datos.tipo.minLength && errors.push('El Nombre debe tener al menos 3 caracteres')
       return errors
     },
-    errorApellido () {
+    errorarea () {
       const errors = []
       if (!this.$v.usuario.datos.area.$dirty) return errors
           !this.$v.usuario.datos.area.required && errors.push('Debe ingresar un area Obligatoriamente')
           !this.$v.usuario.datos.area.minLength && errors.push('El area debe tener al menos 3 caracteres')
       return errors
     },
-    errorNumeroDocumento () {
+    erroridresidente () {
       const errors = []
       if (!this.$v.usuario.datos.idresidente.$dirty) return errors
           !this.$v.usuario.datos.idresidente.required && errors.push('Debe ingresar el idresidente Obligatoriamente')
           
       return errors
       },
-    errorFechaNacimiento () {
+    errorfechacreacion () {
       const errors = []
       if (!this.$v.usuario.datos.fechacreacion.$dirty) return errors
           !this.$v.usuario.datos.fechacreacion.required && errors.push('Debe Ingresar una Fecha de Creacion Obligatoriamente')
           //validating whether the user are an adult
-          var dateselected =  new Date(this.usuario.datos.fechacreacion);
+          var dateselected =  new Date(this.usuario.fechacreacion);
           var maxdate = new Date();
           maxdate.setFullYear(maxdate.getFullYear());
           
       return errors
     },
-     errorEmail () {
+     errorfase () {
       const errors = []
       if (!this.$v.usuario.datos.fase.$dirty) return errors
           !this.$v.usuario.datos.fase.required && errors.push('Debe ingresar la fase Obligatoriamente')
           
       return errors
        
-    },errorEstado(){
+    },errorestado(){
                 const errors = []
       if (!this.$v.usuario.estado.$dirty) return errors
           !this.$v.usuario.estado.required && errors.push('Debe seleccionar un Estado obligatoriamente')
@@ -280,12 +321,11 @@ export default {
           usuario:{
             required,
             minLength: minLength(4)
-          },rol:{
-            required
+          
           },estado:{
             required
           },datos:{
-              CreadorDocumento:{
+              tipo:{
                 required,
                 minLength: minLength(3)
               },
