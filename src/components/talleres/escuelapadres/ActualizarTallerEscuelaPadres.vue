@@ -744,7 +744,7 @@ export default {
                   .then((res) => {
                     this.taller.firma.urlfirma = res.data;
                     this.taller.firma.nombre = this.user.usuario;
-                    this.taller.firma.cargo = this.user.rol;
+                    this.taller.firma.cargo = this.user.rol.nombre;
                     
                   })
                   .catch((err) => {

@@ -265,12 +265,14 @@
           <v-stepper-content step="3">
             <form>
               <v-row>
-                <v-img
-                  :src="taller.firma.urlfirma"
-                  max-width="250"
-                  max-height="250"
-                >
-                </v-img>
+                <v-col cols="12" sm="12" align="center">
+                  <v-img
+                    :src="taller.firma.urlfirma"
+                    max-width="250"
+                    max-height="250"
+                    >
+                    </v-img>
+                </v-col>
                 
                 <v-col cols="12" sm="6" md="6">
                   <v-btn
