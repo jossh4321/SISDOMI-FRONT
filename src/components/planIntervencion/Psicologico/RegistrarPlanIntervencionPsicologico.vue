@@ -730,7 +730,7 @@ export default {
               this.planResidentePsicologico.contenido.firmas[index].urlfirma =
                 res.data;
               this.planResidentePsicologico.contenido.firmas[index].nombre = this.user.usuario;
-              this.planResidentePsicologico.contenido.firmas[index].cargo = this.user.rol;
+              this.planResidentePsicologico.contenido.firmas[index].cargo = this.user.rol.id;
               
             })
             .catch((err) => {

@@ -75,15 +75,52 @@
           <div class="container-user">
             <form>
               <v-text-field
-               v-model="usuario.idresidente"
-          label="Ingrese nuevo idresidente"
+               v-model="usuario.entidaddisposicion"
+          label="Ingrese nueva entidad disposicion"
                 outlined
-               @input="$v.usuario.idresidente.$touch()"
-                @blur="$v.usuario.idresidente.$touch()"
-                :error-messages="erroridresidente"
+               @input="$v.usuario.entidaddisposicion.$touch()"
+                @blur="$v.usuario.entidaddisposicion.$touch()"
+                :error-messages="errorentidaddisposicion"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
+
+
+ <v-text-field
+               v-model="usuario.numeroresolucion"
+          label="Ingrese nuevo numero resolucion"
+                outlined
+               @input="$v.usuario.numeroresolucion.$touch()"
+                @blur="$v.usuario.numeroresolucion.$touch()"
+                :error-messages="errornumeroresolucion"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
+
+
+               <v-text-field
+               v-model="usuario.numerooficio"
+          label="Ingrese nuevo numero oficio"
+                outlined
+               @input="$v.usuario.numerooficio.$touch()"
+                @blur="$v.usuario.numerooficio.$touch()"
+                :error-messages="errornumerooficio"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
+
+
+               <v-text-field
+               v-model="usuario.observaciones"
+          label="Ingrese nuevas observaciones"
+                outlined
+               @input="$v.usuario.observaciones.$touch()"
+                @blur="$v.usuario.observaciones.$touch()"
+                :error-messages="errorobservaciones"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
+
 
                     <v-select
                 v-model="usuario.estado"

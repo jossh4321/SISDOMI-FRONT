@@ -76,7 +76,7 @@
             <form>
               <v-text-field
                 v-model="usuario.idresidente"
-          label="Ingrese nuevo idresidente"
+          label="Ingrese nuevo residente"
                 outlined
                 @input="$v.usuario.idresidente.$touch()"
                 @blur="$v.usuario.idresidente.$touch()"
@@ -169,7 +169,7 @@ export default {
       usuario: {
         
         datos: {
-          CreadorDocumento:" ",
+        CreadorDocumento:" ",
         fechacreacion:" ",
         area:" ",
         fase:" ", 
@@ -244,7 +244,7 @@ export default {
       return {
        
         datos: {
-          CreadorDocumento:" ",
+        CreadorDocumento:" ",
         fechacreacion:" ",
         area:" ",
         fase:" ", 
