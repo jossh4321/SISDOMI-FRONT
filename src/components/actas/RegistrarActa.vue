@@ -76,7 +76,7 @@
             <form>
               <v-text-field
                 v-model="usuario.idresidente"
-          label="Ingrese nuevo idresidente"
+          label="Ingrese nuevo residente"
                 outlined
                 @input="$v.usuario.idresidente.$touch()"
                 @blur="$v.usuario.idresidente.$touch()"
