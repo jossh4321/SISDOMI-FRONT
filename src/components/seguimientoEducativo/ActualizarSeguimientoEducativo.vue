@@ -1028,7 +1028,42 @@ export default {
            codigodocumento:""
       },
     },
-    
+    firma:{
+     cargo:{
+       required,
+        minLength: minLength(4),
+     },
+     nombre:{
+       required,
+        minLength: minLength(4),
+     }
+    },
+    trimestre:{
+      orden:{
+        required,
+        minLength: minLength(1),
+        numeric
+        }
+        ,analisiseducativo:{
+          required,
+        minLength: minLength(4),
+        },
+        recomendaciones:{
+          required,
+        minLength: minLength(4),
+        }
+        },
+    puntajes:{
+          area:{
+            required,
+            minLength: minLength(4),
+          },
+          promedio:{
+            required,
+            minLength: minLength(2),
+            numeric
+          }
+      }
         
             }
         }
