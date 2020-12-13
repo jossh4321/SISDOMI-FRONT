@@ -221,6 +221,7 @@ export default {
   async created() {
     this.obtenerfichasIngresos();
     this.obtenerResidentes();
+    console.log(this.listaresidentes);
     this.obtenerEducadores();
   },
 
@@ -281,7 +282,6 @@ export default {
       await axios
         .get("/Documento/all/fichaingresoresidente")
         .then((res) => {
-          //console.log( "porfavor" )
           this.setFichaIngreso(res.data);
         })
         .catch((err) => console.log(err));
@@ -292,12 +292,10 @@ export default {
       await axios
         .get("/Residente/id?id=" + idresidente)
         .then((res) => {
-          console.log(res);
           user = res.data;
           user.fechacreacion = user.fechacreacion.split("T")[0];
         })
         .catch((err) => console.log(err));
-      console.log(user);
       return user;
     },
     //obtener todos los residentes
@@ -306,7 +304,6 @@ export default {
         .get("/residente/all")
         .then((x) => {
           this.listaresidentes = x.data;
-          console.log(this.listaresidentes);
         })
         .catch((err) => console.log(err));
     },
@@ -316,7 +313,6 @@ export default {
         .get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
         .then((res) => {
           this.listaeducadores = res.data;
-          console.log(this.listaeducadores);
         })
         .catch((err) => console.log(err));
     },

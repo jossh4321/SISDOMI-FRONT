@@ -76,7 +76,7 @@
             <form>
               <v-text-field
                 v-model="usuario.idresidente"
-          label="Ingrese nuevo idresidente"
+          label="Ingrese nuevo residente"
                 outlined
                 @input="$v.usuario.idresidente.$touch()"
                 @blur="$v.usuario.idresidente.$touch()"
@@ -84,6 +84,57 @@
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
+
+               <v-text-field
+               v-model="usuario.entidaddisposicion"
+          label="Ingrese nueva entidad disposicion"
+                outlined
+               @input="$v.usuario.entidaddisposicion.$touch()"
+                @blur="$v.usuario.entidaddisposicion.$touch()"
+                :error-messages="errorentidaddisposicion"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
+
+
+ <v-text-field
+               v-model="usuario.numeroresolucion"
+          label="Ingrese nuevo numero resolucion"
+                outlined
+               @input="$v.usuario.numeroresolucion.$touch()"
+                @blur="$v.usuario.numeroresolucion.$touch()"
+                :error-messages="errornumeroresolucion"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
+
+
+               <v-text-field
+               v-model="usuario.numerooficio"
+          label="Ingrese nuevo numero oficio"
+                outlined
+               @input="$v.usuario.numerooficio.$touch()"
+                @blur="$v.usuario.numerooficio.$touch()"
+                :error-messages="errornumerooficio"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
+
+
+               <v-text-field
+               v-model="usuario.observaciones"
+          label="Ingrese nuevas observaciones"
+                outlined
+               @input="$v.usuario.observaciones.$touch()"
+                @blur="$v.usuario.observaciones.$touch()"
+                :error-messages="errorobservaciones"
+                class="inputTextField"
+                color="#009900"
+              ></v-text-field>
+
+              
+
+
 
                 <v-select
                 v-model="usuario.estado"
@@ -169,13 +220,16 @@ export default {
       usuario: {
         
         datos: {
-          CreadorDocumento:" ",
+        CreadorDocumento:" ",
         fechacreacion:" ",
         area:" ",
         fase:" ", 
         idresidente:" ",       
         estado:" ",
-        
+        entidaddisposicion:" ",  
+        numeroresolucion:" ",  
+        numerooficio:" ",  
+        observaciones:" "
         },
       },
     };
@@ -244,12 +298,16 @@ export default {
       return {
        
         datos: {
-          CreadorDocumento:" ",
+        CreadorDocumento:" ",
         fechacreacion:" ",
         area:" ",
         fase:" ", 
         idresidente:" ",       
         estado:" ",
+        entidaddisposicion:" ",  
+        numeroresolucion:" ",  
+        numerooficio:" ",  
+        observaciones:" "
         },
       };
     },
@@ -314,6 +372,34 @@ export default {
           !this.$v.usuario.estado.required && errors.push('Debe seleccionar un Estado obligatoriamente')
           return errors
     },
+          errorentidaddisposicion () {
+      const errors = []
+      if (!this.$v.usuario.datos.entidaddisposicion.$dirty) return errors
+          !this.$v.usuario.datos.entidaddisposicion.required && errors.push('Debe ingresar entidad disposicion Obligatoriamente')
+          
+      return errors
+      },
+          errornumeroresolucion () {
+      const errors = []
+      if (!this.$v.usuario.datos.numeroresolucion.$dirty) return errors
+          !this.$v.usuario.datos.numeroresolucion.required && errors.push('Debe ingresar el numero resolucion Obligatoriamente')
+          
+      return errors
+      },
+          errornumerooficio () {
+      const errors = []
+      if (!this.$v.usuario.datos.numerooficio.$dirty) return errors
+          !this.$v.usuario.datos.numerooficio.required && errors.push('Debe ingresar el numero oficio Obligatoriamente')
+          
+      return errors
+      },
+          errorobservaciones () {
+      const errors = []
+      if (!this.$v.usuario.datos.observaciones.$dirty) return errors
+          !this.$v.usuario.datos.observaciones.required && errors.push('Debe ingresar observaciones Obligatoriamente')
+          
+      return errors
+    },
     errorImagen() {
       return this.$v.usuario.datos.imagen.required == false &&
         this.$v.usuario.datos.imagen.$dirty == true
@@ -356,6 +442,18 @@ export default {
                 },estado:{
                   required,
                   minLength: minLength(10)
+                     },
+              entidaddisposicion:{
+                  required
+                     },
+              numeroresolucion:{
+                  required
+                     },
+              numerooficio:{
+                  required
+                     },
+              observaciones:{
+                  required
                 },imagen:{
                   required,
           },

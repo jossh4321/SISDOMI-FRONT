@@ -91,9 +91,41 @@
           color="#009900"
         ></v-text-field>
         
-        
+        <v-text-field
+          v-model="usuario.entidaddisposicion"
+          label="Ingrese nueva entidad disposicion"
+          outlined
+          readonly
+          class="inputTextField"
+          color="#009900"
+        ></v-text-field>
+
+        <v-text-field
+         v-model="usuario.numeroresolucion"
+          label="Ingrese nuevo numero resolucion"
+          outlined
+          readonly
+          class="inputTextField"
+          color="#009900"
+        ></v-text-field>
+
+        <v-text-field
+           v-model="usuario.numerooficio"
+          label="Ingrese nuevo numero oficio"
+          outlined
+          readonly
+          class="inputTextField"
+          color="#009900"
+        ></v-text-field>
           
-      
+       <v-text-field
+          v-model="usuario.observaciones"
+          label="Ingrese nuevas observaciones"
+          outlined
+          readonly
+          class="inputTextField"
+          color="#009900"
+        ></v-text-field>
            
         
         <v-select

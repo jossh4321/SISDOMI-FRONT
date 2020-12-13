@@ -277,12 +277,12 @@
                     ref="myVueDropzone"
                     @vdropzone-success="afterSuccess"
                     @vdropzone-removed-file="afterRemoved"
+                    @vdropzone-complete="afterComplete"
                     id="dropzone"
                     :options="dropzoneOptions"
                   >
                   </vue-dropzone>
                 </div>
-
                 <v-card
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
@@ -334,6 +334,7 @@
                           ref="myVueDropzone"
                           @vdropzone-success="afterSuccess2"
                           @vdropzone-removed-file="afterRemoved2"
+                          @vdropzone-complete="afterComplete2"
                           id="dropzone2"
                           :options="dropzoneOptions2"
                         >
@@ -467,11 +468,11 @@ import moment from "moment";
 import { mapGetters } from "vuex";
 
 function esTexto(value) {
-  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value);
 }
 
 function esParrafo(value) {
-  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value);
 }
 export default {
   props: ["listaresidentes", "listaeducadores", "visible"],
@@ -559,11 +560,11 @@ export default {
           url: listaanexos[index],
           titulo: listaTitulos[index],
         });
-      }      
+      }
     },
     async registrarInforme() {
       await this.sendPDFFiles();
-      this.informe.creadordocumento = this.user.id;      
+      this.informe.creadordocumento = this.user.id;
       this.$v.informe.$touch();
       if (this.$v.informe.$invalid) {
         console.log("hay errores");
@@ -582,7 +583,7 @@ export default {
             this.informe = res.data;
             var resi = this.listaresidentes.filter(function(residente) {
               return residente.id == res.data.idresidente;
-            });            
+            });
             var info = {
               id: res.data.id,
               tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
@@ -672,17 +673,27 @@ export default {
       this.dialogVistaPreviaFirma = false;
     },
     afterSuccess(file, response) {
+      console.log(file);
       this.fileList.push(file);
+    },
+    afterComplete(file) {
+      if (file.status == "error") {
+        this.$refs.myVueDropzone.removeFile(file);
+      }
     },
     afterRemoved(file, error, xhr) {
       this.informe.contenido.anexos = "";
-      this.$v.informe.contenido.anexos.$model = "";
     },
     afterSuccess2(file, response) {
       this.urlfirma = file.dataURL.split(",")[1];
     },
     afterRemoved2(file, error, xhr) {
       this.urlfirma = "";
+    },
+    afterComplete2(file) {
+      if (file.status == "error") {
+        this.$refs.myVueDropzone.removeFile(file);
+      }
     },
     limpiarInforme() {
       return {
@@ -725,7 +736,6 @@ export default {
         }
       },
     },
-
     ...mapGetters(["user"]),
     errorResidente() {
       const errors = [];
@@ -758,7 +768,7 @@ export default {
       //validating whether the user are an adult
       var dateselected = new Date(this.informe.fechacreacion);
       var maxdate = new Date();
-      !(dateselected.getTime() < maxdate.getTime()) &&
+      !(dateselected.getTime() <= maxdate.getTime()) &&
         errors.push("La fecha no debe ser mayor a la actual");
 
       return errors;
@@ -852,7 +862,7 @@ export default {
             esParrafo,
           },
           evaluador: {
-            required,            
+            required,
           },
         },
       },
