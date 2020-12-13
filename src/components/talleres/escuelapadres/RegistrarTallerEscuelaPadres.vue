@@ -478,6 +478,10 @@ function fechaFvalid(value) {
   return !(this.$moment(value) < this.$moment(this.tallerescuelapadres.contenido.fechaInicio));
 }
 
+function fechaFvalid2(value) {
+  return !(this.$moment(value) > this.$moment());
+}
+
 function nrodocxTipo(value) {
   return this.tutor.tipoDocumento != "";
 }
@@ -589,7 +593,7 @@ export default {
       this.loadingSearch = true;
 
       axios
-        .get("/residente/all/fase/2")
+        .get("/residente/all/fase/1")//es de la fase 2 pero como no hay , cojo de la 1
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
             return {
@@ -747,7 +751,7 @@ export default {
             .then((res) => {
               this.tallerescuelapadres.firma.urlfirma = res.data;
               this.tallerescuelapadres.firma.nombre = this.user.usuario;
-              this.tallerescuelapadres.firma.cargo = this.user.rol;
+              this.tallerescuelapadres.firma.cargo = this.user.rol.nombre;
               
             })
             .catch((err) => {
@@ -757,6 +761,8 @@ export default {
 
         //borrar despues de probar el guardado
         //this.tallerescuelapadres.firma.urlfirma = "https://siscarfileserver2.blob.core.windows.net/planes/8189c988-be54-4d02-84a0-610a65166ac8.jpg";
+        //this.tallerescuelapadres.firma.nombre = this.user.usuario;
+        //this.tallerescuelapadres.firma.cargo = this.user.rol.nombre;
 
         //Añadimos el id del usuario actual
         this.tallerescuelapadres.creadordocumento = this.user.id;
@@ -886,6 +892,8 @@ export default {
 
       !this.$v.tallerescuelapadres.contenido.fechaFin.fechaFvalid && errors.push("La fecha fin debe ser mayor a la fecha inicio");
       
+      !this.$v.tallerescuelapadres.contenido.fechaFin.fechaFvalid2 && errors.push("La fecha fin debe ser antes del día de hoy");
+      
       return errors;
     },
     tutoresErrors(){
@@ -992,7 +1000,8 @@ export default {
           },
           fechaFin:{
             required,
-            fechaFvalid
+            fechaFvalid,
+            fechaFvalid2
           },
           tutores:{
             required,

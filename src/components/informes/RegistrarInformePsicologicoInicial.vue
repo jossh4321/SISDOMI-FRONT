@@ -458,6 +458,7 @@
                           ref="myVueDropzone"
                           @vdropzone-success="afterSuccess"
                           @vdropzone-removed-file="afterRemoved"
+                          @vdropzone-complete="afterComplete"
                           id="dropzone"
                           :options="dropzoneOptions"
                         >
@@ -745,13 +746,13 @@ export default {
       });
     },
     agregarRecomendacion() {
-       this.$v.conclusion.$touch();
-      if (!this.$v.conclusion.$invalid) {
+       this.$v.recomendacion.$touch();
+      if (!this.$v.recomendacion.$invalid) {
       let recomendaciones = this.recomendacion;
       this.informe.contenido.recomendaciones.push(recomendaciones);
       this.recomendaciones = this.informe.contenido.recomendaciones;
       this.recomendacion = "";
-      this.$v.conclusion.$reset();
+      this.$v.recomendacion.$reset();
       }
     },
     eliminarRecomendacion(recomendacion) {
@@ -796,6 +797,11 @@ export default {
     },
     afterRemoved(file, error, xhr) {
       this.urlfirma = "";
+    },
+    afterComplete(file) {
+      if(file.status == "error"){
+         this.$refs.myVueDropzone.removeFile(file);
+      }
     },
     cerrarDialogo() {
       this.step = 1;
@@ -913,7 +919,7 @@ export default {
         errors.push("Debe ingresar la fecha de evaluación obligatoriamente");
       var dateselected = new Date(this.informe.fechacreacion);
       var maxdate = new Date();
-      !(dateselected.getTime() < maxdate.getTime()) &&
+      !(dateselected.getTime() <= maxdate.getTime()) &&
         errors.push("La fecha no debe ser mayor a la actual");
 
       return errors;

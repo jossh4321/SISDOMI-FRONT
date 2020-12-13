@@ -19,6 +19,9 @@
                       v-model="sesioneducativa.titulo"
                       color="#009900"
                       label="Titulo de Sesión"
+                      @input="$v.sesioneducativa.titulo.$touch()"
+                      @blur="$v.sesioneducativa.titulo.$touch()"
+                      :error-messages="errorTitulo"
                     ></v-text-field>
                   </v-col>
                   <v-col>
@@ -26,6 +29,9 @@
                       v-model="sesioneducativa.area"
                       color="#009900"
                       label="Area correspondiente"
+                      @input="$v.sesioneducativa.area.$touch()"
+                      @blur="$v.sesioneducativa.area.$touch()"
+                      :error-messages="errorArea"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -45,7 +51,10 @@
                       prepend-icon="mdi-calendar"
                       v-bind="attrs"
                       v-on="on"
-                      label="Fecha de Realización de Sesion de Aprendizaje"
+                      @input="$v.sesioneducativa.fechaCreacion.$touch()"
+                      @blur="$v.sesioneducativa.fechaCreacion.$touch()"
+                      label="Fecha de creación de la Sesion Educativa"
+                      :error-messages="errorFechaCreacion"
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -116,6 +125,9 @@
                             style="margin-top:2%"
                             color="#009900"
                             label="Grado"
+                            @input="$v.participantesFiltrados.grado.$touch()"
+                            @blur="$v.participantesFiltrados.grado.$touch()"
+                            :error-messages="errorGrado"
                         ></v-text-field>
                         <v-menu
                           v-model="item.datemenu"
@@ -133,7 +145,10 @@
                               prepend-icon="mdi-calendar"
                               v-bind="attrs"
                               v-on="on"
-                              label="Fecha de asistencia"
+                              @input="$v.participantesFiltrados.fecha.$touch()"
+                              @blur="$v.participantesFiltrados.fecha.$touch()"
+                              :error-messages="errorFechaRealizacion"
+                              label="Fecha de Realización de Sesion de Aprendizaje"
                             ></v-text-field>
                           </template>
                           <v-date-picker
@@ -149,7 +164,7 @@
                         <!-- Boton todavía sin funcionar -->
                         <!-- Boton todavía sin funcionar -->
                         <!-- Boton todavía sin funcionar -->
-                        <v-card-actions v-if="!item.EdicionFirmas">
+                        <!-- <v-card-actions v-if="!item.EdicionFirmas">
                           <v-btn
                             dark
                             color="blue"
@@ -157,7 +172,7 @@
                           >
                             <span>Opciones de firma</span>
                           </v-btn>
-                        </v-card-actions>
+                        </v-card-actions> -->
                         <!-- <v-card v-if="item.EdicionFirmas" style="margin-top:10px;padding:5px 5px;background-color:#EAEAEA"> -->
                         <v-card style="margin-top:10px;padding:5px 5px;background-color:#EAEAEA">
                           <v-card-actions>
@@ -221,6 +236,9 @@
                             style="margin-top:3%"
                             color="#009900"
                             label="Observaciones"
+                            @input="$v.participantesFiltrados.observaciones.$touch()"
+                            @blur="$v.participantesFiltrados.observaciones.$touch()"
+                            :error-messages="errorObservaciones"
                         ></v-text-field>
                         <v-card-actions align="right">
                           <v-row
@@ -310,6 +328,13 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength, maxLength, email, helpers,numeric } from "vuelidate/lib/validators";
 import axios from "axios";
 import moment from "moment";
+function esTexto(value) {
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+}
+
+function esParrafo(value) {
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+}
 export default {
   name: "ModificarSesionEducativa",
   props: ["sesioneducativa","datoSesion","dialogomodificar"],
@@ -349,8 +374,6 @@ export default {
   watch:{
     search: function(search){
       this.filtradoSearch(this.datoSesion.contenido.participantes, search)
-      
-        
     },
     participantesFiltrados:async function(){
       if(this.numeroEcontrados(this.participantesFiltrados)===0){
@@ -368,6 +391,14 @@ export default {
   },
   methods:{
     ...mapMutations(["replaceSesionesEducativas"]),
+    async mensaje(icono, titulo, texto, footer) {
+      await this.$swal({
+        icon: icono,
+        title: titulo,
+        text: texto,
+        footer: footer,
+      });
+    },
     cerrarDialogo() {
       this.$emit("close-dialog-edit");
       this.step=1;
@@ -444,39 +475,176 @@ export default {
       this.urlfirma = "";
     },
     async modificarSesionEducativa(){
-      this.participantesFiltrados.forEach((participanteFiltrado)=>{
-        this.sesioneducativa.contenido.participantes.forEach((participante)=>{
-          if(participante.idparticipante === participanteFiltrado.idparticipante){
-            participante.grado = participanteFiltrado.grado
-            participante.fecha = participanteFiltrado.fecha
-            participante.firma = participanteFiltrado.firma
-            participante.observaciones = participanteFiltrado.observaciones
-          }
-        })
-      })
-      //console.log(this.sesioneducativa.contenido.participantes)
-      console.log(this.sesioneducativa);
-      await axios
-        .put("/SesionesEducativas", this.sesioneducativa)
-        .then((res) => {
-          var info ={
-            id: res.data.id,
-            titulo: res.data.titulo,
-            fechaCreacion: res.data.fechaCreacion.split("T")[0],
-            area: res.data.area,
-            tipo: res.data.tipo,
-            idCreador: res.data.idCreador,
-            datoscreador:{
-              usuario: this.nombreCreador
+      this.$v.sesioneducativa.$touch();
+      //Quitar comentario cuando funcione la validacion de participantesFiltrados xd
+      //this.$v.participantesFiltrados.$touch();
+      if (this.$v.sesioneducativa.$invalid) {
+        console.log("hay errores al modificar p llama");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else{
+        this.participantesFiltrados.forEach((participanteFiltrado)=>{
+          this.sesioneducativa.contenido.participantes.forEach((participante)=>{
+            if(participante.idparticipante === participanteFiltrado.idparticipante){
+              participante.grado = participanteFiltrado.grado
+              participante.fecha = participanteFiltrado.fecha
+              participante.firma = participanteFiltrado.firma
+              participante.observaciones = participanteFiltrado.observaciones
             }
-          }
-          console.log("part añadido xd")
-          console.log(info);
-          this.replaceSesionesEducativas(info);
-          this.cerrarDialogo();
+          })
         })
-        .catch((err) => {console.log(err)});
+        //console.log(this.sesioneducativa.contenido.participantes)
+        console.log(this.sesioneducativa);
+        await axios
+          .put("/SesionesEducativas", this.sesioneducativa)
+          .then((res) => {
+            var info ={
+              id: res.data.id,
+              titulo: res.data.titulo,
+              fechaCreacion: res.data.fechaCreacion.split("T")[0],
+              area: res.data.area,
+              tipo: res.data.tipo,
+              idCreador: res.data.idCreador,
+              datoscreador:{
+                usuario: this.nombreCreador
+              }
+            }
+            console.log("part añadido xd")
+            console.log(info);
+            this.replaceSesionesEducativas(info);
+            this.cerrarDialogo();
+          })
+          .catch((err) => {console.log(err)});
+          await this.mensaje(
+          "success",
+          "Listo",
+          "Sesion Educativa Modificada Satisfactoriamente",
+          "<strong>Se redirigira a la interfaz de Gestión<strong>"
+          );
+          this.$v.sesioneducativa.$reset();
+          this.$v.participantesFiltrados.$reset();
+        } 
+      }
+  },
+  computed:{
+    errorTitulo() {
+      const errors = [];
+      if (!this.$v.sesioneducativa.titulo.$dirty) return errors;
+      !this.$v.sesioneducativa.titulo.required &&
+        errors.push("Debe escribir un titulo obligatoriamente");
+      !this.$v.sesioneducativa.titulo.esParrafo &&
+        errors.push("El titulo no puede contener caracteres especiales");
+      return errors;
     },
+    errorArea() {
+      const errors = [];
+      if (!this.$v.sesioneducativa.area.$dirty) return errors;
+      !this.$v.sesioneducativa.area.required &&
+        errors.push("Debe escribir un area obligatoriamente");
+      !this.$v.sesioneducativa.area.esParrafo &&
+        errors.push("El area no puede contener caracteres especiales");
+      return errors;
+    },
+    errorFechaCreacion() {
+      const errors = [];
+      if (!this.$v.sesioneducativa.fechaCreacion.$dirty) return errors;
+      !this.$v.sesioneducativa.fechaCreacion.required &&
+        errors.push("Debe ingresar la fecha de creacion obligatoriamente");
+      //validating whether the user are an adult
+      var dateselected = new Date(this.sesioneducativa.fechaCreacion);
+      var maxdate = new Date();
+      !(dateselected.getTime() < maxdate.getTime()) &&
+        errors.push("La fecha no debe ser mayor a la actual");
+
+      return errors;
+    },
+    errorGrado() {
+      const errors = [];
+      if (!this.$v.participantesFiltrados.grado.$dirty) return errors;
+      !this.$v.participantesFiltrados.grado.required &&
+        errors.push("Debe escribir un grado obligatoriamente");
+      !this.$v.participantesFiltrados.grado.esParrafo &&
+        errors.push("El grado no puede contener caracteres especiales");
+      return errors;
+    },
+    errorObservaciones() {
+      const errors = [];
+      if (!this.$v.participantesFiltrados.observaciones.$dirty) return errors;
+      !this.$v.participantesFiltrados.observaciones.required &&
+        errors.push("Debe escribir un observacion obligatoriamente");
+      !this.$v.participantesFiltrados.observaciones.esParrafo &&
+        errors.push("Las observaciones no deben contener caracteres especiales");
+      return errors;
+    },
+    errorFechaRealizacion(index) {
+      const errors = [];
+      if (!this.$v.participantesFiltrados.fecha.$dirty) return errors;
+      !this.$v.participantesFiltrados.fecha.required &&
+        errors.push("Debe ingresar la fecha de creacion obligatoriamente");
+      //validating whether the user are an adult
+      var dateselected = new Date(this.participantesFiltrados.fecha);
+      var maxdate = new Date();
+      !(dateselected.getTime() > maxdate.getTime()) &&
+        errors.push("La fecha no debe ser menor a la actual");
+
+      return errors;
+    },
+  },
+  validations(){
+    const validacionfecha = (value)=>{
+      var dateselected = new Date(this.participantesFiltrados.fecha);
+      var maxdate = new Date();
+      return (dateselected.getTime() > maxdate.getTime()) 
+    };
+    const validacionfechaCreacion = (value)=>{
+      var dateselected = new Date(this.sesioneducativa.fechaCreacion);
+      var maxdate = new Date();
+      return (dateselected.getTime() < maxdate.getTime())
+    }
+    return{
+      sesioneducativa:{
+        titulo:{
+          required,
+          esParrafo,
+          //minLength: minLength(5),
+        },
+        idCreador: {
+          required
+        },
+        fechaCreacion:{
+          required,
+          validacionfechaCreacion
+        },
+        area:{
+          required,
+          //minLength: minLength(3),
+          esParrafo
+        },
+      },
+      participantesFiltrados:{
+        idparticipante: {
+          required,
+        },
+        grado: {
+          required,
+          esParrafo
+        },
+        fecha: {
+          required,
+          validacionfecha
+        },
+        firma: {
+        },
+        observaciones: {
+          required,
+          esParrafo
+        }
+      },
+    }
   },
   async mounted() {
     console.log("Entrando:")

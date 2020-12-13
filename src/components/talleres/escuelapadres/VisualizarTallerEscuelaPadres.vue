@@ -29,10 +29,7 @@
                       color="#009900"
                       rows="1"
                       auto-grow
-                      :readonly="isDisabled"
-                      :error-messages="tituloErrors"
-                      @input="$v.taller.titulo.$touch()"
-                      @blur="$v.taller.titulo.$touch()"
+                      readonly
                     ></v-textarea>
                   </v-col>
                   <v-col>
@@ -43,76 +40,31 @@
                       color="#009900"
                       rows="1"
                       auto-grow
-                      :readonly="isDisabled"
-                      :error-messages="descripcionErrors"
-                      @input="$v.taller.descripcion.$touch()"
-                      @blur="$v.taller.descripcion.$touch()"
+                      readonly
                     ></v-textarea>
                   </v-col>
                 </v-row>
 
                 <v-row>
                   <v-col>
-                    <v-menu
-                      v-model="datemenuinicio"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                      >
-                      <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                            v-model="taller.contenido.fechainicio"
-                            prepend-icon="mdi-calendar"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                            color="#009900"
-                            outlined
-                            label="Fecha del inicio del taller"
-                            @input="$v.taller.contenido.fechainicio.$touch()"
-                            @blur="$v.taller.contenido.fechainicio.$touch()"
-                            :error-messages="fechainicioErrors"
-                          ></v-text-field>
-                      </template>
-                      <v-date-picker
-                          v-model="taller.contenido.fechainicio"
-                          @input="menu1 = false"
-                          locale="es-es"
-                      ></v-date-picker>
-                    </v-menu>
+                    <v-text-field
+                        v-model="taller.contenido.fechainicio"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        color="#009900"
+                        outlined
+                        label="Fecha del inicio del taller"
+                      ></v-text-field>
                   </v-col>
                   <v-col>
-                    <v-menu
-                        v-model="datemenufin"
-                        :close-on-content-click="false"
-                        :nudge-right="40"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="290px"
-                        >
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-text-field
-                            v-model="taller.contenido.fechafin"
-                            prepend-icon="mdi-calendar"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                            color="#009900"
-                            outlined
-                            label="Fecha fin del taller"
-                            @input="$v.taller.contenido.fechafin.$touch()"
-                            @blur="$v.taller.contenido.fechafin.$touch()"
-                            :error-messages="fechafinErrors"
-                            ></v-text-field>
-                        </template>
-                        <v-date-picker
-                            v-model="taller.contenido.fechafin"
-                            @input="menu2 = false"
-                            locale="es-es"
-                        ></v-date-picker>
-                    </v-menu>
+                    <v-text-field
+                      v-model="taller.contenido.fechafin"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      color="#009900"
+                      outlined
+                      label="Fecha fin del taller"
+                      ></v-text-field>
                   </v-col>
                 </v-row>
 
@@ -172,10 +124,7 @@
                                         color="#009900"
                                         rows="1"
                                         auto-grow
-                                        :readonly="isDisabled"
-                                        @input="$v.tutor.nombre.$touch()"
-                                        @blur="$v.tutor.nombre.$touch()"
-                                        :error-messages="tutornombreErrors"
+                                        readonly
                                       ></v-textarea>
                                       
                                       <v-row>
@@ -186,11 +135,8 @@
                                             dense
                                             outlined
                                             v-model="tutor.tipoDocumento"
-                                            :readonly="isDisabled"
+                                            readonly
                                             color="#009900"
-                                            @input="$v.tutor.tipoDocumento.$touch()"
-                                            @blur="$v.tutor.tipoDocumento.$touch()"
-                                            :error-messages="tipoDocumentoErrors"
                                           ></v-select>
                                         </v-col>
                                         <v-col>
@@ -201,62 +147,22 @@
                                             color="#009900"
                                             rows="1"
                                             auto-grow
-                                            :readonly="isDisabled"
-                                            @input="$v.tutor.numeroDocumento.$touch()"
-                                            @blur="$v.tutor.numeroDocumento.$touch()"
-                                            :error-messages="tutornumerodocumentoErrors"
+                                            readonly
                                           ></v-textarea>
                                         </v-col>
                                       </v-row>
-
-                                      <v-autocomplete
-                                        :items="listResidentes"
-                                        v-model="tutor.usuaria"
-                                        :search-input.sync="searchResidente"
-                                        filled
-                                        chips
-                                        outlined
-                                        color="#009900"
-                                        label="Residente a cargo del tutor"
-                                        item-text="residente"
-                                        return-object
-                                        @input="$v.tutor.usuaria.$touch()"
-                                        @blur="$v.tutor.usuaria.$touch()"
-                                        :error-messages="errorResidente"
-                                        :readonly="isDisabled"
-                                      >
-                                        <template v-slot:selection="data">
+                                      
+                                      <v-row>
                                           <v-chip
-                                            v-bind="data.attrs"
-                                            :input-value="data.selected"
                                             style="margin-top:5px"
-                                          >
-                                            <v-avatar left color="#b3b3ff" size="24">
-                                              <span style="font-size:12px">{{ data.item.residente.charAt(0) }}</span>
-                                            </v-avatar>
-                                            {{ data.item.residente }}
-                                          </v-chip>
-                                        </template>
-                                        <template v-slot:item="data">
-                                          <template>
-                                            <v-list-item-avatar>
-                                              <v-avatar left color="#b3b3ff" size="24">
-                                                <span style="font-size:12px">{{ data.item.residente.charAt(0) }}</span>
+                                            >
+                                            <span style="font-size:15px">Residente a cargo del tutor: </span>
+                                              <v-avatar color="#b3b3ff" size="24">
+                                                <span style="font-size:12px">R</span>
                                               </v-avatar>
-                                            </v-list-item-avatar>
-                                            <v-list-item-content>
-                                              <v-list-item-title
-                                                >Nombre completo: {{ data.item.residente }}
-                                                {{ data.item.apellido }}
-                                              </v-list-item-title>
-                                              <v-list-item-subtitle
-                                                >Nro. Documento:
-                                                {{ data.item.numeroDocumento }}</v-list-item-subtitle
-                                              >
-                                            </v-list-item-content>
-                                          </template>
-                                        </template>
-                                      </v-autocomplete>
+                                              {{ tutor.usuaria.residente }} - Nro. Documento: {{ tutor.usuaria.numeroDocumento }}
+                                          </v-chip>
+                                      </v-row>
 
                                       <v-textarea
                                         label="Parentesco con la residente"
@@ -265,10 +171,8 @@
                                         color="#009900"
                                         rows="1"
                                         auto-grow
-                                        :readonly="isDisabled"
-                                        @input="$v.tutor.parentesco.$touch()"
-                                        @blur="$v.tutor.parentesco.$touch()"
-                                        :error-messages="parentescoErrors"
+                                        readonly
+                                        style="margin-top:50px"
                                       ></v-textarea>
                                     </v-card-text>
                                     <v-card-actions>
@@ -353,13 +257,13 @@
           <v-stepper-content step="3">
             <form>
               <v-row>
-                <v-col cols="12" sm="12">
-                  <vue-dropzone
-                    ref="myVueDropzone"
-                    :options="dropzoneOptions"
-                    id="dropzone"
-                    @vdropzone-mounted="mounteddropzone"
-                  ></vue-dropzone>
+                <v-col cols="12" sm="12" align="center">
+                  <v-img
+                    :src="taller.firma.urlfirma"
+                    max-width="250"
+                    max-height="250"
+                    >
+                    </v-img>
                 </v-col>
                 
                 <v-col cols="12" sm="6" md="6">
@@ -384,8 +288,6 @@
 
 <script>
 import axios from "axios";
-import vue2Dropzone from "vue2-dropzone";
-import "vue2-dropzone/dist/vue2Dropzone.min.css";
 
 export default {
   data(){
@@ -415,15 +317,6 @@ export default {
       accion: "registrar",
       indice: "",
       listImages: [],
-      dropzoneOptions: {
-        url: "https://httpbin.org/post",
-        thumbnailWidth: 250,
-        maxFiles: 1,
-        dictDefaultMessage: "Ingrese su firma para el registro",
-        acceptedFiles: "image/*",
-        headers: { "My-Awesome-Header": "header value" },
-        dictMaxFilesExceeded: "Tamaño excedido",
-      },
     }
   },  
   methods:{
@@ -442,8 +335,7 @@ export default {
     closeDialog() {
       this.$emit("close-dialog");
       this.limpiar();
-      this.show = false
-      this.$refs.myVueDropzone.removeAllFiles()
+      this.show = false;
     },
     cerrarAgregarTutores() {
       this.dialogAgregarTutores = false;
@@ -454,8 +346,6 @@ export default {
       this.tutor.numeroDocumento = "";
       this.tutor.parentesco = "";
       this.tutor.usuaria = {};
-
-      this.$v.tutor.$reset();
     },
     modalConsultar(index) {
       this.accion = "consultar";
@@ -467,16 +357,6 @@ export default {
       this.tutor.parentesco = this.taller.contenido.tutores[index].parentesco;
 
       this.tutor.usuaria = this.taller.contenido.tutores[index].usuaria;
-    },
-    mounteddropzone() {
-      var file = { size: 250, name: "Firma del trabajador", type: "image/jpg" };
-      var url = this.taller.firma.urlfirma;
-
-      this.$refs.myVueDropzone.manuallyAddFile(file, url);
-
-      this.listImages.push(
-        this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[0]
-      );
     },
   },
   props: {
@@ -495,35 +375,6 @@ export default {
         }
       },
     },
-    isDisabled() {
-      if (this.accion == "consultar") {
-        return true;
-      } else {
-        return false;
-      }
-    },
-  },
-  created() {
-    this.isDisabled = true;
-    axios
-        .get("/residente/all/fase/2")
-        .then((res) => {
-          let residentesMap = res.data.map(function (res) {
-            return {
-              residente: res.nombre + " " + res.apellido,
-              id: res.id,
-              numeroDocumento: res.tipoDocumento + ": " + res.numeroDocumento,
-            };
-          });
-          this.listResidentes = residentesMap;
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-  },
-  
-  components: {
-    vueDropzone: vue2Dropzone
   },
 }
 </script>

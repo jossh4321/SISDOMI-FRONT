@@ -275,6 +275,7 @@
                     ref="myVueDropzone"
                     @vdropzone-success="afterSuccess"
                     @vdropzone-removed-file="afterRemoved"
+                    @vdropzone-complete="afterComplete"
                     id="dropzone"
                     :options="dropzoneOptions"
                   >
@@ -412,6 +413,7 @@
                           ref="myVueDropzone"
                           @vdropzone-success="afterSuccess2"
                           @vdropzone-removed-file="afterRemoved2"
+                          @vdropzone-complete="afterComplete2"
                           id="dropzone2"
                           :options="dropzoneOptions2"
                         >
@@ -752,6 +754,11 @@ export default {
       this.informe.contenido.anexos = "";
       this.$v.informe.contenido.anexos.$model = "";
     },
+    afterComplete(file) {
+      if(file.status == "error"){
+         this.$refs.myVueDropzone.removeFile(file);
+      }
+    },
     afterSuccess2(file, response) {
       this.urlfirma = file.dataURL.split(",")[1];      
     },
@@ -759,6 +766,11 @@ export default {
       this.urlfirma = "";
       //this.informe.contenido.firmas.urlfirma = "";
       // this.$v.informe.contenido.firmas.urlfirma.$model = "";
+    },
+    afterComplete2(file) {
+      if(file.status == "error"){
+         this.$refs.myVueDropzone.removeFile(file);
+      }
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({

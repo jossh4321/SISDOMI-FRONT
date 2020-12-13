@@ -220,7 +220,7 @@ export default {
       usuario: {
         
         datos: {
-          CreadorDocumento:" ",
+        CreadorDocumento:" ",
         fechacreacion:" ",
         area:" ",
         fase:" ", 
@@ -298,7 +298,7 @@ export default {
       return {
        
         datos: {
-          CreadorDocumento:" ",
+        CreadorDocumento:" ",
         fechacreacion:" ",
         area:" ",
         fase:" ", 

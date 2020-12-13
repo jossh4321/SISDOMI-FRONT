@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="justify-center"
-      >Registro de Informe Psicológico Inicial</v-card-title
+      >Actualizar Informe Psicológico Inicial</v-card-title
     >
     <v-stepper v-model="step">
       <v-stepper-header>
@@ -310,7 +310,7 @@
                   color="#FAFAFA"
                   style="margin:5px"
                   height="60"
-                  v-for="conclusion in informe.contenido.conclusiones"
+                  v-for="conclusion in conclusiones"
                   :key="conclusion"
                 >
                   <v-row style="margin-left:10px;heigh:100%" align="center">
@@ -377,7 +377,7 @@
                   color="#FAFAFA"
                   style="margin:5px"
                   height="60"
-                  v-for="recomendacion in informe.contenido.recomendaciones"
+                  v-for="recomendacion in recomendaciones"
                   :key="recomendacion"
                 >
                   <v-row style="margin-left:10px;heigh:100%" align="center">
@@ -448,6 +448,8 @@
                         ref="myVueDropzone"
                         @vdropzone-success="afterSuccess"
                         @vdropzone-removed-file="afterRemoved"
+                                             @vdropzone-complete="afterComplete"
+
                         id="dropzone"
                         :options="dropzoneOptions"
                       >
@@ -530,6 +532,14 @@
                   </v-card-title>
                   <v-card-text>
                     <img
+                      v-if="imagen.includes('http')"
+                      width="100%"
+                      height="100%"
+                      :src="imagen"
+                      alt=""
+                    />
+                    <img
+                      v-else
                       width="100%"
                       height="100%"
                       :src="'data:image/jpeg;base64,' + imagen"
@@ -594,7 +604,6 @@ function esParrafo(value) {
   return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value);
 }
 
-
 export default {
   props: ["listaresidentes", "visible", "informe", "listapsicologos"],
   components: {
@@ -627,7 +636,12 @@ export default {
       datemenu: false,
     };
   },
-  methods: {    
+  async created() {
+    this.cargarConclusiones();
+    this.cargarRecomendaciones();
+  },
+  methods: {
+    ...mapMutations(["replaceInforme"]),
     async actualizarInforme() {
       this.informe.creadordocumento = this.user.id;
       console.log(this.informe);
@@ -657,7 +671,7 @@ export default {
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
-            this.addInforme(info);
+            this.replaceInforme(info);
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -676,6 +690,12 @@ export default {
         text: texto,
         footer: footer,
       });
+    },
+     cargarConclusiones() {
+      this.conclusiones = this.informe.contenido.conclusiones;
+    },
+     cargarRecomendaciones() {
+      this.recomendaciones = this.informe.contenido.recomendaciones;
     },
     agregarTranstorno() {
       this.$v.transtorno.$touch();
@@ -705,6 +725,7 @@ export default {
       }
     },
     eliminarConclusion(conclusion) {
+      console.log(conclusion);
       this.conclusiones.forEach(function(car, index, object) {
         if (car === conclusion) {
           object.splice(index, 1);
@@ -712,16 +733,16 @@ export default {
       });
     },
     agregarRecomendacion() {
-       this.$v.conclusion.$touch();
-      if (!this.$v.conclusion.$invalid) {
-      let recomendaciones = this.recomendacion;
-      this.informe.contenido.recomendaciones.push(recomendaciones);
-      this.recomendaciones = this.informe.contenido.recomendaciones;
-      this.recomendacion = "";
-      this.$v.conclusion.$reset();
+      this.$v.recomendacion.$touch();
+      if (!this.$v.recomendacion.$invalid) {
+        let recomendaciones = this.recomendacion;
+        this.informe.contenido.recomendaciones.push(recomendaciones);
+        this.recomendaciones = this.informe.contenido.recomendaciones;
+        this.recomendacion = "";
+        this.$v.recomendacion.$reset();
       }
     },
-    eliminarRecomendacion(recomendacion) {
+    eliminarRecomendacion(recomendacion) {      
       this.recomendaciones.forEach(function(car, index, object) {
         if (car === recomendacion) {
           object.splice(index, 1);
@@ -763,6 +784,11 @@ export default {
     },
     afterRemoved(file, error, xhr) {
       this.urlfirma = "";
+    },
+      afterComplete(file) {
+      if(file.status == "error"){
+         this.$refs.myVueDropzone.removeFile(file);
+      }
     },
     cerrarDialogo() {
       this.$emit("close-dialog-update");
@@ -877,7 +903,6 @@ export default {
       if (!this.$v.informe.fechacreacion.$dirty) return errors;
       !this.$v.informe.fechacreacion.required &&
         errors.push("Debe ingresar la fecha de evaluación obligatoriamente");
-      //validating whether the user are an adult
       var dateselected = new Date(this.informe.fechacreacion);
       var maxdate = new Date();
       !(dateselected.getTime() < maxdate.getTime()) &&

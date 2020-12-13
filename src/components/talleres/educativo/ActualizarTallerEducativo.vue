@@ -744,6 +744,7 @@ export default {
       this.taller.contenido.nrosesion=0;
       this.taller.contenido.turno="";
       this.taller.contenido.participantes=[];
+      this.participante = {};
       this.$refs.myVueDropzone.removeAllFiles();
       this.$refs.myVueDropzoneParticipante.removeAllFiles();
 
@@ -819,6 +820,7 @@ export default {
         this.taller.contenido.participantes[index].conducta = this.participante.conducta;
         this.taller.contenido.participantes[index].usuaria = this.participante.usuaria;
         this.taller.contenido.participantes[index].imgfirma = this.participante.imgfirma;
+        this.taller.contenido.participantes[index].firma = this.participante.firma;
 
         this.participante.cooperacion = "";
         this.participante.puntualidad = "";
@@ -826,6 +828,7 @@ export default {
         this.participante.conducta = "";
         this.participante.usuaria = {};
         this.participante.imgfirma = {};
+        this.participante.firma = "";
         this.$refs.myVueDropzoneParticipante.removeAllFiles();
 
         this.dialogAgregarParticipantes = false;
@@ -973,7 +976,7 @@ export default {
             .then((res) => {
               this.taller.firma.urlfirma = res.data;
               this.taller.firma.nombre = this.user.usuario;
-              this.taller.firma.cargo = this.user.rol;
+              this.taller.firma.cargo = this.user.rol.nombre;
             })
             .catch((err) => {
               console.error(err);

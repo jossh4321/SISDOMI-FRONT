@@ -636,8 +636,12 @@ import { required, minLength, numeric } from "vuelidate/lib/validators";
 
 import { mapGetters } from "vuex";
 
+function fechaFvalid2(value) {
+  return !(this.$moment(value) > this.$moment());
+}
+
 function nrosesionValid(value) {
-  return (value > 0);
+  return (value > 0) & (value < 21);
 }
 
 export default {
@@ -966,7 +970,7 @@ export default {
             .then((res) => {
               this.tallerFormativoE.firma.urlfirma = res.data;
               this.tallerFormativoE.firma.nombre = this.user.usuario;
-              this.tallerFormativoE.firma.cargo = this.user.rol;
+              this.tallerFormativoE.firma.cargo = this.user.rol.nombre;
             })
             .catch((err) => {
               console.error(err);
@@ -1076,6 +1080,8 @@ export default {
 
       !this.$v.tallerFormativoE.contenido.fecharealizacion.required && errors.push("Debe Ingresar la fecha en la cual se realizó el taller obligatoriamente");
 
+      !this.$v.tallerFormativoE.contenido.fecharealizacion.fechaFvalid2 && errors.push("La fecha de realización debe ser antes del día de hoy");
+      
       return errors;
     },
     turnoErrors() {
@@ -1108,7 +1114,7 @@ export default {
         );
       !this.$v.tallerFormativoE.contenido.nrosesion.nrosesionValid &&
         errors.push(
-          "El n° de sesión debe ser mayor a 0"
+          "El n° de sesión debe ser mayor a 0 y menor a 20"
         );
 
       return errors;
@@ -1173,6 +1179,7 @@ export default {
         contenido:{
           fecharealizacion:{
             required,
+            fechaFvalid2
           },
           turno:{
             required,
