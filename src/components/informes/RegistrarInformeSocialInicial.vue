@@ -592,6 +592,7 @@
                     ref="myVueDropzone"
                     @vdropzone-success="afterSuccess"
                     @vdropzone-removed-file="afterRemoved"
+                    @vdropzone-complete="afterComplete"
                     id="dropzone"
                     :options="dropzoneOptions"
                   >
@@ -649,6 +650,7 @@
                           ref="myVueDropzone"
                           @vdropzone-success="afterSuccess2"
                           @vdropzone-removed-file="afterRemoved2"
+                          @vdropzone-complete="afterComplete2"
                           id="dropzone2"
                           :options="dropzoneOptions2"
                         >
@@ -777,7 +779,7 @@ import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import { required, minLength, email, helpers, numeric, between } from "vuelidate/lib/validators";
+import { required, minLength,maxLength, email, helpers, numeric, between } from "vuelidate/lib/validators";
 import moment from "moment";
 import { mapGetters } from "vuex";
 
@@ -1140,11 +1142,21 @@ export default {
     afterRemoved(file, error, xhr) {
       this.informe.contenido.anexos = "";
     },
+    afterComplete(file) {
+      if(file.status == "error"){
+         this.$refs.myVueDropzone.removeFile(file);
+      }
+    },
     afterSuccess2(file, response) {
       this.urlfirma = file.dataURL.split(",")[1];
     },
     afterRemoved2(file, error, xhr) {
       this.urlfirma = "";
+    },
+    afterComplete2(file) {
+      if(file.status == "error"){
+         this.$refs.myVueDropzone.removeFile(file);
+      }
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -1188,10 +1200,14 @@ export default {
       if (!this.$v.familiar.numerodocumento.$dirty) return errors;
       !this.$v.familiar.numerodocumento.required &&
         errors.push("Debe escribir el número de documento obligatoriamente");
-      !this.$v.familiar.numerodocumento.esParrafo &&
-        errors.push("No se aceptan caracteres especiales");
+      !this.$v.familiar.numerodocumento.numeric &&
+        errors.push("El documento debe poseer 8 digitos numéricos");
+      !this.$v.familiar.numerodocumento.minLength &&
+        errors.push("El documento debe poseer 8 digitos numéricos");
+      !this.$v.familiar.numerodocumento.maxLength &&
+        errors.push("El documento debe poseer 8 digitos numéricos");
       return errors;
-    },
+    },     
     errorNombreFamiliar() {
       const errors = [];
       if (!this.$v.familiar.nombre.$dirty) return errors;
@@ -1416,7 +1432,9 @@ export default {
         },
         numerodocumento: {
           required,
-          esParrafo
+          numeric,
+          minLength: minLength(8),
+          maxLength: maxLength(8)
         },
         parentesco: {
           required,

@@ -137,8 +137,7 @@
                 </v-card>
               </v-card>
 
-
-                            <v-card
+              <v-card
                 style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
               >
                 <v-card-title>Anexos</v-card-title>
@@ -177,7 +176,7 @@
                           />
                         </v-btn>
                       </template>
-                    </v-col>                   
+                    </v-col>
                   </v-row>
                 </v-card>
               </v-card>
@@ -206,10 +205,6 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
-
-
-
-
 
               <v-card
                 style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
@@ -245,62 +240,62 @@
                     </v-col>
                     <v-col :cols="4" align="center">
                       <template>
-                          <v-btn
-                            fab
-                            icon=""
-                            x-small
-                            dark
-                            color="#EAEAEA"
-                            @click="verFirma(index)"
-                          >
-                            <img
-                              style="width:25% "
-                              src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
-                              alt="firma"
-                            />
-                          </v-btn>
-                        </template>
+                        <v-btn
+                          fab
+                          icon=""
+                          x-small
+                          dark
+                          color="#EAEAEA"
+                          @click="verFirma(index)"
+                        >
+                          <img
+                            style="width:25% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
+                            alt="firma"
+                          />
+                        </v-btn>
+                      </template>
                     </v-col>
                   </v-row>
                 </v-card>
               </v-card>
 
               <v-dialog
-                        v-model="dialogVistaPreviaFirma"
-                        persistent
-                        max-width="600px"
+                v-model="dialogVistaPreviaFirma"
+                persistent
+                max-width="600px"
               >
-                        <v-card align="center">
-                          <v-card-title>
-                            <span class="headline">Vista previa</span>
-                          </v-card-title>
-                          <v-card-text>
-                            <img
-                              v-if="imagen.includes('http')"
-                              width="100%"
-                              height="100%"
-                              :src="imagen"
-                              alt=""
-                            />
-                            <img
-                              v-else
-                              width="100%"
-                              height="100%"
-                              :src="'data:image/jpeg;base64,' + imagen"
-                              alt=""
-                            />
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              color="blue darken-1"
-                              text
-                              @click="cerrarVistaPreviaFirma()"
-                            >
-                              Cerrar
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
+                <v-card align="center">
+                  <v-card-title>
+                    <span class="headline">Vista previa</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <img
+                      v-if="imagen.includes('http')"
+                      width="100%"
+                      height="100%"
+                      :src="imagen"
+                      alt=""
+                    />
+                    <img
+                      v-else
+                      width="100%"
+                      height="100%"
+                      :src="'data:image/jpeg;base64,' + imagen"
+                      alt=""
+                    />
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="cerrarVistaPreviaFirma()"
+                    >
+                      Cerrar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
               </v-dialog>
               <v-btn block @click="cerrarDialogo()" color="primary">
                 <v-icon left>mdi-close-outline</v-icon>
@@ -332,7 +327,7 @@ export default {
       imagen: "",
       dialogVistaPreviaFirma: false,
       dialogVistaPreviaAnexos: false,
-      pdf: ""
+      pdf: "",
     };
   },
   async created() {
@@ -354,12 +349,12 @@ export default {
     async obtenerEducador() {
       await axios
         .get("/usuario/id?id=" + this.informe.contenido.evaluador)
-        .then((res) => {                    
+        .then((res) => {
           this.educador = res.data.datos.nombre + " " + res.data.datos.apellido;
         })
-        .catch((err) => console.log(err));        
+        .catch((err) => console.log(err));
     },
-    verFirma(index) {      
+    verFirma(index) {
       this.imagen = this.informe.contenido.firmas[index].urlfirma;
       this.dialogVistaPreviaFirma = true;
     },
@@ -368,7 +363,7 @@ export default {
     },
     verAnexo(index) {
       this.pdf = this.informe.contenido.anexos[index].url;
-      (this.dialogVistaPreviaAnexos = true);
+      this.dialogVistaPreviaAnexos = true;
     },
     cerrarVistaPreviaAnexo() {
       this.dialogVistaPreviaAnexos = false;

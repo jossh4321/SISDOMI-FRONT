@@ -205,15 +205,19 @@
                                v-model="firma.cargo"
                                 label="Cargo"
                                 outlined  
-                               
+                                @input="$v.firma.cargo.$touch()"
+                                @blur="$v.firma.cargo.$touch()"
+                                :error-messages="errorCargoFirma"
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                v-model="firma.nombre"
                                 label="Nombre"
                                 outlined  
-                                color="#009900"  
-                              
+                                @input="$v.firma.nombre.$touch()"
+                                @blur="$v.firma.nombre.$touch()"
+                                :error-messages="errorNombreFirma" 
+                                color="#009900" 
                                 ></v-text-field>
                         <div>
                                 <vue-dropzone
@@ -225,6 +229,12 @@
                                 >
                                 </vue-dropzone>
                        </div>
+                        <v-card v-if="errorImagen" color="red">
+                          <v-card-text class="text-center" style="color: white"
+                            >Debe Subir una firma 
+                            Obligatoriamente</v-card-text
+                          >
+                        </v-card>
                               <v-btn color="success" @click="guardarFirma">
                                       añadir
                               </v-btn>
@@ -346,12 +356,11 @@
                                   </v-card-text>
                                   <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn
-                                      color="blue darken-1"
-                                      text
-                                      @click="dialog = false"
-                                    >
+                                    <v-btn color="blue darken-1" text @click="cerrarSeguimientoFirma()">
                                       Cerrar
+                                    </v-btn>
+                                    <v-btn color="blue darken-1" text @click="guardarSeguimientoFirma()">
+                                      Guardar
                                     </v-btn>
                                 
                                   </v-card-actions>
@@ -414,21 +423,28 @@
                       <!--campos de texto -->
                                <v-text-field
                                 v-model="trimestre.orden"
+                                 @input="$v.trimestre.orden.$touch()"
+                                @blur="$v.trimestre.orden.$touch()"
+                                :error-messages="errorOrdenTrimestre"
                                 label="N°Puesto"
                                 outlined  
-                            
                                 color="#009900"
                                 ></v-text-field>
                                 
                                 <v-text-field
                                 v-model="trimestre.analisiseducativo"
+                                @input="$v.trimestre.analisiseducativo.$touch()"
+                                @blur="$v.trimestre.analisiseducativo.$touch()"
+                                :error-messages="errorAnalisisTrimestre"
                                 label="Analisis Educativo"
                                 outlined  
-                            
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="trimestre.recomendaciones"
+                                @input="$v.trimestre.recomendaciones.$touch()"
+                                @blur="$v.trimestre.recomendaciones.$touch()"
+                                :error-messages="errorRecomendacionTrimestre"
                                 label="Recomendaciones"
                                 outlined  
                             
@@ -545,13 +561,18 @@
                     <!--Campo de texto de notas -->
                                 <v-text-field
                                 v-model="puntajes.area"
+                                 @input="$v.puntajes.area.$touch()"
+                                @blur="$v.puntajes.area.$touch()"
+                                :error-messages="errorAreaPuntajes"
                                 label="Nombre del Curso:"
                                 outlined  
-                                
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="puntajes.promedio"
+                                @input="$v.puntajes.promedio.$touch()"
+                                @blur="$v.puntajes.promedio.$touch()"
+                                :error-messages="errorPromedioPuntajes"
                                 label="Nota obtenida:"
                                 outlined  
                                 
@@ -648,9 +669,9 @@
                       <v-btn
                         color="blue darken-1"
                         text
-                        @click="dialog1 = false;"
+                        @click="guardarSeguimientoNotas"
                       >
-                        Cerrar
+                        Guardar
                       </v-btn>
                   
                     </v-card-actions>
@@ -694,7 +715,7 @@ Vue.use(Vuelidate)
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import { required, minLength, email, helpers,numeric } from "vuelidate/lib/validators";
+import { required, minLength,maxLength, email, helpers,numeric } from "vuelidate/lib/validators";
 import moment from "moment";
 export default {
 name:'RegistrarSeguimientoEducativo',
@@ -833,9 +854,29 @@ methods:{
       }
       
     },
+    guardarSeguimientoFirma(){
+        this.$v.seguimiento.contenido.firmas.$touch();
+        if(!this.$v.seguimiento.contenido.firmas.$invalid){
+            this.$v.firma.$reset();
+            this.dialog = false;
+        }
+    },
+    cerrarSeguimientoFirma(){
+      this.$v.seguimiento.contenido.firmas.$reset();
+         this.$v.firma.$reset();
+        this.dialog = false;
+    },
+     guardarSeguimientoNotas(){
+        
+            this.$v.puntajes.$reset();
+            this.$v.trimestre.$reset();
+            this.dialog1 = false;
+        },
+  
     ///metodo para agregar firma residente
     guardarFirma(){
-         
+      this.$v.firma.$touch();
+   if(!this.$v.firma.$invalid ){ 
    let firmad = {urlfirma:this.firma.urlfirma,nombre:this.firma.nombre,cargo:this.firma.cargo};
 
    this.seguimiento.contenido.firmas.push(firmad);
@@ -846,6 +887,7 @@ methods:{
    this.firma.nombre="";
    this.firma.cargo="";
    !this.$v.firma.$reset();
+   }
     },
     eliminarFirma(index) {
       this.seguimiento.contenido.firmas.splice(index, 1);
@@ -856,6 +898,8 @@ methods:{
       this.dialogVistaPreviaFirma = true;
     },
     guardarTrimestre(){
+       this.$v.trimestre.$touch();
+   if(!this.$v.trimestre.$invalid ){ 
       let trimestred={orden:this.trimestre.orden,puntajes:[],analisiseducativo:this.trimestre.
       analisiseducativo,recomendaciones:this.trimestre.recomendaciones};
       
@@ -868,11 +912,14 @@ methods:{
       this.trimestre.analisiseducativo="";
       this.trimestre.recomendaciones="";
       !this.$v.trimestre.$reset();
+   }
     },
     eliminarTrimestre(index){
       this.seguimiento.contenido.trimestre.splice(index,1);
     },
     guardarNotas(){
+      this.$v.puntajes.$touch();
+   if(!this.$v.puntajes.$invalid ){ 
       let puntajesd={area:this.puntajes.area,promedio:this.puntajes.promedio};
        this.seguimiento.contenido.trimestre[this.index].puntajes.push(puntajesd);
        
@@ -882,6 +929,7 @@ methods:{
        this.puntajes.area="";
        this.puntajes.promedio="";
        !this.$v.puntajes.$reset();
+   }
     },
     eliminarNotas(index){
      this.seguimiento.contenido.trimestre[0].puntajes.splice(index,1)
@@ -1028,7 +1076,13 @@ methods:{
       errors.push("el puntaje  debe tener al menos 2 caracteres");
     return errors;
     
-    }
+    },
+    errorImagen() {
+      return this.$v.firma.urlfirma.required == false &&
+        this.$v.firma.urlfirma.$dirty == true
+        ? true
+        : false;
+    },
   },
   validations(){
         return{
@@ -1066,7 +1120,45 @@ methods:{
            codigodocumento:""
       },
     },
-   
+    firma:{
+     cargo:{
+       required,
+        minLength: minLength(4),
+     },
+     nombre:{
+       required,
+        minLength: minLength(4),
+     },
+     urlfirma:{
+       required,
+     }
+    },
+    trimestre:{
+      orden:{
+        required,
+        minLength: minLength(1),
+        numeric
+        }
+        ,analisiseducativo:{
+          required,
+        minLength: minLength(4),
+        },
+        recomendaciones:{
+          required,
+        minLength: minLength(4),
+        }
+        },
+    puntajes:{
+          area:{
+            required,
+            minLength: minLength(4),
+          },
+          promedio:{
+            required,
+            minLength: minLength(2),
+            numeric
+          }
+      }
 
 
         

@@ -356,6 +356,7 @@
         <v-stepper-content step="3">
           <div  class="container-user">
             <form> 
+
                  <v-autocomplete        
                       style="margin-top:10px"      
                       :items="listaeducadores"
@@ -366,6 +367,7 @@
                       color="#009900"
                       label="Responsable de turno"
                       item-value="id"
+                      item-text="datos.nombre"
                       @input="$v.fichaIngreso.contenido.responsableTurno.$touch()"
                       @blur="$v.fichaIngreso.contenido.responsableTurno.$touch()"
                       :error-messages="errorResponsableTurno"                            
@@ -469,9 +471,6 @@
                             </v-card-text
                           >
                   </v-card>
-
-
-
                 <v-card
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >

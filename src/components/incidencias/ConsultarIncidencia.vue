@@ -133,43 +133,87 @@
         <v-stepper-content step="3">
             <div class="container-user">
               <form style="padding:5px">
-                  <v-autocomplete
-                            filled
-                            chips
-                            color="success"
-                            label="Residentes Involucrados"
-                            outlined
-                            readonly
-                            v-model="incidencia.residentes"
-                            :items="incidencia.residentes"
-                            item-text="residente"
-                            item-value="id"
-                            multiple
-                            >
-                          <template v-slot:item="item">
-                              <v-row @click="clearAfterSelect">
-                                <v-col cols="1">
-                                      <v-list-item-avatar
-                                      color="primary"
-                                      class="headline font-weight-light white--text"
-                                    >
-                                      {{ item.item.residente.charAt(0) }}
-                                    </v-list-item-avatar>
-                                </v-col>
-                                <v-col cols="11">
-                                    <v-list-item-content style="margin-left:10px">
-                                      <v-list-item-title>
-                                        {{ item.item.residente }}
-                                      </v-list-item-title>
-                                      <v-list-item-subtitle>
-                                        DNI: {{ item.item.numeroDocumento }}
-                                      </v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-col>
-                              </v-row>
-                            </template>
-                        </v-autocomplete>
+                  <v-card> 
+                    <v-card-title>
+                      Residentes Involucrados
+                    </v-card-title>
+                    </v-card>
+                   <v-slide-group
+                      class="pa-4"
+                      active-class="success"
+                      show-arrows
+                    >
+                      <v-slide-item
+                        v-for="residente in incidencia.residentes"
+                        :key="residente.id"
+                      >
+                        <v-card
+                          style="margin:5px;border: 1px solid;color:black"
+                          @click="visualizarDetalleUsuario(residente)"
+                        >
+                          <v-row>
+                            <v-col cols="2">
+                              <v-avatar color="#ccc" size="27" style="margin:10px">
+                                <span >{{ residente.nombre | avatarResidente }}</span>
+                              </v-avatar>
+                            </v-col>
+                            <v-col cols="10">
+                              <div style="margin:10px">{{ residente.nombre }} {{residente.apellido}}</div>
+                            </v-col>
+                          </v-row>
+                        </v-card>
+                      </v-slide-item>
+                    </v-slide-group>
+                    <v-dialog v-model="dialogoDetalleResidente" persistent  max-width="650px">
 
+                        <v-card 
+                        
+                        style="padding-left:15px;padding-right:15px;width:inherit">
+                            <v-card-title>Datos del Residente</v-card-title>
+                            <v-form>
+                                 <v-card-subtitle>Datos Generales</v-card-subtitle>
+                                      <v-card
+                                    style="margin:10px;border: 1px solid;color:black">
+                                      <v-card-subtitle>Nombres y Apellidos: {{residenteDetalle.nombre}}</v-card-subtitle>
+                                  </v-card>
+                                  <v-card
+                                    style="margin:10px;border: 1px solid;color:black">
+                                      <v-card-subtitle>Numero de Documento: {{residenteDetalle.numeroDocumento}}</v-card-subtitle>
+                                  </v-card>
+                                  <v-card
+                                    style="margin:10px;border: 1px solid;color:black">
+                                      <v-card-subtitle>Lugar de Nacimiento: {{residenteDetalle.lugarNacimiento}}</v-card-subtitle>
+                                  </v-card>
+                                  <v-card
+                                    style="margin:10px;border: 1px solid;color:black">
+                                      <v-card-subtitle>Fecha de Nacimiento: {{residenteDetalle.fechaNacimiento | fomatoFecha}}</v-card-subtitle>
+                                  </v-card>
+                                  <v-card-subtitle>Datos de Ingreso</v-card-subtitle>
+                                  <v-card
+                                    style="margin:10px;border: 1px solid;color:black">
+                                      <v-card-subtitle>Fecha de Ingreso: {{residenteDetalle.fechaIngreso | fomatoFecha}}</v-card-subtitle>
+                                  </v-card>
+                                  <v-card
+                                    style="margin:10px;border: 1px solid;color:black">
+                                      <v-card-subtitle>Motivo de Ingreso: {{residenteDetalle.motivoIngreso}}</v-card-subtitle>
+                                  </v-card>
+                                  <v-card
+                                    style="margin:10px;border: 1px solid;color:black">
+                                      <v-card-subtitle>Juzgado de Procedencia: {{residenteDetalle.juzgadoProcedencia}}</v-card-subtitle>
+                                  </v-card>
+                                  <v-divider class="divider-custom"></v-divider>
+                                  <v-row style="margin:10px">
+                                    <v-col cols="12">
+                                      <v-btn block @click="dialogoDetalleResidente=false" color="primary"
+                                              >
+                                          <v-icon left>mdi-close-outline</v-icon>
+                                          <span>Cerrar</span>
+                                        </v-btn>
+                                    </v-col>
+                                  </v-row>
+                            </v-form>
+                        </v-card>
+                    </v-dialog>
                         <v-card class="subcard">
                           <v-card-title>Datos del Informante</v-card-title>
                           <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
@@ -241,7 +285,9 @@ export default {
             dictDefaultMessage:
                 "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
             },observacionesAux:"",
-            incidenciasAux:""
+            incidenciasAux:"",
+            residenteDetalle:"",
+            dialogoDetalleResidente:false
       }
     },watch:{
     },created(){
@@ -252,8 +298,12 @@ export default {
             var file = { size: 123, name: "Firma del Documento", type: "image/jpg" };
             this.$refs.myVueDropzone.manuallyAddFile(file, this.incidencia.firma.urlfirma,null,null,true);
           },cerrarDialogo(){
-          this.$emit("close-dialog-edit-incidencia");
+          this.$refs.myVueDropzone.removeAllFiles();
            this.step = 1;
+          this.$emit("close-dialog-edit-incidencia");
+        },visualizarDetalleUsuario(residente){
+            this.residenteDetalle = residente;
+            this.dialogoDetalleResidente = true;
         }
     },computed:{
       //Validacion de Titulo
@@ -266,6 +316,9 @@ export default {
            return `${etiqueta} ${++index}: `;
         },extencionString: (cadena)=>{
           return cadena.length > 35? `${cadena.substring(0,34)}...` : cadena;
+        },fomatoFecha: (fecha) =>{
+            var formato = moment(fecha);
+            return formato.format("llll");
         }
     }
 }
