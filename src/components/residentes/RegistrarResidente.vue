@@ -751,7 +751,25 @@ export default {
         await axios
           .post("/Residente", this.residente)
           .then((res) => {
-            this.addResidente(res.data);
+            var info ={
+              apellido: res.data.apellido,
+              estado: res.data.estado,
+              fechaIngreso: res.data.fechaIngreso.split("T")[0],
+              fechaNacimiento: res.data.fechaNacimiento.split("T")[0],
+              id: res.data.id,
+              juzgadoProcedencia: res.data.juzgadoProcedencia,
+              lugarNacimiento: res.data.lugarNacimiento,
+              motivoIngreso: res.data.motivoIngreso,
+              nombre: res.data.nombre,
+              numeroDocumento: res.data.numeroDocumento,
+              progreso: res.data.progreso,
+              sexo: res.data.sexo,
+              telefonosReferencia: res.data.telefonosReferencia,
+              tipoDocumento: res.data.tipoDocumento,
+              ubigeo: res.data.ubigeo,
+
+            }
+            this.addResidente(info);
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));

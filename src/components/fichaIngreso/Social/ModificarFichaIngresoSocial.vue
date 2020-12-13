@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Registrar Ficha de Ingreso Social</v-card-title>
+    <v-card-title class="justify-center">Modificar Ficha de Ingreso Social</v-card-title>
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step editable step="1">Residente y Familia</v-stepper-step>
@@ -1058,7 +1058,7 @@ function esParrafo(value) {
 }
 
 export default {
-  props: ["listaresidentes"],
+  props: ["listaresidentes", "fichaIngreso"],
   ...mapMutations(["setFichaIngreso", "addFichaIngreso"]),
   components: {
     vueDropzone: vue2Dropzone
@@ -1127,53 +1127,6 @@ export default {
       urlfirma: "",
       firmas: { urlfirma: "", nombre: "", cargo: "" },
 
-      fichaIngreso: {
-        id: "",
-        tipo: "FichaSocialIngreso",
-        historialcontenido: [],
-        creadordocumento: "",
-        fechacreacion: new Date(),
-        area: "social",
-        fase: "acogida",
-        idresidente: "",
-        estado: "creado",
-        contenido: {
-          familiar: {
-            motivoingreso: [],
-            familiares: [],
-            tipofamilia: "",
-            problematicafam: ""
-          },
-          vivienda: {
-            ubicacion: "",
-            descripcionubicacion: "",
-            habitantes: [],
-            habitacionesdormir: "",
-            tipopropiedad: "",
-            tipo: "",
-            material: "",
-            tipopiso: "",
-            tipotecho: "",
-            servicios: []
-          },
-          economico: {
-            condicionlaboral: "",
-            ocupacion: "",
-            ingresos: [],
-            egresos: [],
-            observacion: ""
-          },
-          salud: "",
-          legal: {
-            penales: [],
-            apoyolocal: ""
-          },
-          diagnosticosocial: "",
-          planintervencion: "",
-          firmas: [],
-          codigodocumento: ""
-        }
-      },
       imagen: ""
     };
   },
@@ -2182,20 +2135,20 @@ export default {
 </script>
 
 <style scoped>
-.dropzone-custom-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
+    .dropzone-custom-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    }
 
-.dropzone-custom-title {
-  margin-top: 0;
-  color: #00b782;
-}
+    .dropzone-custom-title {
+    margin-top: 0;
+    color: #00b782;
+    }
 
-.v-dialog {
-  max-width: 85%;
-}
+    .v-dialog {
+    max-width: 85%;
+    }
 </style>
