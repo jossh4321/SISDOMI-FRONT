@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Promover Residente</v-card-title>
+    <v-card-title class="justify-center">Promover Residente: <span style="margin-left:5px;font-weight:bold">{{residente.nombre + " " + residente.apellido}}</span></v-card-title>
     <v-card style="padding: 15px 20px">
       <div class="container-user">
         <v-expansion-panels focusable>
@@ -24,6 +24,15 @@
                           style="margin-left:7%"
                           v-model="residente.apellido"
                           label="Apellidos"
+                          readonly
+                          color="#009900"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col>
+                        <v-text-field
+                          style="margin-left:7%"
+                          v-model="residente.progreso[residente.progreso.length-1].fase"
+                          label="Fase actual"
                           readonly
                           color="#009900"
                         ></v-text-field>
@@ -108,21 +117,25 @@
         <v-card style="padding:1%" elevation="0">
           <form>
             <v-text-field 
-              v-model="contenidoFase.documentotransicion.observaciones"
+              v-model="progresoFase.documentotransicion.observaciones"
               style="margin-top:2%"
               label="Observaciones"
               color="#009900"
-              @input="$v.contenidoFase.documentotransicion.observaciones.$touch()"
-              @blur="$v.contenidoFase.documentotransicion.observaciones.$touch()"
+              @input="$v.progresoFase.documentotransicion.observaciones.$touch()"
+              @blur="$v.progresoFase.documentotransicion.observaciones.$touch()"
+              :error-messages="errorObservaciones"
             ></v-text-field>
             <v-select
-              v-model="contenidoFase.fase"
+              v-model="progresoFase.fase"
               :items="seleccionItems()"
+              item-text="text"
+              item-value="value"
               label="Seleccionar la fase a promover"
               dense
               color="#009900"
-              @input="$v.contenidoFase.documentotransicion.observaciones.$touch()"
-              @blur="$v.contenidoFase.documentotransicion.observaciones.$touch()"
+              @input="$v.progresoFase.fase.$touch()"
+              @blur="$v.progresoFase.fase.$touch()"
+              :error-messages="errorSeleccionFase"
             ></v-select>
             <v-card style="margin-top:10px;padding:5px 5px;background-color:#EAEAEA">
               <v-card-actions>Agregar Firma del Residente</v-card-actions>
@@ -138,6 +151,11 @@
                     >
                     </vue-dropzone>
                   </div>
+                  <v-card v-if="errorUrlFirma" color="red">
+                    <v-card-text class="text-center" style="color: white">
+                      Debe Subir una imagen de la firma obligatoriamente
+                    </v-card-text>
+                  </v-card>
                 </v-col>
               </v-row>
               <v-card-actions>
@@ -239,9 +257,12 @@ export default {
   },
   data() {
     return {
-      items1:['Fase 2', 'Fase 3'],
-      items2:['Fase 3'],
-      contenidoFase:{
+      items1:
+        [{value: 2, text:'Fase 2'},
+        {value: 3, text:'Fase 3'}],
+      items2:[{value: 3, text:'Fase 3'}],
+      activado:false,
+      progresoFase:{
         educativa:{
           documentos:[],
           estado:"incompleto"
@@ -270,7 +291,6 @@ export default {
         fase:"",
         nombre:"",
         fechaingreso:moment().format('L'),
-        fechafinalizacion:"",
         estado:""
       },
       dropzoneOptions2: {
@@ -297,13 +317,24 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["replaceResidente"]),
     moment: function () {
     return moment();
     },
+    async mensaje(icono, titulo, texto, footer) {
+      await this.$swal({
+        icon: icono,
+        title: titulo,
+        text: texto,
+        footer: footer,
+      });
+    },
     cerrarDialogo() {
       this.$emit("close-dialog-promover");
+      this.limpiar();
     },
     convertDateFormat(string) {
+        console.log(string);
         var date = string.split('/');
         return date[2] + '-' + date[1] + '-' + date[0];
     },
@@ -316,8 +347,7 @@ export default {
       }
     },
     verFirma(){
-      this.imagen = this.contenidoFase.documentotransicion.firma.urlfirma;
-      console.log("imagen: "  + this.imagen);
+      this.imagen = this.progresoFase.documentotransicion.firma.urlfirma;
       this.dialogVistaPreviaFirma = true;
     },
     cerrarVistaPreviaFirma() {
@@ -326,19 +356,60 @@ export default {
     afterSuccess2(file, response) {
       // this.urlfirma = file.dataURL.split(",")[1];
       // console.log(this.urlfirma);
-      this.contenidoFase.documentotransicion.firma.urlfirma = file.dataURL.split(",")[1];
+      this.progresoFase.documentotransicion.firma.urlfirma = file.dataURL.split(",")[1];
       console.log("urlfirma llenada");
       //this.botonCambiarFirma = false;
     },
     afterRemoved2(file, error, xhr) {
       // this.urlfirma = "";
-      this.contenidoFase.documentotransicion.firma.urlfirma = "";
+      this.progresoFase.documentotransicion.firma.urlfirma = "";
+    },
+    calculoFin(){
+      var fecha = this.residente.fechaNacimiento
+      var date = fecha.split('-');
+      date[0] = parseInt(date[0]) + 18
+      return date[0].toString() + '-' + date[1] + '-' + date[2];
+
     },
     limpiar(){
+      this.activado = false;
       this.$refs.myVueDropzone.removeAllFiles();
+      this.progresoResidente={
+        fase:"",
+        nombre:"",
+        fechaingreso:moment().format('L'),
+        estado:""
+      },
+      this.progresoFase={
+        educativa:{
+          documentos:[],
+          estado:"incompleto"
+        },
+        social:{
+          documentos:[],
+          estado:"incompleto"
+        },
+        psicologica:{
+          documentos:[],
+          estado:"incompleto"
+        },
+        fase: "",
+        documentotransicion:{
+          fecha:moment().format('L'),
+          idcreador:"",
+          observaciones:"",
+          firma:{
+            urlfirma:"",
+            nombre:"",
+            cargo:""
+          }
+        }
+      }
+      
     },
     async registrarDocumentoTransicionFase() {
-      if (this.$v.contenidoFase.$invalid) {
+      this.activado = true;
+      if (this.$v.progresoFase.$invalid) {
         console.log("hay errores al modificar p llama");
         this.mensaje(
           "error",
@@ -347,54 +418,120 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else{
-        console.log(this.contenidoFase.documentotransicion.fecha);
-        this.contenidoFase.documentotransicion.fecha = this.convertDateFormat(this.contenidoFase.documentotransicion.fecha)
-        this.contenidoFase.documentotransicion.firma.nombre = this.user.datos.nombre +" " +  this.user.datos.apellido
-        this.contenidoFase.documentotransicion.firma.cargo = this.user.rol.nombre
-        this.contenidoFase.documentotransicion.idcreador = this.user.id
-        if(this.contenidoFase.fase === 2){
+        console.log(this.progresoFase.documentotransicion.fecha);
+        this.progresoFase.documentotransicion.fecha = this.convertDateFormat(this.progresoFase.documentotransicion.fecha)
+        console.log("primero fecha de documentotransicion: "+this.progresoFase.documentotransicion.fecha);
+        this.progresoFase.documentotransicion.firma.nombre = this.user.datos.nombre +" " +  this.user.datos.apellido
+        this.progresoFase.documentotransicion.firma.cargo = this.user.rol.nombre
+        this.progresoFase.documentotransicion.idcreador = this.user.id
+        if(this.progresoFase.fase === 2){
           this.progresoResidente.fase = 2
           this.progresoResidente.nombre = "desarrollo"
-        }else if(this.contenidoFase.fase === 3){
+        }else if(this.progresoFase.fase === 3){
           this.progresoResidente.fase = 3
           this.progresoResidente.nombre = "seguimiento"
         }
-        this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso)
+        this.progresoResidente.fechafinalizacion = this.calculoFin() + "T05:00:00Z"
+        this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z"
         this.progresoResidente.estado = "inicio"
         //Actualizando en Residente
+        this.residente.progreso[this.residente.progreso.length-1].fechafinalizacion = this.progresoResidente.fechaingreso;
         this.residente.progreso.push(this.progresoResidente);
+        console.log(this.residente);
+        console.log(this.progresoFase);
+        var residenteFase ={
+          residente: this.residente, 
+          progresoFase: this.progresoFase,
+          promocion: true
+        }
         await axios
-          .put("/Residente", this.residente)
+          .put("/Residente", residenteFase)
           .then((res) => {
-            this.replaceResidente(res.data);
-            this.cerrarDialogo();
+            console.log(res.data);
+            var info ={
+              apellido: res.data.apellido,
+              estado: res.data.estado,
+              fechaIngreso: res.data.fechaIngreso.split("T")[0],
+              fechaNacimiento: res.data.fechaNacimiento.split("T")[0],
+              id: res.data.id,
+              juzgadoProcedencia: res.data.juzgadoProcedencia,
+              lugarNacimiento: res.data.lugarNacimiento,
+              motivoIngreso: res.data.motivoIngreso,
+              nombre: res.data.nombre,
+              numeroDocumento: res.data.numeroDocumento,
+              progreso: res.data.progreso,
+              sexo: res.data.sexo,
+              telefonosReferencia: res.data.telefonosReferencia,
+              tipoDocumento: res.data.tipoDocumento,
+              ubigeo: res.data.ubigeo,
+            }
+            this.replaceResidente(info);
+
+            
           })
-          .catch((err) => console.log(err));
+          .catch((err) => {
+            console.log(err);
+            // await this.mensaje(
+            // "error",
+            // "Oops...",
+            // "Hubo un problema al realizar la promoción, intentelo nuevamente",
+            // "<strong>Se redirigira a la interfaz de Gestión<strong>"
+            // );
+          });
           await this.mensaje(
-          "success",
-          "Listo",
-          "Sesion Educativa Modificada Satisfactoriamente",
-          "<strong>Se redirigira a la interfaz de Gestión<strong>"
+            "success",
+            "Listo",
+            "Sesion Educativa Modificada Satisfactoriamente",
+            "<strong>Se redirigira a la interfaz de Gestión<strong>"
           );
-          this.$v.progresoResidente.$reset();
-          this.$v.contenidoFase.$reset();
+          this.progresoResidente={};
+          this.$v.progresoFase.$reset();
+          this.cerrarDialogo();
+          
       }
 
     }
   },
   computed:{
     ...mapGetters(["user"]),
+    errorSeleccionFase(){
+      const errors = [];
+      if (!this.$v.progresoFase.fase.$dirty) return errors;
+      !this.$v.progresoFase.fase.required &&
+        errors.push("Debe ingresar la fase a la que será promovido el residente");
+      return errors;
+    },
+    errorObservaciones(){
+      const errors = [];
+      if (!this.$v.progresoFase.documentotransicion.observaciones.$dirty) return errors;
+      !this.$v.progresoFase.documentotransicion.observaciones.required &&
+        errors.push("Debe ingresar una observación Obligatoriamente");
+      !this.$v.progresoFase.documentotransicion.observaciones.minLength &&
+        errors.push("Las observaciones deben tener al menos 3 caracteres");
+      !this.$v.progresoFase.documentotransicion.observaciones.esParrafo &&
+        errors.push("Las observaciones no deben contener caracteres especiales");
+      return errors;
+    },
+    errorUrlFirma() {
+      if(this.activado){
+        return (this.$v.progresoFase.documentotransicion.firma.urlfirma.required == false &&
+          this.$v.progresoFase.documentotransicion.firma.urlfirma.$dirty == false)
+          ? true
+          : false;
+      }
+    },
   },
   validations(){
     return{
-      contenidoFase:{
+      progresoFase:{
         fase: {
           required
         },
         documentotransicion:{
           observaciones:{
             required,
-            esParrafo
+            esParrafo,
+            minLength
           },
           firma:{
             //Falta validar esto y hacer los metodos de error
