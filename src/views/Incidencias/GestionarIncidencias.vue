@@ -182,8 +182,8 @@ export default {
                       }).catch(err => console.error());
         },async consultarIncidencia(id){
             await this.loadIncidenciaDetalle(id);
-             this.incidencia.residentes = this.incidencia.residentes
-                      .map((res)=> {return this.convertItemToResidente(res)});
+             /*this.incidencia.residentes = this.incidencia.residentes
+                      .map((res)=> {return this.convertItemToResidente(res)});*/
             this.dialogoConsultarIncidencia = !this.dialogoConsultarIncidencia;
             if(this.$refs.consultarIncidencia != undefined){this.$refs.consultarIncidencia.mounteddropzone();}
         },async modificarIncidencia(id){

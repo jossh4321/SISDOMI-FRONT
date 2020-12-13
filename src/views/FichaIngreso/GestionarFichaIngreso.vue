@@ -75,7 +75,7 @@
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-row align="center" justify="space-around">
-            <v-btn color="warning" dark @click="editItem(item)">
+            <v-btn color="warning" dark @click="abrirDialogoModificar(item)">
               <v-icon left> mdi-pencil</v-icon>
               <span>Actualizar</span>
             </v-btn>
@@ -95,6 +95,18 @@
         </v-component>
       </v-dialog>
       <!--Dialogo de Modificar-->
+      <v-dialog v-model="dialogoModificacionFichaIngreso" persistent > 
+        <v-component :is="selectorFichaIngreso" 
+        :listaresidentes="listaresidentes"
+        :listaeducadores="listaeducadores"
+        :fichaIngreso="fichaIngreso"
+        ref="modificarFichaIngreso"
+        @cerrar-modal-edicion-ficha-ingreso="cerrarDialogoModificacionFichaIngreso">
+        </v-component>
+      </v-dialog>
+
+
+
       <!--v-dialog persistent
                 v-model="dialogoactualizacion" 
                 max-width="880px">
@@ -172,7 +184,8 @@ import {mapMutations, mapState} from "vuex";
 export default {
   name: "GestionarFicha",
   components: {
-    RegistrarFichaIngresoEducativa,RegistrarFichaIngresoPsicologica,RegistrarFichaIngresoSocial
+    RegistrarFichaIngresoEducativa,RegistrarFichaIngresoPsicologica,RegistrarFichaIngresoSocial,
+    ModificarFichaIngresoEducativa
   },
   data() {
     return {
@@ -197,11 +210,12 @@ export default {
         { text: "Aciones", value: "actions", sortable: false },
       ],
       SeleccionarFichaIngreso: false,
-      fichaIngreso: [],
+      fichaIngreso: "",
       dialogDialogNuevaFichaIngreso: false,
       listaresidentes: [],
       listaeducadores: [],
-      dialogoRegistroFichaIngreso:false
+      dialogoRegistroFichaIngreso:false,
+      dialogoModificacionFichaIngreso:false,
     };
   },
   async created() {
@@ -212,7 +226,14 @@ export default {
 
   methods: {
     ...mapMutations(["setFichaIngreso"]),
-    editItem(item) {},
+    async abrirDialogoModificar(item) {
+      console.log(item);
+      await this.obtenerfichaIngreso(item.id);
+       if(item.tipo == "FichaEducativaIngreso"){
+          this.selectorFichaIngreso = "ModificarFichaIngresoEducativa";
+       }
+       this.dialogoModificacionFichaIngreso = true;
+    },
     detailItem(item) {},
     closeDialogDetalle() {
       this.dialogoFIEconsultar=false
@@ -233,13 +254,29 @@ export default {
       this.dialogDialogNuevaFichaIngreso = false;
       this.selectorFichaIngreso = "";
     },
-    abrirDialogoRegistroFichaIngreso(){
+    /*abrirDialogoRegistroFichaIngreso(){
       this.dialogDialogNuevaFichaIngreso = false;
       this.dialogoRegistroFichaIngreso = true;
-    },cerrarDialogoRegistroFichaIngreso(){
+    }*/cerrarDialogoRegistroFichaIngreso(){
       this.dialogoRegistroFichaIngreso = false;
       this.selectorFichaIngreso = "";
+    },cerrarDialogoModificacionFichaIngreso(){
+      this.dialogoModificacionFichaIngreso = false;
+      this.selectorFichaIngreso = "";
     },
+    //Obtener una ficha de ingreso espefica
+    async obtenerfichaIngreso(id) {
+      await axios
+        .get(`/Documento/fichaingreso/idficha/${id}`)
+        .then((res) => {
+          //console.log( "porfavor" )
+          this.fichaIngreso=res.data;
+          console.log(res.data);
+        })
+        .catch((err) => console.log(err));
+
+    },
+    //Obtener Todas las Fcifas de Ingreso
     async obtenerfichasIngresos() {
       await axios
         .get("/Documento/all/fichaingresoresidente")
