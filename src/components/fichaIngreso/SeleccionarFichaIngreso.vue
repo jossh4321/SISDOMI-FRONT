@@ -37,7 +37,7 @@
 
 import axios from 'axios';
 import RegistrarFichaIngresoEducativa from '@/components/fichaIngreso/RegistrarFichaIngresoEducativa.vue'
-import RegistrarFichaIngresoPsicologica from '@/components/fichaIngreso/RegistrarFichaIngresoPsicologica.vue'
+import RegistrarFichaIngresoPsicologica from '@/components/fichaIngreso/Psicologica/RegistrarFichaIngresoPsicologica.vue'
 import RegistrarFichaIngresoSocial from '@/components/fichaIngreso/Social/RegistrarFichaIngresoSocial.vue'
 import {mapMutations, mapState} from "vuex";
 
