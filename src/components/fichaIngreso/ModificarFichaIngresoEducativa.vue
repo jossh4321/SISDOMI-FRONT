@@ -517,7 +517,6 @@
                     </v-col>
                   </v-row>
                 </v-card>
-                
               <v-row>
                     <v-col>
                         <v-btn block @click="cerrarDialogo" color="primary">
@@ -526,9 +525,9 @@
                         </v-btn>
                     </v-col>
                     <v-col>
-                        <v-btn block @click="registrarFicha" color="success">
+                        <v-btn block @click="modificarFicha" color="success">
                             <v-icon left>mdi-content-save-all-outline</v-icon>
-                            <span >Registrar Ficha de Ingreso</span>
+                            <span >Modificar Ficha de Ingreso</span>
                         </v-btn>
                     </v-col>
               </v-row>
@@ -609,6 +608,8 @@ export default {
          },dialogoDocumentoEscolar:false,
          observacionAux:"",
          step:1,
+         imagenFirma:{urlOrigen: this.fichaIngreso.contenido.firma.urlfirma,
+                        modificar:{estado:false,file:{}}}
         }
       },
     async created() {
@@ -640,14 +641,26 @@ export default {
       },eliminarDocumentoEscolar(indice){
           this.fichaIngreso.contenido.ieprocedencia.documentosEscolares.splice(indice,1);
       },afterSuccessFirma(file, response){
-          this.fichaIngreso.contenido.firma.urlfirma = file;
+          this.imagenFirma.modificar.estado = true;
+          this.imagenFirma.modificar.file = file;
+          console.log(this.imagenFirma.modificar.file);
       },afterRemovedFirma(){
-
+          this.imagenFirma.modificar.estado = true;
+          this.imagenFirma.modificar.file = {};
       },afterSuccessDocumentos(file, response){
              this.documentoEscolar.file = file;
-      },afterRemovedDocumentos(){
-  
-      },cerrarDialogo(){     
+      },async modificaFirma(){
+          var url = this.imagenFirma.urlOrigen;
+          var urlFile = "";
+          let formData = new FormData();
+          formData.append("file",this.imagenFirma.modificar.file);
+          //var mediabody={file:{File:formData}, urlfirma: this.imagenFirma.urlOrigen }
+            await axios.put(`/Media/${this.imagenFirma.urlOrigen}`,formData)
+                       .then((res)=> {
+                            urlFile = res.data;
+                      });
+            return urlFile;
+        },cerrarDialogo(){     
             this.$emit("cerrar-modal-edicion-ficha-ingreso");
             this.step = 1;
             this.$refs.myVueDropzoneDocumentosEscolares.removeAllFiles();    
@@ -656,9 +669,8 @@ export default {
             this.fichaIngreso = this.limpiarFichaIngreso();
             this.documentoEscolar ={titulo:"",file:""};
             this.$v.$reset();
-        }, 
-        ///registrar ficha
-        async  registrarFicha(){
+        },//modificar ficha
+        async  modificarFicha(){
           this.$v.fichaIngreso.$touch();
           if(this.$v.fichaIngreso.$invalid){
                await this.mensaje(
@@ -669,17 +681,15 @@ export default {
               );
           }else{
             var url = await this.registrarFirma(this.fichaIngreso.contenido.firma.urlfirma);
-            this.fichaIngreso.contenido.firma={
-              urlfirma : url,
-              nombre: this.user.usuario,
-              cargo: this.user.rol.nombre
-            };
-            this.fichaIngreso.creadordocumento = this.user.id;
-            this.fichaIngreso.fechacreacion = new Date().toISOString();
+            var fichaIngresoPUT = this.fichaIngreso;
+            fichaIngresoPUT.contenido.firma.urlfirma =
+            this.imagenFirma.modificar.estado==true?
+                  await this.modificaFirma():
+                  this.imagenFirma.urlOrigen;
             this.fichaIngreso.contenido.ieprocedencia.documentosEscolares = await this.registrarDocumentosEscolares();
             //fichaeducativaingreso
             await axios
-              .post("/documento/fichaeducativaingreso", this.fichaIngreso)
+              .put("/documento/fichaeducativaingreso", this.fichaIngreso)
               .then((res) => {
                 this.addFichaIngreso(res.data);
                 this.cerrarDialogo();
@@ -938,8 +948,11 @@ export default {
           !this.$v.fichaIngreso.contenido.responsableTurno.required &&
             errors.push("Debe Seleccionar un Responsable Obligatoriamente");
           return errors;
+      },errorFirma() {
+        if(this.imagenFirma.modificar.estado == true &&
+        Object.entries(this.imagenFirma.modificar.file).length === 0){return true}
+         else {return false}
       }
-
   },validations(){
     const length= (value) => value.length == 9
     return {
