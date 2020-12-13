@@ -590,6 +590,7 @@
                     ref="myVueDropzone"
                     @vdropzone-success="afterSuccess"
                     @vdropzone-removed-file="afterRemoved"
+                    @vdropzone-complete="afterComplete"
                     id="dropzone"
                     :options="dropzoneOptions"
                   >
@@ -720,6 +721,7 @@
                         ref="myVueDropzone"
                         @vdropzone-success="afterSuccess2"
                         @vdropzone-removed-file="afterRemoved2"
+                        @vdropzone-complete="afterComplete2"
                         id="dropzone2"
                         :options="dropzoneOptions2"
                       >
@@ -1190,11 +1192,21 @@ export default {
     afterRemoved(file, error, xhr) {
       this.informe.contenido.anexos = "";
     },
+     afterComplete(file) {
+      if(file.status == "error"){
+         this.$refs.myVueDropzone.removeFile(file);
+      }
+    },
     afterSuccess2(file, response) {
       this.urlfirma = file.dataURL.split(",")[1];
     },
     afterRemoved2(file, error, xhr) {
       this.urlfirma = "";
+    },
+     afterComplete2(file) {
+      if(file.status == "error"){
+         this.$refs.myVueDropzone.removeFile(file);
+      }
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
