@@ -559,7 +559,7 @@
                      <!--Botones de card -->
                       <v-row>
                         <v-col>
-                          <v-btn block @click="registrarFichaEvaluacion" color="success">
+                          <v-btn block @click="ModificarFichaEvaluacion" color="success">
                             <v-icon left>mdi-page-next-outline</v-icon>
                             <span>Continuar</span>
                           </v-btn>
@@ -631,6 +631,7 @@ components:{
     }
   },
     methods:{
+      ...mapMutations(["replaceEvaluacion"]),
       cerrarDialogo(){
          this.step = 1;
         this.$emit("close-dialog-edit");
@@ -659,9 +660,23 @@ components:{
         footer: footer,
       });
     },
-      registrarFichaEvaluacion(){
+      ModificarFichaEvaluacion(){
         this.fichaEvaluacion.creadordocumento = this.user.id;
         console.log(this.fichaEvaluacion)
+       await axios
+          .put("/EvaluacionDiagnosticoEducativo/fichaEvaluacionDE", this.fichaEvaluacion)
+          .then((res) => {
+            this.replaceEvaluacion(res.data);
+            this.cerrarDialogo();
+          })
+          .catch((err) => console.log(err));
+        await this.mensaje(
+          "success",
+          "listo",
+          "Ficha Diagnostico Evaluacion Educativa modificado Satisfactoriamente",
+          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+        );
+        location.reload();//metodo de js para refrescar la pagina
       },
        ///metodo para agregar firma residente
     guardarFirma(){
