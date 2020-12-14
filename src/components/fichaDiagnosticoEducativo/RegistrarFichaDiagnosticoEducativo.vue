@@ -674,7 +674,7 @@ components:{
         footer: footer,
       });
     },
-      registrarFichaEvaluacion(){
+        async registrarFichaEvaluacion(){
         this.fichaEvaluacion.creadordocumento = this.user.id;
         console.log(this.fichaEvaluacion)
         await axios

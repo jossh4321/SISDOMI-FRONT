@@ -660,7 +660,7 @@ components:{
         footer: footer,
       });
     },
-      ModificarFichaEvaluacion(){
+      async  ModificarFichaEvaluacion(){
         this.fichaEvaluacion.creadordocumento = this.user.id;
         console.log(this.fichaEvaluacion)
        await axios
