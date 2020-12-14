@@ -80,7 +80,7 @@ data(){
   methods:{
       cerrarDialogo(){
          this.step = 1;
-        this.$emit("close-dialog-save");
+        this.$emit("close-dialog-edit");
        
       },
   }

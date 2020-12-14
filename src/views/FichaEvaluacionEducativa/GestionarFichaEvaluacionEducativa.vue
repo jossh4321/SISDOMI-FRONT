@@ -35,7 +35,8 @@
                 </v-btn>
               </template>
              <RegistrarFichaDiagnosticoEducativo
-             
+             :listaresidentes ="listaresidentes"
+             :listaeducadores="listaeducadores"
              
              @close-dialog-save="closeDialogRegistrar()"
              >
@@ -62,7 +63,7 @@
        <!--Dialogo de Modificacion-->
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
         <ModificarSeguimientoEducativo
-          :seguimiento="seguimiento"
+          
           :residente ="residente"
           :listaresidentes ="listaresidentes"
           :listaeducadores="listaeducadores"
@@ -74,15 +75,15 @@
         </ModificarSeguimientoEducativo>
       </v-dialog>
     <v-dialog persistent v-model="dialogodetalle" max-width="880px">
-        <DetalleSeguimientoEducativo
-          :seguimiento="seguimiento"
+        <DetalleFichaDiagnosticoEducativo
+          :fichaEvaluacion="fichaEvaluacion"
           :residente ="residente"
           :listaresidentes ="listaresidentes"
           :listaeducadores="listaeducadores"
           :dialogodetalle ="dialogodetalle"
           @close-dialog-detail="closeDialogDetalle()"
         >
-        </DetalleSeguimientoEducativo>
+        </DetalleFichaDiagnosticoEducativo>
     </v-dialog>
       
     </v-card>
@@ -91,23 +92,23 @@
 <script>
 import axios from "axios";
 
-import DetalleSeguimientoEducativo from '@/components/seguimientoEducativo/DetalleSeguimientoEducativo.vue'
+import DetalleFichaDiagnosticoEducativo from '@/components/fichaDiagnosticoEducativo/ConsultarFichaDiagnosticoEducativo.vue'
 import RegistrarFichaDiagnosticoEducativo from '@/components/fichaDiagnosticoEducativo/RegistrarFichaDiagnosticoEducativo.vue'
-import ModificarSeguimientoEducativo from '@/components/seguimientoEducativo/ActualizarSeguimientoEducativo.vue'
+import ActualizarFichaDiagnosticoEducativo from '@/components/fichaDiagnosticoEducativo/ActualizarFichaDiagnosticoEducativo.vue'
 import { mapMutations, mapState } from "vuex";
 
 export default {
   name: "GestionarSeguimientoEducativo",
   components: {
-    DetalleSeguimientoEducativo,
+    DetalleFichaDiagnosticoEducativo,
     RegistrarFichaDiagnosticoEducativo,
-    ModificarSeguimientoEducativo
+    ActualizarFichaDiagnosticoEducativo
     
   },
   data() {
     return {
       search: "",
-      seguimiento: {},
+      fichaEvaluacion: {},
       residente:{},
       listaresidentes: [],
       listaeducadores:[],
@@ -152,14 +153,14 @@ export default {
     },
     ///abrir dialogo de detalle
    async abrirDialogoDetalle(idseguimiento) {
-      this.seguimiento = await this.loadSeguimientoDetalle(idseguimiento);
-      this.residente = await this.loadResidente(this.seguimiento.idresidente);// traelos datos del residnete
+      this.fichaEvaluacion = await this.loadFichaEvalucionDetalle(idseguimiento);
+      this.residente = await this.loadResidente(this.fichaEvaluacion.idresidente);// traelos datos del residnete
       this.dialogodetalle = !this.dialogodetalle;
       },
       ///abrir dialogo de modificacion
     async abrirDialogoModificar(idseguimiento) {
-      this.seguimiento = await this.loadSeguimientoDetalle(idseguimiento);
-      this.residente = await this.loadResidente(this.seguimiento.idresidente);// traelos datos del residnete
+      this.fichaEvaluacion = await this.loadFichaEvalucionDetalle(idseguimiento);
+      this.residente = await this.loadResidente(this.fichaEvaluacion.idresidente);// traelos datos del residnete
       this.dialogoactualizacion = !this.dialogoactualizacion;
     },
   /////////////////Consumo de  apis 
@@ -179,10 +180,10 @@ export default {
         .catch((err) => console.log(err));
     },
     ///////////Obtener seguimiento con id
-     async loadSeguimientoDetalle(idseguimiento) {
+     async loadFichaEvalucionDetalle(idEvaluacion) {
       var user = {};
       await axios
-        .get("/SeguimientoEducativo/id?id=" + idseguimiento)
+        .get("/EvaluacionDiagnosticoEducativo/id?id=" + idEvaluacion)
         .then((res) => {
           console.log(res);
           user = res.data;
