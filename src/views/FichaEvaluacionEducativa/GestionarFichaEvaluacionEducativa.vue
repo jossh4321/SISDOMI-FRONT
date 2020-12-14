@@ -62,9 +62,9 @@
       </v-data-table>
        <!--Dialogo de Modificacion-->
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
-        <ModificarSeguimientoEducativo
+        <ActualizarFichaDiagnosticoEducativo
           
-          :residente ="residente"
+          :fichaEvaluacion="fichaEvaluacion"
           :listaresidentes ="listaresidentes"
           :listaeducadores="listaeducadores"
           :dialogodetalle ="dialogoactualizacion"
@@ -72,7 +72,7 @@
 
           @close-dialog-edit="closeDialogModificar()"
         >
-        </ModificarSeguimientoEducativo>
+        </ActualizarFichaDiagnosticoEducativo>
       </v-dialog>
     <v-dialog persistent v-model="dialogodetalle" max-width="880px">
         <DetalleFichaDiagnosticoEducativo
