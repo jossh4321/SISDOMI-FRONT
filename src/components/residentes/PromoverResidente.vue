@@ -140,7 +140,7 @@
             <v-card style="margin-top:10px;padding:5px 5px;background-color:#EAEAEA">
               <v-card-actions>Agregar Firma del Residente</v-card-actions>
               <v-row>
-                <v-col :cols="12" align="right">
+                <v-col :cols="12" align="left">
                   <div style="padding:1%">
                     <vue-dropzone
                       ref="myVueDropzone"
@@ -365,10 +365,16 @@ export default {
       this.progresoFase.documentotransicion.firma.urlfirma = "";
     },
     calculoFin(){
-      var fecha = this.residente.fechaNacimiento
-      var date = fecha.split('-');
-      date[0] = parseInt(date[0]) + 18
-      return date[0].toString() + '-' + date[1] + '-' + date[2];
+      var fecha = "";
+      console.log(this.residente.progreso);
+      this.residente.progreso[ this.residente.progreso.length-1].estado = "finalizado"
+      if(this.progresoFase.fase === 2){
+        fecha = moment().add(1, 'year').calendar();
+      } else if(this.progresoFase.fase === 3){
+        fecha = moment().add(6, 'months').calendar(); 
+      }
+      var date = fecha.split('/');
+      return date[2].toString() + '-' + date[1] + '-' + date[0];
 
     },
     limpiar(){
@@ -427,12 +433,18 @@ export default {
         if(this.progresoFase.fase === 2){
           this.progresoResidente.fase = 2
           this.progresoResidente.nombre = "desarrollo"
+          this.progresoFase.educativa.documentos = [
+            {tipo:"InformeEducativoEvolutivo", estado:"Pendiente"}
+          ]
         }else if(this.progresoFase.fase === 3){
           this.progresoResidente.fase = 3
           this.progresoResidente.nombre = "seguimiento"
+          this.progresoFase.educativa.documentos = [
+            {tipo:"InformeEducativoFinal", estado:"Pendiente"}
+          ]
         }
-        this.progresoResidente.fechafinalizacion = this.calculoFin() + "T05:00:00Z"
         this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z"
+        this.progresoResidente.fechafinalizacion = this.calculoFin() + "T05:00:00Z"
         this.progresoResidente.estado = "inicio"
         //Actualizando en Residente
         this.residente.progreso[this.residente.progreso.length-1].fechafinalizacion = this.progresoResidente.fechaingreso;
@@ -466,8 +478,8 @@ export default {
               ubigeo: res.data.ubigeo,
             }
             this.replaceResidente(info);
-
-            
+            this.progresoResidente={};
+            this.cerrarDialogo();
           })
           .catch((err) => {
             console.log(err);
@@ -484,9 +496,9 @@ export default {
             "Sesion Educativa Modificada Satisfactoriamente",
             "<strong>Se redirigira a la interfaz de Gestión<strong>"
           );
-          this.progresoResidente={};
+          
           this.$v.progresoFase.$reset();
-          this.cerrarDialogo();
+          
           
       }
 

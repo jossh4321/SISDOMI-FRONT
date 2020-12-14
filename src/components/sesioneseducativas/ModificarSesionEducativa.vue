@@ -187,7 +187,7 @@
                             </v-btn>
                           </v-card-actions>
                           <v-row>
-                            <v-col :cols="12" align="right">
+                            <v-col :cols="12" align="left">
                               <div style="padding:1%">
                                 <vue-dropzone
                                   :ref="'myVueDropzone'+item.idparticipante"
