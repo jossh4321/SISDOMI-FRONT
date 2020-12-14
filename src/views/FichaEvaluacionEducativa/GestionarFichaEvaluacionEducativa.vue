@@ -31,16 +31,15 @@
                   v-on="on"
                 >
                   <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar Ficha Evaluacion Educativa</span>
+                  <span>Registrar Ficha  Evaluacion Educativa</span>
                 </v-btn>
               </template>
-             <RegistrarSeguimientoEducativo
+             <RegistrarFichaDiagnosticoEducativo
              
-             :listaresidentes ="listaresidentes"
-             :listaeducadores="listaeducadores"
+             
              @close-dialog-save="closeDialogRegistrar()"
              >
-             </RegistrarSeguimientoEducativo>
+             </RegistrarFichaDiagnosticoEducativo>
             </v-dialog>
           </v-toolbar>
         </template>
@@ -93,7 +92,7 @@
 import axios from "axios";
 
 import DetalleSeguimientoEducativo from '@/components/seguimientoEducativo/DetalleSeguimientoEducativo.vue'
-import RegistrarSeguimientoEducativo from '@/components/seguimientoEducativo/RegistrarSeguimientoEducativo.vue'
+import RegistrarFichaDiagnosticoEducativo from '@/components/fichaDiagnosticoEducativo/RegistrarFichaDiagnosticoEducativo.vue'
 import ModificarSeguimientoEducativo from '@/components/seguimientoEducativo/ActualizarSeguimientoEducativo.vue'
 import { mapMutations, mapState } from "vuex";
 
@@ -101,7 +100,7 @@ export default {
   name: "GestionarSeguimientoEducativo",
   components: {
     DetalleSeguimientoEducativo,
-    RegistrarSeguimientoEducativo,
+    RegistrarFichaDiagnosticoEducativo,
     ModificarSeguimientoEducativo
     
   },
