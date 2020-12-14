@@ -253,8 +253,13 @@ export default {
       dialogoISEdetalle: false,
       dialogoIPIdetalle: false,
       dialogoIPEdetalle: false,
-      listaresidentes: [],
+      listaresidentes: [],      
       loading: true,
+      faseEducativaInicial: {
+        fase: "1",
+        area: "educativa",
+        documentos: ["FichaEducativaIngreso"]
+      }
     };
   },
   async created() {
@@ -262,7 +267,7 @@ export default {
     this.obtenerResidentes();
     this.obtenerEducadores();
     this.obtenerSociales();
-    this.obtenerPsicologos();
+    this.obtenerPsicologos();    
   },
   methods: {
     ...mapMutations(["setInformes"]),
@@ -403,7 +408,7 @@ export default {
           console.log(this.listaresidentes);
         })
         .catch((err) => console.log(err));
-    },
+    },    
     async obtenerEducadores() {
       await axios
         .get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
