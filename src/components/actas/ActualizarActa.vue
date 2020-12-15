@@ -88,7 +88,7 @@
 
  <v-text-field
                v-model="usuario.numeroresolucion"
-          label="Ingrese nuevo entidad disposicion"
+          label="Ingrese nueva entidad disposicion"
                 outlined
                @input="$v.usuario.numeroresolucion.$touch()"
                 @blur="$v.usuario.numeroresolucion.$touch()"
@@ -112,7 +112,7 @@
 
                <v-text-field
                v-model="usuario.observaciones"
-          label="Ingrese nuevo entidad disposicion"
+          label="Ingrese nuevas observaciones"
                 outlined
                @input="$v.usuario.observaciones.$touch()"
                 @blur="$v.usuario.observaciones.$touch()"
