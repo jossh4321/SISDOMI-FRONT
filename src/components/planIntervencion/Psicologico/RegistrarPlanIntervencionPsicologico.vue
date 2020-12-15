@@ -498,7 +498,7 @@ export default {
       },
       listImages: [],
       planResidentePsicologico: {
-        tipo: "PlanIntervencionIndividual",
+        tipo: "PlanIntervencionIndividualPsicologico",
         historialcontenido: [],
         creadordocumento: "",
         fechacreacion: new Date(),

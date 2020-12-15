@@ -133,7 +133,7 @@ export default {
         tipoEvaluate = "InformeEvolutivo";
       } else if (/^.*(Final)$/.test(tipo)) {
         tipoEvaluate = "InformeFinal";
-      } else if (/^.*(Individual)$/.test(tipo)) {
+      } else if (/^.*(Individual).*$/.test(tipo)) {
         tipoEvaluate = "PlanIntervencion";
       }
 
@@ -152,7 +152,7 @@ export default {
         return "Evolutivo";
       } else if (/^.*(Final)$/.test(value.tipo)) {
         return "Final";
-      } else if (/^.*(Individual)$/.test(value.tipo)) {
+      } else if (/^.*(Individual).*$/.test(value.tipo)) {
         return "Plan de Intervención";
       }
     },
