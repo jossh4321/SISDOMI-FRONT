@@ -472,7 +472,7 @@ export default {
               residente: res.nombre + " " + res.apellido,
               id: res.id,
               numeroDocumento: res.numeroDocumento,
-              faseActual: res.progreso[res.progreso.length - 1].nombre,
+              faseActual: res.progreso[res.progreso.length - 1].fase.toString(),
             };
           });
 
@@ -606,7 +606,7 @@ export default {
     getTitleByFaseResident() {
       if (this.residente != null) {
         if (this.residente.faseActual != "") {
-          if (this.residente.faseActual == "acogida") {
+          if (this.residente.faseActual == "1") {
             this.planI.contenido.titulo = "Plan de Intervención Social";
           } else {
             this.planI.contenido.titulo =
