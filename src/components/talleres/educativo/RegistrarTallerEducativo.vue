@@ -652,7 +652,7 @@ export default {
         tipo: "TallerEducativo",
         fechacreacion: new Date(),
         area: "educativa",
-        fase: "desarrollo",
+        fase: "2",
         titulo: "",
         descripcion: "",
         contenido:{

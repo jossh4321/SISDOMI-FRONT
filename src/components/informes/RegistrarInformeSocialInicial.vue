@@ -827,7 +827,7 @@ export default {
         creadordocumento: "",
         fechacreacion: "",
         area: "social",
-        fase: "acogida",
+        fase: "1",
         idresidente: "",
         estado: "creado",
         contenido: {
