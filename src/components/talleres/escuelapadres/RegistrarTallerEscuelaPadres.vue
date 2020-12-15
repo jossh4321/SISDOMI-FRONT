@@ -521,7 +521,7 @@ export default {
         tipo: "TallerEscuelaPadres",
         fechacreacion: new Date(),
         area: "social",
-        fase: "desarrollo",
+        fase: "2",
         titulo: "",
         descripcion: "",
         contenido:{

@@ -16,7 +16,7 @@
       <v-stepper-items>
         <v-stepper-content step="1">
           <div class="container-user">
-            <form>
+            <form style="margin-top: 10px;">
               <v-autocomplete
                 :items="listaresidentes"
                 filled
@@ -27,10 +27,10 @@
                 label="Residente"
                 item-text="nombre"
                 item-value="id"
-              >
-                <!-- @input="$v.fichaIngreso.idresidente.$touch()"
+                @input="$v.fichaIngreso.idresidente.$touch()"
                 @blur="$v.fichaIngreso.idresidente.$touch()"
-                :error-messages="errorResidente"-->
+                :error-messages="errorResidente"
+              >
                 <template v-slot:selection="data">
                   <v-chip v-bind="data.attrs" :input-value="data.selected" style="margin-top:5px">
                     <v-avatar left color="#b3b3ff" size="24">
@@ -66,14 +66,16 @@
                 label="Responsable de turno"
                 item-text="usuario"
                 item-value="id"
+                @input="$v.fichaIngreso.contenido.responsableturno.$touch()"
+                @blur="$v.fichaIngreso.contenido.responsableturno.$touch()"
+                :error-messages="errorresponsableturno"
               >
-              <!-- @input="$v.seguimiento.creadordocumento.$touch()"
-                @blur="$v.seguimiento.creadordocumento.$touch()"
-                :error-messages="errorEducador" -->
                 <template v-slot:selection="data">
                   <v-chip v-bind="data.attrs" :input-value="data.selected" style="margin-top:5px">
                     <v-avatar left color="#b3b3ff" size="24">
-                      <span style="font-size:12px">{{ data.item.datos.nombre.charAt(0) }} {{ data.item.datos.apellido.charAt(0) }}</span>
+                      <span
+                        style="font-size:12px"
+                      >{{ data.item.datos.nombre.charAt(0) }} {{ data.item.datos.apellido.charAt(0) }}</span>
                     </v-avatar>
                     {{ data.item.datos.nombre + " " + data.item.datos.apellido }}
                   </v-chip>
@@ -82,7 +84,9 @@
                   <template>
                     <v-list-item-avatar>
                       <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size:12px">{{ data.item.datos.nombre.charAt(0) }} {{ data.item.datos.apellido.charAt(0) }}</span>
+                        <span
+                          style="font-size:12px"
+                        >{{ data.item.datos.nombre.charAt(0) }} {{ data.item.datos.apellido.charAt(0) }}</span>
                       </v-avatar>
                     </v-list-item-avatar>
                     <v-list-item-content>
@@ -101,97 +105,100 @@
                 </template>
               </v-autocomplete>
 
-              <v-row>
-                <v-col>
-                  <v-textarea
-                    label="Nivel de educación"
-                    v-model="fichaIngreso.contenido.escolaridad.niveleducativo"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                    @input="$v.familiar.parentesco.$touch()"
-                    @blur="$v.familiar.parentesco.$touch()"
-                  :error-messages="errorParentescoFamiliar"-->
-                </v-col>
-                <v-col>
-                  <v-textarea
-                    label="Educación especial"
-                    v-model="fichaIngreso.contenido.escolaridad.educacionespecial"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                    @input="$v.familiar.gradoinstruccion.$touch()"
-                    @blur="$v.familiar.gradoinstruccion.$touch()"
-                  :error-messages="errorGradoInstruccionFamiliar"-->
-                </v-col>
-              </v-row>
+              <v-card elevation="12" outlined>
+                <v-card-title>Escolaridad del residente</v-card-title>
+                <v-container grid-list-md text-xs-center>
+                  <v-row>
+                    <v-col>
+                      <v-select
+                        :items="listaNiveleducativo"
+                        v-model="fichaIngreso.contenido.escolaridad.niveleducativo"
+                        label="Nivel de educación"
+                        outlined
+                        @input="$v.fichaIngreso.contenido.escolaridad.niveleducativo.$touch()"
+                        @blur="$v.fichaIngreso.contenido.escolaridad.niveleducativo.$touch()"
+                        :error-messages="errorniveleducativo"
+                      ></v-select>
+                      <!-- :readonly="isDisabled"
+                      -->
+                    </v-col>
+                    <v-col>
+                      <v-select
+                        :items="listaEducacionespecial"
+                        v-model="fichaIngreso.contenido.escolaridad.educacionespecial"
+                        label="Educación especial"
+                        outlined
+                        @input="$v.fichaIngreso.contenido.escolaridad.educacionespecial.$touch()"
+                        @blur="$v.fichaIngreso.contenido.escolaridad.educacionespecial.$touch()"
+                        :error-messages="erroreducacionespecial"
+                      ></v-select>
+                      <!-- :readonly="isDisabled"-->
+                    </v-col>
+                  </v-row>
 
-              <v-card
-                style="margin-top:30px;padding:5px 5px;padding-bottom:15px;background-color:#EAEAEA"
-              >
-                <v-card elevation="0" style="background-color:#EAEAEA" height="70">
-                  <v-row style="margin:1%;heigh:100%" align="center">
-                    <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model.trim="edadgradoescolar.edad"
-                        label="Edad"
-                        color="#009900"
-                      ></v-text-field>
-                      <!-- @input="$v.servicio.servicio.$touch()"
-                        @blur="$v.servicio.servicio.$touch()"
-                      :error-messages="errorTextoservicio"-->
-                    </v-col>
-                    <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model.trim="edadgradoescolar.gradoescolar"
-                        label="Grado escolar"
-                        color="#009900"
-                      ></v-text-field>
-                      <!-- @input="$v.servicio.tipo.$touch()"
-                        @blur="$v.servicio.tipo.$touch()"
-                      :error-messages="errorTextoserviciotipo"-->
-                    </v-col>
-                    <v-col :cols="4" align="right">
-                      <v-btn fab small dark color="green" @click="agregaredadgradoescolar">
-                        <v-icon dark>mdi-plus</v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-card>
-                <v-card
-                  color="#FAFAFA"
-                  style="margin-top:5px; margin-top: 20px;"
-                  height="60"
-                  v-for="(item, index) in fichaIngreso.contenido.escolaridad.edadgradoescolar"
-                  :key="index"
-                >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col :cols="10">
-                      <span
-                        style="font-size:18px"
-                      >Edad: {{ item.edad }} - Grado escolar: {{ item.gradoescolar }}</span>
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <div style="margin-right:20px">
-                        <v-btn
-                          fab
-                          x-small
-                          dark
-                          color="red"
-                          @click="eliminaredadgradoescolar(index)"
-                        >
-                          <v-icon dark>mdi-minus</v-icon>
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
+                  <v-card elevation="3" outlined>
+                    <v-card-title>Grado escolar por edad (si tuviera)</v-card-title>
+                    <v-container grid-list-md text-xs-center>
+                      <v-layout row wrap>
+                        <v-flex xs5>
+                          <v-textarea
+                            v-model.trim="edadgradoescolar.edad"
+                            label="Edad"
+                            outlined
+                            auto-grow
+                            rows="1"
+                            color="#009900"
+                            @input="$v.edadgradoescolar.edad.$touch()"
+                            @blur="$v.edadgradoescolar.edad.$touch()"
+                            :error-messages="erroredadgradoescolaredad"
+                          ></v-textarea>
+                        </v-flex>
+                        <v-flex xs5>
+                          <v-textarea
+                            v-model.trim="edadgradoescolar.gradoescolar"
+                            label="Grado escolar"
+                            outlined
+                            auto-grow
+                            rows="1"
+                            color="#009900"
+                            @input="$v.edadgradoescolar.gradoescolar.$touch()"
+                            @blur="$v.edadgradoescolar.gradoescolar.$touch()"
+                            :error-messages="errorgradoescolargradoescolar"
+                          ></v-textarea>
+                        </v-flex>
+                        <v-flex xs2>
+                          <v-btn
+                            class="mx-2"
+                            fab
+                            dark
+                            color="success"
+                            @click="agregaredadgradoescolar"
+                          >
+                            <v-icon dark>mdi-plus</v-icon>
+                          </v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                    <v-list flat>
+                      <v-list-item
+                        v-for="(item, i) in fichaIngreso.contenido.escolaridad.edadgradoescolar"
+                        :key="i"
+                        class="item-list"
+                      >
+                        <v-list-item-icon>
+                          <v-icon
+                            @click="eliminaredadgradoescolar(i)"
+                            left
+                            color="red"
+                          >mdi-minus-circle</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                          <v-list-item-title>Edad: {{ item.edad }} - Grado escolar: {{ item.gradoescolar }}</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-container>
               </v-card>
 
               <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
@@ -235,8 +242,8 @@
                             <v-row>
                               <v-col>
                                 <v-textarea
-                                  label="Parentesco con la residente"
-                                  v-model="padre.parentesco"
+                                  label="Edad"
+                                  v-model="padre.edad"
                                   outlined
                                   color="#009900"
                                   rows="1"
@@ -260,6 +267,18 @@
                                     @input="$v.familiar.edad.$touch()"
                                     @blur="$v.familiar.edad.$touch()"
                                 :error-messages="errorEdadFamiliar"-->
+                              </v-col>
+                              <v-col>
+                                <v-select
+                                  :items="listaPadreparentesco"
+                                  v-model="padre.parentesco"
+                                  label="Parentesco con la residente"
+                                  outlined
+                                ></v-select>
+                                <!-- :readonly="isDisabled"
+                                  @input="$v.familiar.numerodocumento.$touch()"
+                                  @blur="$v.familiar.numerodocumento.$touch()"
+                                :error-messages="errorNumeroDocumentoFamiliar"-->
                               </v-col>
                             </v-row>
                             <v-row>
@@ -370,12 +389,12 @@
                   </div>
                 </v-card-text>
               </v-card>
-              <!-- <div>
+              <div>
                 <h4
                   v-if="$v.fichaIngreso.contenido.padres.$error"
                   class="red--text"
                 >Debe registrar como mínimo un padre y como máximo 2 padres</h4>
-              </div>-->
+              </div>
 
               <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
                 <v-card-title>
@@ -506,12 +525,6 @@
                   </div>
                 </v-card-text>
               </v-card>
-              <!-- <div>
-                <h4
-                  v-if="$v.fichaIngreso.contenido.padres.$error"
-                  class="red--text"
-                >Debe registrar como mínimo un padre y como máximo 2 padres</h4>
-              </div>-->
 
               <v-row>
                 <v-col>
@@ -533,226 +546,173 @@
         <v-stepper-content step="2">
           <div class="container-user">
             <form>
-              <v-row>
-                <v-col>
-                  <v-textarea
-                    label="Discapacidad intelectual"
-                    v-model="fichaIngreso.contenido.discapacidad.intelectual"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                  @input="$v.familiar.numerodocumento.$touch()"
-                                  @blur="$v.familiar.numerodocumento.$touch()"
-                  :error-messages="errorNumeroDocumentoFamiliar"-->
-                </v-col>
-                <v-col>
-                  <v-textarea
-                    label="Discapacidad física"
-                    v-model="fichaIngreso.contenido.discapacidad.fisico"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.edad.$touch()"
-                                    @blur="$v.familiar.edad.$touch()"
-                  :error-messages="errorEdadFamiliar"-->
-                </v-col>
-              </v-row>
-
-              <v-textarea
-                label="Discapacidad sensorial"
-                v-model="fichaIngreso.contenido.discapacidad.sensorial"
-                outlined
-                color="#009900"
-                rows="1"
-                auto-grow
-              ></v-textarea>
-              <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.edad.$touch()"
-                                    @blur="$v.familiar.edad.$touch()"
-              :error-messages="errorEdadFamiliar"-->
-
-              <v-row>
-                <v-col>
-                  <v-textarea
-                    label="Edad cuando tuvo abuso sexual"
-                    v-model="fichaIngreso.contenido.abusosexual.edad"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.parentesco.$touch()"
-                                    @blur="$v.familiar.parentesco.$touch()"
-                  :error-messages="errorParentescoFamiliar"-->
-                </v-col>
-                <v-col>
-                  <v-textarea
-                    label="Veces que tuvo abuso sexual"
-                    v-model="fichaIngreso.contenido.abusosexual.veces"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.gradoinstruccion.$touch()"
-                                    @blur="$v.familiar.gradoinstruccion.$touch()"
-                  :error-messages="errorGradoInstruccionFamiliar"-->
-                </v-col>
-                <v-col>
-                  <v-textarea
-                    label="¿Recibio atención psicológica?"
-                    v-model="fichaIngreso.contenido.abusosexual.atencionpsicologica"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-
-                  <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.gradoinstruccion.$touch()"
-                                    @blur="$v.familiar.gradoinstruccion.$touch()"
-                  :error-messages="errorGradoInstruccionFamiliar"-->
-                </v-col>
-              </v-row>
-
-              <v-card
-                style="margin-top:1%;margin-bottom:1%;padding-bottom: 15px;background-color:#EAEAEA"
-              >
-                <v-card elevation="0" style="background-color:#EAEAEA" height="70">
-                  <v-row style="margin:1%;heigh:100%" align="center">
-                    <v-col :cols="8" align="left">
-                      <v-text-field v-model="enfermedad" label="Enfermedad" color="#009900"></v-text-field>
-                      <!-- @input="$v.motivoIngreso.$touch()"
-                        @blur="$v.motivoIngreso.$touch()"
-                      :error-messages="errorTextomotivoingreso"-->
+              <v-card elevation="6" outlined>
+                <v-card-title>Discapacidades del residente</v-card-title>
+                <v-container grid-list-md text-xs-center>
+                  <v-row>
+                    <v-col>
+                      <v-select
+                        :items="listaDiscapacidad"
+                        v-model="fichaIngreso.contenido.discapacidad.intelectual"
+                        label="Discapacidad intelectual"
+                        outlined
+                        @input="$v.fichaIngreso.contenido.discapacidad.intelectual.$touch()"
+                        @blur="$v.fichaIngreso.contenido.discapacidad.intelectual.$touch()"
+                        :error-messages="errorintelectual"
+                      ></v-select>
+                      <!-- :readonly="isDisabled"-->
                     </v-col>
-                    <v-col :cols="4" align="right">
-                      <v-btn fab small dark color="green" @click="agregarenfermedad">
-                        <v-icon dark>mdi-plus</v-icon>
-                      </v-btn>
+                    <v-col>
+                      <v-select
+                        :items="listaDiscapacidad"
+                        v-model="fichaIngreso.contenido.discapacidad.fisico"
+                        label="Discapacidad física"
+                        outlined
+                        @input="$v.fichaIngreso.contenido.discapacidad.fisico.$touch()"
+                        @blur="$v.fichaIngreso.contenido.discapacidad.fisico.$touch()"
+                        :error-messages="errorfisico"
+                      ></v-select>
+                      <!-- :readonly="isDisabled"-->
+                    </v-col>
+                    <v-col>
+                      <v-select
+                        :items="listaDiscapacidad"
+                        v-model="fichaIngreso.contenido.discapacidad.sensorial"
+                        label="Discapacidad sensorial"
+                        outlined
+                        @input="$v.fichaIngreso.contenido.discapacidad.sensorial.$touch()"
+                        @blur="$v.fichaIngreso.contenido.discapacidad.sensorial.$touch()"
+                        :error-messages="errorsensorial"
+                      ></v-select>
+                      <!-- :readonly="isDisabled"-->
                     </v-col>
                   </v-row>
-                </v-card>
 
-                <v-card
-                  tile
-                  elevation="0"
-                  color="#FAFAFA"
-                  style="margin:5px; margin-top: 20px;"
-                  height="60"
-                  v-for="(item, index) in fichaIngreso.contenido.discapacidad.enfermedad"
-                  :key="index"
-                >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col :cols="8" align="left">
-                      <span>Enfermedad: {{ item }}</span>
-                    </v-col>
-                    <v-col :cols="4" align="right">
-                      <div style="margin-right:20px">
-                        <v-btn fab x-small dark color="red" @click="eliminarenfermedad(index)">
-                          <v-icon dark>mdi-minus</v-icon>
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
+                  <v-card elevation="3" outlined>
+                    <v-card-title>Enfermedades</v-card-title>
+                    <v-container grid-list-md text-xs-center>
+                      <v-layout row wrap>
+                        <v-flex xs10>
+                          <v-textarea
+                            v-model="enfermedad"
+                            label="Ingrese la enfermedad"
+                            outlined
+                            auto-grow
+                            rows="1"
+                            color="#009900"
+                          ></v-textarea>
+                        </v-flex>
+                        <v-flex xs2>
+                          <v-btn class="mx-2" fab dark color="success" @click="agregarenfermedad">
+                            <v-icon dark>mdi-plus</v-icon>
+                          </v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                    <v-list flat>
+                      <v-list-item
+                        v-for="(item, i) in fichaIngreso.contenido.discapacidad.enfermedad"
+                        :key="i"
+                        class="item-list"
+                      >
+                        <v-list-item-icon>
+                          <v-icon @click="eliminarenfermedad(i)" left color="red">mdi-minus-circle</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                          <v-list-item-title>Enfermedad: {{ item }}</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-container>
               </v-card>
-              <!-- <div>
-                <h4
-                  v-if="$v.fichaIngreso.contenido.familiar.motivoingreso.$error"
-                  class="red--text"
-                >Debe tener como mínimo un motivo de ingreso registrado</h4>
-              </div>-->
-
-              <v-card
-                style="margin-top:30px;padding:5px 5px;padding-bottom:15px;background-color:#EAEAEA"
-              >
-                <v-card elevation="0" style="background-color:#EAEAEA" height="70">
-                  <v-row style="margin:1%;heigh:100%" align="center">
-                    <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model.trim="maltrato.tipomaltrato"
-                        label="Tipo de maltrato"
+              <v-card elevation="6" outlined style="margin-top: 20px">
+                <v-card-title>Sobre el abuso sexual</v-card-title>
+                <v-container grid-list-md text-xs-center>
+                  <v-row>
+                    <v-col>
+                      <v-textarea
+                        label="Edad cuando tuvo abuso sexual"
+                        v-model="fichaIngreso.contenido.abusosexual.edad"
+                        outlined
                         color="#009900"
-                      ></v-text-field>
-                      <!-- @input="$v.servicio.servicio.$touch()"
-                        @blur="$v.servicio.servicio.$touch()"
-                      :error-messages="errorTextoservicio"-->
+                        rows="1"
+                        auto-grow
+                      ></v-textarea>
+                      <!-- :readonly="isDisabled"
+                                      @input="$v.familiar.parentesco.$touch()"
+                                      @blur="$v.familiar.parentesco.$touch()"
+                      :error-messages="errorParentescoFamiliar"-->
                     </v-col>
-                    <v-col :cols="4" align="left">
-                      <v-text-field v-model.trim="maltrato.agresor" label="Agresor" color="#009900"></v-text-field>
-                      <!-- @input="$v.servicio.tipo.$touch()"
-                        @blur="$v.servicio.tipo.$touch()"
-                      :error-messages="errorTextoserviciotipo"-->
+                    <v-col>
+                      <v-textarea
+                        label="Veces que tuvo abuso sexual"
+                        v-model="fichaIngreso.contenido.abusosexual.veces"
+                        outlined
+                        color="#009900"
+                        rows="1"
+                        auto-grow
+                      ></v-textarea>
+                      <!-- :readonly="isDisabled"
+                                      @input="$v.familiar.gradoinstruccion.$touch()"
+                                      @blur="$v.familiar.gradoinstruccion.$touch()"
+                      :error-messages="errorGradoInstruccionFamiliar"-->
                     </v-col>
-                    <v-col :cols="4" align="right">
-                      <v-btn fab small dark color="green" @click="agregarmaltrato">
+                  </v-row>
+
+                  <v-switch
+                    v-model="fichaIngreso.contenido.abusosexual.atencionpsicologica"
+                    :label="`¿Recibio atención psicológica? Respuesta: ${ fichaIngreso.contenido.abusosexual.atencionpsicologica ? 'SI' : 'NO'}`"
+                  ></v-switch>
+                  <!-- :readonly="isDisabled"
+                                      @input="$v.familiar.gradoinstruccion.$touch()"
+                                      @blur="$v.familiar.gradoinstruccion.$touch()"
+                  :error-messages="errorGradoInstruccionFamiliar"-->
+                </v-container>
+              </v-card>
+
+              <v-card elevation="6" outlined style="margin-top: 20px">
+                <v-card-title>Evidencia de maltrato</v-card-title>
+                <v-container grid-list-md text-xs-center>
+                  <v-layout row wrap>
+                    <v-flex xs5>
+                      <v-select
+                        :items="listaTipomaltrato"
+                        v-model="maltrato.tipomaltrato"
+                        label="Tipo de maltrato"
+                        outlined
+                      ></v-select>
+                    </v-flex>
+                    <v-flex xs5>
+                      <v-select
+                        :items="listaAgresor"
+                        v-model="maltrato.agresor"
+                        label="Agresor"
+                        outlined
+                      ></v-select>
+                    </v-flex>
+                    <v-flex xs2>
+                      <v-btn class="mx-2" fab dark color="success" @click="agregarmaltrato">
                         <v-icon dark>mdi-plus</v-icon>
                       </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-card>
-                <v-card
-                  color="#FAFAFA"
-                  style="margin-top:5px; margin-top: 20px;"
-                  height="60"
-                  v-for="(item, index) in fichaIngreso.contenido.maltrato"
-                  :key="index"
-                >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col :cols="10">
-                      <span
-                        style="font-size:18px"
-                      >Tipo maltrato: {{ item.tipomaltrato }} - Agresor: {{ item.agresor }}</span>
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <div style="margin-right:20px">
-                        <v-btn fab x-small dark color="red" @click="eliminarmaltrato(index)">
-                          <v-icon dark>mdi-minus</v-icon>
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+                <v-list flat>
+                  <v-list-item
+                    v-for="(item, i) in fichaIngreso.contenido.maltrato"
+                    :key="i"
+                    class="item-list"
+                  >
+                    <v-list-item-icon>
+                      <v-icon @click="eliminarmaltrato(i)" left color="red">mdi-minus-circle</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>Tipo maltrato: {{ item.tipomaltrato }} - Agresor: {{ item.agresor }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
               </v-card>
-              <!-- <div>
-                <h4
-                  v-if="$v.fichaIngreso.contenido.vivienda.servicios.$error"
-                  class="red--text"
-                >Debe tener como mínimo un servicio registrado</h4>
-              </div>-->
-
-              <!-- <v-expansion-panels 
-                popout
-                shaped
-                >
-                    <v-expansion-panel>
-                        <v-expansion-panel-header>Observaciones del Residente</v-expansion-panel-header>
-                        <v-expansion-panel-content>
-                            <v-textarea
-                                label="Observación 1"
-                                auto-grow
-                                outlined         
-                                color="#009900"
-                                shaped
-                            ></v-textarea>
-                            <v-btn 
-                            depressed
-                            color= rgba(0,0,0,0.2)
-                            >
-                                <span>Agregar Observación</span>
-                            </v-btn>
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-              </v-expansion-panels>-->
               <v-row>
                 <v-col>
                   <v-btn block @click="cerrarDialogo" color="primary">
@@ -773,219 +733,194 @@
         <v-stepper-content step="3">
           <div class="container-user">
             <form>
-              <v-row>
-                <v-col>
-                  <v-textarea
-                    label="¿Fue adicto alguna vez?"
-                    v-model="fichaIngreso.contenido.adicciones.consumo"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                  @input="$v.familiar.numerodocumento.$touch()"
-                                  @blur="$v.familiar.numerodocumento.$touch()"
-                  :error-messages="errorNumeroDocumentoFamiliar"-->
-                </v-col>
-                <v-col>
-                  <v-textarea
-                    label="Último dia de consumo"
-                    v-model="fichaIngreso.contenido.adicciones.ultimodiaconsumo"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.edad.$touch()"
-                                    @blur="$v.familiar.edad.$touch()"
-                  :error-messages="errorEdadFamiliar"-->
-                </v-col>
-              </v-row>
+              <v-card elevation="6" outlined>
+                <v-card-title>Otros indicadores</v-card-title>
+                <v-container grid-list-md text-xs-center>
+                  <v-row>
+                    <v-col>
+                      <v-switch
+                        v-model="fichaIngreso.contenido.adicciones.consumo"
+                        :label="`¿Ha consumido spa alguna vez? Respuesta:${ fichaIngreso.contenido.adicciones.consumo ? 'SI' : 'NO'}`"
+                      ></v-switch>
+                      <!-- :readonly="isDisabled"
+                                      @input="$v.familiar.numerodocumento.$touch()"
+                                      @blur="$v.familiar.numerodocumento.$touch()"
+                      :error-messages="errorNumeroDocumentoFamiliar"-->
+                    </v-col>
+                    <v-col>
+                      <v-menu
+                        v-model="menu2"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="fichaIngreso.contenido.adicciones.ultimodiaconsumo"
+                            label="Último dia de consumo"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            outlined
+                            clearable
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="fichaIngreso.contenido.adicciones.ultimodiaconsumo"
+                          @input="menu2 = false"
+                        ></v-date-picker>
+                      </v-menu>
+                      <!-- :readonly="isDisabled"
+                                        @input="$v.familiar.edad.$touch()"
+                                        @blur="$v.familiar.edad.$touch()"
+                      :error-messages="errorEdadFamiliar"-->
+                    </v-col>
+                  </v-row>
 
-              <v-card
-                style="margin-top:30px;padding:5px 5px;padding-bottom:15px;background-color:#EAEAEA"
-              >
-                <v-card elevation="0" style="background-color:#EAEAEA" height="70">
-                  <v-row style="margin:1%;heigh:100%" align="center">
-                    <v-col :cols="3" align="left">
-                      <v-text-field
-                        v-model.trim="spa.tipospa"
-                        label="Tipo de adicción"
-                        color="#009900"
-                      ></v-text-field>
-                      <!-- @input="$v.servicio.servicio.$touch()"
-                        @blur="$v.servicio.servicio.$touch()"
-                      :error-messages="errorTextoservicio"-->
-                    </v-col>
-                    <v-col :cols="3" align="left">
-                      <v-text-field
-                        v-model.trim="spa.tiempoconsumo"
-                        label="Tiempo de consumo"
-                        color="#009900"
-                      ></v-text-field>
-                      <!-- @input="$v.servicio.tipo.$touch()"
-                        @blur="$v.servicio.tipo.$touch()"
-                      :error-messages="errorTextoserviciotipo"-->
-                    </v-col>
-                    <v-col :cols="3" align="left">
-                      <v-text-field
-                        v-model.trim="spa.frecuencia"
-                        label="Frecuencia de consumo"
-                        color="#009900"
-                      ></v-text-field>
-                      <!-- @input="$v.servicio.tipo.$touch()"
-                        @blur="$v.servicio.tipo.$touch()"
-                      :error-messages="errorTextoserviciotipo"-->
-                    </v-col>
-                    <v-col :cols="3" align="right">
-                      <v-btn fab small dark color="green" @click="agregarspa">
-                        <v-icon dark>mdi-plus</v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-card>
-                <v-card
-                  color="#FAFAFA"
-                  style="margin-top:5px; margin-top: 20px;"
-                  height="60"
-                  v-for="(item, index) in fichaIngreso.contenido.adicciones.spa"
-                  :key="index"
-                >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col :cols="10">
-                      <span
-                        style="font-size:18px"
-                      >Tipo: {{ item.tipospa }} - Tiempo: {{ item.tiempoconsumo }} - Frecuencia: {{ item.frecuencia }}</span>
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <div style="margin-right:20px">
-                        <v-btn fab x-small dark color="red" @click="eliminarspa(index)">
-                          <v-icon dark>mdi-minus</v-icon>
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
+                  <v-card elevation="3" outlined>
+                    <v-card-title>Consumo de sustancias psicoadictivas - SPA (si consumiera)</v-card-title>
+                    <v-container grid-list-md text-xs-center>
+                      <v-layout row wrap>
+                        <v-flex xs3>
+                          <v-select
+                            :items="listaTipospa"
+                            v-model="spa.tipospa"
+                            label="SPA consumida"
+                            outlined
+                          ></v-select>
+                        </v-flex>
+                        <v-flex xs4>
+                          <v-text-field
+                            v-model.trim="spa.tiempoconsumo"
+                            label="Tiempo de consumo"
+                            color="#009900"
+                            outlined
+                          ></v-text-field>
+                        </v-flex>
+                        <v-flex xs3>
+                          <v-select
+                            :items="listaFrecuenciaconsumo"
+                            v-model="spa.frecuencia"
+                            label="Frecuencia de consumo"
+                            outlined
+                          ></v-select>
+                        </v-flex>
+                        <v-flex xs2>
+                          <v-btn class="mx-2" fab dark color="success" @click="agregarspa">
+                            <v-icon dark>mdi-plus</v-icon>
+                          </v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                    <v-list flat>
+                      <v-list-item
+                        v-for="(item, i) in fichaIngreso.contenido.adicciones.spa"
+                        :key="i"
+                        class="item-list"
+                      >
+                        <v-list-item-icon>
+                          <v-icon @click="eliminarspa(i)" left color="red">mdi-minus-circle</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                          <v-list-item-title>Tipo: {{ item.tipospa }} - Tiempo: {{ item.tiempoconsumo }} - Frecuencia: {{ item.frecuencia }}</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-container>
               </v-card>
 
-              <v-card
-                style="margin-top:30px;padding:5px 5px;padding-bottom:15px;background-color:#EAEAEA"
-              >
-                <v-card elevation="0" style="background-color:#EAEAEA" height="70">
-                  <v-row style="margin:1%;heigh:100%" align="center">
-                    <v-col :cols="5" align="left">
-                      <v-text-field
-                        v-model.trim="conductasriesgo.conducta"
+              <v-card elevation="6" outlined style="margin-top: 20px">
+                <v-card-title>Conductas de riesgo</v-card-title>
+                <v-container grid-list-md text-xs-center>
+                  <v-layout row wrap>
+                    <v-flex xs5>
+                      <v-select
+                        :items="listaConductariesgo"
+                        v-model="conductasriesgo.conducta"
                         label="Riesgo de conducta"
-                        color="#009900"
-                      ></v-text-field>
-                      <!-- @input="$v.servicio.servicio.$touch()"
-                        @blur="$v.servicio.servicio.$touch()"
-                      :error-messages="errorTextoservicio"-->
-                    </v-col>
-                    <v-col :cols="5" align="left">
-                      <v-text-field
+                        outlined
+                      ></v-select>
+                    </v-flex>
+                    <v-flex xs5>
+                      <v-textarea
                         v-model.trim="conductasriesgo.observacion"
                         label="Observación de la conducta"
                         color="#009900"
-                      ></v-text-field>
-                      <!-- @input="$v.servicio.tipo.$touch()"
-                        @blur="$v.servicio.tipo.$touch()"
-                      :error-messages="errorTextoserviciotipo"-->
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <v-btn fab small dark color="green" @click="agregarconductasriesgo">
+                        outlined
+                        rows="1"
+                        auto-grow
+                      ></v-textarea>
+                    </v-flex>
+                    <v-flex xs2>
+                      <v-btn class="mx-2" fab dark color="success" @click="agregarconductasriesgo">
                         <v-icon dark>mdi-plus</v-icon>
                       </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-card>
-                <v-card
-                  color="#FAFAFA"
-                  style="margin-top:5px; margin-top: 20px;"
-                  height="60"
-                  v-for="(item, index) in fichaIngreso.contenido.conductasriesgo"
-                  :key="index"
-                >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col :cols="10">
-                      <span
-                        style="font-size:18px"
-                      >Conducta: {{ item.conducta }} - Obs: {{ item.observacion }}</span>
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <div style="margin-right:20px">
-                        <v-btn fab x-small dark color="red" @click="eliminarconductasriesgo(index)">
-                          <v-icon dark>mdi-minus</v-icon>
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+                <v-list flat>
+                  <v-list-item
+                    v-for="(item, i) in fichaIngreso.contenido.conductasriesgo"
+                    :key="i"
+                    class="item-list"
+                  >
+                    <v-list-item-icon>
+                      <v-icon @click="eliminarconductasriesgo(i)" left color="red">mdi-minus-circle</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>Conducta: {{ item.conducta }} - Obs: {{ item.observacion }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
               </v-card>
 
-              <v-card
-                style="margin-top:30px;padding:5px 5px;padding-bottom:15px;background-color:#EAEAEA"
-              >
-                <v-card elevation="0" style="background-color:#EAEAEA" height="70">
-                  <v-row style="margin:1%;heigh:100%" align="center">
-                    <v-col :cols="5" align="left">
-                      <v-text-field
-                        v-model.trim="conductasemocionales.indicador"
+              <v-card elevation="6" outlined style="margin-top: 20px">
+                <v-card-title>Indicadores emocionales/conductuales</v-card-title>
+                <v-container grid-list-md text-xs-center>
+                  <v-layout row wrap>
+                    <v-flex xs5>
+                      <v-select
+                        :items="listaIndicadoresconductuales"
+                        v-model="conductasemocionales.indicador"
                         label="Indicador de conducta"
-                        color="#009900"
-                      ></v-text-field>
-                      <!-- @input="$v.servicio.servicio.$touch()"
-                        @blur="$v.servicio.servicio.$touch()"
-                      :error-messages="errorTextoservicio"-->
-                    </v-col>
-                    <v-col :cols="5" align="left">
-                      <v-text-field
+                        outlined
+                      ></v-select>
+                    </v-flex>
+                    <v-flex xs5>
+                      <v-textarea
                         v-model.trim="conductasemocionales.observacion"
                         label="Observación de la conducta"
                         color="#009900"
-                      ></v-text-field>
-                      <!-- @input="$v.servicio.tipo.$touch()"
-                        @blur="$v.servicio.tipo.$touch()"
-                      :error-messages="errorTextoserviciotipo"-->
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <v-btn fab small dark color="green" @click="agregarconductasemocionales">
+                        outlined
+                        rows="1"
+                        auto-grow
+                      ></v-textarea>
+                    </v-flex>
+                    <v-flex xs2>
+                      <v-btn class="mx-2" fab dark color="success" @click="agregarconductasemocionales">
                         <v-icon dark>mdi-plus</v-icon>
                       </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-card>
-                <v-card
-                  color="#FAFAFA"
-                  style="margin-top:5px; margin-top: 20px;"
-                  height="60"
-                  v-for="(item, index) in fichaIngreso.contenido.conductasemocionales"
-                  :key="index"
-                >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col :cols="10">
-                      <span
-                        style="font-size:18px"
-                      >Indicador: {{ item.indicador }} - Obs: {{ item.observacion }}</span>
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <div style="margin-right:20px">
-                        <v-btn
-                          fab
-                          x-small
-                          dark
-                          color="red"
-                          @click="eliminarconductasemocionales(index)"
-                        >
-                          <v-icon dark>mdi-minus</v-icon>
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+                <v-list flat>
+                  <v-list-item
+                    v-for="(item, i) in fichaIngreso.contenido.conductasemocionales"
+                    :key="i"
+                    class="item-list"
+                  >
+                    <v-list-item-icon>
+                      <v-icon @click="eliminarconductasemocionales(i)" left color="red">mdi-minus-circle</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>Indicador: {{ item.indicador }} - Obs: {{ item.observacion }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
               </v-card>
 
               <v-row>
@@ -1008,422 +943,422 @@
         <v-stepper-content step="4">
           <div class="container-user">
             <form>
-              <v-row>
-                <v-col>
-                  <v-textarea
-                    label="¿Tiene menstruación?"
-                    v-model="fichaIngreso.contenido.desarrollosexual.menstruacion"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                  @input="$v.familiar.numerodocumento.$touch()"
-                                  @blur="$v.familiar.numerodocumento.$touch()"
-                  :error-messages="errorNumeroDocumentoFamiliar"-->
-                </v-col>
-                <v-col>
-                  <v-textarea
-                    label="Menarquía"
-                    v-model="fichaIngreso.contenido.desarrollosexual.menarquia"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.edad.$touch()"
-                                    @blur="$v.familiar.edad.$touch()"
-                  :error-messages="errorEdadFamiliar"-->
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col>
-                  <v-textarea
-                    label="¿Tuvo relaciones sexuales?"
-                    v-model="fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                  @input="$v.familiar.numerodocumento.$touch()"
-                                  @blur="$v.familiar.numerodocumento.$touch()"
-                  :error-messages="errorNumeroDocumentoFamiliar"-->
-                </v-col>
-                <v-col>
-                  <v-textarea
-                    label="Edad inicio de relaciones"
-                    v-model="fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.edad.$touch()"
-                                    @blur="$v.familiar.edad.$touch()"
-                  :error-messages="errorEdadFamiliar"-->
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col>
-                  <v-textarea
-                    label="Motivo de las relaciones"
-                    v-model="fichaIngreso.contenido.desarrollosexual.relaciones.motivo"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                  @input="$v.familiar.numerodocumento.$touch()"
-                                  @blur="$v.familiar.numerodocumento.$touch()"
-                  :error-messages="errorNumeroDocumentoFamiliar"-->
-                </v-col>
-                <v-col>
-                  <v-textarea
-                    label="Genero de la pareja"
-                    v-model="fichaIngreso.contenido.desarrollosexual.relaciones.generopareja"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.edad.$touch()"
-                                    @blur="$v.familiar.edad.$touch()"
-                  :error-messages="errorEdadFamiliar"-->
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col>
-                  <v-textarea
-                    label="¿Fue relacion consentida?"
-                    v-model="fichaIngreso.contenido.desarrollosexual.relaciones.relacionconsentida"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                  @input="$v.familiar.numerodocumento.$touch()"
-                                  @blur="$v.familiar.numerodocumento.$touch()"
-                  :error-messages="errorNumeroDocumentoFamiliar"-->
-                </v-col>
-                <v-col>
-                  <v-textarea
-                    label="¿Tiene ITS?"
-                    v-model="fichaIngreso.contenido.desarrollosexual.relaciones.its"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.edad.$touch()"
-                                    @blur="$v.familiar.edad.$touch()"
-                  :error-messages="errorEdadFamiliar"-->
-                </v-col>
-                <v-col>
-                  <v-textarea
-                    label="¿Tuvo tratamiento de la ITS?"
-                    v-model="fichaIngreso.contenido.desarrollosexual.relaciones.tratamientoits"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.edad.$touch()"
-                                    @blur="$v.familiar.edad.$touch()"
-                  :error-messages="errorEdadFamiliar"-->
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <!-- Explotacion sexual -->
-                <v-col>
-                  <v-textarea
-                    label="¿Fue víctima de explotación?"
-                    v-model="fichaIngreso.contenido.explotacionsexual.victimaexplotacion"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                  @input="$v.familiar.numerodocumento.$touch()"
-                                  @blur="$v.familiar.numerodocumento.$touch()"
-                  :error-messages="errorNumeroDocumentoFamiliar"-->
-                </v-col>
-                <v-col>
-                  <v-textarea
-                    label="Edad inicio de explotación"
-                    v-model="fichaIngreso.contenido.explotacionsexual.edadinicio"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.edad.$touch()"
-                                    @blur="$v.familiar.edad.$touch()"
-                  :error-messages="errorEdadFamiliar"-->
-                </v-col>
-                <v-col>
-                  <v-textarea
-                    label="¿Fue víctima de trata?"
-                    v-model="fichaIngreso.contenido.explotacionsexual.victimatrata"
-                    outlined
-                    color="#009900"
-                    rows="1"
-                    auto-grow
-                  ></v-textarea>
-                  <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.edad.$touch()"
-                                    @blur="$v.familiar.edad.$touch()"
-                  :error-messages="errorEdadFamiliar"-->
-                </v-col>
-              </v-row>
-
-              <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
-                <v-card-title>
+              <v-card elevation="6" outlined>
+                <v-card-title>Desarrollo sexual</v-card-title>
+                <v-container grid-list-md text-xs-center>
                   <v-row>
-                    <v-col :cols="8">Trata sexual</v-col>
-                    <v-col :cols="4" align="right">
-                      <v-btn fab small dark color="green" @click="modalRegistrartratasexual()">
-                        <v-icon dark>mdi-plus</v-icon>
-                      </v-btn>
-                      <v-dialog v-model="dialogAgregartratasexual" persistent max-width="600px">
-                        <v-card align="center">
-                          <v-card-title>
-                            <span class="headline">Datos de la trata sexual</span>
-                          </v-card-title>
-                          <v-card-text>
-                            <v-row>
-                              <v-col>
-                                <v-textarea
-                                  label="Modalidad"
-                                  v-model="tratasexual.modalidad"
-                                  outlined
-                                  color="#009900"
-                                  rows="1"
-                                  auto-grow
-                                ></v-textarea>
-                                <!-- :readonly="isDisabled"
-                                                @input="$v.familiar.numerodocumento.$touch()"
-                                                @blur="$v.familiar.numerodocumento.$touch()"
-                                :error-messages="errorNumeroDocumentoFamiliar"-->
-                              </v-col>
-                              <v-col>
-                                <v-textarea
-                                  label="Duración"
-                                  v-model="tratasexual.duracion"
-                                  outlined
-                                  color="#009900"
-                                  rows="1"
-                                  auto-grow
-                                ></v-textarea>
-                                <!-- :readonly="isDisabled"
-                                                @input="$v.familiar.numerodocumento.$touch()"
-                                                @blur="$v.familiar.numerodocumento.$touch()"
-                                :error-messages="errorNumeroDocumentoFamiliar"-->
-                              </v-col>
-                              <v-col>
-                                <v-textarea
-                                  label="Lugar"
-                                  v-model="tratasexual.lugar"
-                                  outlined
-                                  color="#009900"
-                                  rows="1"
-                                  auto-grow
-                                ></v-textarea>
-                                <!-- :readonly="isDisabled"
-                                                  @input="$v.familiar.edad.$touch()"
-                                                  @blur="$v.familiar.edad.$touch()"
-                                :error-messages="errorEdadFamiliar"-->
-                              </v-col>
-                            </v-row>
+                    <v-col>
+                      <v-switch
+                        v-model="fichaIngreso.contenido.desarrollosexual.menstruacion"
+                        :label="`¿Tiene menstruación? Respuesta: ${ fichaIngreso.contenido.desarrollosexual.menstruacion ? 'SI' : 'NO'}`"
+                      ></v-switch>
+                      <!-- :readonly="isDisabled"
+                                      @input="$v.familiar.numerodocumento.$touch()"
+                                      @blur="$v.familiar.numerodocumento.$touch()"
+                      :error-messages="errorNumeroDocumentoFamiliar"-->
+                    </v-col>
+                    <v-col>
+                      <v-menu
+                        v-model="menu3"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="fichaIngreso.contenido.desarrollosexual.menarquia"
+                            label="Menarquía"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            outlined
+                            clearable
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="fichaIngreso.contenido.desarrollosexual.menarquia"
+                          @input="menu3 = false"
+                        ></v-date-picker>
+                      </v-menu>
+                      <!-- :readonly="isDisabled"
+                                        @input="$v.familiar.edad.$touch()"
+                                        @blur="$v.familiar.edad.$touch()"
+                      :error-messages="errorEdadFamiliar"-->
+                    </v-col>
+                  </v-row>
 
-                            <v-row>
-                              <v-col>
-                                <v-textarea
-                                  label="Sentimientos"
-                                  v-model="tratasexual.sentimientos"
-                                  outlined
-                                  color="#009900"
-                                  rows="1"
-                                  auto-grow
-                                ></v-textarea>
-                                <!-- :readonly="isDisabled"
-                                                @input="$v.familiar.numerodocumento.$touch()"
-                                                @blur="$v.familiar.numerodocumento.$touch()"
-                                :error-messages="errorNumeroDocumentoFamiliar"-->
-                              </v-col>
-                              <v-col>
-                                <v-textarea
-                                  label="Referencias"
-                                  v-model="tratasexual.referencias"
-                                  outlined
-                                  color="#009900"
-                                  rows="1"
-                                  auto-grow
-                                ></v-textarea>
-                                <!-- :readonly="isDisabled"
-                                                  @input="$v.familiar.edad.$touch()"
-                                                  @blur="$v.familiar.edad.$touch()"
-                                :error-messages="errorEdadFamiliar"-->
-                              </v-col>
-                            </v-row>
+                <v-card elevation="3" outlined>
+                  <v-card-title>Acerca de relaciones sexuales</v-card-title>
+                    <v-container grid-list-md text-xs-center>
 
-                            <v-card
-                              style="margin-top:30px;padding:5px 5px;padding-bottom:15px;background-color:#EAEAEA"
-                            >
-                              <v-card elevation="0" style="background-color:#EAEAEA" height="70">
-                                <v-row style="margin:1%;heigh:100%" align="center">
-                                  <v-col :cols="8" align="left">
-                                    <v-text-field
-                                      v-model.trim="personascontacto"
-                                      label="Personas contacto"
+                      <v-row>
+                        <v-col>
+                          <v-switch
+                            v-model="fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones"
+                            :label="`¿Tuvo relaciones sexuales? Respuesta:${ fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones ? 'SI' : 'NO'}`"
+                          ></v-switch>
+                          <!-- :readonly="isDisabled"
+                                          @input="$v.familiar.numerodocumento.$touch()"
+                                          @blur="$v.familiar.numerodocumento.$touch()"
+                          :error-messages="errorNumeroDocumentoFamiliar"-->
+                        </v-col>
+                        <v-col>
+                          <v-textarea
+                            label="Edad inicio de relaciones"
+                            v-model="fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio"
+                            outlined
+                            color="#009900"
+                            rows="1"
+                            auto-grow
+                          ></v-textarea>
+                          <!-- :readonly="isDisabled"
+                                            @input="$v.familiar.edad.$touch()"
+                                            @blur="$v.familiar.edad.$touch()"
+                          :error-messages="errorEdadFamiliar"-->
+                        </v-col>
+                      </v-row>
+
+                      <v-row>
+                        <v-col>
+                          <v-select
+                            :items="listaMotivorelaciones"
+                            v-model="fichaIngreso.contenido.desarrollosexual.relaciones.motivo"
+                            label="Motivo de las relaciones"
+                            outlined
+                            clearable
+                          ></v-select>
+                          <!-- :readonly="isDisabled"
+                                          @input="$v.familiar.numerodocumento.$touch()"
+                                          @blur="$v.familiar.numerodocumento.$touch()"
+                          :error-messages="errorNumeroDocumentoFamiliar"-->
+                        </v-col>
+                        <v-col>
+                          <v-select
+                            :items="listaParejasexual"
+                            v-model="fichaIngreso.contenido.desarrollosexual.relaciones.generopareja"
+                            label="Genero de la pareja"
+                            outlined
+                            clearable
+                          ></v-select>
+                          <!-- :readonly="isDisabled"
+                                            @input="$v.familiar.edad.$touch()"
+                                            @blur="$v.familiar.edad.$touch()"
+                          :error-messages="errorEdadFamiliar"-->
+                        </v-col>
+                      </v-row>
+
+                      <v-row>
+                        <v-col>
+                          <v-switch
+                            v-model="fichaIngreso.contenido.desarrollosexual.relaciones.relacionconsentida"
+                            :label="`¿Fue relacion consentida? Respuesta:${ fichaIngreso.contenido.desarrollosexual.relaciones.relacionconsentida ? 'SI' : 'NO'}`"
+                          ></v-switch>
+                          <!-- :readonly="isDisabled"
+                                          @input="$v.familiar.numerodocumento.$touch()"
+                                          @blur="$v.familiar.numerodocumento.$touch()"
+                          :error-messages="errorNumeroDocumentoFamiliar"-->
+                        </v-col>
+                        <v-col>
+                          <v-switch
+                            v-model="fichaIngreso.contenido.desarrollosexual.relaciones.its"
+                            :label="`¿Tiene ITS? Respuesta:${ fichaIngreso.contenido.desarrollosexual.relaciones.its ? 'SI' : 'NO'}`"
+                          ></v-switch>
+                          <!-- :readonly="isDisabled"
+                                            @input="$v.familiar.edad.$touch()"
+                                            @blur="$v.familiar.edad.$touch()"
+                          :error-messages="errorEdadFamiliar"-->
+                        </v-col>
+                        <v-col>
+                          <v-switch
+                            v-model="fichaIngreso.contenido.desarrollosexual.relaciones.tratamientoits"
+                            :label="`¿Tuvo tratamiento de la ITS? Respuesta:${ fichaIngreso.contenido.desarrollosexual.relaciones.tratamientoits ? 'SI' : 'NO'}`"
+                          ></v-switch>
+                          <!-- :readonly="isDisabled"
+                                            @input="$v.familiar.edad.$touch()"
+                                            @blur="$v.familiar.edad.$touch()"
+                          :error-messages="errorEdadFamiliar"-->
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card>
+                </v-container>
+              </v-card>
+
+              <v-card elevation="6" outlined style="margin-top: 20px">
+                <v-card-title>Explotacion sexual</v-card-title>
+                <v-container grid-list-md text-xs-center>
+                  <v-row>
+                    <v-col>
+                      <v-switch
+                        v-model="fichaIngreso.contenido.explotacionsexual.victimaexplotacion"
+                        :label="`¿Fue víctima de explotación? Respuesta:${ fichaIngreso.contenido.explotacionsexual.victimaexplotacion ? 'SI' : 'NO'}`"
+                      ></v-switch>
+                      <!-- :readonly="isDisabled"
+                                      @input="$v.familiar.numerodocumento.$touch()"
+                                      @blur="$v.familiar.numerodocumento.$touch()"
+                      :error-messages="errorNumeroDocumentoFamiliar"-->
+                    </v-col>
+                    <v-col>
+                      <v-textarea
+                        label="Edad inicio de explotación"
+                        v-model="fichaIngreso.contenido.explotacionsexual.edadinicio"
+                        outlined
+                        color="#009900"
+                        rows="1"
+                        auto-grow
+                      ></v-textarea>
+                      <!-- :readonly="isDisabled"
+                                        @input="$v.familiar.edad.$touch()"
+                                        @blur="$v.familiar.edad.$touch()"
+                      :error-messages="errorEdadFamiliar"-->
+                    </v-col>
+                    <v-col>
+                      <v-switch
+                        v-model="fichaIngreso.contenido.explotacionsexual.victimatrata"
+                        :label="`¿Fue víctima de trata? Respuesta:${ fichaIngreso.contenido.explotacionsexual.victimatrata ? 'SI' : 'NO'}`"
+                      ></v-switch>
+                      <!-- :readonly="isDisabled"
+                                        @input="$v.familiar.edad.$touch()"
+                                        @blur="$v.familiar.edad.$touch()"
+                      :error-messages="errorEdadFamiliar"-->
+                    </v-col>
+                  </v-row>
+
+                  <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
+                    <v-card-title>
+                      <v-row>
+                        <v-col :cols="8">Trata sexual</v-col>
+                        <v-col :cols="4" align="right">
+                          <v-btn fab small dark color="green" @click="modalRegistrartratasexual()">
+                            <v-icon dark>mdi-plus</v-icon>
+                          </v-btn>
+                          <v-dialog v-model="dialogAgregartratasexual" persistent max-width="600px">
+                            <v-card align="center">
+                              <v-card-title>
+                                <span class="headline">Datos de la trata sexual</span>
+                              </v-card-title>
+                              <v-card-text>
+                                <v-row>
+                                  <v-col>
+                                    <v-select
+                                      :items="listaModalidadtratasexual"
+                                      v-model="tratasexual.modalidad"
+                                      label="Modalidad"
+                                      outlined
+                                    ></v-select>
+                                    <!-- :readonly="isDisabled"
+                                                    @input="$v.familiar.numerodocumento.$touch()"
+                                                    @blur="$v.familiar.numerodocumento.$touch()"
+                                    :error-messages="errorNumeroDocumentoFamiliar"-->
+                                  </v-col>
+                                  <v-col>
+                                    <v-textarea
+                                      label="Duración"
+                                      v-model="tratasexual.duracion"
+                                      outlined
                                       color="#009900"
-                                    ></v-text-field>
-                                    <!-- @input="$v.servicio.servicio.$touch()"
-                                      @blur="$v.servicio.servicio.$touch()"
-                                    :error-messages="errorTextoservicio"-->
+                                      rows="1"
+                                      auto-grow
+                                    ></v-textarea>
+                                    <!-- :readonly="isDisabled"
+                                                    @input="$v.familiar.numerodocumento.$touch()"
+                                                    @blur="$v.familiar.numerodocumento.$touch()"
+                                    :error-messages="errorNumeroDocumentoFamiliar"-->
                                   </v-col>
-                                  <v-col :cols="4" align="right">
-                                    <v-btn
-                                      fab
-                                      small
-                                      dark
-                                      color="green"
-                                      @click="agregarpersonascontacto"
-                                    >
-                                      <v-icon dark>mdi-plus</v-icon>
-                                    </v-btn>
-                                  </v-col>
-                                </v-row>
-                              </v-card>
-                              <v-card
-                                color="#FAFAFA"
-                                style="margin-top:5px; margin-top: 20px;"
-                                height="60"
-                                v-for="(item, index) in tratasexual.personascontacto"
-                                :key="index"
-                              >
-                                <v-row style="margin-left:10px;heigh:100%" align="center">
-                                  <v-col :cols="10">
-                                    <span style="font-size:18px">Contacto: {{ item }}</span>
-                                  </v-col>
-                                  <v-col :cols="2" align="right">
-                                    <div style="margin-right:20px">
-                                      <v-btn
-                                        fab
-                                        x-small
-                                        dark
-                                        color="red"
-                                        @click="eliminarpersonascontacto(index)"
-                                      >
-                                        <v-icon dark>mdi-minus</v-icon>
-                                      </v-btn>
-                                    </div>
+                                  <v-col>
+                                    <v-textarea
+                                      label="Lugar"
+                                      v-model="tratasexual.lugar"
+                                      outlined
+                                      color="#009900"
+                                      rows="1"
+                                      auto-grow
+                                    ></v-textarea>
+                                    <!-- :readonly="isDisabled"
+                                                      @input="$v.familiar.edad.$touch()"
+                                                      @blur="$v.familiar.edad.$touch()"
+                                    :error-messages="errorEdadFamiliar"-->
                                   </v-col>
                                 </v-row>
-                              </v-card>
-                            </v-card>
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              v-if="acciontratasexual == 'registrar'"
-                              color="success"
-                              @click="agregartratasexual()"
-                            >
-                              <v-icon left class="mr-0 icon-plan">mdi-check</v-icon>Agregar
-                            </v-btn>
-                            <v-btn
-                              v-if="acciontratasexual == 'actualizar'"
-                              color="yellow"
-                              @click="actualizartratasexual(indice)"
-                            >
-                              <v-icon left class="mr-0 icon-plan">mdi-pencil</v-icon>Actualizar
-                            </v-btn>
-                            <v-btn color="error" @click="cerrarAgregartratasexual()">
-                              <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>Cerrar
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-                    </v-col>
-                  </v-row>
-                </v-card-title>
 
-                <v-card-text style="background-color:#FAFAFA">
-                  <v-row>
-                    <v-col>
-                      <h3>Modalidad</h3>
-                    </v-col>
-                    <v-col>
-                      <h3>Lugar</h3>
-                    </v-col>
-                    <v-col>
-                      <h3>Acciones</h3>
-                    </v-col>
-                  </v-row>
-                  <div
-                    v-for="(item, index) in fichaIngreso.contenido.explotacionsexual.tratasexual"
-                    :key="index"
-                  >
-                    <v-row>
-                      <v-col>{{ item.modalidad }}</v-col>
-                      <v-col>{{ item.lugar }}</v-col>
-                      <v-col>
-                        <v-row style="padding:0;margin:0">
-                          <v-col style="padding:0;margin:0">
-                            <v-btn
-                              fab
-                              x-small
-                              dark
-                              color="yellow"
-                              @click="modalActualizartratasexual(index)"
-                            >
-                              <v-icon dark>mdi-pen</v-icon>
-                            </v-btn>
-                          </v-col>
-                          <v-col style="padding:0;margin:0">
-                            <v-btn
-                              fab
-                              x-small
-                              dark
-                              color="blue"
-                              @click="modalConsultartratasexual(index)"
-                            >
-                              <v-icon dark>mdi-eye</v-icon>
-                            </v-btn>
-                          </v-col>
-                          <v-col style="padding:0;margin:0">
-                            <v-btn fab x-small dark color="red" @click="eliminartratasexual(index)">
-                              <v-icon dark>mdi-minus</v-icon>
-                            </v-btn>
+                                <v-row>
+                                  <v-col>
+                                    <v-textarea
+                                      label="Sentimientos"
+                                      v-model="tratasexual.sentimientos"
+                                      outlined
+                                      color="#009900"
+                                      rows="1"
+                                      auto-grow
+                                    ></v-textarea>
+                                    <!-- :readonly="isDisabled"
+                                                    @input="$v.familiar.numerodocumento.$touch()"
+                                                    @blur="$v.familiar.numerodocumento.$touch()"
+                                    :error-messages="errorNumeroDocumentoFamiliar"-->
+                                  </v-col>
+                                  <v-col>
+                                    <v-textarea
+                                      label="Referencias"
+                                      v-model="tratasexual.referencias"
+                                      outlined
+                                      color="#009900"
+                                      rows="1"
+                                      auto-grow
+                                    ></v-textarea>
+                                    <!-- :readonly="isDisabled"
+                                                      @input="$v.familiar.edad.$touch()"
+                                                      @blur="$v.familiar.edad.$touch()"
+                                    :error-messages="errorEdadFamiliar"-->
+                                  </v-col>
+                                </v-row>
+
+                                <v-card
+                                  style="margin-top:30px;padding:5px 5px;padding-bottom:15px;background-color:#EAEAEA"
+                                >
+                                  <v-card elevation="0" style="background-color:#EAEAEA" height="70">
+                                    <v-row style="margin:1%;heigh:100%" align="center">
+                                      <v-col :cols="8" align="left">
+                                        <v-text-field
+                                          v-model.trim="personascontacto"
+                                          label="Personas contacto"
+                                          color="#009900"
+                                        ></v-text-field>
+                                        <!-- @input="$v.servicio.servicio.$touch()"
+                                          @blur="$v.servicio.servicio.$touch()"
+                                        :error-messages="errorTextoservicio"-->
+                                      </v-col>
+                                      <v-col :cols="4" align="right">
+                                        <v-btn
+                                          fab
+                                          small
+                                          dark
+                                          color="green"
+                                          @click="agregarpersonascontacto"
+                                        >
+                                          <v-icon dark>mdi-plus</v-icon>
+                                        </v-btn>
+                                      </v-col>
+                                    </v-row>
+                                  </v-card>
+                                  <v-card
+                                    color="#FAFAFA"
+                                    style="margin-top:5px; margin-top: 20px;"
+                                    height="60"
+                                    v-for="(item, index) in tratasexual.personascontacto"
+                                    :key="index"
+                                  >
+                                    <v-row style="margin-left:10px;heigh:100%" align="center">
+                                      <v-col :cols="10">
+                                        <span style="font-size:18px">Contacto: {{ item }}</span>
+                                      </v-col>
+                                      <v-col :cols="2" align="right">
+                                        <div style="margin-right:20px">
+                                          <v-btn
+                                            fab
+                                            x-small
+                                            dark
+                                            color="red"
+                                            @click="eliminarpersonascontacto(index)"
+                                          >
+                                            <v-icon dark>mdi-minus</v-icon>
+                                          </v-btn>
+                                        </div>
+                                      </v-col>
+                                    </v-row>
+                                  </v-card>
+                                </v-card>
+                              </v-card-text>
+                              <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                  v-if="acciontratasexual == 'registrar'"
+                                  color="success"
+                                  @click="agregartratasexual()"
+                                >
+                                  <v-icon left class="mr-0 icon-plan">mdi-check</v-icon>Agregar
+                                </v-btn>
+                                <v-btn
+                                  v-if="acciontratasexual == 'actualizar'"
+                                  color="yellow"
+                                  @click="actualizartratasexual(indice)"
+                                >
+                                  <v-icon left class="mr-0 icon-plan">mdi-pencil</v-icon>Actualizar
+                                </v-btn>
+                                <v-btn color="error" @click="cerrarAgregartratasexual()">
+                                  <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>Cerrar
+                                </v-btn>
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog>
+                        </v-col>
+                      </v-row>
+                    </v-card-title>
+
+                    <v-card-text style="background-color:#FAFAFA">
+                      <v-row>
+                        <v-col>
+                          <h3>Modalidad</h3>
+                        </v-col>
+                        <v-col>
+                          <h3>Lugar</h3>
+                        </v-col>
+                        <v-col>
+                          <h3>Acciones</h3>
+                        </v-col>
+                      </v-row>
+                      <div
+                        v-for="(item, index) in fichaIngreso.contenido.explotacionsexual.tratasexual"
+                        :key="index"
+                      >
+                        <v-row>
+                          <v-col>{{ item.modalidad }}</v-col>
+                          <v-col>{{ item.lugar }}</v-col>
+                          <v-col>
+                            <v-row style="padding:0;margin:0">
+                              <v-col style="padding:0;margin:0">
+                                <v-btn
+                                  fab
+                                  x-small
+                                  dark
+                                  color="yellow"
+                                  @click="modalActualizartratasexual(index)"
+                                >
+                                  <v-icon dark>mdi-pen</v-icon>
+                                </v-btn>
+                              </v-col>
+                              <v-col style="padding:0;margin:0">
+                                <v-btn
+                                  fab
+                                  x-small
+                                  dark
+                                  color="blue"
+                                  @click="modalConsultartratasexual(index)"
+                                >
+                                  <v-icon dark>mdi-eye</v-icon>
+                                </v-btn>
+                              </v-col>
+                              <v-col style="padding:0;margin:0">
+                                <v-btn fab x-small dark color="red" @click="eliminartratasexual(index)">
+                                  <v-icon dark>mdi-minus</v-icon>
+                                </v-btn>
+                              </v-col>
+                            </v-row>
                           </v-col>
                         </v-row>
-                      </v-col>
-                    </v-row>
-                  </div>
-                </v-card-text>
+                      </div>
+                    </v-card-text>
+                  </v-card>
+                  <!-- <div>
+                    <h4
+                      v-if="$v.fichaIngreso.contenido.padres.$error"
+                      class="red--text"
+                    >Debe registrar como mínimo un padre y como máximo 2 padres</h4>
+                  </div>-->
+                </v-container>
               </v-card>
-              <!-- <div>
-                <h4
-                  v-if="$v.fichaIngreso.contenido.padres.$error"
-                  class="red--text"
-                >Debe registrar como mínimo un padre y como máximo 2 padres</h4>
-              </div>-->
 
               <v-row>
                 <v-col>
@@ -1513,11 +1448,12 @@
                 <v-card elevation="0" style="background-color:#EAEAEA" height="70">
                   <v-row style="margin:1%;heigh:100%" align="center">
                     <v-col :cols="8" align="left">
-                      <v-text-field
-                        v-model.trim="redessociales"
+                      <v-select
+                        :items="listaRedesSociales"
+                        v-model="redessociales"
                         label="Redes sociales residente"
-                        color="#009900"
-                      ></v-text-field>
+                        outlined
+                      ></v-select>
                       <!-- @input="$v.servicio.servicio.$touch()"
                                       @blur="$v.servicio.servicio.$touch()"
                       :error-messages="errorTextoservicio"-->
@@ -1635,12 +1571,12 @@
                   </v-row>
                 </v-card>
               </v-card>
-              <!-- <div>
+              <div>
                 <h4
                   v-if="$v.fichaIngreso.contenido.firmas.$error"
                   class="red--text"
                 >Debe tener como mínimo una firma registrada</h4>
-              </div>-->
+              </div>
 
               <v-dialog v-model="dialogVistaPreviaFirma" persistent max-width="600px">
                 <v-card align="center">
@@ -1683,11 +1619,16 @@ import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import { required, minLength, email, helpers } from "vuelidate/lib/validators";
+import {required,minLength,email,helpers,between} from "vuelidate/lib/validators";
+
 import moment from "moment";
 
+function edadvalida(value) {
+  return !(value > 3 && value < 21);
+}
+
 export default {
-  props: ["listaresidentes","listaeducadores"],
+  props: ["listaresidentes", "listaeducadores"],
   ...mapMutations(["setFichaIngreso", "addFichaIngreso"]),
   components: {
     vueDropzone: vue2Dropzone
@@ -1703,6 +1644,7 @@ export default {
         nombre: "",
         apellidos: "",
         parentesco: "",
+        edad: "",
         instruccion: "",
         estadosalud: "",
         relacion: ""
@@ -1734,6 +1676,8 @@ export default {
         edad: 0,
         gradoescolar: ""
       },
+      menu2: false,
+      menu3: false,
       //datos ficha ingreso psicologica
       fichaIngreso: {
         id: "",
@@ -1742,7 +1686,7 @@ export default {
         creadordocumento: "",
         fechacreacion: new Date(),
         area: "psicologica",
-        fase: "acogida",
+        fase: "1",
         idresidente: "",
         estado: "creado",
         contenido: {
@@ -1769,28 +1713,28 @@ export default {
           },
           adicciones: {
             consumo: false,
-            ultimodiaconsumo: new Date(),
+            ultimodiaconsumo: "",
             spa: []
           },
           conductasriesgo: [],
           conductasemocionales: [],
           desarrollosexual: {
-            menstruacion: true,
-            menarquia: new Date(),
+            menstruacion: false,
+            menarquia: "",
             relaciones: {
-              iniciorelaciones: true,
-              edadinicio: 15,
+              iniciorelaciones: false,
+              edadinicio: 0,
               motivo: "",
               generopareja: "",
-              relacionconsentida: true,
-              its: true,
-              tratamientoits: true
+              relacionconsentida: false,
+              its: false,
+              tratamientoits: false
             }
           },
           explotacionsexual: {
-            victimaexplotacion: true,
-            edadinicio: 15,
-            victimatrata: true,
+            victimaexplotacion: false,
+            edadinicio: 0,
+            victimatrata: false,
             tratasexual: []
           },
           actividades: {
@@ -1836,7 +1780,101 @@ export default {
         addRemoveLinks: true,
         dictDefaultMessage:
           "Seleccione la imagen de la firma su dispositivo o arrástrela aquí"
-      }
+      },
+      listaNiveleducativo: [
+        { value: "Sin educación", text: "Sin educación" },
+        { value: "Primaria", text: "Primaria" },
+        { value: "Secundaria", text: "Secundaria" }
+      ],
+      listaEducacionespecial: [
+        { value: "Sin educación especial", text: "Sin educación especial" },
+        { value: "Primaria especial", text: "Primaria especial" },
+        { value: "Talleres", text: "Talleres" }
+      ],
+      listaPadreparentesco: [
+        { value: "Padre", text: "Padre" },
+        { value: "Madre", text: "Madre" }
+      ],
+      listaDiscapacidad: [
+        { value: "Sin discapacidad", text: "Sin discapacidad" },
+        { value: "Leve", text: "Leve" },
+        { value: "Moderada", text: "Moderada" },
+        { value: "Grave", text: "Grave" },
+        { value: "Profundo", text: "Profundo" }
+      ],
+      listaTipomaltrato: [
+        { value: "Físico", text: "Físico" },
+        { value: "Psicológico", text: "Psicológico" },
+        { value: "Negligencia", text: "Negligencia" },
+        { value: "Abuso sexual", text: "Abuso sexual" }
+      ],
+      listaAgresor: [
+        { value: "Padre", text: "Padre" },
+        { value: "Madre", text: "Madre" },
+        { value: "Tío", text: "Tío" },
+        { value: "Hermano", text: "Hermano" },
+        { value: "Otro", text: "Otro" }
+      ],
+      listaTipospa: [
+        { value: "Alcohol", text: "Alcohol" },
+        { value: "Tabaco", text: "Tabaco" },
+        { value: "Marihuana", text: "Marihuana" },
+        { value: "PBC", text: "PBC" },
+        { value: "Cocaína", text: "Cocaína" },
+        { value: "Éxtasis", text: "Éxtasis" },
+        { value: "Inhalantes", text: "Inhalantes" },
+        { value: "Otros", text: "Otros" }
+      ],
+      listaFrecuenciaconsumo: [
+        { value: "Diaria", text: "Diaria" },
+        { value: "Interdiario", text: "Interdiario" },
+        { value: "Semanal", text: "Semanal" },
+        { value: "Quincenal", text: "Quincenal" },
+        { value: "Mensual", text: "Mensual" }
+      ],
+      listaConductariesgo: [
+        { value: "Robo", text: "Robo" },
+        { value: "Pandilla", text: "Pandilla" },
+        { value: "Venta de drogas", text: "Venta de drogas" },
+        { value: "ESNNA", text: "ESNNA" },
+        { value: "Videojuego", text: "Videojuego" },
+        { value: "Otros", text: "Otros" }
+      ],
+      listaIndicadoresconductuales: [
+        { value: "Tristeza", text: "Tristeza" },
+        { value: "Ansiedad", text: "Ansiedad" },
+        { value: "Impulsividad", text: "Impulsividad" },
+        { value: "Irritabilidad", text: "Irritabilidad" },
+        { value: "Prob. del apetito", text: "Prob. del apetito" },
+        { value: "Prob. del sueño", text: "Prob. del sueño" },
+        { value: "Enuresis", text: "Enuresis" },
+        { value: "Encopresis", text: "Encopresis" },
+        { value: "Onicofagia", text: "Onicofagia" },
+        { value: "Disfemia", text: "Disfemia" },
+        { value: "Ideación suicida", text: "Ideación suicida" }
+      ],
+      listaMotivorelaciones: [
+        { value: "Propia voluntad", text: "Propia voluntad" },
+        { value: "Por presión", text: "Por presión" },
+        { value: "Por dinero", text: "Por dinero" },
+        { value: "Otros", text: "Otros" }
+      ],
+      listaParejasexual: [
+        { value: "Mujer", text: "Mujer" },
+        { value: "Varón", text: "Varón" },
+        { value: "Ambos", text: "Ambos" }
+      ],
+      listaModalidadtratasexual: [
+        { value: "ESNNA", text: "ESNNA" },
+        { value: "Explotación laboral", text: "Explotación laboral" },
+        { value: "Pornografía", text: "Pornografía" }
+      ],
+      listaRedesSociales: [
+        { value: "Internet", text: "Internet" },
+        { value: "Facebook", text: "Facebook" },
+        { value: "Email", text: "Email" },
+        { value: "Video", text: "Video" }
+      ]
       //fin datos ficha ingreso psicologica
     };
   },
@@ -1846,19 +1884,47 @@ export default {
       this.$emit("cerrar-modal-registro-ficha-ingreso");
     },
     async registrarFichaPsicologicaIngreso() {
-      let fichaI = this.fichaIngreso;
-      console.log(fichaI);
-      await axios
-        .post("/Documento/fichaingresopsicologicacrear", fichaI)
-        .then(res => {
-          console.log(this.res);
-        })
-        .catch(err => console.log(err));
+      this.$v.fichaIngreso.$touch();
+      if (this.$v.fichaIngreso.$invalid) {
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
+        this.fichaIngreso.creadordocumento = this.user.id;
+
+        let fichaI = this.fichaIngreso;
+
+        this.mensaje(
+          "success",
+          "Listo",
+          "Plan registrado Satisfactoriamente",
+          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+        );
+
+        /*await axios
+          .post("/Documento/fichaingresopsicologicacrear", fichaI)
+          .then(res => {
+            
+          })
+          .catch(err => console.log(err));*/
+      }
     },
     //Metodos modal padres
     modalRegistrarPadres() {
-      this.accion = "registrar";
-      this.dialogAgregarpadre = true;
+      if (this.fichaIngreso.contenido.padres.length >= 2) {
+        this.mensaje(
+          "error",
+          "Demasiados padres",
+          "Solo se pueden registrar 2 padres",
+          ""
+        );
+      } else {
+        this.accion = "registrar";
+        this.dialogAgregarpadre = true;
+      }
     },
     agregarPadre() {
       /*this.$v.familiar.$touch();
@@ -1875,6 +1941,7 @@ export default {
         nombre: this.padre.nombre,
         apellidos: this.padre.apellidos,
         parentesco: this.padre.parentesco,
+        edad: this.padre.edad,
         instruccion: this.padre.instruccion,
         estadosalud: this.padre.estadosalud,
         relacion: this.padre.relacion
@@ -1883,6 +1950,7 @@ export default {
       this.padre.nombre = "";
       this.padre.apellidos = "";
       this.padre.parentesco = "";
+      this.padre.edad = "";
       this.padre.instruccion = "";
       this.padre.estadosalud = "";
       this.padre.relacion = "";
@@ -1899,6 +1967,7 @@ export default {
       this.padre.instruccion = "";
       this.padre.estadosalud = "";
       this.padre.relacion = "";
+      this.padre.edad = "";
 
       //this.$v.padre.$reset();
     },
@@ -1912,6 +1981,7 @@ export default {
       this.padre.parentesco = this.fichaIngreso.contenido.padres[
         index
       ].parentesco;
+      this.padre.edad = this.fichaIngreso.contenido.padres[index].edad = "";
       this.padre.instruccion = this.fichaIngreso.contenido.padres[
         index
       ].instruccion;
@@ -1946,6 +2016,7 @@ export default {
       this.fichaIngreso.contenido.padres[
         index
       ].estadosalud = this.padre.estadosalud;
+      this.fichaIngreso.contenido.padres[index].edad = this.padre.edad;
       this.fichaIngreso.contenido.padres[index].relacion = this.padre.relacion;
 
       this.dialogAgregarpadre = false;
@@ -1971,6 +2042,7 @@ export default {
       this.padre.estadosalud = this.fichaIngreso.contenido.padres[
         index
       ].estadosalud;
+      this.padre.edad = this.fichaIngreso.contenido.padres[index].edad = "";
       this.padre.relacion = this.fichaIngreso.contenido.padres[index].relacion;
     },
     //fin metodos modal padres
@@ -2058,21 +2130,21 @@ export default {
     },
     //fin metodos modal hermanos
     agregaredadgradoescolar() {
-      /*this.$v.servicio.$touch();
-      if (!this.$v.servicio.$invalid) {*/
-      let edadgradoescolar = {
-        edad: this.edadgradoescolar.edad,
-        gradoescolar: this.edadgradoescolar.gradoescolar
-      };
+      this.$v.edadgradoescolar.$touch();
+      if (!this.$v.edadgradoescolar.$invalid) {
+        let edadgradoescolar = {
+          edad: this.edadgradoescolar.edad,
+          gradoescolar: this.edadgradoescolar.gradoescolar
+        };
 
-      this.fichaIngreso.contenido.escolaridad.edadgradoescolar.push(
-        edadgradoescolar
-      );
+        this.fichaIngreso.contenido.escolaridad.edadgradoescolar.push(
+          edadgradoescolar
+        );
 
-      this.edadgradoescolar.edad = "";
-      this.edadgradoescolar.gradoescolar = "";
-      //  this.$v.servicio.$reset();
-      //}
+        this.edadgradoescolar.edad = "";
+        this.edadgradoescolar.gradoescolar = "";
+        this.$v.edadgradoescolar.$reset();
+      }
     },
     eliminaredadgradoescolar(index) {
       this.fichaIngreso.contenido.escolaridad.edadgradoescolar.splice(index, 1);
@@ -2387,6 +2459,171 @@ export default {
       set(value) {
         if (!value) {
           this.$emit("close-dialog-fichaIngreso");
+        }
+      }
+    },
+    //errores del formulario
+    errorResidente() {
+      const errors = [];
+
+      if (!this.$v.fichaIngreso.idresidente.$dirty) return errors;
+
+      !this.$v.fichaIngreso.idresidente.required &&
+        errors.push("Debe ingresar un residente obligatoriamente");
+
+      return errors;
+    },
+    errorresponsableturno() {
+      const errors = [];
+
+      if (!this.$v.fichaIngreso.contenido.responsableturno.$dirty)
+        return errors;
+
+      !this.$v.fichaIngreso.contenido.responsableturno.required &&
+        errors.push("Debe ingresar un responsable de turno obligatoriamente");
+
+      return errors;
+    },
+    errorfirmas() {
+      const errors = [];
+
+      if (!this.$v.fichaIngreso.contenido.firmas.$dirty) return errors;
+
+      !this.$v.fichaIngreso.contenido.firmas.required &&
+        errors.push("Debe ingresar una firma por lo menos");
+
+      return errors;
+    },
+    errorpadres() {
+      const errors = [];
+
+      if (!this.$v.fichaIngreso.contenido.padres.$dirty) return errors;
+
+      !this.$v.fichaIngreso.contenido.padres.required &&
+        errors.push("Debe ingresar un padre por lo menos");
+
+      return errors;
+    },
+    erroreducacionespecial() {
+      const errors = [];
+
+      if (!this.$v.fichaIngreso.contenido.escolaridad.educacionespecial.$dirty)
+        return errors;
+
+      !this.$v.fichaIngreso.contenido.escolaridad.educacionespecial.required &&
+        errors.push("Debe ingresar la educación especial del residente");
+
+      return errors;
+    },
+    errorniveleducativo() {
+      const errors = [];
+
+      if (!this.$v.fichaIngreso.contenido.escolaridad.niveleducativo.$dirty)
+        return errors;
+
+      !this.$v.fichaIngreso.contenido.escolaridad.niveleducativo.required &&
+        errors.push("Debe ingresar el nivel educativo del residente");
+
+      return errors;
+    },
+    errorintelectual() {
+      const errors = [];
+
+      if (!this.$v.fichaIngreso.contenido.discapacidad.intelectual.$dirty)
+        return errors;
+
+      !this.$v.fichaIngreso.contenido.discapacidad.intelectual.required &&
+        errors.push("Debe ingresar la discapacidad intelectual del residente");
+
+      return errors;
+    },
+    errorfisico() {
+      const errors = [];
+
+      if (!this.$v.fichaIngreso.contenido.discapacidad.fisico.$dirty)
+        return errors;
+
+      !this.$v.fichaIngreso.contenido.discapacidad.fisico.required &&
+        errors.push("Debe ingresar la discapacidad física del residente");
+
+      return errors;
+    },
+    errorsensorial() {
+      const errors = [];
+
+      if (!this.$v.fichaIngreso.contenido.discapacidad.sensorial.$dirty)
+        return errors;
+
+      !this.$v.fichaIngreso.contenido.discapacidad.sensorial.required &&
+        errors.push("Debe ingresar la discapacidad sensorial del residente");
+
+      return errors;
+    },
+    erroredadgradoescolaredad() {
+      const errors = [];
+
+      if (!this.$v.edadgradoescolar.edad.$dirty)
+        return errors;
+
+      !this.$v.edadgradoescolar.edad.required && errors.push("Debe ingresar la edad del grado escolar");
+
+      !this.$v.edadgradoescolar.edad.edadvalida && errors.push("La edad debe ser entre 4 a 20 años");
+
+      return errors;
+    },
+    errorgradoescolargradoescolar() {
+      const errors = [];
+
+      if (!this.$v.edadgradoescolar.gradoescolar.$dirty)
+        return errors;
+
+      !this.$v.edadgradoescolar.gradoescolar.required && errors.push("Debe ingresar el grado escolar obligatoriamente");
+
+      return errors;
+    },
+  },
+  validations: {
+    edadgradoescolar: {
+      edad: {
+        required,
+        edadvalida
+      },
+      gradoescolar: {
+        required
+      }
+    },
+    fichaIngreso: {
+      idresidente: {
+        required
+      },
+      contenido: {
+        responsableturno: {
+          required
+        },
+        firmas: {
+          required
+        },
+        padres: {
+          required
+        },
+        escolaridad: {
+          niveleducativo: {
+            required
+          },
+          educacionespecial: {
+            required
+          }
+        },
+        discapacidad: {
+          intelectual: {
+            required
+          },
+          fisico: {
+            required
+          },
+          sensorial: {
+            required
+          }
         }
       }
     }

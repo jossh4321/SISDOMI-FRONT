@@ -640,7 +640,7 @@ export default {
         creadordocumento: "",
         fechacreacion: "",
         area: "psicologica",
-        fase: "acogida",
+        fase: "1",
         idresidente: "",
         estado: "creado",
         contenido: {
