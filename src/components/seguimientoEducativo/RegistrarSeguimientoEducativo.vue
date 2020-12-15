@@ -719,7 +719,7 @@ data(){
       historialcontenido:[],
       creadordocumento:"",
       fechacreacion:"",
-      area:"Educativa",
+      area:"educativa",
       fase:"1",
       idresidente:"",
       estado:"creado",
