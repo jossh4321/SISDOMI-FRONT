@@ -374,7 +374,7 @@ export default {
     return {
       planI: {
         id: "",
-        tipo: "PlanIntervencionIndividual",
+        tipo: "PlanIntervencionIndividualEducativo",
         historialcontenido: [],
         fechacreacion: new Date(),
         area: "educativa",

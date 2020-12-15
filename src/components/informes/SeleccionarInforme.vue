@@ -32,7 +32,7 @@
                             @close="showRegistrarInformeEE=false"/>                     
                         <RegistrarInformeEducativoInicial 
                             v-if="showRegistrarInformeEI"
-                            :listaresidentes="listaresidentes"
+                            :listaresidentes="listaresidentesIEI"
                             :listaeducadores="listaeducadores"           
                             :visible="showRegistrarInformeEI"  
                             @close="showRegistrarInformeEI=false"/>
@@ -106,7 +106,11 @@ export default {
         showRegistrarInformeSE: false,
         showRegistrarInformePI: false,
         showRegistrarInformePE: false,
+        listaresidentesIEI: []
       }
+    },
+    async created(){
+        this.obtenerResidentesIEI();
     },
      methods:{
         cerrarDialogo(){            
@@ -115,7 +119,7 @@ export default {
         abrirDialogo(){
             console.log(this.items.value);
             switch(this.items.value){
-                case "1":
+                case "1":                     
                     this.showRegistrarInformeEI = true;
                     break;
                 case "2":
@@ -153,6 +157,15 @@ export default {
             }            
             this.$emit("close-dialog-save");
         },
+     async obtenerResidentesIEI() {      
+      await axios
+        .post("/residente/all/estadofase", this.faseEducativaInicial)
+        .then((x) => {
+          this.listaresidentesIEI = x.data;
+          console.log(this.listaresidentesIEI);
+        })
+        .catch((err) => console.log(err));
+    },
      }
 }
 </script>

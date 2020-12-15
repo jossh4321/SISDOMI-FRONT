@@ -500,7 +500,7 @@
                                     </v-col>
                                     <v-col :cols="3">
                                     <article>
-                                        <span style="font-size:16px">{{convertDateFormat(item.fechafinalizacion)!=="" ? (convertDateFormat(item.fechafinalizacion)): "No finalizado"}}</span>
+                                      <span style="font-size:16px">{{convertDateFormat(item.fechafinalizacion)}} <span v-if="comprobarPrevicion(item.fechafinalizacion)" style="margin-left:5px">(previsto)</span></span>
                                     </article>
                                     </v-col>
                                     <v-col :cols="2">
@@ -609,6 +609,31 @@ export default {
   props: ["residente"],
   data() {
     return {
+      contenidoFase:{
+        educativa:{
+          documentos:[],
+          estado:"incompleto"
+        },
+        social:{
+          documentos:[],
+          estado:"incompleto"
+        },
+        psicologica:{
+          documentos:[],
+          estado:"incompleto"
+        },
+        fase: "",
+        documentotransicion:{
+          fecha:moment().format('L'),
+          idcreador:"",
+          observaciones:"",
+          firma:{
+            urlfirma:"",
+            nombre:"",
+            cargo:""
+          }
+        }
+      },
       dialogTelefonoReferencial: false,
       dialogProgresoFase: false,
       datemenu: false, ///fecha de nacimiento
@@ -654,10 +679,33 @@ export default {
         );
       } else {
            console.warn(this.residente);
+
+        var residenteFase ={
+          residente:this.residente, 
+          contenidoFase: this.contenidoFase,
+          promocion: false
+        }
         await axios
-          .put("/Residente", this.residente)
+          .put("/Residente", residenteFase )
           .then((res) => {
-            this.replaceResidente(res.data);
+            var info ={
+              apellido: res.data.apellido,
+              estado: res.data.estado,
+              fechaIngreso: res.data.fechaIngreso.split("T")[0],
+              fechaNacimiento: res.data.fechaNacimiento.split("T")[0],
+              id: res.data.id,
+              juzgadoProcedencia: res.data.juzgadoProcedencia,
+              lugarNacimiento: res.data.lugarNacimiento,
+              motivoIngreso: res.data.motivoIngreso,
+              nombre: res.data.nombre,
+              numeroDocumento: res.data.numeroDocumento,
+              progreso: res.data.progreso,
+              sexo: res.data.sexo,
+              telefonosReferencia: res.data.telefonosReferencia,
+              tipoDocumento: res.data.tipoDocumento,
+              ubigeo: res.data.ubigeo,
+            }
+            this.replaceResidente(info);
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -769,6 +817,18 @@ export default {
         var dateMongo = string.split('T');
         var date = dateMongo[0].split('-');
         return date[2] + '/' + date[1] + '/' + date[0];
+    },
+    comprobarPrevicion(string){
+      var fechafinalizacion = string.split('T');
+
+      var fechaActual = moment().format();    
+      fechaActual = fechaActual.split('T');
+
+      var booleano = moment(fechafinalizacion[0]).isAfter(fechaActual[0]);
+      console.log("fechafinalizacion: "+ fechafinalizacion[0]);
+      console.log("fechaActual: "+fechaActual[0]);
+      console.log(booleano);
+      return booleano
     }
   },
   computed: {

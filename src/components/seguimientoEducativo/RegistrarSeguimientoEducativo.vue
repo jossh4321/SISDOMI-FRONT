@@ -68,56 +68,6 @@
                               </template>
                             </template>
                           </v-autocomplete>
-                              <v-autocomplete
-                              :items="listaeducadores"
-                              filled
-                              chips
-                              dense
-                              outlined
-                              v-model="seguimiento.creadordocumento"
-                              color="#009900"
-                              label="Educador responsable"
-                              item-text="usuario"
-                              item-value="id"
-                            @input="$v.seguimiento.creadordocumento.$touch()"
-                             @blur="$v.seguimiento.creadordocumento.$touch()"
-                            :error-messages="errorEducador"
-                              
-                            >
-                              <template v-slot:selection="data">
-                                <v-chip
-                                  v-bind="data.attrs"
-                                  :input-value="data.selected"
-                                  style="margin-top:5px"
-                                >
-                                  <v-avatar left color="#b3b3ff" size="24">
-                                    <span style="font-size:12px">RT</span>
-                                  </v-avatar>
-                                  {{ data.item.datos.nombre + " " +  data.item.datos.apellido  }}
-                                </v-chip>
-                              </template>
-                              <template v-slot:item="data">
-                                <template>
-                                  <v-list-item-avatar>
-                                    <v-avatar left color="#b3b3ff" size="24">
-                                      <span style="font-size:12px">UC</span>
-                                    </v-avatar>
-                                  </v-list-item-avatar>
-                                  <v-list-item-content>
-                                    <v-list-item-title
-                                      >Nombre completo: {{ data.item.datos.nombre }}
-                                      {{ data.item.datos.apellido }}
-                                    </v-list-item-title>
-                                    <v-list-item-subtitle
-                                      >Nro. Documento:
-                                      {{
-                                        data.item.datos.numerodocumento
-                                      }}</v-list-item-subtitle
-                                    >
-                                  </v-list-item-content>
-                                </template>
-                              </template>
-                            </v-autocomplete>
                               <v-menu
                                 v-model="datemenu"
                                 :close-on-content-click="false"
@@ -717,6 +667,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength,maxLength, email, helpers,numeric } from "vuelidate/lib/validators";
 import moment from "moment";
+import { mapGetters } from "vuex";
 export default {
 name:'RegistrarSeguimientoEducativo',
 props:["listaresidentes","listaeducadores"],
@@ -825,6 +776,7 @@ methods:{
     },
     ////////////HACER LA CONSULTA CON LA API  REGISTRAR
     async registrarSeguimiento() {
+       this.seguimiento.creadordocumento = this.user.id;
        this.$v.$touch();
       if (this.$v.$invalid) {
         console.log("hay errores");
@@ -941,6 +893,7 @@ methods:{
     verifyColor() {
       return "red";
     },
+    ...mapGetters(["user"]),
     errorResidente() {
       const errors = [];
       if (!this.$v.seguimiento.idresidente.$dirty) return errors;
@@ -948,13 +901,13 @@ methods:{
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
     },
-    errorEducador() {
-      const errors = [];
-      if (!this.$v.seguimiento.creadordocumento.$dirty) return errors;
-      !this.$v.seguimiento.creadordocumento.required &&
-        errors.push("Debe seleccionar un educador obligatoriamente");
-      return errors;
-    },
+    //errorEducador() {
+   ///   const errors = [];
+   ///   if (!this.$v.seguimiento.creadordocumento.$dirty) return errors;
+   ///   !this.$v.seguimiento.creadordocumento.required &&
+    //    errors.push("Debe seleccionar un educador obligatoriamente");
+   //   return errors;
+   // },
      errorFechaCreacion() {
       const errors = [];
       if (!this.$v.seguimiento.fechacreacion.$dirty) return errors;
@@ -1089,7 +1042,7 @@ methods:{
           seguimiento:{
       historialcontenido:[],
       creadordocumento:{
-          required,
+          //required
                   },
       fechacreacion:{
           required,

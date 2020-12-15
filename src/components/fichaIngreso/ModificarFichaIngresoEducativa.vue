@@ -157,7 +157,7 @@
                     <v-card style="margin:10px">
                        <v-card v-for="(item,i) in fichaIngreso.contenido.ieprocedencia.documentosEscolares"
                           :key="i" style="margin:5px">
-                        <v-list-item>
+                        <v-list-item v-if="item.archivoDocumento != undefined && item.archivoDocumento.accion != 'eliminado'">
                           <v-list-item-content>
                             <v-list-item-title>{{item.titulo}}</v-list-item-title>
                           </v-list-item-content>
@@ -165,7 +165,7 @@
                             <v-btn
                             rounded
                             color="primary"
-                            @click="eliminarDocumentoEscolar(i)"
+                            @click="eliminarDocumentoEscolar(i,item)"
                           >
                             <v-icon left>
                               mdi-delete-forever-outline
@@ -517,7 +517,6 @@
                     </v-col>
                   </v-row>
                 </v-card>
-                
               <v-row>
                     <v-col>
                         <v-btn block @click="cerrarDialogo" color="primary">
@@ -526,9 +525,9 @@
                         </v-btn>
                     </v-col>
                     <v-col>
-                        <v-btn block @click="registrarFicha" color="success">
+                        <v-btn block @click="modificarFicha" color="success">
                             <v-icon left>mdi-content-save-all-outline</v-icon>
-                            <span >Registrar Ficha de Ingreso</span>
+                            <span >Modificar Ficha de Ingreso</span>
                         </v-btn>
                     </v-col>
               </v-row>
@@ -609,24 +608,47 @@ export default {
          },dialogoDocumentoEscolar:false,
          observacionAux:"",
          step:1,
+         imagenFirma:{urlOrigen: this.fichaIngreso.contenido.firma.urlfirma,
+                        modificar:{estado:false,file:{}}},
         }
       },
     async created() {
-      this.conclusiones = "";
-      this.conclusion = "";
-      this.docEscolar = "";
-      this.docEscolares = "";
+      console.log("Se creo la instancia");
+      this.fichaIngreso.contenido.ieprocedencia.documentosEscolares = this.fichaIngreso.contenido.ieprocedencia.documentosEscolares.map(
+        (val)=>{
+            return {
+              titulo: val.titulo,
+              archivoDocumento:{
+                urlOrigen: val.url,
+                accion:"creado",
+                //cuando no es un archivo modificado
+                estado:false
+              }
+            }
+        });
+
     },
     methods:{
-      ...mapMutations(["addFichaIngreso"]),
+      ...mapMutations(["replaceFichaIngreso"]),
      mounteddropzone(){
             var file = { size: 123, name: "Firma del Documento", type: "image/jpg" };
             this.$refs.myVueDropzoneFirma.manuallyAddFile(file, this.fichaIngreso.contenido.firma.urlfirma,null,null,true);
           },
+      verificarAccion(accion){
+          if(accion != "eliminado" || accion != undefined){
+            return true;
+          }else{return false}
+      },
       agregarDocumentoEscolar(){
         this.$v.documentoEscolar.$touch();
           if(!this.$v.documentoEscolar.$invalid){
-            this.fichaIngreso.contenido.ieprocedencia.documentosEscolares.push(this.documentoEscolar);
+            this.fichaIngreso.contenido.ieprocedencia.documentosEscolares.push(
+              {titulo:this.documentoEscolar.titulo,
+                archivoDocumento:{
+                  urlOrigen: this.documentoEscolar.file,
+                  accion:"agregado",
+                  estado:true
+                }});
             this.cerrarDialogoRegistrarDocumentoEscolar()
           }
       },
@@ -637,28 +659,97 @@ export default {
           this.$refs.myVueDropzoneDocumentosEscolares.removeAllFiles();
           this.documentoEscolar = {titulo:"",file:""}
           this.$v.documentoEscolar.$reset();
-      },eliminarDocumentoEscolar(indice){
-          this.fichaIngreso.contenido.ieprocedencia.documentosEscolares.splice(indice,1);
+      },eliminarDocumentoEscolar(indice,item){
+          if(item.archivoDocumento.accion == "agregado"){
+            this.fichaIngreso.contenido
+              .ieprocedencia.documentosEscolares
+              .splice(indice,1);
+          }else{
+            item.archivoDocumento.accion="eliminado";
+            this.fichaIngreso.contenido
+              .ieprocedencia.documentosEscolares
+              .splice(indice,1,item);
+          }
       },afterSuccessFirma(file, response){
-          this.fichaIngreso.contenido.firma.urlfirma = file;
+          this.imagenFirma.modificar.estado = true;
+          this.imagenFirma.modificar.file = file;
+          console.log(this.imagenFirma.modificar.file);
       },afterRemovedFirma(){
-
+          this.imagenFirma.modificar.estado = true;
+          this.imagenFirma.modificar.file = {};
       },afterSuccessDocumentos(file, response){
              this.documentoEscolar.file = file;
       },afterRemovedDocumentos(){
-  
-      },cerrarDialogo(){     
+
+      },
+      filtrarArchivos(accion,lista){
+        return lista.filter(x => x.archivoDocumento.accion == accion);
+      },
+      //Modificacion de  PDF
+      async modificarDocumentosEscolares(lista){
+          var promises;
+          listaArchivosEliminados=[];listaArchivosAñadidos=[];listaArchivosOriginales=[]
+          var listaArchivosEliminados = this.filtrarArchivos("eliminado",lista);
+          var listaArchivosAñadidos   = this.filtrarArchivos("agregado",lista);
+          var listaArchivosOriginales = this.filtrarArchivos("creado",lista);
+          if(listaArchivosEliminados.length != 0 ){
+                await this.eliminarPdf(listaArchivosEliminados.map(x => {return x.archivoDocumento.urlOrigen}));
+           }
+          if(listaArchivosAñadidos.length != 0){
+                promises = listaArchivosAñadidos
+                .map( async val=>{
+                  var urlfile = await this.registrarPdf(val.archivoDocumento.urlOrigen);
+                  return {titulo:val.titulo, url:urlfile};
+                });
+                listaArchivosAñadidos = await Promise.all(promises);
+           }
+           if(listaArchivosOriginales.length != 0){
+             listaArchivosOriginales = listaArchivosOriginales.map(x=>{
+               return {titulo:x.titulo, url:x.archivoDocumento.urlOrigen}
+             })
+           }
+           
+          return listaArchivosAñadidos.length == 0? listaArchivosOriginales:
+                  listaArchivosAñadidos.concat(listaArchivosOriginales);
+      },async eliminarPdf(listaUrls){
+        console.log(listaUrls)
+            await axios.post("/Media/archivos/pdf/delete", listaUrls)
+                      .then((res) => {
+                          console.log(res.data);
+                      });
+      }
+      ,async registrarPdf(file){
+          var urlFile = "";
+          let formData = new FormData();
+          formData.append("file",file);
+            await axios.post("/Media/archivos/pdf",formData)
+                      .then((res)=> {
+                        urlFile = res.data;
+                      });
+            return urlFile;
+        },
+        //Modificacion de Firmas
+        async modificaFirma(){
+          var url = this.imagenFirma.urlOrigen;
+          var urlFile = "";
+          let formData = new FormData();
+          formData.append("file",this.imagenFirma.modificar.file);
+          //var mediabody={file:{File:formData}, urlfirma: this.imagenFirma.urlOrigen }
+            await axios.put(`/Media/${this.imagenFirma.urlOrigen}`,formData)
+                       .then((res)=> {
+                            urlFile = res.data;
+                      });
+            return urlFile;
+        },cerrarDialogo(){     
             this.$emit("cerrar-modal-edicion-ficha-ingreso");
             this.step = 1;
             this.$refs.myVueDropzoneDocumentosEscolares.removeAllFiles();    
             this.$refs.myVueDropzoneFirma.removeAllFiles();  
             this.observacionAux="";
-            this.fichaIngreso = this.limpiarFichaIngreso();
             this.documentoEscolar ={titulo:"",file:""};
             this.$v.$reset();
-        }, 
-        ///registrar ficha
-        async  registrarFicha(){
+        },//modificar ficha
+        async  modificarFicha(){
           this.$v.fichaIngreso.$touch();
           if(this.$v.fichaIngreso.$invalid){
                await this.mensaje(
@@ -668,27 +759,28 @@ export default {
                 "<strong>Verifique los campos Ingresados<strong>"
               );
           }else{
-            var url = await this.registrarFirma(this.fichaIngreso.contenido.firma.urlfirma);
-            this.fichaIngreso.contenido.firma={
-              urlfirma : url,
-              nombre: this.user.usuario,
-              cargo: this.user.rol.nombre
-            };
-            this.fichaIngreso.creadordocumento = this.user.id;
-            this.fichaIngreso.fechacreacion = new Date().toISOString();
-            this.fichaIngreso.contenido.ieprocedencia.documentosEscolares = await this.registrarDocumentosEscolares();
+            console.log(this.fichaIngreso);
+            //var url = await this.registrarFirma(this.fichaIngreso.contenido.firma.urlfirma);
+            var fichaIngresoPUT = this.fichaIngreso;
+            fichaIngresoPUT.contenido.firma.urlfirma =
+            this.imagenFirma.modificar.estado==true?
+                  await this.modificaFirma():
+                  this.imagenFirma.urlOrigen;
+            fichaIngresoPUT.contenido.ieprocedencia.documentosEscolares = 
+            await this.modificarDocumentosEscolares(fichaIngresoPUT.contenido.ieprocedencia.documentosEscolares);
             //fichaeducativaingreso
+            console.log("hola");
             await axios
-              .post("/documento/fichaeducativaingreso", this.fichaIngreso)
+              .put("/documento/fichaingresoeducativa",fichaIngresoPUT)
               .then((res) => {
-                this.addFichaIngreso(res.data);
+                this.replaceFichaIngreso(res.data);
                 this.cerrarDialogo();
               })
               .catch((err) => console.log(err));
                 await this.mensaje(
                   "success",
                   "listo",
-                  "Ficha de Ingreso Educativo registrado Satisfactoriamente",
+                  "Ficha de Ingreso Educativo Modificada Satisfactoriamente",
                   "<strong>Se redirigira a la Interfaz de Gestion<strong>"
                 );
               }
@@ -697,25 +789,6 @@ export default {
           let formData = new FormData();
           formData.append("file",file);
             await axios.post("/Media",formData)
-                      .then((res)=> {
-                        urlFile = res.data;
-                      });
-            return urlFile;
-        },
-        async registrarDocumentosEscolares(){
-          const promises = this.fichaIngreso.contenido.ieprocedencia.documentosEscolares
-          .map( async val=>{
-            var urlfile = await this.registrarPdf(val.file);
-            return {titulo:val.titulo, url:urlfile};
-          });
-          const listaDocumentosEscolares= await Promise.all(promises);
-          return listaDocumentosEscolares;
-        }
-        ,async registrarPdf(file){
-          var urlFile = "";
-          let formData = new FormData();
-          formData.append("file",file);
-            await axios.post("/Media/archivos/pdf",formData)
                       .then((res)=> {
                         urlFile = res.data;
                       });
@@ -938,8 +1011,11 @@ export default {
           !this.$v.fichaIngreso.contenido.responsableTurno.required &&
             errors.push("Debe Seleccionar un Responsable Obligatoriamente");
           return errors;
+      },errorFirma() {
+        if(this.imagenFirma.modificar.estado == true &&
+        Object.entries(this.imagenFirma.modificar.file).length === 0){return true}
+         else {return false}
       }
-
   },validations(){
     const length= (value) => value.length == 9
     return {

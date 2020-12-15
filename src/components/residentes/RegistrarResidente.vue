@@ -338,10 +338,12 @@
                                 :error-messages="errorFase"
                            ></v-select>
                             <v-select
-                                :items="['Inicio','Progreso','Finalizado','En   adopcion']"
+                                :items="itemEstado"
                                 label="Ingrese el estado"
                                 dense
                                 outlined
+                                item-text="text"
+                                item-value="value"
                                 v-model="progreso.estado"
                                 @input="$v.progreso.estado.$touch()"
                                 @blur="$v.progreso.estado.$touch()"
@@ -380,8 +382,9 @@
                             ></v-date-picker>
                           </v-menu>
                           <!--acabo  -->
-                          <!--FECHA INGRESO -->
+                          <!--FECHA FINALIZACION -->
                           <v-menu
+                            v-if="checkboxFechaFinalizacion"
                             v-model="datemenu3"
                             :close-on-content-click="false"
                             :nudge-right="40"
@@ -479,7 +482,7 @@
                     </v-col>
                     <v-col :cols="3">
                       <article>
-                        <span style="font-size:16px">{{convertDateFormat(item.fechafinalizacion)!=="" ? (convertDateFormat(item.fechafinalizacion)): "No finalizado"}}</span>
+                        <span style="font-size:16px">{{convertDateFormat(item.fechafinalizacion)}} <span v-if="comprobarPrevicion(item.fechafinalizacion)" style="margin-left:5px">(previsto)</span></span>
                       </article>
                     </v-col>
                     <v-col :cols="2">
@@ -585,20 +588,23 @@ export default {
       datemenu2: false, ///MODAL fecha ingreso
       datemenu3: false, ///MODAL fecha finalizacion
       step: 1,
-
+      checkboxFechaFinalizacion:false,
       telefonos: { numero: "", referentefamiliar: "" },
       progreso: {
         fase: {nombre:'Acogida',fase:1},
         fechaingreso: "",
         fechafinalizacion: "",
-        estado: "",
+        estado: {},
       },
-       itemFase:[{text:'Acogida',value:{nombre:'Acogida',fase:1}},
-              {text:'Desarrollo',value:{nombre:'Desarrollo',fase:2}},
-              {text:'Reinsercion',value:{nombre:'Desarrollo',fase:3}},
-              {text:'Seguimiento',value:{nombre:'Desarrollo',fase:4}}],
-        miFase:{nombre:'Acogida',fase:1},
-        //progreso:{},
+      itemFase:[{text:'Acogida',value:{nombre:'Acogida',fase:1}},
+            {text:'Desarrollo',value:{nombre:'Desarrollo',fase:2}},
+            {text:'Reinsercion',value:{nombre:'Reinsercion',fase:4}},
+            {text:'Seguimiento',value:{nombre:'Seguimiento',fase:3}}],
+      itemEstado:[{text:'Inicio', value:{nombre:'Inicio',previcion:true}},
+            {text:'Progreso', value:{nombre:'Progreso',previcion:true}},
+            {text:'Finalizado', value:{nombre:'Finalizado',previcion:false}},
+            {text:'En adopcion', value:{nombre:'En adopcion',previcion:true}}],
+      miFase:{nombre:'Acogida',fase:1},
       residente: {
         id: "",
         nombre: "",
@@ -619,11 +625,26 @@ export default {
     };
   },
   created() {},
+  watch:{
+    verificarPrevicion(){}
+  },
   methods: {
     ...mapMutations(["setResidentes", "addResidente"]),
     //METODO MEMENT
     moment: function () {
     return moment();
+    },
+    comprobarPrevicion(string){
+      var fechafinalizacion = string.split('T');
+
+      var fechaActual = moment().format();    
+      fechaActual = fechaActual.split('T');
+
+      var booleano = moment(fechafinalizacion[0]).isAfter(fechaActual[0]);
+      // console.log("fechafinalizacion: "+ fechafinalizacion[0]);
+      // console.log("fechaActual: "+fechaActual[0]);
+      // console.log(booleano);
+      return booleano
     },
     testing3(){
       this.$v.$touch();
@@ -700,15 +721,27 @@ export default {
     eliminarTelefono(index) {
       this.residente.telefonosReferencia.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     }, ////GUARDAR PROGRESO DEL modal ///
+    
     guardarProgreso() {
+      if(!this.checkboxFechaFinalizacion){
+        var fechaingreso = this.progreso.fechaingreso
+        var fecha = "";
+        if(this.progreso.fase.fase ===2){fecha = moment(fechaingreso).add(1, 'year').calendar();}
+        else if(this.progreso.fase.fase ===3){fecha = moment(fechaingreso).add(6, 'month').calendar();}
+        else{fecha = moment(fechaingreso).add(1, 'year').calendar();}
+        console.log("entra: "+ fechaingreso);
+        console.log("sale: "+ fecha);
+        var date = fecha.split('/');
+        this.progreso.fechafinalizacion = date[2] + '-' + date[1] + '-' + date[0];
+      }
       this.$v.progreso.$touch();
       if(!this.$v.progreso.$invalid){
-          let progreso={ 
+        let progreso={ 
          fase: this.progreso.fase.fase,
          nombre:this.progreso.fase.nombre.toLowerCase(),
          fechaingreso:this.progreso.fechaingreso,
          fechafinalizacion:this.progreso.fechafinalizacion,
-         estado:this.progreso.estado.toLowerCase()}//creamos variables 
+         estado:this.progreso.estado.nombre.toLowerCase()}//creamos variables 
         this.residente.progreso.push(progreso); //añadimos al arreglo principal
         ///LIMPIAMOS LOS CAMPOS//
         this.progreso.fase = {nombre:'Acogida',fase:1};
@@ -747,11 +780,36 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        console.warn(this.residente);
+        this.residente.idcreador= "PRUEBA";
+        this.residente.observaciones= "PRUEBA";
+        this.residente.firma= {
+          urlfirma:"PRUEBA",
+          nombre:"PRUEBA",
+          cargo:"PRUEBA"
+        };
+        console.log(this.residente);
         await axios
           .post("/Residente", this.residente)
           .then((res) => {
-            this.addResidente(res.data);
+            var info ={
+              apellido: res.data.apellido,
+              estado: res.data.estado,
+              fechaIngreso: res.data.fechaIngreso.split("T")[0],
+              fechaNacimiento: res.data.fechaNacimiento.split("T")[0],
+              id: res.data.id,
+              juzgadoProcedencia: res.data.juzgadoProcedencia,
+              lugarNacimiento: res.data.lugarNacimiento,
+              motivoIngreso: res.data.motivoIngreso,
+              nombre: res.data.nombre,
+              numeroDocumento: res.data.numeroDocumento,
+              progreso: res.data.progreso,
+              sexo: res.data.sexo,
+              telefonosReferencia: res.data.telefonosReferencia,
+              tipoDocumento: res.data.tipoDocumento,
+              ubigeo: res.data.ubigeo,
+
+            }
+            this.addResidente(info);
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -776,7 +834,13 @@ export default {
     verifyColor() {
       return "red";
     },
-
+    verificarPrevicion(){
+      if(this.progreso.estado.previcion === false){
+        this.checkboxFechaFinalizacion = true;
+      }else{
+        this.checkboxFechaFinalizacion = false;
+      }
+    },
     errorNombre() {
       const errors = [];
       if (!this.$v.residente.nombre.$dirty) return errors;
