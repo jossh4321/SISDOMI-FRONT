@@ -518,7 +518,7 @@ export default {
         creadordocumento: "",
         fechacreacion: "",
         area: "educativa",
-        fase: "acogida",
+        fase: "1",
         idresidente: "",
         estado: "creado",
         contenido: {

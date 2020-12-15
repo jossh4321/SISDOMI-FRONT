@@ -652,7 +652,7 @@ export default {
         tipo: "TallerFormativoEgreso",
         fechacreacion: new Date(),
         area: "educativa",
-        fase: "reinsercion",
+        fase: "3",
         titulo: "",
         descripcion: "",
         contenido:{
