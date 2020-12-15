@@ -780,12 +780,12 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        this.residente.idcreador= "PRUEBA";
-        this.residente.observaciones= "PRUEBA";
+        this.residente.idcreador= "";
+        this.residente.observaciones= "";
         this.residente.firma= {
-          urlfirma:"PRUEBA",
-          nombre:"PRUEBA",
-          cargo:"PRUEBA"
+          urlfirma:"",
+          nombre:"",
+          cargo:""
         };
         console.log(this.residente);
         await axios
