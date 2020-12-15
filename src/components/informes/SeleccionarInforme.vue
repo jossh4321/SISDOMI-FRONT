@@ -106,12 +106,16 @@ export default {
         showRegistrarInformeSE: false,
         showRegistrarInformePI: false,
         showRegistrarInformePE: false,
-        listaresidentesIEI: []
+        listaresidentesIEI: [],
+        faseEducativaInicial: {            
+            fase: "1",
+            area: "educativa",
+            documentoanterior: "FichaEducativaIngreso",
+            documentoactual: "InformeEducativoInicial",
+            estadodocumentoanterior: "Completo"
+        }
       }
-    },
-    async created(){
-        this.obtenerResidentesIEI();
-    },
+    },    
      methods:{
         cerrarDialogo(){            
             this.$emit("close-dialog-save");
@@ -119,7 +123,8 @@ export default {
         abrirDialogo(){
             console.log(this.items.value);
             switch(this.items.value){
-                case "1":                     
+                case "1":   
+                    this.obtenerResidentesIEI();                  
                     this.showRegistrarInformeEI = true;
                     break;
                 case "2":

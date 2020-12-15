@@ -392,6 +392,7 @@ export default {
           estrategias: [],
           indicadores: [],
           metas: [],
+          titulo: "",
           firmas: [
             {
               urlfirma: "",
