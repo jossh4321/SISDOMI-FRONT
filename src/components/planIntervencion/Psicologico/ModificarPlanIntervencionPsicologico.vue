@@ -594,7 +594,7 @@ export default {
               sexo: res.sexo,
               motivoIngreso: res.motivoIngreso,
               estado: res.estado,
-              faseActual: res.progreso[res.progreso.length - 1].nombre,
+              faseActual: res.progreso[res.progreso.length - 1].fase.toString(),
             };
           });
 
@@ -611,7 +611,7 @@ export default {
             estado: this.planI.residente.estado,
             faseActual: this.planI.residente.progreso[
               this.planI.residente.progreso.length - 1
-            ].nombre,
+            ].fase.toString(),
           };
 
           this.residentes.push(residentePlan);
@@ -751,7 +751,7 @@ export default {
     getTitleByFaseResident() {
       if (this.residente != null) {
         if (this.residente.faseActual != "") {
-          if (this.residente.faseActual == "acogida") {
+          if (this.residente.faseActual == "1") {
             this.planI.contenido.titulo =
               "Plan de Intervención psicológica";
           } else {
@@ -1010,7 +1010,7 @@ export default {
     this.residente.estado = this.planI.residente.estado;
     this.residente.faseActual = this.planI.residente.progreso[
       this.planI.residente.progreso.length - 1
-    ].nombre;
+    ].fase.toString();
 
     this.residentes.push(this.residente);
   },

@@ -490,7 +490,7 @@ export default {
               residente: res.nombre + " " + res.apellido,
               id: res.id,
               numeroDocumento: res.numeroDocumento,
-              faseActual: res.progreso[res.progreso.length - 1].nombre,
+              faseActual: res.progreso[res.progreso.length - 1].fase.toString(),
             };
           });
 
@@ -501,7 +501,7 @@ export default {
             numeroDocumento: this.planI.residente.numeroDocumento,
             faseActual: this.planI.residente.progreso[
               this.planI.residente.progreso.length - 1
-            ].nombre,
+            ].fase.toString(),
           };
 
           residentesMap.push(residentePlan);
@@ -522,7 +522,7 @@ export default {
     this.residente.numeroDocumento = this.planI.residente.numeroDocumento;
     this.residente.faseActual = this.planI.residente.progreso[
       this.planI.residente.progreso.length - 1
-    ].nombre;
+    ].fase.toString();
 
     this.listResidentes.push(this.residente);
   },
@@ -663,7 +663,7 @@ export default {
     getTitleByFaseResident() {
       if (this.residente != null) {
         if (this.residente.faseActual != "") {
-          if (this.residente.faseActual == "acogida") {
+          if (this.residente.faseActual == "1") {
             this.planI.contenido.titulo = "Plan de Intervención Educativa";
           } else {
             this.planI.contenido.titulo =

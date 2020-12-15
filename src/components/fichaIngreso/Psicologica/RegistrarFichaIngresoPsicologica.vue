@@ -1724,7 +1724,7 @@ export default {
         creadordocumento: "",
         fechacreacion: new Date(),
         area: "psicologica",
-        fase: "acogida",
+        fase: "1",
         idresidente: "",
         estado: "creado",
         contenido: {

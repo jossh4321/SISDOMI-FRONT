@@ -79,7 +79,7 @@
               <v-icon left> mdi-pencil</v-icon>
               <span>Actualizar</span>
             </v-btn>
-            <v-btn color="info" dark @click="abrirDialogoConsultar(item.id)">
+            <v-btn color="info" dark @click="abrirDialogoConsultar(item)">
               <v-icon left> mdi-file-eye </v-icon>
               <span>Consultar</span>
             </v-btn>
@@ -102,6 +102,15 @@
         :fichaIngreso="fichaIngreso"
         ref="modificarFichaIngreso"
         @cerrar-modal-edicion-ficha-ingreso="cerrarDialogoModificacionFichaIngreso">
+        </v-component>
+      </v-dialog>
+      <!--Dialogo de Consultar-->
+      <v-dialog v-model="dialogoConsultaFichaIngreso" persistent > 
+        <v-component :is="selectorFichaIngreso"
+        ref="consultarFichaIngreso"
+        :fichaIngreso="fichaIngreso"
+        :listaeducadores="listaeducadores"
+        @cerrar-modal-detalle-ficha-ingreso="cerrarDialogoConsultarFichaIngreso">
         </v-component>
       </v-dialog>
     </v-card>
@@ -130,7 +139,7 @@ export default {
   name: "GestionarFicha",
   components: {
     RegistrarFichaIngresoEducativa,RegistrarFichaIngresoPsicologica,RegistrarFichaIngresoSocial,
-    ModificarFichaIngresoEducativa
+    ModificarFichaIngresoEducativa,ConsultarFichaIngresoEducativa
   },
   data() {
     return {
@@ -161,6 +170,7 @@ export default {
       listaeducadores: [],
       dialogoRegistroFichaIngreso:false,
       dialogoModificacionFichaIngreso:false,
+      dialogoConsultaFichaIngreso:false
     };
   },
   async created() {
@@ -178,8 +188,13 @@ export default {
           this.selectorFichaIngreso = "ModificarFichaIngresoEducativa";
        }
        this.dialogoModificacionFichaIngreso = true;
+    },async abrirDialogoConsultar(item){
+        await this.obtenerfichaIngresoDetalle(item.id)
+        if(item.tipo == "FichaEducativaIngreso"){
+          this.selectorFichaIngreso = "ConsultarFichaIngresoEducativa";
+       }
+       this.dialogoConsultaFichaIngreso = true;
     },
-    detailItem(item) {},
     closeDialogDetalle() {
       this.dialogoFIEconsultar=false
       this.dialogoFIPconsultar=false
@@ -198,16 +213,26 @@ export default {
     cerrarDialogoSeleccion(){
       this.dialogDialogNuevaFichaIngreso = false;
       this.selectorFichaIngreso = "";
-    },
-    /*abrirDialogoRegistroFichaIngreso(){
-      this.dialogDialogNuevaFichaIngreso = false;
-      this.dialogoRegistroFichaIngreso = true;
-    }*/cerrarDialogoRegistroFichaIngreso(){
+    },cerrarDialogoRegistroFichaIngreso(){
       this.dialogoRegistroFichaIngreso = false;
       this.selectorFichaIngreso = "";
     },cerrarDialogoModificacionFichaIngreso(){
       this.dialogoModificacionFichaIngreso = false;
       this.selectorFichaIngreso = "";
+    },cerrarDialogoConsultarFichaIngreso(){
+      this.dialogoConsultaFichaIngreso = false;
+      this.SeleccionarFichaIngreso="";
+    },
+    //Obtener Detalle de Ficha Ingreso
+    async obtenerfichaIngresoDetalle(id) {
+      await axios
+        .get(`/Documento/fichaingreso/detalle/${id}`)
+        .then((res) => {
+          //console.log( "porfavor" )
+          this.fichaIngreso=res.data;
+          console.log(res.data);
+        })
+        .catch((err) => console.log(err));
     },
     //Obtener una ficha de ingreso espefica
     async obtenerfichaIngreso(id) {
@@ -219,7 +244,6 @@ export default {
           console.log(res.data);
         })
         .catch((err) => console.log(err));
-
     },
     //Obtener Todas las Fcifas de Ingreso
     async obtenerfichasIngresos() {

@@ -720,7 +720,7 @@ data(){
       creadordocumento:"",
       fechacreacion:"",
       area:"Educativa",
-      fase:"acogida",
+      fase:"1",
       idresidente:"",
       estado:"creado",
       contenido:{

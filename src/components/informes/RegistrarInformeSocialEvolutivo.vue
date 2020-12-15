@@ -463,7 +463,7 @@ export default {
         creadordocumento: "5f9e4cdae4655cf92eaa4d5b",
         fechacreacion: "",
         area: "social",
-        fase: "acogida",
+        fase: "2",
         idresidente: "",
         estado: "creado",
         contenido: {
