@@ -222,11 +222,11 @@
                               color="#009900"
                               rows="1"
                               auto-grow
+                              :readonly="isDisabledPadre"
+                              @input="$v.padre.nombre.$touch()"
+                              @blur="$v.padre.nombre.$touch()"
+                              :error-messages="errorpadrenombre"
                             ></v-textarea>
-                            <!-- :readonly="isDisabled"
-                                @input="$v.familiar.nombre.$touch()"
-                                @blur="$v.familiar.nombre.$touch()"
-                            :error-messages="errorNombreFamiliar"-->
                             <v-textarea
                               label="Apellidos"
                               v-model="padre.apellidos"
@@ -234,11 +234,11 @@
                               color="#009900"
                               rows="1"
                               auto-grow
+                              :readonly="isDisabledPadre"
+                              @input="$v.padre.apellidos.$touch()"
+                              @blur="$v.padre.apellidos.$touch()"
+                              :error-messages="errorpadreapellidos"
                             ></v-textarea>
-                            <!-- :readonly="isDisabled"
-                                @input="$v.familiar.apellido.$touch()"
-                                @blur="$v.familiar.apellido.$touch()"
-                            :error-messages="errorApellidoFamiliar"-->
                             <v-row>
                               <v-col>
                                 <v-textarea
@@ -248,11 +248,11 @@
                                   color="#009900"
                                   rows="1"
                                   auto-grow
+                                  :readonly="isDisabledPadre"
+                                  @input="$v.padre.edad.$touch()"
+                                  @blur="$v.padre.edad.$touch()"
+                                  :error-messages="errorpadreedad"
                                 ></v-textarea>
-                                <!-- :readonly="isDisabled"
-                                  @input="$v.familiar.numerodocumento.$touch()"
-                                  @blur="$v.familiar.numerodocumento.$touch()"
-                                :error-messages="errorNumeroDocumentoFamiliar"-->
                               </v-col>
                               <v-col>
                                 <v-textarea
@@ -262,23 +262,23 @@
                                   color="#009900"
                                   rows="1"
                                   auto-grow
+                                  :readonly="isDisabledPadre"
+                                  @input="$v.padre.instruccion.$touch()"
+                                  @blur="$v.padre.instruccion.$touch()"
+                                  :error-messages="errorpadreinstruccion"
                                 ></v-textarea>
-                                <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.edad.$touch()"
-                                    @blur="$v.familiar.edad.$touch()"
-                                :error-messages="errorEdadFamiliar"-->
                               </v-col>
                               <v-col>
                                 <v-select
                                   :items="listaPadreparentesco"
                                   v-model="padre.parentesco"
-                                  label="Parentesco con la residente"
+                                  label="Parentesco"
                                   outlined
+                                  :readonly="isDisabledPadre"
+                                  @input="$v.padre.parentesco.$touch()"
+                                  @blur="$v.padre.parentesco.$touch()"
+                                  :error-messages="errorpadreparentesco"
                                 ></v-select>
-                                <!-- :readonly="isDisabled"
-                                  @input="$v.familiar.numerodocumento.$touch()"
-                                  @blur="$v.familiar.numerodocumento.$touch()"
-                                :error-messages="errorNumeroDocumentoFamiliar"-->
                               </v-col>
                             </v-row>
                             <v-row>
@@ -290,11 +290,11 @@
                                   color="#009900"
                                   rows="1"
                                   auto-grow
+                                  :readonly="isDisabledPadre"
+                                  @input="$v.padre.estadosalud.$touch()"
+                                  @blur="$v.padre.estadosalud.$touch()"
+                                  :error-messages="errorpadreestadosalud"
                                 ></v-textarea>
-                                <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.parentesco.$touch()"
-                                    @blur="$v.familiar.parentesco.$touch()"
-                                :error-messages="errorParentescoFamiliar"-->
                               </v-col>
                               <v-col>
                                 <v-textarea
@@ -304,11 +304,11 @@
                                   color="#009900"
                                   rows="1"
                                   auto-grow
+                                  :readonly="isDisabledPadre"
+                                  @input="$v.padre.relacion.$touch()"
+                                  @blur="$v.padre.estadosalud.$touch()"
+                                  :error-messages="errorpadrerelacion"
                                 ></v-textarea>
-                                <!-- :readonly="isDisabled"
-                                    @input="$v.familiar.gradoinstruccion.$touch()"
-                                    @blur="$v.familiar.gradoinstruccion.$touch()"
-                                :error-messages="errorGradoInstruccionFamiliar"-->
                               </v-col>
                             </v-row>
                           </v-card-text>
@@ -417,11 +417,11 @@
                               color="#009900"
                               rows="1"
                               auto-grow
+                              :readonly="isDisabledHermano"
+                              @input="$v.hermano.nombre.$touch()"
+                              @blur="$v.hermano.nombre.$touch()"
+                              :error-messages="errorhermanonombre"
                             ></v-textarea>
-                            <!-- :readonly="isDisabled"
-                                @input="$v.familiar.nombre.$touch()"
-                                @blur="$v.familiar.nombre.$touch()"
-                            :error-messages="errorNombreFamiliar"-->
                             <v-textarea
                               label="Edad"
                               v-model="hermano.edad"
@@ -429,11 +429,11 @@
                               color="#009900"
                               rows="1"
                               auto-grow
+                              :readonly="isDisabledHermano"
+                              @input="$v.hermano.edad.$touch()"
+                              @blur="$v.hermano.edad.$touch()"
+                              :error-messages="errorhermanoedad"
                             ></v-textarea>
-                            <!-- :readonly="isDisabled"
-                                @input="$v.familiar.apellido.$touch()"
-                                @blur="$v.familiar.apellido.$touch()"
-                            :error-messages="errorApellidoFamiliar"-->
 
                             <v-textarea
                               label="Actividad"
@@ -442,11 +442,11 @@
                               color="#009900"
                               rows="1"
                               auto-grow
+                              :readonly="isDisabledHermano"
+                              @input="$v.hermano.actividad.$touch()"
+                              @blur="$v.hermano.actividad.$touch()"
+                              :error-messages="errorhermanoactividad"
                             ></v-textarea>
-                            <!-- :readonly="isDisabled"
-                                  @input="$v.familiar.numerodocumento.$touch()"
-                                  @blur="$v.familiar.numerodocumento.$touch()"
-                            :error-messages="errorNumeroDocumentoFamiliar"-->
                           </v-card-text>
                           <v-card-actions>
                             <v-spacer></v-spacer>
@@ -600,6 +600,9 @@
                             auto-grow
                             rows="1"
                             color="#009900"
+                            @input="$v.enfermedad.$touch()"
+                            @blur="$v.enfermedad.$touch()"
+                            :error-messages="errorenfermedad"
                           ></v-textarea>
                         </v-flex>
                         <v-flex xs2>
@@ -681,6 +684,9 @@
                         v-model="maltrato.tipomaltrato"
                         label="Tipo de maltrato"
                         outlined
+                        @input="$v.maltrato.tipomaltrato.$touch()"
+                        @blur="$v.maltrato.tipomaltrato.$touch()"
+                        :error-messages="errormaltratotipomaltrato"
                       ></v-select>
                     </v-flex>
                     <v-flex xs5>
@@ -689,6 +695,9 @@
                         v-model="maltrato.agresor"
                         label="Agresor"
                         outlined
+                        @input="$v.maltrato.agresor.$touch()"
+                        @blur="$v.maltrato.agresor.$touch()"
+                        :error-messages="errormaltratoagresor"
                       ></v-select>
                     </v-flex>
                     <v-flex xs2>
@@ -790,6 +799,9 @@
                             v-model="spa.tipospa"
                             label="SPA consumida"
                             outlined
+                            @input="$v.spa.tipospa.$touch()"
+                            @blur="$v.spa.tipospa.$touch()"
+                            :error-messages="errorspatipospa"
                           ></v-select>
                         </v-flex>
                         <v-flex xs4>
@@ -798,6 +810,9 @@
                             label="Tiempo de consumo"
                             color="#009900"
                             outlined
+                            @input="$v.spa.tiempoconsumo.$touch()"
+                            @blur="$v.spa.tiempoconsumo.$touch()"
+                            :error-messages="errorspatiempoconsumo"
                           ></v-text-field>
                         </v-flex>
                         <v-flex xs3>
@@ -806,6 +821,9 @@
                             v-model="spa.frecuencia"
                             label="Frecuencia de consumo"
                             outlined
+                            @input="$v.spa.frecuencia.$touch()"
+                            @blur="$v.spa.frecuencia.$touch()"
+                            :error-messages="errorspafrecuencia"
                           ></v-select>
                         </v-flex>
                         <v-flex xs2>
@@ -843,6 +861,9 @@
                         v-model="conductasriesgo.conducta"
                         label="Riesgo de conducta"
                         outlined
+                        @input="$v.conductasriesgo.conducta.$touch()"
+                            @blur="$v.conductasriesgo.conducta.$touch()"
+                            :error-messages="errorconductasriesgoconducta"
                       ></v-select>
                     </v-flex>
                     <v-flex xs5>
@@ -853,6 +874,9 @@
                         outlined
                         rows="1"
                         auto-grow
+                        @input="$v.conductasriesgo.observacion.$touch()"
+                            @blur="$v.conductasriesgo.observacion.$touch()"
+                            :error-messages="errorconductasriesgoobservacion"
                       ></v-textarea>
                     </v-flex>
                     <v-flex xs2>
@@ -888,6 +912,9 @@
                         v-model="conductasemocionales.indicador"
                         label="Indicador de conducta"
                         outlined
+                        @input="$v.conductasemocionales.indicador.$touch()"
+                        @blur="$v.conductasemocionales.indicador.$touch()"
+                        :error-messages="errorconductasemocionalesindicador"
                       ></v-select>
                     </v-flex>
                     <v-flex xs5>
@@ -898,6 +925,9 @@
                         outlined
                         rows="1"
                         auto-grow
+                        @input="$v.conductasemocionales.observacion.$touch()"
+                        @blur="$v.conductasemocionales.observacion.$touch()"
+                        :error-messages="errorconductasemocionalesobservacion"
                       ></v-textarea>
                     </v-flex>
                     <v-flex xs2>
@@ -1619,12 +1649,20 @@ import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import {required,minLength,email,helpers,between} from "vuelidate/lib/validators";
+import {required,minLength,email,helpers,between, numeric} from "vuelidate/lib/validators";
 
 import moment from "moment";
 
 function edadvalida(value) {
-  return !(value > 3 && value < 21);
+  return (value > 3 & value < 21);
+}
+
+function edadvalidapadre(value) {
+  return (value > 4 & value < 101);
+}
+
+function edadvalidanormal(value) {
+  return (value > 0 & value < 101);
 }
 
 export default {
@@ -1673,7 +1711,7 @@ export default {
       personascontacto: "",
       //fin modal tratasexual
       edadgradoescolar: {
-        edad: 0,
+        edad: "",
         gradoescolar: ""
       },
       menu2: false,
@@ -1707,8 +1745,8 @@ export default {
           },
           maltrato: [],
           abusosexual: {
-            edad: 0,
-            veces: 0,
+            edad: "",
+            veces: "",
             atencionpsicologica: false
           },
           adicciones: {
@@ -1723,7 +1761,7 @@ export default {
             menarquia: "",
             relaciones: {
               iniciorelaciones: false,
-              edadinicio: 0,
+              edadinicio: "",
               motivo: "",
               generopareja: "",
               relacionconsentida: false,
@@ -1733,7 +1771,7 @@ export default {
           },
           explotacionsexual: {
             victimaexplotacion: false,
-            edadinicio: 0,
+            edadinicio: "",
             victimatrata: false,
             tratasexual: []
           },
@@ -1897,19 +1935,17 @@ export default {
 
         let fichaI = this.fichaIngreso;
 
-        this.mensaje(
+        await axios
+          .post("/Documento/fichaingresopsicologicacrear", fichaI)
+          .then(res => {
+            this.mensaje(
           "success",
           "Listo",
           "Plan registrado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
-
-        /*await axios
-          .post("/Documento/fichaingresopsicologicacrear", fichaI)
-          .then(res => {
-            
           })
-          .catch(err => console.log(err));*/
+          .catch(err => console.log(err));
       }
     },
     //Metodos modal padres
@@ -1927,16 +1963,16 @@ export default {
       }
     },
     agregarPadre() {
-      /*this.$v.familiar.$touch();
-      if (this.$v.familiar.$invalid) {
+      this.$v.padre.$touch();
+      if (this.$v.padre.$invalid) {
         this.mensaje(
           "error",
           "..Oops",
-          "Debe completar los datos del familiar",
+          "Debe completar los datos del padre",
           "<strong>Verifique los campos Ingresados<strong>"
         );
       }
-      else {*/
+      else {
       let padre = {
         nombre: this.padre.nombre,
         apellidos: this.padre.apellidos,
@@ -1955,8 +1991,8 @@ export default {
       this.padre.estadosalud = "";
       this.padre.relacion = "";
       this.dialogAgregarpadre = false;
-      //this.$v.padre.$reset();
-      //}
+      this.$v.padre.$reset();
+      }
     },
     cerrarAgregarPadre() {
       this.dialogAgregarpadre = false;
@@ -1969,7 +2005,7 @@ export default {
       this.padre.relacion = "";
       this.padre.edad = "";
 
-      //this.$v.padre.$reset();
+      this.$v.padre.$reset();
     },
     modalActualizarPadre(index) {
       this.accion = "actualizar";
@@ -1981,7 +2017,7 @@ export default {
       this.padre.parentesco = this.fichaIngreso.contenido.padres[
         index
       ].parentesco;
-      this.padre.edad = this.fichaIngreso.contenido.padres[index].edad = "";
+      this.padre.edad = this.fichaIngreso.contenido.padres[index].edad;
       this.padre.instruccion = this.fichaIngreso.contenido.padres[
         index
       ].instruccion;
@@ -1993,16 +2029,16 @@ export default {
       this.indice = index;
     },
     actualizarPadre(index) {
-      /*this.$v.familiar.$touch();
-      if (this.$v.familiar.$invalid) {
+      this.$v.padre.$touch();
+      if (this.$v.padre.$invalid) {
         this.mensaje(
           "error",
           "..Oops",
-          "Debe completar los datos del familiar",
+          "Debe completar los datos del padre",
           "<strong>Verifique los campos Ingresados<strong>"
         );
       }
-      else {*/
+      else {
       this.fichaIngreso.contenido.padres[index].nombre = this.padre.nombre;
       this.fichaIngreso.contenido.padres[
         index
@@ -2020,8 +2056,8 @@ export default {
       this.fichaIngreso.contenido.padres[index].relacion = this.padre.relacion;
 
       this.dialogAgregarpadre = false;
-      // this.$v.padre.$reset();
-      // }
+      this.$v.padre.$reset();
+      }
     },
     eliminarPadre(index) {
       this.fichaIngreso.contenido.padres.splice(index, 1);
@@ -2042,7 +2078,7 @@ export default {
       this.padre.estadosalud = this.fichaIngreso.contenido.padres[
         index
       ].estadosalud;
-      this.padre.edad = this.fichaIngreso.contenido.padres[index].edad = "";
+      this.padre.edad = this.fichaIngreso.contenido.padres[index].edad;
       this.padre.relacion = this.fichaIngreso.contenido.padres[index].relacion;
     },
     //fin metodos modal padres
@@ -2052,16 +2088,16 @@ export default {
       this.dialogAgregarhermano = true;
     },
     agregarhermano() {
-      /*this.$v.familiar.$touch();
-      if (this.$v.familiar.$invalid) {
+      this.$v.hermano.$touch();
+      if (this.$v.hermano.$invalid) {
         this.mensaje(
           "error",
           "..Oops",
-          "Debe completar los datos del familiar",
+          "Debe completar los datos del hermano",
           "<strong>Verifique los campos Ingresados<strong>"
         );
       }
-      else {*/
+      else {
       let hermano = {
         nombre: this.hermano.nombre,
         edad: this.hermano.edad,
@@ -2072,8 +2108,8 @@ export default {
       this.hermano.edad = "";
       this.hermano.actividad = "";
       this.dialogAgregarhermano = false;
-      //this.$v.padre.$reset();
-      //}
+      this.$v.hermano.$reset();
+      }
     },
     cerrarAgregarhermano() {
       this.dialogAgregarhermano = false;
@@ -2082,7 +2118,7 @@ export default {
       this.hermano.edad = "";
       this.hermano.actividad = "";
 
-      //this.$v.padre.$reset();
+      this.$v.hermano.$reset();
     },
     modalActualizarhermano(index) {
       this.accionHermano = "actualizar";
@@ -2096,16 +2132,16 @@ export default {
       this.indice = index;
     },
     actualizarhermano(index) {
-      /*this.$v.familiar.$touch();
-      if (this.$v.familiar.$invalid) {
+      this.$v.hermano.$touch();
+      if (this.$v.hermano.$invalid) {
         this.mensaje(
           "error",
           "..Oops",
-          "Debe completar los datos del familiar",
+          "Debe completar los datos del hermano",
           "<strong>Verifique los campos Ingresados<strong>"
         );
       }
-      else {*/
+      else {
       this.fichaIngreso.contenido.hermanos[index].nombre = this.hermano.nombre;
       this.fichaIngreso.contenido.hermanos[index].edad = this.hermano.edad;
       this.fichaIngreso.contenido.hermanos[
@@ -2113,8 +2149,8 @@ export default {
       ].actividad = this.hermano.actividad;
 
       this.dialogAgregarhermano = false;
-      // this.$v.padre.$reset();
-      // }
+      this.$v.hermano.$reset();
+      }
     },
     eliminarhermano(index) {
       this.fichaIngreso.contenido.hermanos.splice(index, 1);
@@ -2150,58 +2186,58 @@ export default {
       this.fichaIngreso.contenido.escolaridad.edadgradoescolar.splice(index, 1);
     },
     agregarenfermedad() {
-      /*this.$v.motivoIngreso.$touch();
-      if (!this.$v.motivoIngreso.$invalid) {*/
-      let enfermedadR = this.enfermedad;
-      this.fichaIngreso.contenido.discapacidad.enfermedad.push(enfermedadR);
-      this.enfermedad = "";
-      //  this.$v.motivoIngreso.$reset();
-      //}
+      this.$v.enfermedad.$touch();
+      if (!this.$v.enfermedad.$invalid) {
+        let enfermedadR = this.enfermedad;
+        this.fichaIngreso.contenido.discapacidad.enfermedad.push(enfermedadR);
+        this.enfermedad = "";
+        this.$v.enfermedad.$reset();
+      }
     },
     eliminarenfermedad(index) {
       this.fichaIngreso.contenido.discapacidad.enfermedad.splice(index, 1);
     },
     agregarmaltrato() {
-      /*this.$v.servicio.$touch();
-      if (!this.$v.servicio.$invalid) {*/
-      let maltratoR = {
-        tipomaltrato: this.maltrato.tipomaltrato,
-        agresor: this.maltrato.agresor
-      };
+      this.$v.maltrato.$touch();
+      if (!this.$v.maltrato.$invalid) {
+        let maltratoR = {
+          tipomaltrato: this.maltrato.tipomaltrato,
+          agresor: this.maltrato.agresor
+        };
 
-      this.fichaIngreso.contenido.maltrato.push(maltratoR);
+        this.fichaIngreso.contenido.maltrato.push(maltratoR);
 
-      this.maltrato.tipomaltrato = "";
-      this.maltrato.agresor = "";
-      //  this.$v.servicio.$reset();
-      //}
+        this.maltrato.tipomaltrato = "";
+        this.maltrato.agresor = "";
+        this.$v.maltrato.$reset();
+      }
     },
     eliminarmaltrato(index) {
       this.fichaIngreso.contenido.maltrato.splice(index, 1);
     },
     agregarspa() {
-      /*this.$v.servicio.$touch();
-      if (!this.$v.servicio.$invalid) {*/
-      let spaR = {
-        tipospa: this.spa.tipospa,
-        tiempoconsumo: this.spa.tiempoconsumo,
-        frecuencia: this.spa.frecuencia
-      };
+      this.$v.spa.$touch();
+      if (!this.$v.spa.$invalid) {
+        let spaR = {
+          tipospa: this.spa.tipospa,
+          tiempoconsumo: this.spa.tiempoconsumo,
+          frecuencia: this.spa.frecuencia
+        };
 
-      this.fichaIngreso.contenido.adicciones.spa.push(spaR);
+        this.fichaIngreso.contenido.adicciones.spa.push(spaR);
 
-      this.spa.tipospa = "";
-      this.spa.tiempoconsumo = "";
-      this.spa.frecuencia = "";
-      //  this.$v.servicio.$reset();
-      //}
+        this.spa.tipospa = "";
+        this.spa.tiempoconsumo = "";
+        this.spa.frecuencia = "";
+        this.$v.spa.$reset();
+      }
     },
     eliminarspa(index) {
       this.fichaIngreso.contenido.adicciones.spa.splice(index, 1);
     },
     agregarconductasriesgo() {
-      /*this.$v.servicio.$touch();
-      if (!this.$v.servicio.$invalid) {*/
+      this.$v.conductasriesgo.$touch();
+      if (!this.$v.conductasriesgo.$invalid) {
       let conductasriesgoR = {
         conducta: this.conductasriesgo.conducta,
         observacion: this.conductasriesgo.observacion
@@ -2211,28 +2247,28 @@ export default {
 
       this.conductasriesgo.conducta = "";
       this.conductasriesgo.observacion = "";
-      //  this.$v.servicio.$reset();
-      //}
+        this.$v.conductasriesgo.$reset();
+      }
     },
     eliminarconductasriesgo(index) {
       this.fichaIngreso.contenido.conductasriesgo.splice(index, 1);
     },
     agregarconductasemocionales() {
-      /*this.$v.servicio.$touch();
-      if (!this.$v.servicio.$invalid) {*/
-      let conductasemocionalesR = {
-        indicador: this.conductasemocionales.indicador,
-        observacion: this.conductasemocionales.observacion
-      };
+      this.$v.conductasemocionales.$touch();
+      if (!this.$v.conductasemocionales.$invalid) {
+        let conductasemocionalesR = {
+          indicador: this.conductasemocionales.indicador,
+          observacion: this.conductasemocionales.observacion
+        };
 
-      this.fichaIngreso.contenido.conductasemocionales.push(
-        conductasemocionalesR
-      );
+        this.fichaIngreso.contenido.conductasemocionales.push(
+          conductasemocionalesR
+        );
 
-      this.conductasemocionales.indicador = "";
-      this.conductasemocionales.observacion = "";
-      //  this.$v.servicio.$reset();
-      //}
+        this.conductasemocionales.indicador = "";
+        this.conductasemocionales.observacion = "";
+        this.$v.conductasemocionales.$reset();
+      }
     },
     eliminarconductasemocionales(index) {
       this.fichaIngreso.contenido.conductasemocionales.splice(index, 1);
@@ -2462,6 +2498,20 @@ export default {
         }
       }
     },
+    isDisabledPadre() {
+      if (this.accion == "consultar") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    isDisabledHermano() {
+      if (this.accionHermano == "consultar") {
+        return true;
+      } else {
+        return false;
+      }
+    },
     //errores del formulario
     errorResidente() {
       const errors = [];
@@ -2567,6 +2617,8 @@ export default {
 
       !this.$v.edadgradoescolar.edad.required && errors.push("Debe ingresar la edad del grado escolar");
 
+      !this.$v.edadgradoescolar.edad.numeric && errors.push("La edad debe ser numérica");
+
       !this.$v.edadgradoescolar.edad.edadvalida && errors.push("La edad debe ser entre 4 a 20 años");
 
       return errors;
@@ -2581,16 +2633,281 @@ export default {
 
       return errors;
     },
+    errorpadrenombre() {
+      const errors = [];
+
+      if (!this.$v.padre.nombre.$dirty) return errors;
+
+      !this.$v.padre.nombre.required && errors.push("Debe ingresar el nombre");
+
+      return errors;
+    },
+    errorpadreapellidos() {
+      const errors = [];
+
+      if (!this.$v.padre.apellidos.$dirty) return errors;
+
+      !this.$v.padre.apellidos.required && errors.push("Debe ingresar los apellidos");
+
+      return errors;
+    },
+    errorpadreparentesco() {
+      const errors = [];
+
+      if (!this.$v.padre.parentesco.$dirty) return errors;
+
+      !this.$v.padre.parentesco.required && errors.push("Debe ingresar el parentesco");
+
+      return errors;
+    },
+    errorpadreedad() {
+      const errors = [];
+
+      if (!this.$v.padre.edad.$dirty) return errors;
+
+      !this.$v.padre.edad.required && errors.push("Debe ingresar la edad del padre");
+
+      !this.$v.padre.edad.numeric && errors.push("La edad debe ser numérica");
+
+      !this.$v.padre.edad.edadvalidapadre && errors.push("La edad debe ser entre 5 a 100 años");
+
+      return errors;
+    },
+    errorpadreinstruccion() {
+      const errors = [];
+
+      if (!this.$v.padre.instruccion.$dirty) return errors;
+
+      !this.$v.padre.instruccion.required && errors.push("Debe ingresar el grado de instrucción");
+
+      return errors;
+    },
+    errorpadreestadosalud() {
+      const errors = [];
+
+      if (!this.$v.padre.estadosalud.$dirty) return errors;
+
+      !this.$v.padre.estadosalud.required && errors.push("Debe ingresar el estadosalud");
+
+      return errors;
+    },
+    errorpadrerelacion() {
+      const errors = [];
+
+      if (!this.$v.padre.relacion.$dirty) return errors;
+
+      !this.$v.padre.relacion.required && errors.push("Debe ingresar la relacion con la residente");
+
+      return errors;
+    },
+    errorhermanonombre() {
+      const errors = [];
+
+      if (!this.$v.hermano.nombre.$dirty) return errors;
+
+      !this.$v.hermano.nombre.required && errors.push("Debe ingresar el nombre del hermano");
+
+      return errors;
+    },
+    errorhermanoedad() {
+      const errors = [];
+
+      if (!this.$v.hermano.edad.$dirty) return errors;
+
+      !this.$v.hermano.edad.required && errors.push("Debe ingresar la edad del hermano");
+
+      !this.$v.hermano.edad.numeric && errors.push("La edad debe ser numérica");
+
+      !this.$v.hermano.edad.edadvalidapadre && errors.push("La edad debe ser entre 0 a 100 años");
+
+      return errors;
+    },
+    errorhermanoactividad() {
+      const errors = [];
+
+      if (!this.$v.hermano.actividad.$dirty) return errors;
+
+      !this.$v.hermano.actividad.required && errors.push("Debe ingresar la actividad del hermano");
+
+      return errors;
+    },
+    errorenfermedad() {
+      const errors = [];
+
+      if (!this.$v.enfermedad.$dirty) return errors;
+
+      !this.$v.enfermedad.required && errors.push("Debe ingresar la enfermedad");
+
+      return errors;
+    },
+    errormaltratotipomaltrato() {
+      const errors = [];
+
+      if (!this.$v.maltrato.tipomaltrato.$dirty) return errors;
+
+      !this.$v.maltrato.tipomaltrato.required && errors.push("Debe ingresar el tipo de maltrato");
+
+      return errors;
+    },
+    errormaltratoagresor() {
+      const errors = [];
+
+      if (!this.$v.maltrato.agresor.$dirty) return errors;
+
+      !this.$v.maltrato.agresor.required && errors.push("Debe ingresar el agresor");
+
+      return errors;
+    },
+    errorspatipospa() {
+      const errors = [];
+
+      if (!this.$v.spa.tipospa.$dirty) return errors;
+
+      !this.$v.spa.tipospa.required && errors.push("Debe ingresar el tipo de spa");
+
+      return errors;
+    },
+    errorspatiempoconsumo() {
+      const errors = [];
+
+      if (!this.$v.spa.tiempoconsumo.$dirty) return errors;
+
+      !this.$v.spa.tiempoconsumo.required && errors.push("Debe ingresar el tiempo de consumo");
+
+      return errors;
+    },
+    errorspafrecuencia() {
+      const errors = [];
+
+      if (!this.$v.spa.frecuencia.$dirty) return errors;
+
+      !this.$v.spa.frecuencia.required && errors.push("Debe ingresar la frecuencia");
+
+      return errors;
+    },
+    errorconductasriesgoconducta() {
+      const errors = [];
+
+      if (!this.$v.conductasriesgo.conducta.$dirty) return errors;
+
+      !this.$v.conductasriesgo.conducta.required && errors.push("Debe ingresar la conducta");
+
+      return errors;
+    },
+    errorconductasriesgoobservacion() {
+      const errors = [];
+
+      if (!this.$v.conductasriesgo.observacion.$dirty) return errors;
+
+      !this.$v.conductasriesgo.observacion.required && errors.push("Debe ingresar la observacion");
+
+      return errors;
+    },
+    errorconductasemocionalesindicador() {
+      const errors = [];
+
+      if (!this.$v.conductasemocionales.indicador.$dirty) return errors;
+
+      !this.$v.conductasemocionales.indicador.required && errors.push("Debe ingresar el indicador");
+
+      return errors;
+    },
+    errorconductasemocionalesobservacion() {
+      const errors = [];
+
+      if (!this.$v.conductasemocionales.observacion.$dirty) return errors;
+
+      !this.$v.conductasemocionales.observacion.required && errors.push("Debe ingresar la observacion");
+
+      return errors;
+    },
   },
   validations: {
+    conductasriesgo: {
+        conducta: {
+        required
+      },
+        observacion: {
+        required
+      },
+      },
+      conductasemocionales: {
+        indicador: {
+        required
+      },
+        observacion: {
+        required
+      },
+      },
+    spa: {
+      tipospa: {
+        required
+      },
+      tiempoconsumo: {
+        required
+      },
+      frecuencia: {
+        required
+      }
+    },
+    maltrato: {
+        tipomaltrato: {
+        required
+      },
+        agresor: {
+        required
+      }
+    },
     edadgradoescolar: {
       edad: {
         required,
+        numeric,
         edadvalida
       },
       gradoescolar: {
         required
       }
+    },
+    enfermedad: {
+      required
+    },
+    padre: {
+     nombre: {
+        required
+      },
+     apellidos: {
+        required
+      },
+     parentesco: {
+        required
+      },
+     edad: {
+        required,
+        numeric,
+        edadvalidapadre
+      },
+     instruccion: {
+        required
+      },
+     estadosalud: {
+        required
+      },
+     relacion: {
+        required
+      },
+    },
+    hermano: {
+      nombre: {
+        required
+      },
+      edad: {
+        required,
+        numeric,
+        edadvalidanormal
+      },
+      actividad: {
+        required
+      },
     },
     fichaIngreso: {
       idresidente: {
