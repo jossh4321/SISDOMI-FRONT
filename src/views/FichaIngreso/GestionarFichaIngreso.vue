@@ -104,61 +104,6 @@
         @cerrar-modal-edicion-ficha-ingreso="cerrarDialogoModificacionFichaIngreso">
         </v-component>
       </v-dialog>
-
-
-
-      <!--v-dialog persistent
-                v-model="dialogoactualizacion" 
-                max-width="880px">
-        <ModificarFichaIngresoEducativa
-        v-if="dialogoaFIEctualizacion" 
-        :fichaIngresos="fichaIngresos" 
-          :listaroles="listaroles" 
-          :listaresidentes="listaresidentes"
-          :listaeducadores="listaeducadores" 
-        @close-dialog-update="closeDialogActualizar()">
-        </ModificarFichaIngresoEducativa>  
-      </v-dialog>
-      <v-dialog persistent
-                v-model="dialogoactualizacion" 
-                max-width="880px">
-        <ModificarFichaIngresoSocial
-        v-if="dialogoaFIEctualizacion" 
-        :fichaIngresos="fichaIngresos" 
-          :listaroles="listaroles" 
-          :listaresidentes="listaresidentes"
-          :listaeducadores="listaeducadores" 
-        @close-dialog-update="closeDialogActualizar()">
-        </ModificarFichaIngresoSocial>  
-      </v-dialog>
-      <v-dialog persistent
-                v-model="dialogoactualizacion" 
-                max-width="880px">
-        <ModificarFichaIngresoPsicologica
-        v-if="dialogoaFIPctualizacion" 
-        :fichaIngresos="fichaIngresos" 
-          :listaroles="listaroles" 
-          :listaresidentes="listaresidentes"
-          :listaeducadores="listaeducadores" 
-        @close-dialog-update="closeDialogActualizar()">
-        </ModificarFichaIngresoPsicologica>  
-      </v-dialog-->
-     <!--Dialogo de Consultar-->
-      <!--v-dialog persistent
-          v-model="dialogoFIPconsultar" 
-          max-width="880px">
-        <ConsultarFichaIngresoPsicologica ::fichaIngresos="fichaIngresos" @close-dialog-detail="closeDialogDetalle()"/>
-      </v-dialog>
-       <v-dialog persistent
-          v-model="dialogoFISconsultar" 
-          max-width="880px">
-        <ConsultarFichaIngresoSocial ::fichaIngresos="fichaIngresos"  @close-dialog-detail="closeDialogDetalle()"/>
-      </v-dialog>
-      <v-dialog persistent
-          v-model="dialogoFIEconsultar" 
-          max-width="880px">
-        <ConsultarFichaIngresoEducativa ::fichaIngresos="fichaIngresos"  @close-dialog-detail="closeDialogDetalle()"/>
-      </v-dialog-->
     </v-card>
   </div>
 </template>
