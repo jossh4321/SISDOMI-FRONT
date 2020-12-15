@@ -626,7 +626,7 @@ components:{
         creadordocumento:"",
         fechacreacion:"",
         area:"educativa",
-        fase:"acogida",
+        fase:"1",
         estado:"creacion",
         contenido:{
           ultimaie:"",
