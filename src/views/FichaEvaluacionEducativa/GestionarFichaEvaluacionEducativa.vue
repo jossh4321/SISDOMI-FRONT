@@ -31,16 +31,16 @@
                   v-on="on"
                 >
                   <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar Ficha Evaluacion Educativa</span>
+                  <span>Registrar Ficha  Evaluacion Educativa</span>
                 </v-btn>
               </template>
-             <RegistrarSeguimientoEducativo
-             
+             <RegistrarFichaDiagnosticoEducativo
              :listaresidentes ="listaresidentes"
              :listaeducadores="listaeducadores"
+             
              @close-dialog-save="closeDialogRegistrar()"
              >
-             </RegistrarSeguimientoEducativo>
+             </RegistrarFichaDiagnosticoEducativo>
             </v-dialog>
           </v-toolbar>
         </template>
@@ -62,9 +62,9 @@
       </v-data-table>
        <!--Dialogo de Modificacion-->
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
-        <ModificarSeguimientoEducativo
-          :seguimiento="seguimiento"
-          :residente ="residente"
+        <ActualizarFichaDiagnosticoEducativo
+          
+          :fichaEvaluacion="fichaEvaluacion"
           :listaresidentes ="listaresidentes"
           :listaeducadores="listaeducadores"
           :dialogodetalle ="dialogoactualizacion"
@@ -72,18 +72,18 @@
 
           @close-dialog-edit="closeDialogModificar()"
         >
-        </ModificarSeguimientoEducativo>
+        </ActualizarFichaDiagnosticoEducativo>
       </v-dialog>
     <v-dialog persistent v-model="dialogodetalle" max-width="880px">
-        <DetalleSeguimientoEducativo
-          :seguimiento="seguimiento"
+        <DetalleFichaDiagnosticoEducativo
+          :fichaEvaluacion="fichaEvaluacion"
           :residente ="residente"
           :listaresidentes ="listaresidentes"
           :listaeducadores="listaeducadores"
           :dialogodetalle ="dialogodetalle"
           @close-dialog-detail="closeDialogDetalle()"
         >
-        </DetalleSeguimientoEducativo>
+        </DetalleFichaDiagnosticoEducativo>
     </v-dialog>
       
     </v-card>
@@ -92,23 +92,23 @@
 <script>
 import axios from "axios";
 
-import DetalleSeguimientoEducativo from '@/components/seguimientoEducativo/DetalleSeguimientoEducativo.vue'
-import RegistrarSeguimientoEducativo from '@/components/seguimientoEducativo/RegistrarSeguimientoEducativo.vue'
-import ModificarSeguimientoEducativo from '@/components/seguimientoEducativo/ActualizarSeguimientoEducativo.vue'
+import DetalleFichaDiagnosticoEducativo from '@/components/fichaDiagnosticoEducativo/ConsultarFichaDiagnosticoEducativo.vue'
+import RegistrarFichaDiagnosticoEducativo from '@/components/fichaDiagnosticoEducativo/RegistrarFichaDiagnosticoEducativo.vue'
+import ActualizarFichaDiagnosticoEducativo from '@/components/fichaDiagnosticoEducativo/ActualizarFichaDiagnosticoEducativo.vue'
 import { mapMutations, mapState } from "vuex";
 
 export default {
   name: "GestionarSeguimientoEducativo",
   components: {
-    DetalleSeguimientoEducativo,
-    RegistrarSeguimientoEducativo,
-    ModificarSeguimientoEducativo
+    DetalleFichaDiagnosticoEducativo,
+    RegistrarFichaDiagnosticoEducativo,
+    ActualizarFichaDiagnosticoEducativo
     
   },
   data() {
     return {
       search: "",
-      seguimiento: {},
+      fichaEvaluacion: {},
       residente:{},
       listaresidentes: [],
       listaeducadores:[],
@@ -153,14 +153,14 @@ export default {
     },
     ///abrir dialogo de detalle
    async abrirDialogoDetalle(idseguimiento) {
-      this.seguimiento = await this.loadSeguimientoDetalle(idseguimiento);
-      this.residente = await this.loadResidente(this.seguimiento.idresidente);// traelos datos del residnete
+      this.fichaEvaluacion = await this.loadFichaEvalucionDetalle(idseguimiento);
+      this.residente = await this.loadResidente(this.fichaEvaluacion.idresidente);// traelos datos del residnete
       this.dialogodetalle = !this.dialogodetalle;
       },
       ///abrir dialogo de modificacion
     async abrirDialogoModificar(idseguimiento) {
-      this.seguimiento = await this.loadSeguimientoDetalle(idseguimiento);
-      this.residente = await this.loadResidente(this.seguimiento.idresidente);// traelos datos del residnete
+      this.fichaEvaluacion = await this.loadFichaEvalucionDetalle(idseguimiento);
+      this.residente = await this.loadResidente(this.fichaEvaluacion.idresidente);// traelos datos del residnete
       this.dialogoactualizacion = !this.dialogoactualizacion;
     },
   /////////////////Consumo de  apis 
@@ -180,10 +180,10 @@ export default {
         .catch((err) => console.log(err));
     },
     ///////////Obtener seguimiento con id
-     async loadSeguimientoDetalle(idseguimiento) {
+     async loadFichaEvalucionDetalle(idEvaluacion) {
       var user = {};
       await axios
-        .get("/SeguimientoEducativo/id?id=" + idseguimiento)
+        .get("/EvaluacionDiagnosticoEducativo/id?id=" + idEvaluacion)
         .then((res) => {
           console.log(res);
           user = res.data;

@@ -336,7 +336,7 @@
                     </v-col>
                     <v-col :cols="3">
                       <article>
-                        <span style="font-size:16px">{{convertDateFormat(item.fechafinalizacion)!=="" ? (convertDateFormat(item.fechafinalizacion)): "No finalizado"}}</span>
+                        <span style="font-size:16px">{{convertDateFormat(item.fechafinalizacion)}} <span v-if="comprobarPrevicion(item.fechafinalizacion)" style="margin-left:5px">(previsto)</span></span>
                       </article>
                     </v-col>
                     <v-col :cols="2">
@@ -448,6 +448,18 @@ export default {
         var date = dateMongo[0].split('-');
         return date[2] + '/' + date[1] + '/' + date[0];
     },
+    comprobarPrevicion(string){
+      var fechafinalizacion = string.split('T');
+
+      var fechaActual = moment().format();    
+      fechaActual = fechaActual.split('T');
+
+      var booleano = moment(fechafinalizacion[0]).isAfter(fechaActual[0]);
+      console.log("fechafinalizacion: "+ fechafinalizacion[0]);
+      console.log("fechaActual: "+fechaActual[0]);
+      console.log(booleano);
+      return booleano
+    }
   },
   
   computed: {},
