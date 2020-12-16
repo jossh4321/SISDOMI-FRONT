@@ -89,6 +89,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
                   v-model="ParticipanteSesion.fecha"
+                  readonly
                   style="margin-top:5px"
                   color="#009900"
                   prepend-icon="mdi-calendar"
@@ -97,7 +98,7 @@
                   @input="$v.ParticipanteSesion.fecha.$touch()"
                   @blur="$v.ParticipanteSesion.fecha.$touch()"
                   :error-messages="errorFechaRealizacion"
-                  label="Fecha de Realización de Sesion de Aprendizaje"
+                  label="Fecha de Asistencia a la Sesion de Aprendizaje"
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -152,6 +153,9 @@
                     v-model="item.grado"
                     color="#009900"
                     label="Grado"
+                    @input="$v.participantes.$each.$iter[i].grado.$touch()"
+                    @blur="$v.participantes.$each.$iter[i].grado.$touch()"
+                    :error-messages="errorGradoParticipantes(i)"
                   ></v-text-field>
                   <v-menu
                     v-model="item.datemenu2"
@@ -163,13 +167,17 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
+                        readonly
                         v-model="item.fecha"
                         style="margin-top:5px"
                         color="#009900"
                         prepend-icon="mdi-calendar"
                         v-bind="attrs"
                         v-on="on"
-                        label="Fecha de Realización de Sesion de Aprendizaje"
+                        label="Fecha de Asistencia a la Sesion de Aprendizaje"
+                        @input="$v.participantes.$each.$iter[i].fecha.$touch()"
+                        @blur="$v.participantes.$each.$iter[i].fecha.$touch()"
+                        :error-messages="errorFechaRealizacionParticipantes(i)"
                       ></v-text-field>
                     </template>
                     <v-date-picker
@@ -182,6 +190,9 @@
                     v-model="item.observaciones"
                     color="#009900"
                     label="Observaciones"
+                    @input="$v.participantes.$each.$iter[i].observaciones.$touch()"
+                    @blur="$v.participantes.$each.$iter[i].observaciones.$touch()"
+                    :error-messages="errorObservacionesParticipantes(i)"
                   ></v-text-field>
                   <v-btn
                     dark
@@ -289,7 +300,7 @@ export default {
   },
   data() {
     return{
-      select: { value: "1", text: "Nombre" },
+      select: { value: "nombre", text: "Nombre" },
       items: [
         { value: "nombre", text: 'Nombre'},
         { value: "apellido", text: 'Apellido'},
@@ -347,6 +358,7 @@ export default {
     cerrarDialogo() {
       this.$emit("close-dialog-participantes");
       this.participantes=[];
+      this.select= { value: "nombre", text: "Nombre" }
       this.ParticipanteSesion = this.limpiarParticipanteAgregado();
       this.$refs.myVueDropzone.removeAllFiles();
       
@@ -502,45 +514,59 @@ export default {
       // //this.setResidentes(retorno);
     },
     async modificarSesionEducativa(){
-      let participanteSemiListo = this.participantes.map(function(res){
-        return {
-            idparticipante:res.idparticipante,
-            grado:res.grado,
-            fecha:res.fecha,
-            firma:res.firma,
-            observaciones:res.observaciones,
-        }
-      });
-      console.log(participanteSemiListo)
-      console.log(this.sesioneducativa.contenido.participantes)
-      this.sesioneducativa.contenido.participantes = this.sesioneducativa.contenido.participantes.concat(participanteSemiListo);
-      console.log(this.sesioneducativa);
-      await axios
-        .put("/SesionesEducativas", this.sesioneducativa)
-        .then((res) => {
-          var info ={
-            id: res.data.id,
-            titulo: res.data.titulo,
-            fechaCreacion: res.data.fechaCreacion.split("T")[0],
-            area: res.data.area,
-            tipo: res.data.tipo,
-            idCreador: res.data.idCreador,
-            datoscreador:{
-              usuario: this.nombreCreador
-            }
-          }
-          console.log("Modificado xd")
-          console.log(info);
-          this.replaceSesionesEducativas(info);
-          this.cerrarDialogo();
-        })
-        .catch((err) => {console.log(err)})
-        await this.mensaje(
-          "success",
-          "Listo",
-          "Participantes Agregados Satisfactoriamente",
-          "<strong>Se redirigira a la interfaz de Gestión<strong>"
+      this.$v.participantes.$touch();
+      if (this.$v.participantes.$invalid) {
+        console.log("hay errores");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
         );
+      }else{
+        let participanteSemiListo = this.participantes.map(function(res){
+          return {
+              idparticipante:res.idparticipante,
+              grado:res.grado,
+              fecha:res.fecha,
+              firma:res.firma,
+              observaciones:res.observaciones,
+          }
+        });
+        console.log(participanteSemiListo)
+        console.log(this.sesioneducativa.contenido.participantes)
+        this.sesioneducativa.contenido.participantes = this.sesioneducativa.contenido.participantes.concat(participanteSemiListo);
+        console.log(this.sesioneducativa);
+        await axios
+          .put("/SesionesEducativas", this.sesioneducativa)
+          .then((res) => {
+            var info ={
+              id: res.data.id,
+              titulo: res.data.titulo,
+              fechaCreacion: res.data.fechaCreacion.split("T")[0],
+              area: res.data.area,
+              tipo: res.data.tipo,
+              idCreador: res.data.idCreador,
+              datoscreador:{
+                usuario: this.nombreCreador
+              }
+            }
+            console.log("Modificado xd")
+            console.log(info);
+            this.replaceSesionesEducativas(info);
+            this.cerrarDialogo();
+          })
+          .catch((err) => {console.log(err)})
+          await this.mensaje(
+            "success",
+            "Listo",
+            "Participantes Agregados Satisfactoriamente",
+            "<strong>Se redirigira a la interfaz de Gestión<strong>"
+          );
+          this.$v.participantes.$reset();
+          this.$v.ParticipanteSesion.$reset();
+      }
+
 
     },
     //Lista de Residentes para agregar participantes
@@ -559,6 +585,36 @@ export default {
           // console.log(info);
         })
         .catch((err) => console.log(err));
+    },
+    errorGradoParticipantes(i) {
+      const errors = [];
+      if (!this.$v.participantes.$each.$iter[i].grado.$dirty) return errors;
+      !this.$v.participantes.$each.$iter[i].grado.required &&
+        errors.push("Debe escribir un grado obligatoriamente");
+      !this.$v.participantes.$each.$iter[i].grado.esParrafo &&
+        errors.push("El grado no puede contener caracteres especiales");
+      return errors;
+    },
+    errorObservacionesParticipantes(i) {
+      const errors = [];
+      if (!this.$v.participantes.$each.$iter[i].observaciones.$dirty) return errors;
+      !this.$v.participantes.$each.$iter[i].observaciones.required &&
+        errors.push("Debe escribir un observacion obligatoriamente");
+      !this.$v.participantes.$each.$iter[i].observaciones.esParrafo &&
+        errors.push("Las observaciones no deben contener caracteres especiales");
+      return errors;
+    },
+    errorFechaRealizacionParticipantes(i) {
+      const errors = [];
+      if (!this.$v.participantes.$each.$iter[i].fecha.$dirty) return errors;
+      !this.$v.participantes.$each.$iter[i].fecha.required &&
+        errors.push("Debe ingresar la fecha de creacion obligatoriamente");
+      var dateselected = new Date(this.participantes[i].fecha);
+      var maxdate = new Date();
+      !(dateselected.getTime() < maxdate.getTime()) &&
+        errors.push("La fecha no debe ser mayor a la actual");
+      return errors;
+      console.log(errors);
     },
   },
   computed:{
@@ -596,8 +652,8 @@ export default {
       //validating whether the user are an adult
       var dateselected = new Date(this.ParticipanteSesion.fecha);
       var maxdate = new Date();
-      !(dateselected.getTime() > maxdate.getTime()) &&
-        errors.push("La fecha no debe ser menor a la actual");
+      !(dateselected.getTime() < maxdate.getTime()) &&
+        errors.push("La fecha no debe ser mayor a la actual");
 
       return errors;
     },
@@ -606,8 +662,14 @@ export default {
     const validacionfecha = (value)=>{
       var dateselected = new Date(this.ParticipanteSesion.fecha);
       var maxdate = new Date();
-      return (dateselected.getTime() > maxdate.getTime()) 
+      return (dateselected.getTime() < maxdate.getTime()) 
     };
+    const validacionfechaIngresado = (value)=>{
+      var dateselected = new Date(value);
+      var maxdate = new Date();
+      return (dateselected.getTime() < maxdate.getTime()) 
+    };
+    
     return{
       ParticipanteSesion:{
         idparticipante: {
@@ -626,6 +688,22 @@ export default {
         observaciones: {
           required,
           esParrafo
+        }
+      },
+      participantes:{
+        $each:{
+          grado: {
+            required,
+            esParrafo
+          },
+          fecha: {
+            required,
+            validacionfechaIngresado
+          },
+          observaciones: {
+            required,
+            esParrafo
+          }
         }
       },
     }
