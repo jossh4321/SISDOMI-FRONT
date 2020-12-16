@@ -1090,6 +1090,9 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+        this.fichaIngreso.contenido.firma.nombre = this.user.usuario;
+        this.fichaIngreso.contenido.firma.cargo = this.user.rol.nombre;
+
         let ficha = this.fichaIngreso;
 
         await axios
