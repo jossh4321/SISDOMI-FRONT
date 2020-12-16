@@ -27,6 +27,7 @@ import GestionarPlanes from '@/views/PlanIntervencion/GestionarPlanes.vue';
 import GestionarExpedientes from '@/views/ExpedienteMatriz/GestionarExpedientes.vue';
 import ExpedienteResidente from '@/views/ExpedienteMatriz/ExpedienteResidente.vue';
 
+import CambiarContrasena from '@/views/CambiarContrasena/Cambiarcontrasena.vue';
 /* Importación del axios para la verificación del token */
 import axios from '../store/index.js';
 
@@ -117,6 +118,11 @@ const routes = [{
                 path: 'p',
                 name: 'PruebaActa',
                 component: PruebaActa
+            },
+            {
+                path: 'CambiarContrasena',
+                name: 'Cambiarcontrasena',
+                component: CambiarContrasena
             },
             {
                 path: 'ModificarPerfil',
