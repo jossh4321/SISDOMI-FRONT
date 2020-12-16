@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Detalle de Seguimiento Educativo</v-card-title>
+    <v-card-title class="justify-center">Modificar de Seguimiento Educativo</v-card-title>
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step editable step="1">
@@ -158,14 +158,18 @@
                                v-model="firma.cargo"
                                 label="Cargo"
                                 outlined  
-                              
+                                 @input="$v.firma.cargo.$touch()"
+                                @blur="$v.firma.cargo.$touch()"
+                                :error-messages="errorCargoFirma"
                                 color="#009900"
                                 ></v-text-field>
                                 <v-text-field
                                v-model="firma.nombre"
                                 label="Nombre"
                                 outlined  
-                              
+                              @input="$v.firma.nombre.$touch()"
+                                @blur="$v.firma.nombre.$touch()"
+                                :error-messages="errorNombreFirma" 
                                 color="#009900"
                                 ></v-text-field>
                        <div>
@@ -178,6 +182,12 @@
                                 >
                                 </vue-dropzone>
                        </div>
+                        <v-card v-if="errorImagen" color="red">
+                          <v-card-text class="text-center" style="color: white"
+                            >Debe Subir una firma 
+                            Obligatoriamente</v-card-text
+                          >
+                        </v-card>
                               <v-btn color="success" @click="guardarFirma">
                                       añadir
                               </v-btn>
@@ -299,12 +309,11 @@
                                   </v-card-text>
                                   <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn
-                                      color="blue darken-1"
-                                      text
-                                      @click="dialog = false"
-                                    >
+                                    <v-btn color="blue darken-1" text @click="cerrarSeguimientoFirma()">
                                       Cerrar
+                                    </v-btn>
+                                    <v-btn color="blue darken-1" text @click="guardarSeguimientoFirma()">
+                                      Guardar
                                     </v-btn>
                                 
                                   </v-card-actions>
@@ -378,13 +387,18 @@
                                <v-text-field
                                 v-model="trimestre.orden"
                                 label="N°Puesto"
+                                @input="$v.trimestre.orden.$touch()"
+                                @blur="$v.trimestre.orden.$touch()"
+                                :error-messages="errorOrdenTrimestre"
                                 outlined  
-                           
                                 color="#009900"
                                 ></v-text-field>
                                 
                                 <v-text-field
                                 v-model="trimestre.analisiseducativo"
+                                @input="$v.trimestre.analisiseducativo.$touch()"
+                                @blur="$v.trimestre.analisiseducativo.$touch()"
+                                :error-messages="errorAnalisisTrimestre"
                                 label="Analisis Educativo"
                                 outlined  
                             
@@ -392,6 +406,9 @@
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="trimestre.recomendaciones"
+                                @input="$v.trimestre.recomendaciones.$touch()"
+                                @blur="$v.trimestre.recomendaciones.$touch()"
+                                :error-messages="errorRecomendacionTrimestre"
                                 label="Recomendaciones"
                                 outlined  
                              
@@ -507,6 +524,9 @@
                     <!--Campo de texto de notas -->
                                 <v-text-field
                                 v-model="puntajes.area"
+                                 @input="$v.puntajes.area.$touch()"
+                                @blur="$v.puntajes.area.$touch()"
+                                :error-messages="errorAreaPuntajes"
                                 label="Nombre del Curso:"
                                 outlined  
                                
@@ -514,6 +534,9 @@
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="puntajes.promedio"
+                                @input="$v.puntajes.promedio.$touch()"
+                                @blur="$v.puntajes.promedio.$touch()"
+                                :error-messages="errorPromedioPuntajes"
                                 label="Nota obtenida:"
                                 outlined 
                                 
@@ -610,9 +633,9 @@
                       <v-btn
                         color="blue darken-1"
                         text
-                        @click="dialog1 = false;"
+                        @click="guardarSeguimientoNotas"
                       >
-                        Cerrar
+                        Guardar
                       </v-btn>
                   
                     </v-card-actions>
@@ -729,8 +752,8 @@ export default {
     async modificarSeguimiento(){
       this.seguimiento.creadordocumento = this.user.id;
     console.log(this.seguimiento)
-     this.$v.$touch();
-      if (this.$v.$invalid) {
+     this.$v.seguimiento.$touch();
+      if (this.$v.seguimiento.$invalid) {
         console.log('hay errores');
         this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
       } else {
@@ -751,8 +774,28 @@ export default {
         location.reload();//metodo de js para refrescar la pagina
       }
     },
+     guardarSeguimientoFirma(){
+        this.$v.seguimiento.contenido.firmas.$touch();
+        if(!this.$v.seguimiento.contenido.firmas.$invalid){
+            this.$v.firma.$reset();
+            this.dialog = false;
+        }
+    },
+    cerrarSeguimientoFirma(){
+      this.$v.seguimiento.contenido.firmas.$reset();
+         this.$v.firma.$reset();
+        this.dialog = false;
+    },
+     guardarSeguimientoNotas(){
+            
+            this.$v.puntajes.$reset();
+            this.$v.trimestre.$reset();
+            this.dialog1 = false;
+        },
      ///metodo para agregar firma residente
     guardarFirma(){
+      this.$v.firma.$touch();
+   if(!this.$v.firma.$invalid ){ 
    let firmad = {urlfirma:this.firma.urlfirma,nombre:this.firma.nombre,cargo:this.firma.cargo};
 
    this.seguimiento.contenido.firmas.push(firmad);
@@ -762,6 +805,8 @@ export default {
    this.firma.urlfirma="";
    this.firma.nombre="";
    this.firma.cargo="";
+   !this.$v.firma.$reset();
+   }
     },
     eliminarFirma(index) {
       this.seguimiento.contenido.firmas.splice(index, 1);
@@ -772,6 +817,8 @@ export default {
       this.dialogVistaPreviaFirma = true;
     },
     guardarTrimestre(){
+      this.$v.trimestre.$touch();
+   if(!this.$v.trimestre.$invalid ){
       let trimestred={orden:this.trimestre.orden,puntajes:[],analisiseducativo:this.trimestre.
       analisiseducativo,recomendaciones:this.trimestre.recomendaciones};
       
@@ -783,12 +830,15 @@ export default {
       this.trimestre.puntajes="";
       this.trimestre.analisiseducativo="";
       this.trimestre.recomendaciones="";
+      !this.$v.trimestre.$reset();
+   }
     },
     eliminarTrimestre(index){
        this.seguimiento.contenido.trimestre.splice(index,1);
     },
     guardarNotas(){
-       
+           this.$v.puntajes.$touch();
+   if(!this.$v.puntajes.$invalid ){ 
       let puntajesd={area:this.puntajes.area,promedio:this.puntajes.promedio};
        this.seguimiento.contenido.trimestre[0].puntajes.push(puntajesd);
       
@@ -796,6 +846,8 @@ export default {
 
        this.puntajes.area="";
        this.puntajes.promedio="";
+        !this.$v.puntajes.$reset();
+   }
     },
     eliminarNotas(index){
      this.seguimiento.contenido.trimestre[0].puntajes.splice(index,1)
@@ -808,7 +860,7 @@ export default {
       return "red";
     },
     ...mapGetters(["user"]),
-    errorResidente() {
+   errorResidente() {
       const errors = [];
       if (!this.$v.seguimiento.idresidente.$dirty) return errors;
       !this.$v.seguimiento.idresidente.required &&
@@ -816,12 +868,12 @@ export default {
       return errors;
     },
     //errorEducador() {
-    ///  const errors = [];
-    //  if (!this.$v.seguimiento.creadordocumento.$dirty) return errors;
-   //   !this.$v.seguimiento.creadordocumento.required &&
-   //     errors.push("Debe seleccionar un educador obligatoriamente");
+   ///   const errors = [];
+   ///   if (!this.$v.seguimiento.creadordocumento.$dirty) return errors;
+   ///   !this.$v.seguimiento.creadordocumento.required &&
+    //    errors.push("Debe seleccionar un educador obligatoriamente");
    //   return errors;
-  //  },
+   // },
      errorFechaCreacion() {
       const errors = [];
       if (!this.$v.seguimiento.fechacreacion.$dirty) return errors;
@@ -836,7 +888,7 @@ export default {
 
       return errors;
     },
-    errorModalidad() {
+   errorModalidad() {
       const errors = [];
       if (!this.$v.seguimiento.contenido.modalidad.$dirty) return errors;
       !this.$v.seguimiento.contenido.modalidad.required &&
@@ -898,11 +950,11 @@ export default {
       errors.push("Debe ingresar un orden");
     !this.$v.trimestre.orden.minLength &&
       errors.push("El trimestre debe tener  al menos 1 caracteres");
-    return errors;
     !this.$v.trimestre.orden.numeric &&
         errors.push(
           "Debe Ingresar valores Numericos"
         );
+   return errors;
     },
     errorAnalisisTrimestre(){
    const errors = [];
@@ -930,8 +982,7 @@ export default {
     !this.$v.puntajes.area.minLength &&
       errors.push("El puntaje debe tener 2 caracteres");
     return errors;
-    !this.$v.trimestre.orden.numeric &&
-      errors.push("Debe Ingresar valores Numericos");
+    
     
     },
     errorPromedioPuntajes(){
@@ -941,16 +992,23 @@ export default {
       errors.push("Debe ingresar un promedio");
     !this.$v.puntajes.promedio.minLength &&
       errors.push("el puntaje  debe tener al menos 2 caracteres");
-    return errors;
-    
-    }
+    !this.$v.puntajes.promedio.numeric &&
+      errors.push("Debe Ingresar valores Numericos");
+     return errors;
+    },
+    errorImagen() {
+      return this.$v.firma.urlfirma.required == false &&
+        this.$v.firma.urlfirma.$dirty == true
+        ? true
+        : false;
+    },
   },
   validations(){
         return{
-          seguimiento:{
+         seguimiento:{
       historialcontenido:[],
       creadordocumento:{
-         // required,
+          //required
                   },
       fechacreacion:{
           required,
@@ -989,6 +1047,9 @@ export default {
      nombre:{
        required,
         minLength: minLength(4),
+     },
+     urlfirma:{
+       required,
      }
     },
     trimestre:{
@@ -1017,6 +1078,7 @@ export default {
             numeric
           }
       }
+
         
             }
         }
