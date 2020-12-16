@@ -113,21 +113,23 @@ export default {
             area: "educativa",
             documentoanterior: "FichaEducativaIngreso",
             documentoactual: "InformeEducativoInicial",
-            estadodocumentoanterior: "Completo"
+            estadodocumentoanterior: "Completo",
         },
         faseEducativaEvolutivo: {            
             fase: "2",
+            fasedocumentoanterior:"2",
             area: "educativa",
             documentoanterior: "PlanIntervencionIndividualEducativo",
             documentoactual: "InformeEducativoEvolutivo",
-            estadodocumentoanterior: "Completo"
+            estadodocumentoanterior: "Completo",
+            estadodocumentoactual: " "
         },
         faseEducativaFinal: {            
             fase: "3",
             area: "educativa",
             documentoanterior: "InformeEducativoEvolutivo",
             documentoactual: "InformeEducativoFinal",
-            estadodocumentoanterior: "Completo"
+            estadodocumentoanterior: "Completo",
         }
       }
     }, 
@@ -138,7 +140,7 @@ export default {
         cerrarDialogo(){            
             this.$emit("close-dialog-save");
         },
-        abrirDialogo(){
+        async abrirDialogo(){
             console.log(this.items.value);
             switch(this.items.value){
                 case "1":                                         
@@ -146,12 +148,12 @@ export default {
                     break;
                 case "2":
                     this.titulo = "Registrar Informe Educativo Evolutivo"
-                    this.obtenerResidentesIEE();
+                    await this.obtenerResidentesIEE();
                     this.showRegistrarInformeEE = true;
                     break;
                 case "3":
                     this.titulo = "Registrar Informe Educativo Final"
-                    this.obtenerResidentesIEF();
+                    await this.obtenerResidentesIEF();
                     this.showRegistrarInformeEE = true;
                     break;
                 case "4":
