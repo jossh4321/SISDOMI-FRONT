@@ -218,13 +218,12 @@ export default {
           href: "/dashboard/incidencias"
         },
         {
-          title: "Gestionar Ficha Evaluacion Educativa",
+          title: "Cambiar de Contrasena",
           group: "admin",
           icon: "dashboard",
-          name: "GestionarFichaEvaluacionEducativa",
-          href: "/dashboard/evaluacionEducativa"
-        },
-
+          name: "CambiarContrasena",
+          href: "/dashboard/CambiarContrasena"
+        }
       ],
       scrollSettings: {
         maxScrollbarLength: 160,
