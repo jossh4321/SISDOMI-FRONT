@@ -150,6 +150,7 @@ import RegistrarFichaIngresoPsicologica from '@/components/fichaIngreso/Psicolog
 import RegistrarFichaIngresoSocial from '@/components/fichaIngreso/Social/RegistrarFichaIngresoSocial.vue'
 import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue'
 import ModificarFichaIngresoSocial from '@/components/fichaIngreso/Social/ModificarFichaIngresoSocial.vue'
+import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/Psicologica/ModificarFichaIngresoPsicologica.vue'
 import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
 import ConsultarFichaIngresoPsicologica from '@/components/fichaIngreso/Psicologica/ConsultarFichaIngresoPsicologica.vue'
 import ConsultarFichaIngresoSocial from '@/components/fichaIngreso/Social/ConsultarFichaIngresoSocial.vue'
@@ -159,7 +160,7 @@ export default {
   name: "GestionarFicha",
   components: {
     RegistrarFichaIngresoEducativa,RegistrarFichaIngresoPsicologica,RegistrarFichaIngresoSocial,
-    ModificarFichaIngresoEducativa,ModificarFichaIngresoSocial,
+    ModificarFichaIngresoEducativa,ModificarFichaIngresoSocial,ModificarFichaIngresoPsicologica,
     ConsultarFichaIngresoEducativa
   },
   data() {
@@ -227,6 +228,9 @@ export default {
        }
        else if(item.tipo == "FichaSocialIngreso"){
           this.selectorFichaIngreso = "ModificarFichaIngresoSocial";
+       }
+       else if(item.tipo == "FichaPsicologicaIngreso"){
+          this.selectorFichaIngreso = "ModificarFichaIngresoPsicologica";
        }
        this.dialogoModificacionFichaIngreso = true;
     },async abrirDialogoConsultar(item){

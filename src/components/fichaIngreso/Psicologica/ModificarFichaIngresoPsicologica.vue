@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Registrar Ficha de Ingreso Psicológica</v-card-title>
+    <v-card-title class="justify-center">Modificar Ficha de Ingreso Psicológica</v-card-title>
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step editable step="1">Entorno</v-stepper-step>
@@ -1550,6 +1550,7 @@
                         @vdropzone-removed-file="afterRemoved2"
                         id="dropzone2"
                         :options="dropzoneOptionsFirma"
+                        @vdropzone-mounted="mounteddropzone"
                       >
                       </vue-dropzone>
                       <v-card v-if="errorFirma" class="error-card" color="red">
@@ -1573,7 +1574,7 @@
                 <v-col>
                   <v-btn block @click="registrarFichaPsicologicaIngreso" color="success">
                     <v-icon left>mdi-content-save-all-outline</v-icon>
-                    <span>Registrar Ficha de Ingreso</span>
+                    <span>Actualizar Ficha de Ingreso</span>
                   </v-btn>
                 </v-col>
               </v-row>
@@ -1608,7 +1609,7 @@ function edadvalidanormal(value) {
 }
 
 export default {
-  props: ["listaresidentes", "listaeducadores"],
+  props: ["listaresidentes", "listaeducadores", "fichaIngreso"],
   components: {
     vueDropzone: vue2Dropzone
   },
@@ -1657,75 +1658,6 @@ export default {
       },
       menu2: false,
       menu3: false,
-      //datos ficha ingreso psicologica
-      fichaIngreso: {
-        id: "",
-        tipo: "FichaPsicologicaIngreso",
-        historialcontenido: [],
-        creadordocumento: "",
-        fechacreacion: new Date(),
-        area: "psicologica",
-        fase: "1",
-        idresidente: "",
-        estado: "creado",
-        contenido: {
-          responsableturno: "",
-          firma: { urlfirma: "", nombre: "", cargo: "" },
-          padres: [],
-          hermanos: [],
-          escolaridad: {
-            niveleducativo: "",
-            educacionespecial: "",
-            edadgradoescolar: []
-          },
-          discapacidad: {
-            intelectual: "",
-            fisico: "",
-            sensorial: "",
-            enfermedad: []
-          },
-          maltrato: [],
-          abusosexual: {
-            edad: 0,
-            veces: 0,
-            atencionpsicologica: false
-          },
-          adicciones: {
-            consumo: false,
-            ultimodiaconsumo: new Date(),
-            spa: []
-          },
-          conductasriesgo: [],
-          conductasemocionales: [],
-          desarrollosexual: {
-            menstruacion: false,
-            menarquia: new Date(),
-            relaciones: {
-              iniciorelaciones: false,
-              edadinicio: 0,
-              motivo: "",
-              generopareja: "",
-              relacionconsentida: false,
-              its: false,
-              tratamientoits: false
-            }
-          },
-          explotacionsexual: {
-            victimaexplotacion: false,
-            edadinicio: 0,
-            victimatrata: false,
-            tratasexual: []
-          },
-          actividades: {
-            habilidadesmanuales: "",
-            habilidadesdeportivas: "",
-            otras: "",
-            redessociales: []
-          },
-          observaciones: "",
-          codigodocumento: ""
-        }
-      },
       enfermedad: "",
       maltrato: {
         tipomaltrato: "",
@@ -1858,76 +1790,10 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["addFichaIngreso"]),
-    limpiarFichaIngreso() {
-      this.fichaIngreso = {
-        id: "",
-        tipo: "FichaPsicologicaIngreso",
-        historialcontenido: [],
-        creadordocumento: "",
-        fechacreacion: new Date(),
-        area: "psicologica",
-        fase: "1",
-        idresidente: "",
-        estado: "creado",
-        contenido: {
-          responsableturno: "",
-          firma: { urlfirma: "", nombre: "", cargo: "" },
-          padres: [],
-          hermanos: [],
-          escolaridad: {
-            niveleducativo: "",
-            educacionespecial: "",
-            edadgradoescolar: []
-          },
-          discapacidad: {
-            intelectual: "",
-            fisico: "",
-            sensorial: "",
-            enfermedad: []
-          },
-          maltrato: [],
-          abusosexual: {
-            edad: 0,
-            veces: 0,
-            atencionpsicologica: false
-          },
-          adicciones: {
-            consumo: false,
-            ultimodiaconsumo: "",
-            spa: []
-          },
-          conductasriesgo: [],
-          conductasemocionales: [],
-          desarrollosexual: {
-            menstruacion: false,
-            menarquia: "",
-            relaciones: {
-              iniciorelaciones: false,
-              edadinicio: 0,
-              motivo: "",
-              generopareja: "",
-              relacionconsentida: false,
-              its: false,
-              tratamientoits: false
-            }
-          },
-          explotacionsexual: {
-            victimaexplotacion: false,
-            edadinicio: 0,
-            victimatrata: false,
-            tratasexual: []
-          },
-          actividades: {
-            habilidadesmanuales: "",
-            habilidadesdeportivas: "",
-            otras: "",
-            redessociales: []
-          },
-          observaciones: "",
-          codigodocumento: ""
-        }
-      };
+    ...mapMutations(["replaceFichaIngreso"]),
+    mounteddropzone(){
+      var file = { size: 123, name: "Firma del Documento", type: "image/jpg" };
+      this.$refs.myVueDropzone.manuallyAddFile(file, this.fichaIngreso.contenido.firma.urlfirma,null,null,true);
     },
     limpiarCampos() {
       this.maltrato = {
@@ -1950,12 +1816,10 @@ export default {
       this.enfermedad = "";
       this.redessociales = "";
     },
-    cerrarDialogo() {
-      //limpiar los campos que contienen los datos acumulados
-      this.$emit("cerrar-modal-registro-ficha-ingreso");
-      this.step = 1;  
+    cerrarDialogo(){     
+      this.$emit("cerrar-modal-edicion-ficha-ingreso");
+      this.step = 1;
       this.$refs.myVueDropzone.removeAllFiles();
-      this.limpiarFichaIngreso();
       this.limpiarCampos();
       this.$v.$reset();
     },
@@ -1970,24 +1834,22 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        this.fichaIngreso.creadordocumento = this.user.id;
 
-        let fichaI = this.fichaIngreso;
-        console.log(fichaI);
+        let ficha = this.fichaIngreso;
+        
         await axios
-          .post("/Documento/fichaingresopsicologicacrear", fichaI)
-          .then(res => {
-            this.addFichaIngreso(res.data);
+          .put("/documento/fichaingresopsicologica",ficha)
+          .then((res) => {
+            this.replaceFichaIngreso(res.data);
             this.cerrarDialogo();
           })
-          .catch(err => console.log(err));
-
-        this.mensaje(
-          "success",
-          "Listo",
-          "Ficha de ingreso psicológica registrado Satisfactoriamente",
-          "<strong>Se redirigira a la Interfaz de Gestión<strong>"
-        );
+          .catch((err) => console.log(err));
+            await this.mensaje(
+              "success",
+              "listo",
+              "Ficha de Ingreso psicologica Modificada Satisfactoriamente",
+              "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+            );
       }
     },
     //Metodos modal padres
@@ -2483,36 +2345,6 @@ export default {
     },
     eliminarredessociales(index) {
       this.fichaIngreso.contenido.actividades.redessociales.splice(index, 1);
-    },
-    agregarFirma() {
-      //this.$v.firmas.$touch();
-      //this.$v.urlfirma.$touch();
-
-      //if (!this.$v.firmas.$invalid && !this.$v.urlfirma.$invalid) {
-      let firmas = {
-        urlfirma: this.urlfirma,
-        nombre: this.firmas.nombre,
-        cargo: this.firmas.cargo
-      };
-      this.fichaIngreso.contenido.firmas.push(firmas);
-      this.$refs.myVueDropzone.removeAllFiles();
-
-      this.urlfirma = "";
-      this.firmas.nombre = "";
-      this.firmas.cargo = "";
-      //  this.$v.firmas.$reset();
-      //  this.$v.urlfirma.$reset();
-      //}
-    },
-    eliminarFirma(index) {
-      this.fichaIngreso.contenido.firmas.splice(index, 1);
-    },
-    verFirma(index) {
-      this.imagen = this.fichaIngreso.contenido.firmas[index].urlfirma;
-      this.dialogVistaPreviaFirma = true;
-    },
-    cerrarVistaPreviaFirma() {
-      this.dialogVistaPreviaFirma = false;
     },
     afterSuccess2(file, response) {
       this.fichaIngreso.contenido.firma.urlfirma = file.dataURL.split(",")[1];

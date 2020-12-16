@@ -1077,34 +1077,9 @@ export default {
       this.$refs.myVueDropzone.removeAllFiles();
       this.limpiarCampos();
       this.$v.$reset();
-    },//modificar ficha
-    /*async sendPDFFiles() {
-      let listaTitulos = [];
-      let listaanexos = this.fileList;
-      for (let index = 0; index < this.fileList.length; index++) {
-        let formData = new FormData();
-        listaTitulos.push(this.fileList[index].name)
-        formData.append("file", this.fileList[index]);
-        await axios
-          .post("/Media/archivos/pdf", formData)
-          .then((res) => {
-            listaanexos[index] = res.data;
-          })
-          .catch((err) => console.log(err));
-      }
-      for (let index = 0; index < this.fileList.length; index++) {
-        this.informe.contenido.anexos.push(
-          {
-            url: listaanexos[index],
-            titulo: listaTitulos[index],
-          }
-        )
-      }
-      console.log(this.informe.contenido.anexos);
-    },*/
+    },
     async registrarFichaIngresoSocial() {
       //await this.sendPDFFiles();
-      this.fichaIngreso.creadordocumento = this.user.id;
 
       this.$v.fichaIngreso.$touch();
       if (this.$v.fichaIngreso.$invalid) {
