@@ -1517,111 +1517,51 @@
                 </v-card>
               </v-card>
 
-              <v-card style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA">
-                <v-chip class="ma-2" color="green" text-color="white">Firmas de encargados</v-chip>
-                <v-card elevation="0" style="background-color:#EAEAEA" height="70">
-                  <v-row style="margin:1%;heigh:100%" align="center">
-                    <v-col :cols="4" align="left">
-                      <v-text-field v-model="firmas.nombre" label="Nombre" color="#009900"></v-text-field>
-                      <!-- @input="$v.firmas.nombre.$touch()"
-                        @blur="$v.firmas.nombre.$touch()"
-                      :error-messages="errorNombreFirma"-->
-                    </v-col>
-                    <v-col :cols="4" align="left">
-                      <v-text-field v-model="firmas.cargo" label="Cargo" color="#009900"></v-text-field>
-                      <!-- @input="$v.firmas.cargo.$touch()"
-                        @blur="$v.firmas.cargo.$touch()"
-                      :error-messages="errorCargoFirma"-->
-                    </v-col>
-                    <v-col :cols="4" align="right">
-                      <v-btn fab small dark color="green" @click="agregarFirma">
-                        <v-icon dark>mdi-plus</v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-card>
+              <v-card
+                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                >
+                <v-card class="subcard">
+                        <v-card-title>Datos del Informante</v-card-title>
+                        <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
+                            <v-text-field
+                                v-model="this.user.usuario"
+                                label="Autor de la ficha de ingreso"
+                                outlined
+                                color="info"
+                                readonly
+                              ></v-text-field>
+                        </v-card >
+                             <v-card class="subcard" color="#e6f3ff">
+                                 <v-text-field
+                                  v-model="this.user.rol.nombre"
+                                  label="Cargo del Autor"
+                                  outlined
+                                  color="info"
+                                  readonly
+                                ></v-text-field>
+                             </v-card>
+                      </v-card>
                 <v-row>
-                  <v-col :cols="12" align="right">
+                  <v-col :cols="12" align="left">
                     <div>
                       <vue-dropzone
                         ref="myVueDropzone"
                         @vdropzone-success="afterSuccess2"
                         @vdropzone-removed-file="afterRemoved2"
                         id="dropzone2"
-                        :options="dropzoneOptions2"
-                      ></vue-dropzone>
+                        :options="dropzoneOptionsFirma"
+                      >
+                      </vue-dropzone>
+                      <v-card v-if="errorFirma" class="error-card" color="red">
+                        <v-card-text class="text-center" style="color: white"
+                          >Debe Subir una firma obligatoriamente
+                          </v-card-text
+                        >
+                      </v-card>
                     </div>
-                    <!-- <v-card v-if="errorUrlFirma" color="red">
-                      <v-card-text class="text-center" style="color: white">
-                        Debe Subir una imagen de la firma
-                        obligatoriamente
-                      </v-card-text>
-                    </v-card>-->
-                    <v-divider class="divider-custom"></v-divider>
                   </v-col>
                 </v-row>
-                <v-card
-                  color="#FAFAFA"
-                  style="margin-top:5px"
-                  height="60"
-                  v-for="(item, index) in fichaIngreso.contenido.firmas"
-                  :key="index"
-                >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col :cols="8">
-                      <article>
-                        <img
-                          style="margin-right:5px;width:6% "
-                          src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
-                          alt="imagen usuario"
-                        />
-                        <span
-                          style="font-size:18px"
-                        >Nombre: {{ item.nombre }} - Cargo: {{ item.cargo }}</span>
-                      </article>
-                    </v-col>
-                    <v-col :cols="2" align="center">
-                      <template>
-                        <v-btn fab icon x-small dark color="#EAEAEA" @click="verFirma(index)">
-                          <img
-                            style="width:25% "
-                            src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
-                            alt="firma"
-                          />
-                        </v-btn>
-                      </template>
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <div style="margin-right:20px">
-                        <v-btn fab x-small dark color="red" @click="eliminarFirma(index)">
-                          <v-icon dark>mdi-minus</v-icon>
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
               </v-card>
-              <div>
-                <h4
-                  v-if="$v.fichaIngreso.contenido.firmas.$error"
-                  class="red--text"
-                >Debe tener como mínimo una firma registrada</h4>
-              </div>
-
-              <v-dialog v-model="dialogVistaPreviaFirma" persistent max-width="600px">
-                <v-card align="center">
-                  <v-card-title>
-                    <span class="headline">Vista previa</span>
-                  </v-card-title>
-                  <v-card-text>
-                    <img width="100%" height="100%" :src="'data:image/jpeg;base64,' + imagen" alt />
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="cerrarVistaPreviaFirma()">Cerrar</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
 
               <v-row>
                 <v-col>
@@ -1729,7 +1669,7 @@ export default {
         estado: "creado",
         contenido: {
           responsableturno: "",
-          firmas: [],
+          firma: { urlfirma: "", nombre: "", cargo: "" },
           padres: [],
           hermanos: [],
           escolaridad: {
@@ -1808,7 +1748,7 @@ export default {
       urlfirma: "",
       imagen: "",
       dialogVistaPreviaFirma: false,
-      dropzoneOptions2: {
+      dropzoneOptionsFirma: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
         maxFilesize: 5.0,
@@ -1917,9 +1857,105 @@ export default {
     };
   },
   methods: {
+    limpiarFichaIngreso() {
+      this.fichaIngreso = {
+        id: "",
+        tipo: "FichaPsicologicaIngreso",
+        historialcontenido: [],
+        creadordocumento: "",
+        fechacreacion: new Date(),
+        area: "psicologica",
+        fase: "1",
+        idresidente: "",
+        estado: "creado",
+        contenido: {
+          responsableturno: "",
+          firma: { urlfirma: "", nombre: "", cargo: "" },
+          padres: [],
+          hermanos: [],
+          escolaridad: {
+            niveleducativo: "",
+            educacionespecial: "",
+            edadgradoescolar: []
+          },
+          discapacidad: {
+            intelectual: "",
+            fisico: "",
+            sensorial: "",
+            enfermedad: []
+          },
+          maltrato: [],
+          abusosexual: {
+            edad: "",
+            veces: "",
+            atencionpsicologica: false
+          },
+          adicciones: {
+            consumo: false,
+            ultimodiaconsumo: "",
+            spa: []
+          },
+          conductasriesgo: [],
+          conductasemocionales: [],
+          desarrollosexual: {
+            menstruacion: false,
+            menarquia: "",
+            relaciones: {
+              iniciorelaciones: false,
+              edadinicio: "",
+              motivo: "",
+              generopareja: "",
+              relacionconsentida: false,
+              its: false,
+              tratamientoits: false
+            }
+          },
+          explotacionsexual: {
+            victimaexplotacion: false,
+            edadinicio: "",
+            victimatrata: false,
+            tratasexual: []
+          },
+          actividades: {
+            habilidadesmanuales: "",
+            habilidadesdeportivas: "",
+            otras: "",
+            redessociales: []
+          },
+          observaciones: "",
+          codigodocumento: ""
+        }
+      };
+    },
+    limpiarCampos() {
+      this.maltrato = {
+        tipomaltrato: "",
+        agresor: ""
+      };
+      this.spa = {
+        tipospa: "",
+        tiempoconsumo: "",
+        frecuencia: ""
+      };
+      this.conductasriesgo = {
+        conducta: "",
+        observacion: ""
+      };
+      this.conductasemocionales = {
+        indicador: "",
+        observacion: ""
+      };
+      this.enfermedad = "";
+      this.redessociales = "";
+    },
     cerrarDialogo() {
-      this.step = 1;
+      //limpiar los campos que contienen los datos acumulados
       this.$emit("cerrar-modal-registro-ficha-ingreso");
+      this.step = 1;  
+      this.$refs.myVueDropzone.removeAllFiles();
+      this.limpiarFichaIngreso();
+      this.limpiarCampos();
+      this.$v.$reset();
     },
     async registrarFichaPsicologicaIngreso() {
       this.$v.fichaIngreso.$touch();
@@ -2473,10 +2509,10 @@ export default {
       this.dialogVistaPreviaFirma = false;
     },
     afterSuccess2(file, response) {
-      this.urlfirma = file.dataURL.split(",")[1];
+      this.fichaIngreso.contenido.firma.urlfirma = file.dataURL.split(",")[1];
     },
     afterRemoved2(file, error, xhr) {
-      this.urlfirma = "";
+      this.fichaIngreso.contenido.firma.urlfirma = "";
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -2534,15 +2570,11 @@ export default {
 
       return errors;
     },
-    errorfirmas() {
-      const errors = [];
-
-      if (!this.$v.fichaIngreso.contenido.firmas.$dirty) return errors;
-
-      !this.$v.fichaIngreso.contenido.firmas.required &&
-        errors.push("Debe ingresar una firma por lo menos");
-
-      return errors;
+    errorFirma() {
+      return this.$v.fichaIngreso.contenido.firma.urlfirma.required == false &&
+        this.$v.fichaIngreso.contenido.firma.urlfirma.$dirty == true
+        ? true
+        : false;
     },
     errorpadres() {
       const errors = [];
@@ -2917,8 +2949,16 @@ export default {
         responsableturno: {
           required
         },
-        firmas: {
-          required
+        firma: {
+          nombre: {
+            required
+          },
+          cargo: {
+            required
+          },
+          urlfirma: {
+            required,
+          },
         },
         padres: {
           required
