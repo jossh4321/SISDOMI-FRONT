@@ -63,6 +63,7 @@
                           color="primary"
                           class="headline font-weight-light white--text"
                         >
+                        
                           {{ item.item.residente.charAt(0) }}
                         </v-list-item-avatar>
                         <v-list-item-content>

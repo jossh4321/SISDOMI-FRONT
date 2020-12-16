@@ -130,7 +130,10 @@ export default {
             estadodocumentoanterior: "Completo"
         }
       }
-    },    
+    }, 
+    async created(){
+        this.obtenerResidentesIEI();
+    },
      methods:{
         cerrarDialogo(){            
             this.$emit("close-dialog-save");
@@ -138,8 +141,7 @@ export default {
         abrirDialogo(){
             console.log(this.items.value);
             switch(this.items.value){
-                case "1":   
-                    this.obtenerResidentesIEI();                  
+                case "1":                                         
                     this.showRegistrarInformeEI = true;
                     break;
                 case "2":
