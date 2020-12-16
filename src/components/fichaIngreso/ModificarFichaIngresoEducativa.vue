@@ -1,6 +1,6 @@
 <template>
     <v-card >
-      <v-card-title class="justify-center">Resgistrar Ficha de Ingreso Educativa</v-card-title>
+      <v-card-title class="justify-center">Modificar Ficha de Ingreso Educativa</v-card-title>
       <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step 
@@ -132,8 +132,8 @@
                   style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
                 >
                   <v-row>
-                    <v-col cols="11"> <v-card-title>Documentos Escolares (Opcional)</v-card-title></v-col>
-                    <v-col cols="1">
+                    <v-col cols="10"> <v-card-title>Documentos Escolares (Opcional)</v-card-title></v-col>
+                    <v-col cols="2">
                        <v-btn
                         class="mx-2"
                         fab
@@ -608,12 +608,14 @@ export default {
          },dialogoDocumentoEscolar:false,
          observacionAux:"",
          step:1,
-         imagenFirma:{urlOrigen: this.fichaIngreso.contenido.firma.urlfirma,
-                        modificar:{estado:false,file:{}}},
+         imagenFirma:{},
         }
       },
-    async created() {
+    created() {
+      this.imagenFirma = {urlOrigen: this.fichaIngreso.contenido.firma.urlfirma,
+                        modificar:{estado:false,file:{}}};
       console.log("Se creo la instancia");
+      console.log(this.fichaIngreso);
       this.fichaIngreso.contenido.ieprocedencia.documentosEscolares = this.fichaIngreso.contenido.ieprocedencia.documentosEscolares.map(
         (val)=>{
             return {
@@ -626,7 +628,6 @@ export default {
               }
             }
         });
-
     },
     methods:{
       ...mapMutations(["replaceFichaIngreso"]),
