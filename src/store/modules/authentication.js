@@ -5,6 +5,8 @@ import axios from 'axios';
 
 //Para el uso de rutas en las acciones
 import router from '../../router/index.js';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+import 'sweetalert2/src/sweetalert2.scss'
 
 const state = {
     idToken: null,
@@ -81,6 +83,12 @@ const actions = {
             })
             .catch(error => {
                 console.log(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Credenciales Incorrectas',
+                    text: 'Verificar los campos ingresados'
+                  })
+                  commit('setLoading', false);
             });
     },
     tryAutoLogin: ({

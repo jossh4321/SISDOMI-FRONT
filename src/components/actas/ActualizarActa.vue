@@ -88,35 +88,35 @@
 
  <v-text-field
                v-model="usuario.numeroresolucion"
-          label="Ingrese nuevo entidad disposicion"
+          label="Ingrese nueva entidad disposicion"
                 outlined
                @input="$v.usuario.numeroresolucion.$touch()"
                 @blur="$v.usuario.numeroresolucion.$touch()"
-                :error-messages="errorentidaddisposicion"
+                :error-messages="errornumeroresolucion"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
 
                <v-text-field
-               v-model="usuario.entidaddisposicion"
-          label="Ingrese nuevo entidad disposicion"
+               v-model="usuario.numerooficio"
+          label="Ingrese nuevo numero oficio"
                 outlined
-               @input="$v.usuario.entidaddisposicion.$touch()"
-                @blur="$v.usuario.entidaddisposicion.$touch()"
-                :error-messages="errorentidaddisposicion"
+               @input="$v.usuario.numerooficio.$touch()"
+                @blur="$v.usuario.numerooficio.$touch()"
+                :error-messages="errornumerooficio"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
 
                <v-text-field
-               v-model="usuario.entidaddisposicion"
-          label="Ingrese nuevo entidad disposicion"
+               v-model="usuario.observaciones"
+          label="Ingrese nuevas observaciones"
                 outlined
-               @input="$v.usuario.entidaddisposicion.$touch()"
-                @blur="$v.usuario.entidaddisposicion.$touch()"
-                :error-messages="errorentidaddisposicion"
+               @input="$v.usuario.observaciones.$touch()"
+                @blur="$v.usuario.observaciones.$touch()"
+                :error-messages="errorobservaciones"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
