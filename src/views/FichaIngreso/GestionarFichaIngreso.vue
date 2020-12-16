@@ -138,13 +138,6 @@
 <script>
 import axios from "axios";
 import SeleccionarFichaIngreso from "@/components/fichaIngreso/SeleccionarFichaIngreso.vue";
-/* 
-import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue'
-import ModificarFichaIngresoSocial  from '@/components/fichaIngreso/ModificarFichaIngresoSocial.vue'
-import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue' 
-import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/ModificarFichaIngresoPsicologica.vue'
-import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
-*/
 import RegistrarFichaIngresoEducativa from '@/components/fichaIngreso/RegistrarFichaIngresoEducativa.vue'
 import RegistrarFichaIngresoPsicologica from '@/components/fichaIngreso/Psicologica/RegistrarFichaIngresoPsicologica.vue'
 import RegistrarFichaIngresoSocial from '@/components/fichaIngreso/Social/RegistrarFichaIngresoSocial.vue'
@@ -161,7 +154,7 @@ export default {
   components: {
     RegistrarFichaIngresoEducativa,RegistrarFichaIngresoPsicologica,RegistrarFichaIngresoSocial,
     ModificarFichaIngresoEducativa,ModificarFichaIngresoSocial,ModificarFichaIngresoPsicologica,
-    ConsultarFichaIngresoEducativa
+    ConsultarFichaIngresoEducativa,ConsultarFichaIngresoSocial,ConsultarFichaIngresoPsicologica
   },
   data() {
     return {
@@ -234,9 +227,15 @@ export default {
        }
        this.dialogoModificacionFichaIngreso = true;
     },async abrirDialogoConsultar(item){
-        await this.obtenerfichaIngresoDetalle(item.id)
-        if(item.tipo == "FichaEducativaIngreso"){
-          this.selectorFichaIngreso = "ConsultarFichaIngresoEducativa";
+       await this.obtenerfichaIngresoDetalle(item.id)
+       if(item.tipo == "FichaEducativaIngreso"){
+         this.selectorFichaIngreso = "ConsultarFichaIngresoEducativa";
+       }
+       else if(item.tipo == "FichaSocialIngreso"){
+         this.selectorFichaIngreso = "ConsultarFichaIngresoSocial";
+       }
+       else if(item.tipo == "FichaPsicologicaIngreso"){
+         this.selectorFichaIngreso = "ConsultarFichaIngresoPsicologica";
        }
        this.dialogoConsultaFichaIngreso = true;
     },
