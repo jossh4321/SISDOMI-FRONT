@@ -463,7 +463,7 @@
                   elevation="0"
                   color="#FAFAFA"
                   style="margin-top:5px"
-                  height="50"
+                  height="80"
                   v-for="(item, index) in seguimiento.contenido.trimestre"
                   :key="index"
                 >
@@ -490,7 +490,7 @@
                           style="margin-right:15px;margin-top:-5px"
                           dark
                           color="#2E9CCF"
-                          @click="abrirDialogoNotas(item.puntajes)"
+                          @click="abrirDialogoNotas(item.puntajes,index)"
                         >
                           Añadir Notas
                         </v-btn> 
@@ -560,10 +560,10 @@
                 elevation="0"
                 color="#4ABBEF"
                 style="margin-top:5px; margin-bottom:15px"
-                height="30"
+                height="50"
                 >
                   <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col cols="4">
+                    <v-col cols="5">
                       <article>
                         <span style="font-size:16px">Curso</span>
                       </article>
@@ -584,13 +584,13 @@
                   elevation="0"
                   color="#FAFAFA"
                   style="margin-top:5px"
-                  height="50"
+                  height="60"
                   v-for="(item, index) in notas"
                   :key="index"
                   
                 >
                   <v-row style="margin-left:10px;heigh:100%;" align="center">
-                    <v-col :cols="4">
+                    <v-col :cols="5">
                       <article>
                         <span style="font-size:16px">{{item.area}}</span>
                       </article>
@@ -713,6 +713,7 @@ export default {
          trimestre:{orden:"",puntajes:[],analisiseducativo:"",recomendaciones:""},
          puntajes:{area:"",promedio:""},
          notas:[], 
+         index:"",
     }
   },
   methods:{
@@ -724,8 +725,9 @@ export default {
        cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
        },
-       abrirDialogoNotas(notas){
+       abrirDialogoNotas(notas,index){
         this.notas=notas;
+        this.index=index;
         this.dialog1=true;
         console.log(this.notas)
         
@@ -840,7 +842,7 @@ export default {
            this.$v.puntajes.$touch();
    if(!this.$v.puntajes.$invalid ){ 
       let puntajesd={area:this.puntajes.area,promedio:this.puntajes.promedio};
-       this.seguimiento.contenido.trimestre[0].puntajes.push(puntajesd);
+       this.seguimiento.contenido.trimestre[this.index].puntajes.push(puntajesd);
       
        console.log(this.trimestre.puntajes)
 
@@ -850,7 +852,7 @@ export default {
    }
     },
     eliminarNotas(index){
-     this.seguimiento.contenido.trimestre[0].puntajes.splice(index,1)
+     this.seguimiento.contenido.trimestre[this.index].puntajes.splice(index,1)
      
     },
 

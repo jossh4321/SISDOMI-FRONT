@@ -416,7 +416,7 @@
                 elevation="0"
                 color="#FFBAB0"
                 style="margin-top:5px; margin-bottom:15px"
-                height="30"
+                height="80"
                 >
                   <v-row style="margin-left:10px;heigh:100%" align="center">
                     <v-col cols="2">
@@ -443,13 +443,13 @@
                     </v-col>
                   </v-row>
                 </v-card>
-                <!-- Cuerpo del car -->
+                <!-- Cuerpo del car  el heig en este caso e sla altura de los nombres d e los curosos-->
                 <v-card
                   tile
                   elevation="0"
                   color="#FAFAFA"
                   style="margin-top:5px"
-                  height="50"
+                  height="60" 
                   v-for="(item, index) in seguimiento.contenido.trimestre"
                   :key="index"
                 >
@@ -884,7 +884,7 @@ methods:{
    }
     },
     eliminarNotas(index){
-     this.seguimiento.contenido.trimestre[0].puntajes.splice(index,1)
+     this.seguimiento.contenido.trimestre[this.index].puntajes.splice(index,1)
      
     },
     

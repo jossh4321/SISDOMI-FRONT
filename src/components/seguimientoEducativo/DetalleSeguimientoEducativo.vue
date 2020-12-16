@@ -368,7 +368,7 @@
                   elevation="0"
                   color="#FAFAFA"
                   style="margin-top:5px"
-                  height="50"
+                  height="80"
                   v-for="(item, index) in seguimiento.contenido.trimestre"
                   :key="index"
                 >
@@ -423,7 +423,7 @@
                 height="30"
                 >
                   <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col cols="4">
+                    <v-col cols="6">
                       <article>
                         <span style="font-size:16px">Curso</span>
                       </article>
@@ -444,18 +444,18 @@
                   elevation="0"
                   color="#FAFAFA"
                   style="margin-top:5px"
-                  height="50"
+                  height="60"
                   v-for="(item, index) in notas"
                   :key="index"
                   
                 >
                   <v-row style="margin-left:10px;heigh:100%;" align="center">
-                    <v-col :cols="4">
+                    <v-col :cols="6" >
                       <article>
                         <span style="font-size:16px">{{item.area}}</span>
                       </article>
                     </v-col>
-                    <v-col :cols="4">
+                    <v-col :cols="4" >
                       <article>
                         <span style="font-size:16px">{{item.promedio}}</span>
                       </article>
