@@ -133,14 +133,14 @@
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
-                            <v-text-field
-                              v-model="telefonos.parentesco"
-                              label="Parentesco"
-                              color="#009900"
-                              @input="$v.telefonos.parentesco.$touch()"
+                            <v-combobox
+                            v-model="telefonos.parentesco"
+                            :items="itemParentesco"
+                            label="Parentesco"                            
+                            @input="$v.telefonos.parentesco.$touch()"
                               @blur="$v.telefonos.parentesco.$touch()"
                               :error-messages="errorParentesco"
-                            ></v-text-field>
+                          ></v-combobox>                            
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field
@@ -696,6 +696,13 @@ export default {
           value: { nombre: "En adopcion", previcion: true },
         },
       ],
+      itemParentesco: [
+        { text: "Madre", value: "Madre" },
+        { text: "Padre", value: "Padre" },
+        { text: "Tio(a)", value: "Tio(a)" },
+        { text: "Hermano(a)", value:  "Hermano(a)"},
+        { text: "Abuelo(a)", value:  "Abuelo(a)" },
+      ],
       miFase: { nombre: "Acogida", fase: 1 },
       residente: {
         id: "",
@@ -1086,8 +1093,6 @@ export default {
       if (!this.$v.telefonos.parentesco.$dirty) return errors;
       !this.$v.telefonos.parentesco.required &&
         errors.push("Debe ingresar el parentesco obligatoriamente");
-      !this.$v.telefonos.parentesco.minLength &&
-        errors.push("El parentesco deben tener al menos 3 caracteres");
       return errors;
     },
     errorTelefono() {
@@ -1193,8 +1198,7 @@ export default {
               minLength: minLength(4),
             },
             parentesco: {
-              required,
-              minLength: minLength(3),
+              required,              
             },
           },
         },
@@ -1237,8 +1241,7 @@ export default {
           minLength: minLength(4),
         },
         parentesco: {
-          required,
-          minLength: minLength(3),
+          required,          
         },
       },
       progreso: {

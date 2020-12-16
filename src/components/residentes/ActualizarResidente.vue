@@ -130,12 +130,22 @@
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field
                               v-model="telefonos.referenteFamiliar"
-                              label="Ingrese el Referente Familiar"
+                              label="Referente familiar"
                               color="#009900"
                               @input="$v.telefonos.referenteFamiliar.$touch()"
                               @blur="$v.telefonos.referenteFamiliar.$touch()"
                               :error-messages="errorReferenteFamiliar"
                             ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
+                            <v-combobox
+                            v-model="telefonos.parentesco"
+                            :items="itemParentesco"
+                            label="Parentesco"                            
+                            @input="$v.telefonos.parentesco.$touch()"
+                              @blur="$v.telefonos.parentesco.$touch()"
+                              :error-messages="errorParentesco"
+                          ></v-combobox>                            
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field
@@ -709,6 +719,13 @@ export default {
         { text: "Reinsercion", value: { nombre: "Desarrollo", fase: 3 } },
         { text: "Seguimiento", value: { nombre: "Desarrollo", fase: 4 } },
       ],
+      itemParentesco: [
+        { text: "Madre", value: "Madre" },
+        { text: "Padre", value: "Padre" },
+        { text: "Tio(a)", value: "Tio(a)" },
+        { text: "Hermano(a)", value:  "Hermano(a)"},
+        { text: "Abuelo(a)", value:  "Abuelo(a)" },
+      ],
     };
   },
   methods: {
@@ -818,12 +835,14 @@ export default {
         let telefonos = {
           numero: this.telefonos.numero,
           referentefamiliar: this.telefonos.referenteFamiliar,
+          parentesco: this.telefonos.parentesco,
         }; //creamos variables
         this.residente.telefonosReferencia.push(telefonos); //añadimos al arreglo principal
         ///LIMPIAMOS LOS CAMPOS//
         console.log(this.residente.telefonosReferencia);
         this.telefonos.numero = "";
         this.telefonos.referenteFamiliar = "";
+        this.telefonos.parentesco = "";
         !this.$v.telefonos.$reset();
       }
     },
@@ -1035,9 +1054,7 @@ export default {
       const errors = [];
       if (!this.$v.telefonos.parentesco.$dirty) return errors;
       !this.$v.telefonos.parentesco.required &&
-        errors.push("Debe ingresar el parentesco obligatoriamente");
-      !this.$v.telefonos.parentesco.minLength &&
-        errors.push("El parentesco deben tener al menos 3 caracteres");
+        errors.push("Debe ingresar el parentesco obligatoriamente");      
       return errors;
     },
     errorTelefono() {
@@ -1143,8 +1160,7 @@ export default {
               minLength: minLength(4),
             },
             parentesco: {
-              required,
-              minLength: minLength(3),
+              required,              
             },
           },
         },
@@ -1188,7 +1204,6 @@ export default {
         },
         parentesco: {
           required,
-          minLength: minLength(3),
         },
       },
       progreso: {
