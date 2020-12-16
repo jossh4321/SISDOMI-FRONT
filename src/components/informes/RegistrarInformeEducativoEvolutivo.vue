@@ -555,14 +555,14 @@
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 function esTexto(value) {
   return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
 function esParrafo(value) {
-  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ-]+$/.test(value); 
 }
 export default {
   props: ["listaresidentes", "visible", "titulo", "listaeducadores"],
@@ -611,7 +611,7 @@ export default {
         creadordocumento: "",
         fechacreacion: "",
         area: "educativa",
-        fase: "acogida",
+        fase: "2",
         idresidente: "",
         estado: "creado",
         contenido: {
@@ -664,6 +664,7 @@ export default {
     },
     async registrarInforme() {
       await this.sendPDFFiles();
+      this.informe.creadordocumento = this.user.id;      
       if (this.titulo === "Registrar Informe Educativo Evolutivo") {
         this.informe.tipo = "InformeEducativoEvolutivo";
       } else {
@@ -815,7 +816,7 @@ export default {
         creadordocumento: "",
         fechacreacion: "",
         area: "educativa",
-        fase: "acogida",
+        fase: "2",
         idresidente: "",
         estado: "creado",
         contenido: {
@@ -838,6 +839,7 @@ export default {
   },
   computed: {
     ...mapState(["informes"]),
+    ...mapGetters(["user"]),
     verifyColor() {
       return "red";
     },

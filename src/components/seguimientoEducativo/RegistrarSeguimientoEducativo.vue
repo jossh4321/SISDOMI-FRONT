@@ -719,7 +719,7 @@ data(){
       historialcontenido:[],
       creadordocumento:"",
       fechacreacion:"",
-      area:"Educativa",
+      area:"educativa",
       fase:"1",
       idresidente:"",
       estado:"creado",
@@ -777,8 +777,8 @@ methods:{
     ////////////HACER LA CONSULTA CON LA API  REGISTRAR
     async registrarSeguimiento() {
        this.seguimiento.creadordocumento = this.user.id;
-       this.$v.$touch();
-      if (this.$v.$invalid) {
+       this.$v.seguimiento.$touch();
+      if (this.$v.seguimiento.$invalid) {
         console.log("hay errores");
         this.mensaje(
           "error",
@@ -984,11 +984,11 @@ methods:{
       errors.push("Debe ingresar un orden");
     !this.$v.trimestre.orden.minLength &&
       errors.push("El trimestre debe tener  al menos 1 caracteres");
-    return errors;
     !this.$v.trimestre.orden.numeric &&
         errors.push(
           "Debe Ingresar valores Numericos"
         );
+   return errors;
     },
     errorAnalisisTrimestre(){
    const errors = [];
@@ -1016,8 +1016,7 @@ methods:{
     !this.$v.puntajes.area.minLength &&
       errors.push("El puntaje debe tener 2 caracteres");
     return errors;
-    !this.$v.trimestre.orden.numeric &&
-      errors.push("Debe Ingresar valores Numericos");
+    
     
     },
     errorPromedioPuntajes(){
@@ -1027,8 +1026,9 @@ methods:{
       errors.push("Debe ingresar un promedio");
     !this.$v.puntajes.promedio.minLength &&
       errors.push("el puntaje  debe tener al menos 2 caracteres");
-    return errors;
-    
+    !this.$v.puntajes.promedio.numeric &&
+      errors.push("Debe Ingresar valores Numericos");
+     return errors;
     },
     errorImagen() {
       return this.$v.firma.urlfirma.required == false &&

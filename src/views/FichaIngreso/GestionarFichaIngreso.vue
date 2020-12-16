@@ -52,13 +52,21 @@
 
                     <v-row>
                       <v-col>
-                        <v-btn block @click="cerrarDialogoSeleccion()" color="primary">
+                        <v-btn
+                          block
+                          @click="cerrarDialogoSeleccion()"
+                          color="primary"
+                        >
                           <v-icon left>mdi-close-outline</v-icon>
                           <span>Cerrar</span>
                         </v-btn>
                       </v-col>
                       <v-col>
-                        <v-btn block @click="abrirDialogoRegistroFichaIngreso()" color="success">
+                        <v-btn
+                          block
+                          @click="abrirDialogoRegistroFichaIngreso()"
+                          color="success"
+                        >
                           <v-icon left>mdi-page-next-outline</v-icon>
                           <span>Continuar</span>
                         </v-btn>
@@ -87,38 +95,49 @@
         </template>
       </v-data-table>
       <!--Dialogo de Registro de Fichas de Ingreso-->
-      <v-dialog v-model="dialogoRegistroFichaIngreso" persistent > 
-        <v-component :is="selectorFichaIngreso" 
-        :listaresidentes="listaresidentes"
-        :listaeducadores="listaeducadores"
-        @cerrar-modal-registro-ficha-ingreso="cerrarDialogoRegistroFichaIngreso">
+      <v-dialog v-model="dialogoRegistroFichaIngreso" persistent max-width="850px">
+        <v-component
+          :is="selectorFichaIngreso"
+          :listaresidentes="listaresidentes"
+          :listaeducadores="listaeducadores"
+          @cerrar-modal-registro-ficha-ingreso="cerrarDialogoRegistroFichaIngreso"
+        >
         </v-component>
       </v-dialog>
       <!--Dialogo de Modificar-->
-      <v-dialog v-model="dialogoModificacionFichaIngreso" persistent > 
-        <v-component :is="selectorFichaIngreso" 
-        :listaresidentes="listaresidentes"
-        :listaeducadores="listaeducadores"
-        :fichaIngreso="fichaIngreso"
-        ref="modificarFichaIngreso"
-        @cerrar-modal-edicion-ficha-ingreso="cerrarDialogoModificacionFichaIngreso">
+      <v-dialog v-model="dialogoModificacionFichaIngreso" persistent max-width="850px">
+        <v-component
+          :is="selectorFichaIngreso"
+          :listaresidentes="listaresidentes"
+          :listaeducadores="listaeducadores"
+          :fichaIngreso="fichaIngreso"
+          ref="modificarFichaIngreso"
+          @cerrar-modal-edicion-ficha-ingreso="
+            cerrarDialogoModificacionFichaIngreso
+          "
+        >
         </v-component>
       </v-dialog>
       <!--Dialogo de Consultar-->
-      <v-dialog v-model="dialogoConsultaFichaIngreso" persistent > 
-        <v-component :is="selectorFichaIngreso"
-        ref="consultarFichaIngreso"
-        :fichaIngreso="fichaIngreso"
-        :listaeducadores="listaeducadores"
-        @cerrar-modal-detalle-ficha-ingreso="cerrarDialogoConsultarFichaIngreso">
+      <v-dialog v-model="dialogoConsultaFichaIngreso" persistent max-width="850px">
+        <v-component
+          :is="selectorFichaIngreso"
+          ref="consultarFichaIngreso"
+          :fichaIngreso="fichaIngreso"
+          :listaresidentes="listaresidentes"
+          :listaeducadores="listaeducadores"
+          @cerrar-modal-detalle-ficha-ingreso="
+            cerrarDialogoConsultarFichaIngreso
+          "
+        >
         </v-component>
       </v-dialog>
     </v-card>
   </div>
 </template>
 <script>
-import axios from 'axios';
-import SeleccionarFichaIngreso from '@/components/fichaIngreso/SeleccionarFichaIngreso.vue'
+import axios from "axios";
+import SeleccionarFichaIngreso from "@/components/fichaIngreso/SeleccionarFichaIngreso.vue";
 /* 
 import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue'
 import ModificarFichaIngresoSocial  from '@/components/fichaIngreso/ModificarFichaIngresoSocial.vue'
@@ -135,7 +154,7 @@ import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarF
 import ConsultarFichaIngresoPsicologica from '@/components/fichaIngreso/Psicologica/ConsultarFichaIngresoPsicologica.vue'
 import ConsultarFichaIngresoSocial from '@/components/fichaIngreso/Social/ConsultarFichaIngresoSocial.vue'
 
-import {mapMutations, mapState} from "vuex";
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarFicha",
   components: {
@@ -147,11 +166,20 @@ export default {
     return {
       search: "",
       residente: {},
-      selectorFichaIngreso:"",
+      selectorFichaIngreso: "",
       items: [
-            { value: 'RegistrarFichaIngresoSocial', text: 'Ficha de Ingreso Social'},
-            { value: 'RegistrarFichaIngresoEducativa', text: 'Ficha de Ingreso Educativa'},
-            { value: 'RegistrarFichaIngresoPsicologica', text: 'Ficha de Ingreso Psicologica'}
+        {
+          value: "RegistrarFichaIngresoSocial",
+          text: "Ficha de Ingreso Social",
+        },
+        {
+          value: "RegistrarFichaIngresoEducativa",
+          text: "Ficha de Ingreso Educativa",
+        },
+        {
+          value: "RegistrarFichaIngresoPsicologica",
+          text: "Ficha de Ingreso Psicologica",
+        },
       ],
       headers: [
         {
@@ -170,9 +198,16 @@ export default {
       dialogDialogNuevaFichaIngreso: false,
       listaresidentes: [],
       listaeducadores: [],
-      dialogoRegistroFichaIngreso:false,
-      dialogoModificacionFichaIngreso:false,
-      dialogoConsultaFichaIngreso:false
+      dialogoRegistroFichaIngreso: false,
+      dialogoModificacionFichaIngreso: false,
+      dialogoConsultaFichaIngreso: false,
+      documentoFase: {
+        fase: "1",
+        area: "educativa",
+        documentoanterior: "FichaEducativaIngreso",
+        documentoactual: "FichaEducativaIngreso",
+        estadodocumentoanterior: "Pendiente",
+      },
     };
   },
   async created() {
@@ -185,6 +220,7 @@ export default {
     ...mapMutations(["setFichaIngreso"]),
     async abrirDialogoModificar(item) {
       console.log(item);
+      await this.obtenerResidentesModificacion();
       await this.obtenerfichaIngreso(item.id);
        if(item.tipo == "FichaEducativaIngreso"){
           this.selectorFichaIngreso = "ModificarFichaIngresoEducativa";
@@ -201,32 +237,37 @@ export default {
        this.dialogoConsultaFichaIngreso = true;
     },
     closeDialogDetalle() {
-      this.dialogoFIEconsultar=false
-      this.dialogoFIPconsultar=false
-      this.dialogoFISconsultar=false
+      this.dialogoFIEconsultar = false;
+      this.dialogoFIPconsultar = false;
+      this.dialogoFISconsultar = false;
     },
-   closeDialogActualizar() {
-   this.dialogoaFIEctualizacion=false
-   this.dialogoaFISctualizacion=false
-   this.dialogoaFIPctualizacion=false
+    closeDialogActualizar() {
+      this.dialogoaFIEctualizacion = false;
+      this.dialogoaFISctualizacion = false;
+      this.dialogoaFIPctualizacion = false;
     },
-    async abrirDialogoRegistroFichaIngreso(){
+    async abrirDialogoRegistroFichaIngreso() {
       await this.obtenerResidentes();
       await this.obtenerEducadores();
       this.dialogoRegistroFichaIngreso = true;
     },
-    cerrarDialogoSeleccion(){
+    cerrarDialogoSeleccion() {  
       this.dialogDialogNuevaFichaIngreso = false;
       this.selectorFichaIngreso = "";
-    },cerrarDialogoRegistroFichaIngreso(){
+    },
+
+    cerrarDialogoRegistroFichaIngreso() {
+      this.dialogDialogNuevaFichaIngreso = false;
       this.dialogoRegistroFichaIngreso = false;
       this.selectorFichaIngreso = "";
-    },cerrarDialogoModificacionFichaIngreso(){
+    },
+    cerrarDialogoModificacionFichaIngreso() {
       this.dialogoModificacionFichaIngreso = false;
       this.selectorFichaIngreso = "";
-    },cerrarDialogoConsultarFichaIngreso(){
+    },
+    cerrarDialogoConsultarFichaIngreso() {
       this.dialogoConsultaFichaIngreso = false;
-      this.SeleccionarFichaIngreso="";
+      this.selectorFichaIngreso = "";
     },
     //Obtener Detalle de Ficha Ingreso
     async obtenerfichaIngresoDetalle(id) {
@@ -234,7 +275,7 @@ export default {
         .get(`/Documento/fichaingreso/detalle/${id}`)
         .then((res) => {
           //console.log( "porfavor" )
-          this.fichaIngreso=res.data;
+          this.fichaIngreso = res.data;
           console.log(res.data);
         })
         .catch((err) => console.log(err));
@@ -245,7 +286,7 @@ export default {
         .get(`/Documento/fichaingreso/idficha/${id}`)
         .then((res) => {
           //console.log( "porfavor" )
-          this.fichaIngreso=res.data;
+          this.fichaIngreso = res.data;
           console.log(res.data);
         })
         .catch((err) => console.log(err));
@@ -273,6 +314,14 @@ export default {
     },
     //obtener todos los residentes
     async obtenerResidentes() {
+      await axios
+        .post("/residente/all/estadofase", this.documentoFase)
+        .then((x) => {
+          this.listaresidentes = x.data;
+        })
+        .catch((err) => console.log(err));
+    },
+    async obtenerResidentesModificacion() {
       await axios
         .get("/residente/all")
         .then((x) => {

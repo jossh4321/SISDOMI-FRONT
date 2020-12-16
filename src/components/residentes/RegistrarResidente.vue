@@ -105,7 +105,11 @@
               ></v-text-field>
               <!--Formulario para agregar telefonos -->
               <v-row justify="center">
-                <v-dialog v-model="dialogTelefonoReferencial" persistent max-width="600px">
+                <v-dialog
+                  v-model="dialogTelefonoReferencial"
+                  persistent
+                  max-width="600px"
+                >
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" v-on="on">
                       Registrar Telefono
@@ -120,8 +124,8 @@
                         <v-row>
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field
-                            v-model="telefonos.referenteFamiliar"
-                              label="Ingrese el Referente Familiar"
+                              v-model="telefonos.referenteFamiliar"
+                              label="Referente Familiar"
                               color="#009900"
                               @input="$v.telefonos.referenteFamiliar.$touch()"
                               @blur="$v.telefonos.referenteFamiliar.$touch()"
@@ -129,11 +133,21 @@
                             ></v-text-field>
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
+                            <v-combobox
+                            v-model="telefonos.parentesco"
+                            :items="itemParentesco"
+                            label="Parentesco"                            
+                            @input="$v.telefonos.parentesco.$touch()"
+                              @blur="$v.telefonos.parentesco.$touch()"
+                              :error-messages="errorParentesco"
+                          ></v-combobox>                            
+                          </v-col>
+                          <v-col cols="12" sm="6" md="4">
                             <v-text-field
                               v-model="telefonos.numero"
-                              label="Ingrese el numero Telefonico"
+                              label="Número Telefonico"
                               color="#009900"
-                               @input="$v.telefonos.numero.$touch()"
+                              @input="$v.telefonos.numero.$touch()"
                               @blur="$v.telefonos.numero.$touch()"
                               :error-messages="errorTelefono"
                             ></v-text-field>
@@ -146,90 +160,110 @@
                           <!--Mostrar Cuadro -->
 
                           <!--AQUI COMIENZA-->
-                          <v-card
-                            style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+
+                          <template
+                            v-if="residente.telefonosReferencia.length > 0"
                           >
-                            <v-row align="center">
-                              <v-col>
-                                <v-card-title
-                                  style="font-size:22px;padding: 0px 10px;"
-                                  >Referentes Familiares</v-card-title
-                                >
-                              </v-col>
-                            </v-row>
-                            <template v-if="residente.telefonosReferencia.length > 0">
-                                <v-card
-                              tile
-                              elevation="0"
-                              color="#FAFAFA"
-                              style="margin-top:5px"
-                              height="60"
-                              v-for="(item,
-                              index) in residente.telefonosReferencia"
-                              :key="index"
+                            <v-card
+                              style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                             >
-                              <v-row
-                                style="margin-left:10px;heigh:100%"
-                                align="center"
-                              >
-                                <v-col :cols="5">
-                                  <article>
-                                    <img
-                                      style="margin-right:5px;width:6% "
-                                      src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
-                                      alt="imagen usuario"
-                                    />
-                                    <span style="font-size:18px">
-                                      {{ item.referentefamiliar }}</span
-                                    >
-                                  </article>
-                                </v-col>
-                                <v-col :cols="3">
-                                  <article>
-                                    <img
-                                      style="margin-right:10px;width:8%"
-                                      src="https://www.flaticon.es/svg/static/icons/svg/633/633544.svg"
-                                      alt="imagen telefono"
-                                    />
-                                    <span style="font-size:18px">{{
-                                      item.numero
-                                    }}</span>
-                                  </article>
-                                </v-col>
-                                <v-col :cols="4" align="right">
-                                  <div style="margin-right:20px">
-                                    <v-btn
-                                      fab
-                                      x-small
-                                      dark
-                                      color="red"
-                                      @click="eliminarTelefono(item.index)"
-                                    >
-                                      <v-icon dark>
-                                        mdi-minus
-                                      </v-icon>
-                                    </v-btn>
-                                  </div>
+                              <v-row align="center">
+                                <v-col>
+                                  <v-card-title
+                                    style="font-size:22px;padding: 0px 10px;"
+                                    >Referentes Familiares</v-card-title
+                                  >
                                 </v-col>
                               </v-row>
-                            </v-card>
-                            </template>
-                            <v-card v-if="errorTelefonosReferenciales" color="red">
-                              <v-card-text class="text-center" style="color: white"
-                                >Debe Ingresar un Telefono de referencia Obligatoriamente</v-card-text
+
+                              <v-card
+                                tile
+                                elevation="0"
+                                color="#FAFAFA"
+                                style="margin-top:5px"
+                                height="60"
+                                v-for="(item,
+                                index) in residente.telefonosReferencia"
+                                :key="index"
                               >
+                                <v-row
+                                  style="margin-left:10px;heigh:100%"
+                                  align="center"
+                                >
+                                  <v-col :cols="5">
+                                    <article>
+                                      <img
+                                        style="margin-right:5px;width:6% "
+                                        src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
+                                        alt="imagen usuario"
+                                      />
+                                      <span style="font-size:18px">
+                                        {{ item.referentefamiliar }} -
+                                        {{ item.parentesco }}</span
+                                      >
+                                    </article>
+                                  </v-col>
+                                  <v-col :cols="3">
+                                    <article>
+                                      <img
+                                        style="margin-right:10px;width:8%"
+                                        src="https://www.flaticon.es/svg/static/icons/svg/633/633544.svg"
+                                        alt="imagen telefono"
+                                      />
+                                      <span style="font-size:18px">{{
+                                        item.numero
+                                      }}</span>
+                                    </article>
+                                  </v-col>
+                                  <v-col :cols="4" align="right">
+                                    <div style="margin-right:20px">
+                                      <v-btn
+                                        fab
+                                        x-small
+                                        dark
+                                        color="red"
+                                        @click="eliminarTelefono(item.index)"
+                                      >
+                                        <v-icon dark>
+                                          mdi-minus
+                                        </v-icon>
+                                      </v-btn>
+                                    </div>
+                                  </v-col>
+                                </v-row>
+                              </v-card>
+                              <v-card
+                                v-if="errorTelefonosReferenciales"
+                                color="red"
+                              >
+                                <v-card-text
+                                  class="text-center"
+                                  style="color: white"
+                                  >Debe Ingresar un Telefono de referencia
+                                  Obligatoriamente</v-card-text
+                                >
+                              </v-card>
                             </v-card>
-                          </v-card>
+                          </template>
+
                           <!-- -->
                         </v-row>
                       </v-container>
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="cerrarTelefonosReferencia()">
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="cerrarTelefonosReferencia()"
+                      >
                         Cerrar
                       </v-btn>
-                      <v-btn color="blue darken-1" text @click="guardarTelefonosReferencia()">
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="guardarTelefonosReferencia()"
+                      >
                         Guardar
                       </v-btn>
                     </v-card-actions>
@@ -314,7 +348,11 @@
 
               <!--------AQUI esta  EL cuadro de progreso -->
               <v-row justify="center">
-                <v-dialog v-model="dialogProgresoFase" persistent max-width="850px">
+                <v-dialog
+                  v-model="dialogProgresoFase"
+                  persistent
+                  max-width="850px"
+                >
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" v-on="on">
                       Registrar Progreso
@@ -326,191 +364,229 @@
                     </v-card-title>
                     <v-card-text>
                       <v-container>
-                           <v-select
-                                :items="itemFase"
-                                label="Ingrese  la fase"
-                                dense
-                                outlined
-                                v-model="progreso.fase"
-                                color="#009900"
-                                @input="$v.progreso.fase.$touch()"
-                                @blur="$v.progreso.fase.$touch()"
-                                :error-messages="errorFase"
-                           ></v-select>
-                            <v-select
-                                :items="itemEstado"
-                                label="Ingrese el estado"
-                                dense
-                                outlined
-                                item-text="text"
-                                item-value="value"
-                                v-model="progreso.estado"
-                                @input="$v.progreso.estado.$touch()"
-                                @blur="$v.progreso.estado.$touch()"
-                                :error-messages="errorEstadoProgreso"
-                                color="#009900"
-                            ></v-select>
-                           
-                            <br>
-                          <!--AQUI COMIENZAN LAS FECHAS INGRESO -->
-                          <v-menu
-                            v-model="datemenu2"
-                            :close-on-content-click="false"
-                            :nudge-right="40"
-                            transition="scale-transition"
-                            offset-y
-                            min-width="290px"
-                          >
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-text-field
-                                v-model="progreso.fechaingreso"
-                                label="Fecha de Ingreso"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                                color="#009900"
-                                @input="$v.progreso.fechaingreso.$touch()"
-                                @blur="$v.progreso.fechaingreso.$touch()"
-                                :error-messages="errorFechaIngresoProgreso"
-                              ></v-text-field>
-                            </template>
-                            <v-date-picker
-                              v-model="progreso.fechaingreso"
-                              @input="menu2 = false"
-                              locale="es-es"
-                            ></v-date-picker>
-                          </v-menu>
-                          <!--acabo  -->
-                          <!--FECHA FINALIZACION -->
-                          <v-menu
-                            v-if="checkboxFechaFinalizacion"
-                            v-model="datemenu3"
-                            :close-on-content-click="false"
-                            :nudge-right="40"
-                            transition="scale-transition"
-                            offset-y
-                            min-width="290px"
-                          >
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-text-field
-                                v-model="progreso.fechafinalizacion"
-                                label="Fecha de finalizacion"
-                                prepend-icon="mdi-calendar"
-                                readonly
-                                v-bind="attrs"
-                                v-on="on"
-                                color="#009900"
-                                @input="$v.progreso.fechafinalizacion.$touch()"
-                                @blur="$v.progreso.fechafinalizacion.$touch()"
-                                :error-messages="errorFechaFinalizacionProgreso"
-                              ></v-text-field>
-                            </template>
-                            <v-date-picker
-                              v-model="progreso.fechafinalizacion"
-                              @input="menu2 = false"
-                              locale="es-es"
-                            ></v-date-picker>
-                          </v-menu>
-                          <!--acabo  -->
+                        <v-select
+                          :items="itemFase"
+                          label="Ingrese  la fase"
+                          dense
+                          outlined
+                          v-model="progreso.fase"
+                          color="#009900"
+                          @input="$v.progreso.fase.$touch()"
+                          @blur="$v.progreso.fase.$touch()"
+                          :error-messages="errorFase"
+                        ></v-select>
+                        <v-select
+                          :items="itemEstado"
+                          label="Ingrese el estado"
+                          dense
+                          outlined
+                          item-text="text"
+                          item-value="value"
+                          v-model="progreso.estado"
+                          @input="$v.progreso.estado.$touch()"
+                          @blur="$v.progreso.estado.$touch()"
+                          :error-messages="errorEstadoProgreso"
+                          color="#009900"
+                        ></v-select>
 
-                          <v-col cols="12" sm="6" md="4">
-                            <v-btn color="success" @click="guardarProgreso()">
-                              añadir
-                            </v-btn>
-                          </v-col>
-                          <!--En esta parte se muestra Mostrar Cuadro -->
-            <v-card
-                style="margin-top:10%;width:100%;padding:5px 5px;background-color:#EAEAEA"
-              >
-                <v-card-title style="font-size:22px;padding: 10px 10px;"
-                  >Lista de Progresos de Residente</v-card-title
-                >
-                <!-- Cabecera -->
-                <v-card
-                elevation="0"
-                color="#EAEAEA"
-                style="margin-top:5px; margin-bottom:15px"
-                height="30"
-                >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col cols="2">
-                      <article>
-                        <span style="font-size:16px">Fase</span>
-                      </article>
-                    </v-col>
-                    <v-col cols="3">
-                      <article>
-                        <span style="font-size:16px">Fecha Ingreso</span>
-                      </article>
-                    </v-col>
-                    <v-col cols="3">
-                      <article>
-                        <span style="font-size:16px">Fecha Finalizacion</span>
-                      </article>
-                    </v-col>
-                    <v-col>
-                      <article cols="2">
-                        <span style="font-size:16px">Estado</span>
-                      </article>
-                    </v-col>
-                    <v-col align="right">
-                    </v-col>
-                  </v-row>
-                </v-card>
-                <!-- Cuerpo -->
-                <template v-if="residente.progreso.length > 0">
-                    <v-card
-                  tile
-                  elevation="0"
-                  color="#FAFAFA"
-                  style="margin-top:5px"
-                  height="60"
-                  v-for="(item, index) in residente.progreso"
-                  :key="index"
-                >
-                  <v-row style="margin-left:10px;heigh:100%;" align="center">
-                    <v-col :cols="2">
-                      <article>
-                        <span style="font-size:16px">Nº{{item.fase}} - {{item.nombre}}</span>
-                      </article>
-                    </v-col>
-                    <v-col :cols="3">
-                      <article>
-                        <span style="font-size:16px">{{convertDateFormat(item.fechaingreso)}}</span>
-                      </article>
-                    </v-col>
-                    <v-col :cols="3">
-                      <article>
-                        <span style="font-size:16px">{{convertDateFormat(item.fechafinalizacion)}} <span v-if="comprobarPrevicion(item.fechafinalizacion)" style="margin-left:5px">(previsto)</span></span>
-                      </article>
-                    </v-col>
-                    <v-col :cols="2">
-                      <article>
-                        <span style="font-size:16px">{{item.estado}}</span>
-                      </article>
-                    </v-col>
-                    <v-col align="right">
-                      <div style="margin-right:20px">
-                        <v-btn
-                        @click="eliminarProgreso(item.index)"
-                        fab x-small 
-                        dark
-                         color="red"  > 
-                          <v-icon dark>
-                            mdi-minus
-                          </v-icon>
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card>
-                </template>
-                <v-card v-if="errorFasesProgreso" color="red">
-                    <v-card-text class="text-center" style="color: white"
-                      >Debe Ingresar Las Fases de la Residente Obligatoriamente</v-card-text>
-                  </v-card>
-              </v-card>
+                        <br />
+                        <!--AQUI COMIENZAN LAS FECHAS INGRESO -->
+                        <v-menu
+                          v-model="datemenu2"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          transition="scale-transition"
+                          offset-y
+                          min-width="290px"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="progreso.fechaingreso"
+                              label="Fecha de Ingreso"
+                              prepend-icon="mdi-calendar"
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                              color="#009900"
+                              @input="$v.progreso.fechaingreso.$touch()"
+                              @blur="$v.progreso.fechaingreso.$touch()"
+                              :error-messages="errorFechaIngresoProgreso"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="progreso.fechaingreso"
+                            @input="menu2 = false"
+                            locale="es-es"
+                          ></v-date-picker>
+                        </v-menu>
+                        <!--acabo  -->
+                        <!--FECHA FINALIZACION -->
+                        <v-menu
+                          v-if="checkboxFechaFinalizacion"
+                          v-model="datemenu3"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          transition="scale-transition"
+                          offset-y
+                          min-width="290px"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="progreso.fechafinalizacion"
+                              label="Fecha de finalizacion"
+                              prepend-icon="mdi-calendar"
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                              color="#009900"
+                              @input="$v.progreso.fechafinalizacion.$touch()"
+                              @blur="$v.progreso.fechafinalizacion.$touch()"
+                              :error-messages="errorFechaFinalizacionProgreso"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="progreso.fechafinalizacion"
+                            @input="menu2 = false"
+                            locale="es-es"
+                          ></v-date-picker>
+                        </v-menu>
+                        <!--acabo  -->
+
+                        <v-col cols="12" sm="6" md="4">
+                          <v-btn color="success" @click="guardarProgreso()">
+                            añadir
+                          </v-btn>
+                        </v-col>
+                        <!--En esta parte se muestra Mostrar Cuadro -->
+                        <v-card
+                          style="margin-top:10%;width:100%;padding:5px 5px;background-color:#EAEAEA"
+                        >
+                          <v-card-title
+                            style="font-size:22px;padding: 10px 10px;"
+                            >Lista de Progresos de Residente</v-card-title
+                          >
+                          <!-- Cabecera -->
+                          <v-card
+                            elevation="0"
+                            color="#EAEAEA"
+                            style="margin-top:5px; margin-bottom:15px"
+                            height="30"
+                          >
+                            <v-row
+                              style="margin-left:10px;heigh:100%"
+                              align="center"
+                            >
+                              <v-col cols="2">
+                                <article>
+                                  <span style="font-size:16px">Fase</span>
+                                </article>
+                              </v-col>
+                              <v-col cols="3">
+                                <article>
+                                  <span style="font-size:16px"
+                                    >Fecha Ingreso</span
+                                  >
+                                </article>
+                              </v-col>
+                              <v-col cols="3">
+                                <article>
+                                  <span style="font-size:16px"
+                                    >Fecha Finalizacion</span
+                                  >
+                                </article>
+                              </v-col>
+                              <v-col>
+                                <article cols="2">
+                                  <span style="font-size:16px">Estado</span>
+                                </article>
+                              </v-col>
+                              <v-col align="right"> </v-col>
+                            </v-row>
+                          </v-card>
+                          <!-- Cuerpo -->
+                          <template v-if="residente.progreso.length > 0">
+                            <v-card
+                              tile
+                              elevation="0"
+                              color="#FAFAFA"
+                              style="margin-top:5px"
+                              height="60"
+                              v-for="(item, index) in residente.progreso"
+                              :key="index"
+                            >
+                              <v-row
+                                style="margin-left:10px;heigh:100%;"
+                                align="center"
+                              >
+                                <v-col :cols="2">
+                                  <article>
+                                    <span style="font-size:16px"
+                                      >Nº{{ item.fase }} -
+                                      {{ item.nombre }}</span
+                                    >
+                                  </article>
+                                </v-col>
+                                <v-col :cols="3">
+                                  <article>
+                                    <span style="font-size:16px">{{
+                                      convertDateFormat(item.fechaingreso)
+                                    }}</span>
+                                  </article>
+                                </v-col>
+                                <v-col :cols="3">
+                                  <article>
+                                    <span style="font-size:16px"
+                                      >{{
+                                        convertDateFormat(
+                                          item.fechafinalizacion
+                                        )
+                                      }}
+                                      <span
+                                        v-if="
+                                          comprobarPrevicion(
+                                            item.fechafinalizacion
+                                          )
+                                        "
+                                        style="margin-left:5px"
+                                        >(previsto)</span
+                                      ></span
+                                    >
+                                  </article>
+                                </v-col>
+                                <v-col :cols="2">
+                                  <article>
+                                    <span style="font-size:16px">{{
+                                      item.estado
+                                    }}</span>
+                                  </article>
+                                </v-col>
+                                <v-col align="right">
+                                  <div style="margin-right:20px">
+                                    <v-btn
+                                      @click="eliminarProgreso(item.index)"
+                                      fab
+                                      x-small
+                                      dark
+                                      color="red"
+                                    >
+                                      <v-icon dark>
+                                        mdi-minus
+                                      </v-icon>
+                                    </v-btn>
+                                  </div>
+                                </v-col>
+                              </v-row>
+                            </v-card>
+                          </template>
+                          <v-card v-if="errorFasesProgreso" color="red">
+                            <v-card-text
+                              class="text-center"
+                              style="color: white"
+                              >Debe Ingresar Las Fases de la Residente
+                              Obligatoriamente</v-card-text
+                            >
+                          </v-card>
+                        </v-card>
                       </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -535,15 +611,15 @@
               </v-row>
 
               <!--Aqui acaba -->
-               <v-select
-                    :items="['En tratamiento','Finalizado']"
-                      v-model="residente.estado"
-                    @input="$v.residente.estado.$touch()"
-                     @blur="$v.residente.estado.$touch()"
-                     :error-messages="errorEstado"
-                    label="Ingrese el Estado"
-                     color="#009900"
-                 ></v-select>
+              <v-select
+                :items="['En tratamiento', 'Finalizado']"
+                v-model="residente.estado"
+                @input="$v.residente.estado.$touch()"
+                @blur="$v.residente.estado.$touch()"
+                :error-messages="errorEstado"
+                label="Ingrese el Estado"
+                color="#009900"
+              ></v-select>
 
               <!--botones -->
               <v-row>
@@ -569,14 +645,20 @@
 </template>
 
 <script>
-
 const m = moment();
 import axios from "axios";
-import Vuelidate from 'vuelidate'
+import Vuelidate from "vuelidate";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
-import { required, minLength, maxLength, email, helpers,numeric } from "vuelidate/lib/validators";
+import {
+  required,
+  minLength,
+  maxLength,
+  email,
+  helpers,
+  numeric,
+} from "vuelidate/lib/validators";
 import moment from "moment";
 export default {
   data() {
@@ -588,23 +670,40 @@ export default {
       datemenu2: false, ///MODAL fecha ingreso
       datemenu3: false, ///MODAL fecha finalizacion
       step: 1,
-      checkboxFechaFinalizacion:false,
-      telefonos: { numero: "", referentefamiliar: "" },
+      checkboxFechaFinalizacion: false,
+      telefonos: { numero: "", referentefamiliar: "", parentesco: "" },
       progreso: {
-        fase: {nombre:'Acogida',fase:1},
+        fase: { nombre: "Acogida", fase: 1 },
         fechaingreso: "",
         fechafinalizacion: "",
         estado: {},
       },
-      itemFase:[{text:'Acogida',value:{nombre:'Acogida',fase:1}},
-            {text:'Desarrollo',value:{nombre:'Desarrollo',fase:2}},
-            {text:'Reinsercion',value:{nombre:'Reinsercion',fase:4}},
-            {text:'Seguimiento',value:{nombre:'Seguimiento',fase:3}}],
-      itemEstado:[{text:'Inicio', value:{nombre:'Inicio',previcion:true}},
-            {text:'Progreso', value:{nombre:'Progreso',previcion:true}},
-            {text:'Finalizado', value:{nombre:'Finalizado',previcion:false}},
-            {text:'En adopcion', value:{nombre:'En adopcion',previcion:true}}],
-      miFase:{nombre:'Acogida',fase:1},
+      itemFase: [
+        { text: "Acogida", value: { nombre: "Acogida", fase: 1 } },
+        { text: "Desarrollo", value: { nombre: "Desarrollo", fase: 2 } },
+        { text: "Reinsercion", value: { nombre: "Reinsercion", fase: 4 } },
+        { text: "Seguimiento", value: { nombre: "Seguimiento", fase: 3 } },
+      ],
+      itemEstado: [
+        { text: "Inicio", value: { nombre: "Inicio", previcion: true } },
+        { text: "Progreso", value: { nombre: "Progreso", previcion: true } },
+        {
+          text: "Finalizado",
+          value: { nombre: "Finalizado", previcion: false },
+        },
+        {
+          text: "En adopcion",
+          value: { nombre: "En adopcion", previcion: true },
+        },
+      ],
+      itemParentesco: [
+        { text: "Madre", value: "Madre" },
+        { text: "Padre", value: "Padre" },
+        { text: "Tio(a)", value: "Tio(a)" },
+        { text: "Hermano(a)", value:  "Hermano(a)"},
+        { text: "Abuelo(a)", value:  "Abuelo(a)" },
+      ],
+      miFase: { nombre: "Acogida", fase: 1 },
       residente: {
         id: "",
         nombre: "",
@@ -625,28 +724,28 @@ export default {
     };
   },
   created() {},
-  watch:{
-    verificarPrevicion(){}
+  watch: {
+    verificarPrevicion() {},
   },
   methods: {
     ...mapMutations(["setResidentes", "addResidente"]),
     //METODO MEMENT
-    moment: function () {
-    return moment();
+    moment: function() {
+      return moment();
     },
-    comprobarPrevicion(string){
-      var fechafinalizacion = string.split('T');
+    comprobarPrevicion(string) {
+      var fechafinalizacion = string.split("T");
 
-      var fechaActual = moment().format();    
-      fechaActual = fechaActual.split('T');
+      var fechaActual = moment().format();
+      fechaActual = fechaActual.split("T");
 
       var booleano = moment(fechafinalizacion[0]).isAfter(fechaActual[0]);
       // console.log("fechafinalizacion: "+ fechafinalizacion[0]);
       // console.log("fechaActual: "+fechaActual[0]);
       // console.log(booleano);
-      return booleano
+      return booleano;
     },
-    testing3(){
+    testing3() {
       this.$v.$touch();
     },
     ///CERRAR DIALOGO
@@ -670,12 +769,10 @@ export default {
           juzgadoProcedencia: "",
           fechaNacimiento: "",
           sexo: "",
-          telefonosReferencia: [
-          ],
+          telefonosReferencia: [],
           fechaIngreso: "",
           motivoIngreso: "",
-          progreso: [
-          ],
+          progreso: [],
           estado: "",
         },
       };
@@ -689,82 +786,98 @@ export default {
         footer: footer,
       });
     },
-    guardarTelefonosReferencia(){
-        this.$v.residente.telefonosReferencia.$touch();
-        if(!this.$v.residente.telefonosReferencia.$invalid){
-            this.$v.telefonos.$reset();
-            this.dialogTelefonoReferencial = false;
-        }
-    },
-    cerrarTelefonosReferencia(){
-      this.$v.residente.telefonosReferencia.$reset();
-         this.$v.telefonos.$reset();
+    guardarTelefonosReferencia() {
+      this.$v.residente.telefonosReferencia.$touch();
+      if (!this.$v.residente.telefonosReferencia.$invalid) {
+        this.$v.telefonos.$reset();
         this.dialogTelefonoReferencial = false;
+      }
+    },
+    cerrarTelefonosReferencia() {
+      this.$v.residente.telefonosReferencia.$reset();
+      this.$v.telefonos.$reset();
+      this.dialogTelefonoReferencial = false;
     },
     ////GUARDAR TELEFONO REFERENTE ///
     guardarTelefono() {
       this.$v.telefonos.$touch();
-      if(!this.$v.telefonos.$invalid && this.residente.telefonosReferencia.length <= 3){
+      if (
+        !this.$v.telefonos.$invalid &&
+        this.residente.telefonosReferencia.length <= 3
+      ) {
         let telefonos = {
-        numero: this.telefonos.numero,
-        referentefamiliar: this.telefonos.referenteFamiliar,
-      }; //creamos variables
-      this.residente.telefonosReferencia.push(telefonos); //añadimos al arreglo principal
-      ///LIMPIAMOS LOS CAMPOS//
-      console.log(this.residente.telefonosReferencia);
-      this.telefonos.numero = "";
-      this.telefonos.referenteFamiliar = "";
-      !this.$v.telefonos.$reset();
+          numero: this.telefonos.numero,
+          referentefamiliar: this.telefonos.referenteFamiliar,
+          parentesco: this.telefonos.parentesco,
+        }; //creamos variables
+        this.residente.telefonosReferencia.push(telefonos); //añadimos al arreglo principal
+        ///LIMPIAMOS LOS CAMPOS//
+        console.log(this.residente.telefonosReferencia);
+        this.telefonos.numero = "";
+        this.telefonos.referenteFamiliar = "";
+        this.telefonos.parentesco = "";
+        !this.$v.telefonos.$reset();
       }
-      
     },
     eliminarTelefono(index) {
       this.residente.telefonosReferencia.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     }, ////GUARDAR PROGRESO DEL modal ///
-    
+
     guardarProgreso() {
-      if(!this.checkboxFechaFinalizacion){
-        var fechaingreso = this.progreso.fechaingreso
+      if (!this.checkboxFechaFinalizacion) {
+        var fechaingreso = this.progreso.fechaingreso;
         var fecha = "";
-        if(this.progreso.fase.fase ===2){fecha = moment(fechaingreso).add(1, 'year').calendar();}
-        else if(this.progreso.fase.fase ===3){fecha = moment(fechaingreso).add(6, 'month').calendar();}
-        else{fecha = moment(fechaingreso).add(1, 'year').calendar();}
-        console.log("entra: "+ fechaingreso);
-        console.log("sale: "+ fecha);
-        var date = fecha.split('/');
-        this.progreso.fechafinalizacion = date[2] + '-' + date[1] + '-' + date[0];
+        if (this.progreso.fase.fase === 2) {
+          fecha = moment(fechaingreso)
+            .add(1, "year")
+            .calendar();
+        } else if (this.progreso.fase.fase === 3) {
+          fecha = moment(fechaingreso)
+            .add(6, "month")
+            .calendar();
+        } else {
+          fecha = moment(fechaingreso)
+            .add(1, "year")
+            .calendar();
+        }
+        console.log("entra: " + fechaingreso);
+        console.log("sale: " + fecha);
+        var date = fecha.split("/");
+        this.progreso.fechafinalizacion =
+          date[2] + "-" + date[1] + "-" + date[0];
       }
       this.$v.progreso.$touch();
-      if(!this.$v.progreso.$invalid){
-        let progreso={ 
-         fase: this.progreso.fase.fase,
-         nombre:this.progreso.fase.nombre.toLowerCase(),
-         fechaingreso:this.progreso.fechaingreso,
-         fechafinalizacion:this.progreso.fechafinalizacion,
-         estado:this.progreso.estado.nombre.toLowerCase()}//creamos variables 
+      if (!this.$v.progreso.$invalid) {
+        let progreso = {
+          fase: this.progreso.fase.fase,
+          nombre: this.progreso.fase.nombre.toLowerCase(),
+          fechaingreso: this.progreso.fechaingreso,
+          fechafinalizacion: this.progreso.fechafinalizacion,
+          estado: this.progreso.estado.nombre.toLowerCase(),
+        }; //creamos variables
         this.residente.progreso.push(progreso); //añadimos al arreglo principal
         ///LIMPIAMOS LOS CAMPOS//
-        this.progreso.fase = {nombre:'Acogida',fase:1};
+        this.progreso.fase = { nombre: "Acogida", fase: 1 };
         this.progreso.estado = "";
         this.progreso.fechafinalizacion = "";
         this.progreso.fechaingreso = "";
         //reiniciamos el estado de la validacion
         this.$v.progreso.$reset();
-      }else{
+      } else {
         console.log("algo  mal");
       }
     },
-    guardarFasesResidente(){
+    guardarFasesResidente() {
       this.$v.residente.progreso.$touch();
-        if(!this.$v.residente.progreso.$invalid){
-            this.$v.progreso.$reset();
-            this.dialogProgresoFase = false;
-        }
-    },
-    cerrarFaseResidente(){
-         this.$v.residente.progreso.$reset();
-         this.$v.progreso.$reset();
+      if (!this.$v.residente.progreso.$invalid) {
+        this.$v.progreso.$reset();
         this.dialogProgresoFase = false;
+      }
+    },
+    cerrarFaseResidente() {
+      this.$v.residente.progreso.$reset();
+      this.$v.progreso.$reset();
+      this.dialogProgresoFase = false;
     },
     eliminarProgreso(index) {
       this.residente.progreso.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
@@ -780,18 +893,18 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        this.residente.idcreador= "PRUEBA";
-        this.residente.observaciones= "PRUEBA";
-        this.residente.firma= {
-          urlfirma:"PRUEBA",
-          nombre:"PRUEBA",
-          cargo:"PRUEBA"
+        this.residente.idcreador = "";
+        this.residente.observaciones = "";
+        this.residente.firma = {
+          urlfirma: "",
+          nombre: "",
+          cargo: "",
         };
         console.log(this.residente);
         await axios
           .post("/Residente", this.residente)
           .then((res) => {
-            var info ={
+            var info = {
               apellido: res.data.apellido,
               estado: res.data.estado,
               fechaIngreso: res.data.fechaIngreso.split("T")[0],
@@ -807,8 +920,7 @@ export default {
               telefonosReferencia: res.data.telefonosReferencia,
               tipoDocumento: res.data.tipoDocumento,
               ubigeo: res.data.ubigeo,
-
-            }
+            };
             this.addResidente(info);
             this.cerrarDialogo();
           })
@@ -822,10 +934,10 @@ export default {
       }
     },
     convertDateFormat(string) {
-        var dateMongo = string.split('T');
-        var date = dateMongo[0].split('-');
-        return date[2] + '/' + date[1] + '/' + date[0];
-    }
+      var dateMongo = string.split("T");
+      var date = dateMongo[0].split("-");
+      return date[2] + "/" + date[1] + "/" + date[0];
+    },
   },
 
   computed: {
@@ -834,10 +946,10 @@ export default {
     verifyColor() {
       return "red";
     },
-    verificarPrevicion(){
-      if(this.progreso.estado.previcion === false){
+    verificarPrevicion() {
+      if (this.progreso.estado.previcion === false) {
         this.checkboxFechaFinalizacion = true;
-      }else{
+      } else {
         this.checkboxFechaFinalizacion = false;
       }
     },
@@ -859,7 +971,7 @@ export default {
         errors.push("El apellido debe tener al menos 3 caracteres");
       return errors;
     },
-    
+
     errorTipoDocumento() {
       const errors = [];
       if (!this.$v.residente.tipoDocumento.$dirty) return errors;
@@ -973,30 +1085,30 @@ export default {
       !this.$v.telefonos.referenteFamiliar.required &&
         errors.push("Debe ingresar un Referente Familiar Obligatoriamente");
       !this.$v.telefonos.referenteFamiliar.minLength &&
-        errors.push(
-          "El Referente Familiar deben tener al menos 3 caracteres"
-        );
+        errors.push("El Referente Familiar deben tener al menos 3 caracteres");
       return errors;
     },
-    errorTelefono(){
-        const errors = [];
+    errorParentesco() {
+      const errors = [];
+      if (!this.$v.telefonos.parentesco.$dirty) return errors;
+      !this.$v.telefonos.parentesco.required &&
+        errors.push("Debe ingresar el parentesco obligatoriamente");
+      return errors;
+    },
+    errorTelefono() {
+      const errors = [];
       if (!this.$v.telefonos.numero.$dirty) return errors;
       !this.$v.telefonos.numero.required &&
         errors.push("Debe ingresar un Numero Obligatoriamente");
       !this.$v.telefonos.numero.minLength &&
-        errors.push(
-          "El telefono debe tener 9 caracteres"
-        );
-        !this.$v.telefonos.numero.maxLength &&
-        errors.push(
-          "El telefono debe tener 9 caracteres"
-        );
-        !this.$v.telefonos.numero.numeric &&
-        errors.push(
-          "Debe Ingresar valores Numericos"
-        );
+        errors.push("El telefono debe tener 9 caracteres");
+      !this.$v.telefonos.numero.maxLength &&
+        errors.push("El telefono debe tener 9 caracteres");
+      !this.$v.telefonos.numero.numeric &&
+        errors.push("Debe Ingresar valores Numericos");
       return errors;
-    }, errorTelefonosReferenciales() {
+    },
+    errorTelefonosReferenciales() {
       return this.$v.residente.telefonosReferencia.required == false &&
         this.$v.residente.telefonosReferencia.$dirty == true
         ? true
@@ -1009,7 +1121,8 @@ export default {
       !this.$v.progreso.fase.required &&
         errors.push("Debe seleccionar una fase Obligatoriamente");
       return errors;
-    },errorFechaIngresoProgreso() {
+    },
+    errorFechaIngresoProgreso() {
       const errors = [];
       if (!this.$v.progreso.fechaingreso.$dirty) return errors;
       !this.$v.progreso.fechaingreso.required &&
@@ -1022,19 +1135,20 @@ export default {
       !this.$v.progreso.fechafinalizacion.required &&
         errors.push("Debe Ingresar una fecha de Inicio Obligatoriamente");
       return errors;
-    },errorEstadoProgreso() {
+    },
+    errorEstadoProgreso() {
       const errors = [];
       if (!this.$v.progreso.estado.$dirty) return errors;
       !this.$v.progreso.estado.required &&
         errors.push("Debe Seleccionar un Estado Obligatoriamente");
       return errors;
-    }, errorFasesProgreso() {
+    },
+    errorFasesProgreso() {
       return this.$v.residente.progreso.required == false &&
         this.$v.residente.progreso.$dirty == true
         ? true
         : false;
     },
-
   },
   validations() {
     return {
@@ -1073,9 +1187,9 @@ export default {
         },
         telefonosReferencia: {
           required,
-           //minLength: minLength(1),
-           $each:{
-             numero: {
+          //minLength: minLength(1),
+          $each: {
+            numero: {
               required,
               minLength: minLength(9),
             },
@@ -1083,54 +1197,60 @@ export default {
               required,
               minLength: minLength(4),
             },
-        },
+            parentesco: {
+              required,              
+            },
+          },
         },
         fechaIngreso: {
           required,
         },
         motivoIngreso: {},
-         progreso: {
-           required,
+        progreso: {
+          required,
           //minLength: minLength(1),
-           $each:{
-              fase: {
+          $each: {
+            fase: {
               required,
             },
-              fechaingreso: {
+            fechaingreso: {
               required,
             },
-              fechafinalizacion: {
+            fechafinalizacion: {
               required,
             },
-              estado: {
+            estado: {
               required,
-            }
-           }
-        }, estado: {
+            },
+          },
+        },
+        estado: {
           required,
           minLength: minLength(4),
         },
-    },
-    telefonos:{
-      numero: {
-        required,
-        minLength: minLength(9),
-        maxLength: maxLength(9),
-        numeric,
-
       },
-      referenteFamiliar: {
-        required,
-        minLength: minLength(4),
+      telefonos: {
+        numero: {
+          required,
+          minLength: minLength(9),
+          maxLength: maxLength(9),
+          numeric,
+        },
+        referenteFamiliar: {
+          required,
+          minLength: minLength(4),
+        },
+        parentesco: {
+          required,          
+        },
       },
-    },
-    progreso: {
-        fase: {required},
-        fechaingreso: {required},
-        fechafinalizacion: {required},
-        estado: {required},
+      progreso: {
+        fase: { required },
+        fechaingreso: { required },
+        fechafinalizacion: { required },
+        estado: { required },
       },
-    }
+    };
   },
 };
 </script>

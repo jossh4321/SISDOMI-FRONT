@@ -129,6 +129,13 @@ export default {
       dialogoregistro: false,
       dialogoactualizacion: false,
       dialogodetalle: false,
+      faseEducativaInicial: {            
+            fase: "1",
+            area: "educativa",
+            documentoanterior: "PlanIntervencionIndividualEducativo",
+            documentoactual: "InformeSeguimientoEducativo",
+            estadodocumentoanterior: "Completo"
+        }
     };
   },
   async created(){
@@ -209,7 +216,8 @@ export default {
     },
     //obtener todos los residentes
     async obtenerResidentes(){
-          await axios.get("/residente/all")
+           await axios
+        .post("/residente/all/estadofase", this.faseEducativaInicial)
                   .then( x => {
                             this.listaresidentes = x.data;
                             console.log(this.listaresidentes);
