@@ -144,7 +144,7 @@
                                       alt="imagen usuario"
                                     />
                                     <span style="font-size:18px">
-                                      {{ item.referentefamiliar }}</span
+                                      {{ item.referentefamiliar }} - {{ item.parentesco }} </span
                                     >
                                   </article>
                                 </v-col>

@@ -125,9 +125,9 @@
                             style="margin-top:2%"
                             color="#009900"
                             label="Grado"
-                            @input="$v.participantesFiltrados.grado.$touch()"
-                            @blur="$v.participantesFiltrados.grado.$touch()"
-                            :error-messages="errorGrado"
+                            @input="$v.participantesFiltrados.$each.$iter[i].grado.$touch()"
+                            @blur="$v.participantesFiltrados.$each.$iter[i].grado.$touch()"
+                            :error-messages="errorGrado(i)"
                         ></v-text-field>
                         <v-menu
                           v-model="item.datemenu"
@@ -145,10 +145,10 @@
                               prepend-icon="mdi-calendar"
                               v-bind="attrs"
                               v-on="on"
-                              @input="$v.participantesFiltrados.fecha.$touch()"
-                              @blur="$v.participantesFiltrados.fecha.$touch()"
-                              :error-messages="errorFechaRealizacion"
-                              label="Fecha de Realización de Sesion de Aprendizaje"
+                              @input="$v.participantesFiltrados.$each.$iter[i].fecha.$touch()"
+                              @blur="$v.participantesFiltrados.$each.$iter[i].fecha.$touch()"
+                              :error-messages="errorFechaRealizacion(i)"
+                              label="Fecha de Participacion en la Sesion de Aprendizaje"
                             ></v-text-field>
                           </template>
                           <v-date-picker
@@ -236,9 +236,9 @@
                             style="margin-top:3%"
                             color="#009900"
                             label="Observaciones"
-                            @input="$v.participantesFiltrados.observaciones.$touch()"
-                            @blur="$v.participantesFiltrados.observaciones.$touch()"
-                            :error-messages="errorObservaciones"
+                            @input="$v.participantesFiltrados.$each.$iter[i].observaciones.$touch()"
+                            @blur="$v.participantesFiltrados.$each.$iter[i].observaciones.$touch()"
+                            :error-messages="errorObservaciones(i)"
                         ></v-text-field>
                         <v-card-actions align="right">
                           <v-row
@@ -405,6 +405,7 @@ export default {
       this.participantesFiltrados = [];
       this.select= { value: "1", text: "Nombre" };
       this.search="";
+      this.botonCambiarFirma = true;
       console.log(this.participantesFiltrados);
     },
     filtradoSearch(array, string){
@@ -478,7 +479,7 @@ export default {
       this.$v.sesioneducativa.$touch();
       //Quitar comentario cuando funcione la validacion de participantesFiltrados xd
       //this.$v.participantesFiltrados.$touch();
-      if (this.$v.sesioneducativa.$invalid) {
+      if (this.$v.sesioneducativa.$invalid || this.$v.participantesFiltrados.$invalid) {
         console.log("hay errores al modificar p llama");
         this.mensaje(
           "error",
@@ -528,7 +529,39 @@ export default {
           this.$v.sesioneducativa.$reset();
           this.$v.participantesFiltrados.$reset();
         } 
-      }
+      },
+    errorGrado(i) {
+      const errors = [];
+      if (!this.$v.participantesFiltrados.$each.$iter[i].grado.$dirty) return errors;
+      !this.$v.participantesFiltrados.$each.$iter[i].grado.required &&
+        errors.push("Debe escribir un grado obligatoriamente");
+      !this.$v.participantesFiltrados.$each.$iter[i].grado.esParrafo &&
+        errors.push("El grado no puede contener caracteres especiales");
+      return errors;
+    },
+    errorObservaciones(i) {
+      const errors = [];
+      if (!this.$v.participantesFiltrados.$each.$iter[i].observaciones.$dirty) return errors;
+      !this.$v.participantesFiltrados.$each.$iter[i].observaciones.required &&
+        errors.push("Debe escribir un observacion obligatoriamente");
+      !this.$v.participantesFiltrados.$each.$iter[i].observaciones.esParrafo &&
+        errors.push("Las observaciones no deben contener caracteres especiales");
+      return errors;
+    },
+    errorFechaRealizacion(i) {
+      const errors = [];
+      if (!this.$v.participantesFiltrados.$each.$iter[i].fecha.$dirty) return errors;
+      !this.$v.participantesFiltrados.$each.$iter[i].fecha.required &&
+        errors.push("Debe ingresar la fecha de participacion obligatoriamente");
+      //validating whether the user are an adult
+      var dateselected = new Date(this.participantesFiltrados[i].fecha);
+      var maxdate = new Date();
+      !(dateselected.getTime() < maxdate.getTime()) &&
+        errors.push("La fecha no debe ser mayor a la actual");
+
+      return errors;
+      console.log(errors);
+    },
   },
   computed:{
     errorTitulo() {
@@ -562,43 +595,13 @@ export default {
 
       return errors;
     },
-    errorGrado() {
-      const errors = [];
-      if (!this.$v.participantesFiltrados.grado.$dirty) return errors;
-      !this.$v.participantesFiltrados.grado.required &&
-        errors.push("Debe escribir un grado obligatoriamente");
-      !this.$v.participantesFiltrados.grado.esParrafo &&
-        errors.push("El grado no puede contener caracteres especiales");
-      return errors;
-    },
-    errorObservaciones() {
-      const errors = [];
-      if (!this.$v.participantesFiltrados.observaciones.$dirty) return errors;
-      !this.$v.participantesFiltrados.observaciones.required &&
-        errors.push("Debe escribir un observacion obligatoriamente");
-      !this.$v.participantesFiltrados.observaciones.esParrafo &&
-        errors.push("Las observaciones no deben contener caracteres especiales");
-      return errors;
-    },
-    errorFechaRealizacion(index) {
-      const errors = [];
-      if (!this.$v.participantesFiltrados.fecha.$dirty) return errors;
-      !this.$v.participantesFiltrados.fecha.required &&
-        errors.push("Debe ingresar la fecha de creacion obligatoriamente");
-      //validating whether the user are an adult
-      var dateselected = new Date(this.participantesFiltrados.fecha);
-      var maxdate = new Date();
-      !(dateselected.getTime() > maxdate.getTime()) &&
-        errors.push("La fecha no debe ser menor a la actual");
 
-      return errors;
-    },
   },
   validations(){
     const validacionfecha = (value)=>{
-      var dateselected = new Date(this.participantesFiltrados.fecha);
+      var dateselected = new Date(value);
       var maxdate = new Date();
-      return (dateselected.getTime() > maxdate.getTime()) 
+      return (dateselected.getTime() < maxdate.getTime()) 
     };
     const validacionfechaCreacion = (value)=>{
       var dateselected = new Date(this.sesioneducativa.fechaCreacion);
@@ -625,25 +628,25 @@ export default {
           esParrafo
         },
       },
-      participantesFiltrados:{
-        idparticipante: {
-          required,
+        participantesFiltrados:{
+          $each:{
+            idparticipante: {
+              required,
+            },
+            grado: {
+              required,
+              esParrafo
+            },
+            fecha: {
+              required,
+              validacionfecha
+            },
+            observaciones: {
+              required,
+              esParrafo
+            }
+          }
         },
-        grado: {
-          required,
-          esParrafo
-        },
-        fecha: {
-          required,
-          validacionfecha
-        },
-        firma: {
-        },
-        observaciones: {
-          required,
-          esParrafo
-        }
-      },
     }
   },
   async mounted() {

@@ -905,117 +905,52 @@
                 </v-card>
               </v-card>
 
-              <v-card style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA">
-                <v-chip class="ma-2" color="green" text-color="white">Firmas de encargados</v-chip>
-                <v-card elevation="0" style="background-color:#EAEAEA" height="70">
-                  <v-row style="margin:1%;heigh:100%" align="center">
-                    <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model="firmas.nombre"
-                        label="Nombre"
-                        color="#009900"
-                        @input="$v.firmas.nombre.$touch()"
-                        @blur="$v.firmas.nombre.$touch()"
-                        :error-messages="errorNombreFirma"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model="firmas.cargo"
-                        label="Cargo"
-                        color="#009900"
-                        @input="$v.firmas.cargo.$touch()"
-                        @blur="$v.firmas.cargo.$touch()"
-                        :error-messages="errorCargoFirma"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col :cols="4" align="right">
-                      <v-btn fab small dark color="green" @click="agregarFirma">
-                        <v-icon dark>mdi-plus</v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-card>
-                <v-row>
-                  <v-col :cols="12" align="right">
-                    <div>
-                      <vue-dropzone
-                        ref="myVueDropzone"
-                        @vdropzone-success="afterSuccess2"
-                        @vdropzone-removed-file="afterRemoved2"
-                        id="dropzone2"
-                        :options="dropzoneOptions2"
-                      ></vue-dropzone>
-                    </div>
-                    <v-card v-if="errorUrlFirma" color="red">
-                      <v-card-text class="text-center" style="color: white">
-                        Debe Subir una imagen de la firma
-                        obligatoriamente
-                      </v-card-text>
-                    </v-card>
-                    <v-divider class="divider-custom"></v-divider>
-                  </v-col>
-                </v-row>
-                <v-card
-                  color="#FAFAFA"
-                  style="margin-top:5px"
-                  height="60"
-                  v-for="(item, index) in fichaIngreso.contenido.firmas"
-                  :key="index"
-                >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col :cols="8">
-                      <article>
-                        <img
-                          style="margin-right:5px;width:6% "
-                          src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
-                          alt="imagen usuario"
-                        />
-                        <span style="font-size:18px">Nombre: {{ item.nombre }} - Cargo: {{ item.cargo }}</span>
-                      </article>
-                    </v-col>
-                    <v-col :cols="2" align="center">
-                      <template>
-                        <v-btn fab icon x-small dark color="#EAEAEA" @click="verFirma(index)">
-                          <img
-                            style="width:25% "
-                            src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
-                            alt="firma"
-                          />
-                        </v-btn>
-                      </template>
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <div style="margin-right:20px">
-                        <v-btn fab x-small dark color="red" @click="eliminarFirma(index)">
-                          <v-icon dark>mdi-minus</v-icon>
-                        </v-btn>
+              <v-card
+                    style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                  >
+                  <v-card class="subcard">
+                          <v-card-title>Datos del Informante</v-card-title>
+                          <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
+                              <v-text-field
+                                  v-model="this.user.usuario"
+                                  label="Autor de la ficha de ingreso"
+                                  outlined
+                                  color="info"
+                                  readonly
+                                ></v-text-field>
+                          </v-card >
+                               <v-card class="subcard" color="#e6f3ff">
+                                   <v-text-field
+                                    v-model="this.user.rol.nombre"
+                                    label="Cargo del Autor"
+                                    outlined
+                                    color="info"
+                                    readonly
+                                  ></v-text-field>
+                               </v-card>
+                        </v-card>
+                  <v-row>
+                    <v-col :cols="12" align="left">
+                      <div>
+                        <vue-dropzone
+                          ref="myVueDropzone"
+                          @vdropzone-success="afterSuccess2"
+                          @vdropzone-removed-file="afterRemoved2"
+                          id="dropzone2"
+                          :options="dropzoneOptionsFirma"
+                          @vdropzone-mounted="mounteddropzone"
+                        >
+                        </vue-dropzone>
+                        <v-card v-if="errorFirma" class="error-card" color="red">
+                          <v-card-text class="text-center" style="color: white"
+                            >Debe Subir una firma obligatoriamente
+                            </v-card-text
+                          >
+                        </v-card>
                       </div>
                     </v-col>
                   </v-row>
                 </v-card>
-              </v-card>
-              <div>
-                <h4
-                  v-if="$v.fichaIngreso.contenido.firmas.$error"
-                  class="red--text"
-                >Debe tener como mínimo una firma registrada</h4>
-              </div>
-
-              <v-dialog v-model="dialogVistaPreviaFirma" persistent max-width="600px">
-                <v-card align="center">
-                  <v-card-title>
-                    <span class="headline">Vista previa</span>
-                  </v-card-title>
-                  <v-card-text>
-                    <img width="100%" height="100%" :src="'data:image/jpeg;base64,' + imagen" alt />
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="cerrarVistaPreviaFirma()">Cerrar</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
 
               <v-row>
                 <v-col>
@@ -1028,7 +963,7 @@
                 <v-col>
                   <v-btn block @click="registrarFichaIngresoSocial" color="success">
                     <v-icon left>mdi-content-save-all-outline</v-icon>
-                    <span>Registrar Informe</span>
+                    <span>Actualizar Ficha de ingreso social</span>
                   </v-btn>
                 </v-col>
               </v-row>
@@ -1059,7 +994,6 @@ function esParrafo(value) {
 
 export default {
   props: ["listaresidentes", "fichaIngreso"],
-  ...mapMutations(["setFichaIngreso", "addFichaIngreso"]),
   components: {
     vueDropzone: vue2Dropzone
   },
@@ -1094,7 +1028,7 @@ export default {
       datemenu: false,
       step: 1,
 
-      dropzoneOptions2: {
+      dropzoneOptionsFirma: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
         maxFilesize: 5.0,
@@ -1132,40 +1066,20 @@ export default {
   },
 
   methods: {
-    cerrarDialogo() {
-      this.step = 1;
-      this.$emit("cerrar-modal-registro-ficha-ingreso");
-      this.limpiarFichaIngreso();
-      this.limpiarCampos();
-      //limpiar los campos que contienen los datos acumulados
+    ...mapMutations(["replaceFichaIngreso"]),
+    mounteddropzone(){
+      var file = { size: 123, name: "Firma del Documento", type: "image/jpg" };
+      this.$refs.myVueDropzone.manuallyAddFile(file, this.fichaIngreso.contenido.firma.urlfirma,null,null,true);
     },
-    /*async sendPDFFiles() {
-      let listaTitulos = [];
-      let listaanexos = this.fileList;
-      for (let index = 0; index < this.fileList.length; index++) {
-        let formData = new FormData();
-        listaTitulos.push(this.fileList[index].name)
-        formData.append("file", this.fileList[index]);
-        await axios
-          .post("/Media/archivos/pdf", formData)
-          .then((res) => {
-            listaanexos[index] = res.data;
-          })
-          .catch((err) => console.log(err));
-      }
-      for (let index = 0; index < this.fileList.length; index++) {
-        this.informe.contenido.anexos.push(
-          {
-            url: listaanexos[index],
-            titulo: listaTitulos[index],
-          }
-        )
-      }
-      console.log(this.informe.contenido.anexos);
-    },*/
+    cerrarDialogo(){     
+      this.$emit("cerrar-modal-edicion-ficha-ingreso");
+      this.step = 1;
+      this.$refs.myVueDropzone.removeAllFiles();
+      this.limpiarCampos();
+      this.$v.$reset();
+    },
     async registrarFichaIngresoSocial() {
       //await this.sendPDFFiles();
-      this.fichaIngreso.creadordocumento = this.user.id;
 
       this.$v.fichaIngreso.$touch();
       if (this.$v.fichaIngreso.$invalid) {
@@ -1176,23 +1090,38 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+        this.fichaIngreso.contenido.firma.nombre = this.user.usuario;
+        this.fichaIngreso.contenido.firma.cargo = this.user.rol.nombre;
 
-      let ficha = this.fichaIngreso;
+        let ficha = this.fichaIngreso;
 
-      await axios
-        .post("/documento/fichaingresosocialcrear", ficha)
-        .then(res => {
-          this.mensaje(
-            "success",
-            "Listo",
-            "Ficha de ingreso social registrada satisfactoriamente",
-            "<strong>Se redirigira a la interfaz de fichas<strong>"
-          );
+        await axios
+          .put("/documento/fichaingresosocial",ficha)
+          .then((res) => {
+            this.replaceFichaIngreso(res.data);
+            this.cerrarDialogo();
+          })
+          .catch((err) => console.log(err));
+            await this.mensaje(
+              "success",
+              "listo",
+              "Ficha de Ingreso social Modificada Satisfactoriamente",
+              "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+            );
+        /*await axios
+          .post("/documento/fichaingresosocialcrear", ficha)
+          .then(res => {
+            this.mensaje(
+              "success",
+              "Listo",
+              "Ficha de ingreso social registrada satisfactoriamente",
+              "<strong>Se redirigira a la interfaz de fichas<strong>"
+            );
 
-          this.$v.motivoIngreso.$reset();
-          this.cerrarDialogo();
-        })
-        .catch(err => console.log(err));
+            this.$v.motivoIngreso.$reset();
+            this.cerrarDialogo();
+          })
+          .catch(err => console.log(err));*/
       }
     },
     agregarMotivoIngreso() {
@@ -1310,10 +1239,10 @@ export default {
       this.dialogVistaPreviaFirma = false;
     },
     afterSuccess2(file, response) {
-      this.urlfirma = file.dataURL.split(",")[1];
+      this.fichaIngreso.contenido.firma.urlfirma = file.dataURL.split(",")[1];
     },
     afterRemoved2(file, error, xhr) {
-      this.urlfirma = "";
+      this.fichaIngreso.contenido.firma.urlfirma = "";
     },
     //Del modal de composicion familiar
     modalRegistrar() {
@@ -1490,56 +1419,7 @@ export default {
         footer: footer
       });
     },
-
-    limpiarFichaIngreso() {
-      this.fichaIngreso = {
-        id: "",
-        tipo: "FichaSocialIngreso",
-        historialcontenido: [],
-        creadordocumento: "",
-        fechacreacion: new Date(),
-        area: "social",
-        fase: "acogida",
-        idresidente: "",
-        estado: "creado",
-        contenido: {
-          familiar: {
-            motivoingreso: [],
-            familiares: [],
-            tipofamilia: "",
-            problematicafam: ""
-          },
-          vivienda: {
-            ubicacion: "",
-            descripcionubicacion: "",
-            habitantes: [],
-            habitacionesdormir: "",
-            tipopropiedad: "",
-            tipo: "",
-            material: "",
-            tipopiso: "",
-            tipotecho: "",
-            servicios: []
-          },
-          economico: {
-            condicionlaboral: "",
-            ocupacion: "",
-            ingresos: [],
-            egresos: [],
-            observacion: ""
-          },
-          salud: "",
-          legal: {
-            penales: [],
-            apoyolocal: ""
-          },
-          diagnosticosocial: "",
-          planintervencion: "",
-          firmas: [],
-          codigodocumento: ""
-        }
-      };
-    },
+    
     limpiarCampos() {
       this.motivosIngreso = "";
       this.motivoIngreso = "";
@@ -1778,7 +1658,13 @@ export default {
         );
       return errors;
     },
-    errorFirmas() {
+    errorFirma() {
+      return this.$v.fichaIngreso.contenido.firma.urlfirma.required == false &&
+        this.$v.fichaIngreso.contenido.firma.urlfirma.$dirty == true
+        ? true
+        : false;
+    },
+    /*errorFirmas() {
       const errors = [];
       if (!this.$v.fichaIngreso.contenido.firmas.$dirty)
         return errors;
@@ -1787,7 +1673,7 @@ export default {
           "Debe ingresar al menos una firma del encargado"
         );
       return errors;
-    },
+    },*/
     //validaciones para listas
     errorTextomotivoingreso() {
       const errors = [];
@@ -2048,9 +1934,17 @@ export default {
           planintervencion: {
             required
           },
-          firmas: {
-            required
-          } //[]
+          firma: {
+            nombre: {
+              required
+            },
+            cargo: {
+              required
+            },
+            urlfirma: {
+              required,
+            },
+          },
         }
       },
       motivoIngreso:{

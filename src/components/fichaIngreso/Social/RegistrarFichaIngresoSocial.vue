@@ -905,7 +905,7 @@
                 </v-card>
               </v-card>
 
-              <v-card style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA">
+              <!-- <v-card style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA">
                 <v-chip class="ma-2" color="green" text-color="white">Firmas de encargados</v-chip>
                 <v-card elevation="0" style="background-color:#EAEAEA" height="70">
                   <v-row style="margin:1%;heigh:100%" align="center">
@@ -1015,7 +1015,53 @@
                     <v-btn color="blue darken-1" text @click="cerrarVistaPreviaFirma()">Cerrar</v-btn>
                   </v-card-actions>
                 </v-card>
-              </v-dialog>
+              </v-dialog> -->
+
+                <v-card
+                    style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                  >
+                  <v-card class="subcard">
+                          <v-card-title>Datos del Informante</v-card-title>
+                          <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
+                              <v-text-field
+                                  v-model="this.user.usuario"
+                                  label="Autor de la ficha de ingreso"
+                                  outlined
+                                  color="info"
+                                  readonly
+                                ></v-text-field>
+                          </v-card >
+                               <v-card class="subcard" color="#e6f3ff">
+                                   <v-text-field
+                                    v-model="this.user.rol.nombre"
+                                    label="Cargo del Autor"
+                                    outlined
+                                    color="info"
+                                    readonly
+                                  ></v-text-field>
+                               </v-card>
+                        </v-card>
+                  <v-row>
+                    <v-col :cols="12" align="left">
+                      <div>
+                        <vue-dropzone
+                          ref="myVueDropzone"
+                          @vdropzone-success="afterSuccess2"
+                          @vdropzone-removed-file="afterRemoved2"
+                          id="dropzone2"
+                          :options="dropzoneOptionsFirma"
+                        >
+                        </vue-dropzone>
+                        <v-card v-if="errorFirma" class="error-card" color="red">
+                          <v-card-text class="text-center" style="color: white"
+                            >Debe Subir una firma obligatoriamente
+                            </v-card-text
+                          >
+                        </v-card>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-card>
 
               <v-row>
                 <v-col>
@@ -1059,7 +1105,6 @@ function esParrafo(value) {
 
 export default {
   props: ["listaresidentes"],
-  ...mapMutations(["setFichaIngreso", "addFichaIngreso"]),
   components: {
     vueDropzone: vue2Dropzone
   },
@@ -1094,7 +1139,7 @@ export default {
       datemenu: false,
       step: 1,
 
-      dropzoneOptions2: {
+      dropzoneOptionsFirma: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
         maxFilesize: 5.0,
@@ -1125,7 +1170,6 @@ export default {
       penales: [],
 
       urlfirma: "",
-      firmas: { urlfirma: "", nombre: "", cargo: "" },
 
       fichaIngreso: {
         id: "",
@@ -1170,7 +1214,11 @@ export default {
           },
           diagnosticosocial: "",
           planintervencion: "",
-          firmas: [],
+          firma :{
+            urlfirma:"",
+            nombre:"",
+            cargo:""
+          },
           codigodocumento: ""
         }
       },
@@ -1179,12 +1227,15 @@ export default {
   },
 
   methods: {
+    ...mapMutations(["addFichaIngreso"]),
     cerrarDialogo() {
-      this.step = 1;
+      //limpiar los campos que contienen los datos acumulados
       this.$emit("cerrar-modal-registro-ficha-ingreso");
+      this.step = 1;  
+      this.$refs.myVueDropzone.removeAllFiles();
       this.limpiarFichaIngreso();
       this.limpiarCampos();
-      //limpiar los campos que contienen los datos acumulados
+      this.$v.$reset();
     },
     /*async sendPDFFiles() {
       let listaTitulos = [];
@@ -1213,6 +1264,11 @@ export default {
     async registrarFichaIngresoSocial() {
       //await this.sendPDFFiles();
       this.fichaIngreso.creadordocumento = this.user.id;
+      this.fichaIngreso.contenido.firma = {
+        urlfirma : this.fichaIngreso.contenido.firma.urlfirma,
+        nombre: this.user.usuario,
+        cargo: this.user.rol.nombre
+      };
 
       this.$v.fichaIngreso.$touch();
       if (this.$v.fichaIngreso.$invalid) {
@@ -1223,23 +1279,22 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+        let ficha = this.fichaIngreso;
 
-      let ficha = this.fichaIngreso;
-
-      await axios
+        await axios
         .post("/documento/fichaingresosocialcrear", ficha)
         .then(res => {
-          this.mensaje(
-            "success",
-            "Listo",
-            "Ficha de ingreso social registrada satisfactoriamente",
-            "<strong>Se redirigira a la interfaz de fichas<strong>"
-          );
-
-          this.$v.motivoIngreso.$reset();
+          this.addFichaIngreso(res.data);
           this.cerrarDialogo();
         })
         .catch(err => console.log(err));
+
+        this.mensaje(
+          "success",
+          "Listo",
+          "Ficha de Ingreso social registrada satisfactoriamente",
+          "<strong>Se redirigira a la interfaz de fichas<strong>"
+        );
       }
     },
     agregarMotivoIngreso() {
@@ -1327,40 +1382,40 @@ export default {
       this.fichaIngreso.contenido.legal.penales.splice(index, 1);
     },
     agregarFirma() {
-      this.$v.firmas.$touch();
+      this.$v.firma.$touch();
       this.$v.urlfirma.$touch();
 
-      if (!this.$v.firmas.$invalid && !this.$v.urlfirma.$invalid) {
-        let firmas = {
+      if (!this.$v.firma.$invalid && !this.$v.urlfirma.$invalid) {
+        let firma = {
           urlfirma: this.urlfirma,
-          nombre: this.firmas.nombre,
-          cargo: this.firmas.cargo
+          nombre: this.firma.nombre,
+          cargo: this.firma.cargo
         };
-        this.fichaIngreso.contenido.firmas.push(firmas);
+        this.fichaIngreso.contenido.firma.push(firma);
         this.$refs.myVueDropzone.removeAllFiles();
 
         this.urlfirma = "";
-        this.firmas.nombre = "";
-        this.firmas.cargo = "";
-        this.$v.firmas.$reset();
+        this.firma.nombre = "";
+        this.firma.cargo = "";
+        this.$v.firma.$reset();
         this.$v.urlfirma.$reset();
       }
     },
     eliminarFirma(index) {
-      this.fichaIngreso.contenido.firmas.splice(index, 1);
+      this.fichaIngreso.contenido.firma.splice(index, 1);
     },
     verFirma(index) {
-      this.imagen = this.fichaIngreso.contenido.firmas[index].urlfirma;
+      this.imagen = this.fichaIngreso.contenido.firma[index].urlfirma;
       this.dialogVistaPreviaFirma = true;
     },
-    cerrarVistaPreviaFirma() {
+    /*cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
-    },
+    },*/
     afterSuccess2(file, response) {
-      this.urlfirma = file.dataURL.split(",")[1];
+      this.fichaIngreso.contenido.firma.urlfirma = file.dataURL.split(",")[1];
     },
     afterRemoved2(file, error, xhr) {
-      this.urlfirma = "";
+      this.fichaIngreso.contenido.firma.urlfirma = "";
     },
     //Del modal de composicion familiar
     modalRegistrar() {
@@ -1582,7 +1637,11 @@ export default {
           },
           diagnosticosocial: "",
           planintervencion: "",
-          firmas: [],
+          firma: {
+            urlfirma:"",
+            nombre:"",
+            cargo:""
+          },
           codigodocumento: ""
         }
       };
@@ -1825,16 +1884,12 @@ export default {
         );
       return errors;
     },
-    errorFirmas() {
-      const errors = [];
-      if (!this.$v.fichaIngreso.contenido.firmas.$dirty)
-        return errors;
-      !this.$v.fichaIngreso.contenido.firmas.required &&
-        errors.push(
-          "Debe ingresar al menos una firma del encargado"
-        );
-      return errors;
-    },
+    errorFirma() {
+        return this.$v.fichaIngreso.contenido.firma.urlfirma.required == false &&
+          this.$v.fichaIngreso.contenido.firma.urlfirma.$dirty == true
+          ? true
+          : false;
+      },
     //validaciones para listas
     errorTextomotivoingreso() {
       const errors = [];
@@ -1901,27 +1956,21 @@ export default {
     //validaciones firma
     errorNombreFirma() {
       const errors = [];
-      if (!this.$v.firmas.nombre.$dirty) return errors;
-      !this.$v.firmas.nombre.required &&
+      if (!this.$v.firma.nombre.$dirty) return errors;
+      !this.$v.firma.nombre.required &&
         errors.push("Debe registrar el nombre obligatoriamente");
-      !this.$v.firmas.nombre.esTexto &&
+      !this.$v.firma.nombre.esTexto &&
         errors.push("Debe registrar el nombre correctamente");
       return errors;
     },
     errorCargoFirma() {
       const errors = [];
-      if (!this.$v.firmas.cargo.$dirty) return errors;
-      !this.$v.firmas.cargo.required &&
+      if (!this.$v.firma.cargo.$dirty) return errors;
+      !this.$v.firma.cargo.required &&
         errors.push("Debe registrar el cargo obligatoriamente");
-      !this.$v.firmas.cargo.esTexto &&
+      !this.$v.firma.cargo.esTexto &&
         errors.push("Debe registrar el cargo correctamente");
       return errors;
-    },
-    errorUrlFirma() {
-      return this.$v.urlfirma.required == false &&
-        this.$v.urlfirma.$dirty == true
-        ? true
-        : false;
     },
     //validaciones modal familiar
     errorNumeroDocumentoFamiliar() {
@@ -2095,9 +2144,17 @@ export default {
           planintervencion: {
             required
           },
-          firmas: {
-            required
-          } //[]
+          firma: {
+            nombre: {
+              required
+            },
+            cargo: {
+              required
+            },
+            urlfirma: {
+              required,
+            },
+          }
         }
       },
       motivoIngreso:{
@@ -2126,19 +2183,6 @@ export default {
         },
         motivo: {
           required
-        }
-      },
-      urlfirma: {
-        required,
-      },
-      firmas: {
-        nombre: {
-          required,
-          esTexto
-        },
-        cargo: {
-          required,
-          esTexto
         }
       },
       familiar: {

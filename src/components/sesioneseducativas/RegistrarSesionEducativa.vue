@@ -165,6 +165,7 @@
                       >
                         <template v-slot:activator="{ on, attrs }">
                           <v-text-field
+                            readonly
                             v-model="ParticipanteSesion.fecha"
                             style="margin-top:5px"
                             color="#009900"
@@ -173,8 +174,8 @@
                             v-on="on"
                             @input="$v.ParticipanteSesion.fecha.$touch()"
                             @blur="$v.ParticipanteSesion.fecha.$touch()"
-                            :error-messages="errorFechaRealizacion"
-                            label="Fecha de Realización de Sesion de Aprendizaje"
+                            :error-messages="errorFechaAsistencia"
+                            label="Fecha de Asistencia a la Sesion de Aprendizaje"
                           ></v-text-field>
                         </template>
                         <v-date-picker
@@ -229,6 +230,9 @@
                               v-model="item.grado"
                               color="#009900"
                               label="Grado"
+                              @input="$v.sesioneducativa.contenido.participantes.$each.$iter[i].grado.$touch()"
+                              @blur="$v.sesioneducativa.contenido.participantes.$each.$iter[i].grado.$touch()"
+                              :error-messages="errorGradoParticipantes(i)"
                             ></v-text-field>
                             <v-menu
                               v-model="item.datemenu2"
@@ -241,12 +245,16 @@
                               <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
                                   v-model="item.fecha"
+                                  readonly
                                   style="margin-top:5px"
                                   color="#009900"
                                   prepend-icon="mdi-calendar"
                                   v-bind="attrs"
                                   v-on="on"
-                                  label="Fecha de Realización de Sesion de Aprendizaje"
+                                  label="Fecha de Asistencia a la Sesion de Aprendizaje"
+                                  @input="$v.sesioneducativa.contenido.participantes.$each.$iter[i].fecha.$touch()"
+                                  @blur="$v.sesioneducativa.contenido.participantes.$each.$iter[i].fecha.$touch()"
+                                  :error-messages="errorFechaRealizacionParticipantes(i)"
                                 ></v-text-field>
                               </template>
                               <v-date-picker
@@ -259,6 +267,9 @@
                               v-model="item.observaciones"
                               color="#009900"
                               label="Observaciones"
+                              @input="$v.sesioneducativa.contenido.participantes.$each.$iter[i].observaciones.$touch()"
+                              @blur="$v.sesioneducativa.contenido.participantes.$each.$iter[i].observaciones.$touch()"
+                              :error-messages="errorObservacionesParticipantes(i)"
                             ></v-text-field>
                             <v-btn
                               dark
@@ -637,8 +648,36 @@ export default {
         this.$v.sesioneducativa.$reset();
         this.$v.ParticipanteSesion.$reset();
       }
-
-
+    },
+    errorGradoParticipantes(i) {
+      const errors = [];
+      if (!this.$v.sesioneducativa.contenido.participantes.$each.$iter[i].grado.$dirty) return errors;
+      !this.$v.sesioneducativa.contenido.participantes.$each.$iter[i].grado.required &&
+        errors.push("Debe escribir un grado obligatoriamente");
+      !this.$v.sesioneducativa.contenido.participantes.$each.$iter[i].grado.esParrafo &&
+        errors.push("El grado no puede contener caracteres especiales");
+      return errors;
+    },
+    errorObservacionesParticipantes(i) {
+      const errors = [];
+      if (!this.$v.sesioneducativa.contenido.participantes.$each.$iter[i].observaciones.$dirty) return errors;
+      !this.$v.sesioneducativa.contenido.participantes.$each.$iter[i].observaciones.required &&
+        errors.push("Debe escribir un observacion obligatoriamente");
+      !this.$v.sesioneducativa.contenido.participantes.$each.$iter[i].observaciones.esParrafo &&
+        errors.push("Las observaciones no deben contener caracteres especiales");
+      return errors;
+    },
+    errorFechaRealizacionParticipantes(i) {
+      const errors = [];
+      if (!this.$v.sesioneducativa.contenido.participantes.$each.$iter[i].fecha.$dirty) return errors;
+      !this.$v.sesioneducativa.contenido.participantes.$each.$iter[i].fecha.required &&
+        errors.push("Debe ingresar la fecha de creacion obligatoriamente");
+      var dateselected = new Date(this.sesioneducativa.contenido.participantes[i].fecha);
+      var maxdate = new Date();
+      !(dateselected.getTime() < maxdate.getTime()) &&
+        errors.push("La fecha no debe ser mayor a la actual");
+      return errors;
+      console.log(errors);
     },
   },
   computed:{
@@ -682,6 +721,7 @@ export default {
       !(dateselected.getTime() < maxdate.getTime()) &&
         errors.push("La fecha no debe ser mayor a la actual");
       return errors;
+
     },
     errorResidente() {
       const errors = [];
@@ -708,23 +748,23 @@ export default {
         errors.push("Las observaciones no deben contener caracteres especiales");
       return errors;
     },
-    errorFechaRealizacion() {
+    errorFechaAsistencia() {
       const errors = [];
       if (!this.$v.ParticipanteSesion.fecha.$dirty) return errors;
       !this.$v.ParticipanteSesion.fecha.required &&
         errors.push("Debe ingresar la fecha de creacion obligatoriamente");
       var dateselected = new Date(this.ParticipanteSesion.fecha);
       var maxdate = new Date();
-      !(dateselected.getTime() > maxdate.getTime()) &&
-        errors.push("La fecha no debe ser menor a la actual");
+      !(dateselected.getTime() < maxdate.getTime()) &&
+        errors.push("La fecha no debe ser mayor a la actual");
       return errors;
     },
   },
   validations(){
     const validacionfecha = (value)=>{
-      var dateselected = new Date(this.ParticipanteSesion.fecha);
+      var dateselected = new Date(value);
       var maxdate = new Date();
-      return (dateselected.getTime() > maxdate.getTime()) 
+      return (dateselected.getTime() < maxdate.getTime()) 
     };
     const validacionfechaCreacion = (value)=>{
       var dateselected = new Date(this.sesioneducativa.fechaCreacion);
@@ -750,6 +790,27 @@ export default {
           //minLength: minLength(3),
           esParrafo
         },
+        contenido:{
+          participantes:{
+            $each:{
+              idparticipante: {
+                required,
+              },
+              grado: {
+                required,
+                esParrafo
+              },
+              fecha: {
+                required,
+                validacionfecha
+              },
+              observaciones: {
+                required,
+                esParrafo
+              }
+            }
+        }
+        }
       },
       ParticipanteSesion:{
         idparticipante: {
@@ -762,8 +823,6 @@ export default {
         fecha: {
           required,
           validacionfecha
-        },
-        firma: {
         },
         observaciones: {
           required,
