@@ -183,7 +183,8 @@ import { mapMutations, mapState} from "vuex";
 import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
 export default {
-   props:["listaActas","actaexternamiento","usuario"],
+ //  props:["listaActas","actaexternamiento","usuario"],
+     props:["listaActas","usuario"],
    components: {
     vueDropzone: vue2Dropzone,
   },
@@ -201,11 +202,23 @@ export default {
         addRemoveLinks: true,
          dictDefaultMessage: "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
       },
-                  
+         //imagen:{tipo:"url",modificado:"no"},            
+    actaexternamiento: {
         
+        datos: {
+       id: "",
+        fechacreacion:"",
+        fechanacimiento:"",
+        idresidente:"",       
         
-        imagen:{tipo:"url",modificado:"no"}
+        entidaddisposicion:"",  
+        numeroresolucion:"",  
+        numerooficio:"",  
+        observaciones:"",
         
+        imagen:""
+        },
+      },
     };
   },async created(){
   },
