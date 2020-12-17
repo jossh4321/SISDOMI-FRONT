@@ -205,18 +205,16 @@ export default {
          //imagen:{tipo:"url",modificado:"no"},            
     actaexternamiento: {
         
-         id:"", tipo:"", historialcontenido:[], creadordocumento:"", fechacreacion:new Date().toISOString(), 
+         id:"", tipo:"ActaExternamiento", historialcontenido:[], creadordocumento:"", fechacreacion:new Date().toISOString(), 
         area:"social", fase:"3", idresidente:"", estado:"",
 
         contenido: {
 
-        responsable: "",      
-                      
+        responsable:"",                           
         entidaddisposicion:"",  
         numeroresolucion:"",  
         numerooficio:"",  
-        observaciones:"",
-        
+        observaciones:"",        
         firmas:[]
         },
       },
@@ -245,7 +243,7 @@ export default {
             this.replaceUsuario(resultado);
             this.cerrarDialogo();
           }).catch(err => console.log(err));
-          await this.mensaje('success','listo','Usuario Actualizado Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
+          await this.mensaje('success','listo','Acta Actualizada Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
       }
     },
     resetUsuarioValidationState(){
