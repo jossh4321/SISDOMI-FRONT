@@ -237,7 +237,7 @@ export default {
         this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
       } else {
         console.log('no hay errores');
-        await axios.put("/actaexternamiento/update"+this.firmas.tipo+"&modificado="+this.firmas.modificado,this.actaexternamiento)
+        await axios.put("/actaexternamiento/update?tipo="+this.firmas.tipo+"&modificado="+this.firmas.modificado,this.actaexternamiento)
           .then(res => {
             var resultado = res.data;
             this.replaceUsuario(resultado);
