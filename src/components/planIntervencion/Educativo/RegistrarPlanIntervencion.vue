@@ -63,7 +63,6 @@
                           color="primary"
                           class="headline font-weight-light white--text"
                         >
-                        
                           {{ item.item.residente.charAt(0) }}
                         </v-list-item-avatar>
                         <v-list-item-content>
@@ -428,10 +427,34 @@ export default {
         residente: "",
         id: "",
         faseActual: "",
-        numeroDocumento: ""
+        numeroDocumento: "",
       },
       searchResidente: null,
       loadingSearch: false,
+      fasesPlanIntervencion: {
+        fases: [1, 2],
+        area: "educativa",
+        documentoEstadosAnteriores: [
+          {
+            tipo: "InformeEducativoInicial",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualEducativo",
+            estado: "Pendiente",
+          },
+        ],
+        documentoEstadosActuales: [
+          {
+            tipo: "PlanIntervencionIndividualEducativo",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualEducativo",
+            estado: "Completo",
+          },
+        ],
+      },
     };
   },
   validations() {
@@ -511,7 +534,7 @@ export default {
           residente: "",
           id: "",
           numeroDocumento: "",
-          faseActual: ""
+          faseActual: "",
         };
       }
 
@@ -523,9 +546,9 @@ export default {
       }
 
       this.loadingSearch = true;
-
+      
       axios
-        .get("/residente/planes/area/educativa")
+        .post("/residente/all/fases/documentos", this.fasesPlanIntervencion)
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
             return {
@@ -582,7 +605,7 @@ export default {
 
         let planIntervencionIndividual = {
           idresidente: this.residente.id,
-          planintervencionindividual: this.planI
+          planintervencionindividual: this.planI,
         };
 
         await axios
@@ -590,7 +613,6 @@ export default {
           .then((res) => {
             this.planI = res.data;
             if (this.planI.id !== "") {
-
               this.mensaje(
                 "success",
                 "Listo",
@@ -626,7 +648,10 @@ export default {
       });
     },
     addObjEspecifico() {
-      if (this.objetivoespecificoAux != "" && !this.$v.objetivoespecificoAux.$invalid) {
+      if (
+        this.objetivoespecificoAux != "" &&
+        !this.$v.objetivoespecificoAux.$invalid
+      ) {
         this.planI.contenido.objetivoEspecificos.push(
           this.objetivoespecificoAux
         );
@@ -670,12 +695,11 @@ export default {
     getTitleByFaseResident() {
       if (this.residente != null) {
         if (this.residente.faseActual != "") {
-          
           if (this.residente.faseActual == "1") {
             this.planI.contenido.titulo = "Plan de Intervención Educativa";
           } else {
             this.planI.contenido.titulo =
-              "Plan de Intervención Individual" + this.residente.residente;
+              "Plan de Intervención Individual " + this.residente.residente;
           }
 
           return this.planI.contenido.titulo;
@@ -870,7 +894,7 @@ export default {
 
       return errors;
     },
-  }
+  },
 };
 </script>
 <style  scoped>

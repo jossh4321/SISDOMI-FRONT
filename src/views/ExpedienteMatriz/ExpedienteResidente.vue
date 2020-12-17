@@ -289,11 +289,14 @@
         </v-card>
       </v-card-text>
       <v-dialog v-model="dialogDocuments" max-width="500">
-        <detalle-documentos :areaDocuments="areaDocuments"></detalle-documentos>
+        <detalle-documentos
+          :areaDocuments="areaDocuments"
+          @close-detail-documents="closeDetailDocuments"
+        ></detalle-documentos>
       </v-dialog>
       <v-dialog v-model="dialogPDFs" max-width="500" persistent>
         <v-card>
-          <v-card-title>Visualización de los anexos</v-card-title>
+          <v-card-title>Visualización de los anexos </v-card-title>
           <v-card-subtitle
             >Visualice todos los archivos en formato pdf del anexo
             seleccionado</v-card-subtitle
@@ -322,9 +325,22 @@
           </v-card-text>
         </v-card>
       </v-dialog>
-      <v-dialog v-model="dialogPDF" max-width="600">
+      <v-dialog v-model="dialogPDF" max-width="600" persistent>
         <v-card>
-          <v-card-title>Visualización del documento en PDF</v-card-title>
+          <v-card-title>
+            Visualización del documento en PDF
+            <v-spacer></v-spacer>
+            <v-btn
+              fab
+              rounded
+              small
+              color="primary"
+              @click="closeDialogDetailPdf"
+            >
+              <v-icon dark>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+
           <v-card-text>
             <iframe :src="urlAnnexe" width="100%" height="600"></iframe>
           </v-card-text>
@@ -394,7 +410,14 @@ export default {
     showAnnexe(enlace) {
       this.dialogPDF = true;
       this.urlAnnexe = enlace.link;
-    }
+    },
+    closeDialogDetailPdf() {
+      this.dialogPDF = false;
+      this.urlAnnexe = "";
+    },
+    closeDetailDocuments() {
+      this.dialogDocuments = false;
+    },
   },
   filters: {
     toPhoneReference(value) {
