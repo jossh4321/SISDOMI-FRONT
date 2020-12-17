@@ -41,7 +41,7 @@
                     <v-avatar left color="#b3b3ff" size="24">
                       <span style="font-size: 12px">RT</span>
                     </v-avatar>
-                    {{ data.item.nombre }}
+                    {{ data.item.nombre + " " + data.item.apellido }}
                   </v-chip>
                 </template>
                 <template v-slot:item="data">
@@ -53,7 +53,7 @@
                     </v-list-item-avatar>
                     <v-list-item-content>
                       <v-list-item-title
-                        >Rol: {{ data.item.nombre }}</v-list-item-title
+                        >Rol: {{ data.item.nombre + " " + data.item.apellido }}</v-list-item-title
                       >
                       <v-list-item-subtitle
                         >Area: {{ data.item.area }}</v-list-item-subtitle
@@ -225,15 +225,15 @@ export default {
       actaexternamiento: {
         
         datos: {
-       
+       id: "",
         fechacreacion:"",
         
-        idresidente:" ",       
+        idresidente:"",       
         
-        entidaddisposicion:" ",  
-        numeroresolucion:" ",  
-        numerooficio:" ",  
-        observaciones:" ",
+        entidaddisposicion:"",  
+        numeroresolucion:"",  
+        numerooficio:"",  
+        observaciones:"",
         
         imagen:""
         },
@@ -304,7 +304,7 @@ export default {
       return {
        
         datos: {
-       
+       id: "",
         fechacreacion:"",
        
         
