@@ -696,13 +696,7 @@ export default {
           value: { nombre: "En adopcion", previcion: true },
         },
       ],
-      itemParentesco: [
-        { text: "Madre", value: "Madre" },
-        { text: "Padre", value: "Padre" },
-        { text: "Tio(a)", value: "Tio(a)" },
-        { text: "Hermano(a)", value:  "Hermano(a)"},
-        { text: "Abuelo(a)", value:  "Abuelo(a)" },
-      ],
+      itemParentesco: [ "Madre", "Padre", "Tio(a)", "Hermano(a)"],        
       miFase: { nombre: "Acogida", fase: 1 },
       residente: {
         id: "",

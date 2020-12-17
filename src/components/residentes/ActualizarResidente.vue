@@ -719,13 +719,7 @@ export default {
         { text: "Reinsercion", value: { nombre: "Desarrollo", fase: 3 } },
         { text: "Seguimiento", value: { nombre: "Desarrollo", fase: 4 } },
       ],
-      itemParentesco: [
-        { text: "Madre", value: "Madre" },
-        { text: "Padre", value: "Padre" },
-        { text: "Tio(a)", value: "Tio(a)" },
-        { text: "Hermano(a)", value:  "Hermano(a)"},
-        { text: "Abuelo(a)", value:  "Abuelo(a)" },
-      ],
+      itemParentesco: [ "Madre", "Padre", "Tio(a)", "Hermano(a)"],        
     };
   },
   methods: {
