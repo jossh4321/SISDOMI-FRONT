@@ -88,6 +88,7 @@
       <v-dialog persistent v-model="dialogopromover" max-width="880px">
         <PromoverResidente
           :residente="residente"
+          :dialogopromover="dialogopromover"
           @close-dialog-promover="closeDialogPromover()"
         >
         </PromoverResidente>
