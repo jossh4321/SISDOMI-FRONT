@@ -157,11 +157,18 @@ export default {
           href: "/dashboard/residentes"
         },
         {
-          title: "Gestionar Seguimiento Educativo",
+          title: "Gestion Ficha Ingreso",
           group: "admin",
           icon: "dashboard",
-          name: "GestionarSeguimientoEducativo",
-          href: "/dashboard/seguimientoEducativo"
+          name: "GestionarFichaIngreso",
+          href: "/dashboard/fichaIngreso"
+        },        
+        {
+          title: "Gestionar Informes",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionInforme",
+          href: "/dashboard/informes"
         },
         {
           title: "Planes",
@@ -171,30 +178,31 @@ export default {
           href: "/dashboard/planIntervencion"
         },
         {
+          title: "Gestionar Seguimiento Educativo",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarSeguimientoEducativo",
+          href: "/dashboard/seguimientoEducativo"
+        },        
+        {
           title: "Gestionar Talleres",
           group: "admin",
           icon: "dashboard",
           name: "GestionTalleres",
           href: "/dashboard/talleres"
-        },
-        {
-          title: "Gestionar Informes",
-          group: "admin",
-          icon: "dashboard",
-          name: "GestionInforme",
-          href: "/dashboard/informes"
-        },{
-          title: "Gestion Ficha Ingreso",
-          group: "admin",
-          icon: "dashboard",
-          name: "GestionarFichaIngreso",
-          href: "/dashboard/fichaIngreso"
         },{
           title: "Gestion Sesiones Educativas",
           group: "admin",
           icon: "dashboard",
           name: "GestionarSesionesEducativas",
           href: "/dashboard/sesioneseducativas"
+        },        
+        {
+          title: "Expedientes Matriz",
+          group: "admin",
+          icon: "dashboard",
+          name: "ConsultaExpedienteMatriz",
+          href: "/dashboard/expedientes"
         },
         {
           title: "Gestion Acta de externamiento",
@@ -202,13 +210,6 @@ export default {
           icon: "dashboard",
           name: "GestionarActaExternamiento",
           href: "/dashboard/Actas"
-        },
-        {
-          title: "Expedientes Matriz",
-          group: "admin",
-          icon: "dashboard",
-          name: "ConsultaExpedienteMatriz",
-          href: "/dashboard/expedientes"
         },
         {
           title: "Gestion de Incidencias",
