@@ -613,6 +613,7 @@ export default {
     },
   },
   methods:{
+    ...mapMutations(["addTaller"]),
     limpiar(){
       this.tallerescuelapadres.titulo="";
       this.tallerescuelapadres.descripcion="";
@@ -773,6 +774,8 @@ export default {
         axios
           .post("/Taller/crearTEP", tallerescuelapadres)
           .then((res) => {
+            this.addTaller(res.data);
+
             this.messageSweet(
               "success",
               "Registro del Taller de escuela para padres",
@@ -819,6 +822,7 @@ export default {
     },
   },
   computed:{
+    ...mapState(["talleres"]),
     ...mapGetters(["user"]),
     show: {
       get() {

@@ -5,8 +5,16 @@
       <v-data-table
         :headers="headers"
         :items="talleres"
+        :items-per-page="itemsPerPage"
+        :page.sync="page"
+        hide-default-footer
+        loading-text="Cargando Talleres"
+        @page-count="pageCount = $event"
+        no-data-text="No se ha registrado ningún taller"
+        no-results-text="No se ha encontrado ningún taller"
+        class="datatable"
+        :loading="loading"
         :search="search"
-        class="elevation-1"
       >
         <template v-slot:top>
           <v-toolbar flat>
@@ -83,7 +91,7 @@
               ></component>
             </v-dialog>
 
-            <!--Actualizar Modal-->
+            <!--Visualizar Modal-->
             <v-dialog v-model="dialogTallerVisualizar" persistent max-width="880">
               <component
                 :is="typeTallerSelected"
@@ -111,6 +119,9 @@
           </v-row>
         </template>
       </v-data-table>
+      <div class="text-center pt-2">
+        <v-pagination v-model="page" :length="pageCount"></v-pagination>
+      </div>
     </v-card>
   </div>
 </template>
@@ -125,6 +136,9 @@ import ActualizarTallerFormativoEgreso from "@/components/talleres/formativoegre
 import VisualizarTallerEscuelaPadres from "@/components/talleres/escuelapadres/VisualizarTallerEscuelaPadres.vue";
 import VisualizarTallerEducativo from "@/components/talleres/educativo/VisualizarTallerEducativo.vue";
 import VisualizarTallerFormativoEgreso from "@/components/talleres/formativoegreso/VisualizarTallerFormativoEgreso.vue";
+
+import { mapMutations, mapState } from "vuex";
+
 export default {
   name: "GestionarTalleres",
   components: {
@@ -154,7 +168,6 @@ export default {
         { text: "Fecha registro", value: "fechaCreacion" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-      talleres: [],
       selectTallerRegister: [
         {
           text: "Escuela para padres",
@@ -170,8 +183,8 @@ export default {
         },
       ],
       selectedTaller: {
-        text: "",
-        value: "",
+        text: "Escuela para padres",
+        value: "RegistrarTallerEscuelaPadres",
       },
       taller: {},
       typeTallerSelected: "",
@@ -179,9 +192,14 @@ export default {
       dialogTallerRegister: false,
       dialogTallerModify: false,
       dialogTallerVisualizar: false,
+      page: 1,
+      pageCount: 0,
+      itemsPerPage: 5,
+      loading: true,
     };
   },
   methods: {
+    ...mapMutations(["setTalleres"]),
     async editItem(item) {
       await axios
         .get("/Taller/" + item.id)
@@ -235,8 +253,8 @@ export default {
       axios
         .get("/Taller/all")
         .then((res) => {
-          //this.loading = false;
-          this.talleres = res.data;
+          this.loading = false;
+          this.setTalleres(res.data);
           
         })
         .catch((err) => {
@@ -275,7 +293,9 @@ export default {
   },
   created() {
     this.listTalleres();
-  }
+  },computed:{
+        ...mapState(["talleres"]),
+    },
 };
 </script>
 <style scoped>
