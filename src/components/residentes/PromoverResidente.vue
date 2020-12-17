@@ -434,6 +434,7 @@ export default {
           this.progresoResidente.fase = 2
           this.progresoResidente.nombre = "desarrollo"
           this.progresoFase.educativa.documentos = [
+            {tipo:"PlanIntervencionIndividualEducativo", estado:"Pendiente"},
             {tipo:"InformeEducativoEvolutivo", estado:"Pendiente"}
           ]
         }else if(this.progresoFase.fase === 3){
@@ -495,7 +496,7 @@ export default {
           await this.mensaje(
             "success",
             "Listo",
-            "Sesion Educativa Modificada Satisfactoriamente",
+            "Residente promovido satisfactoriamente",
             "<strong>Se redirigira a la interfaz de Gestión<strong>"
           );
           
