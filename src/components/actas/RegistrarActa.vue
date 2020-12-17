@@ -1,22 +1,20 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Registrar Acta de externamiento</v-card-title>
+    <v-card-title class="justify-center"
+      >Registrar Acta de externamiento</v-card-title
+    >
 
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step editable step="1"> Registro de Datos </v-stepper-step>
 
         <v-divider></v-divider>
-
-        
       </v-stepper-header>
 
       <v-stepper-items>
-      
         <v-stepper-content step="1">
           <div class="container-user">
             <form>
-
               <v-autocomplete
                 v-model="actaexternamiento.contenido.responsable"
                 :items="listaActas"
@@ -53,7 +51,10 @@
                     </v-list-item-avatar>
                     <v-list-item-content>
                       <v-list-item-title
-                        >Rol: {{ data.item.nombre + " " + data.item.apellido }}</v-list-item-title
+                        >Rol:
+                        {{
+                          data.item.nombre + " " + data.item.apellido
+                        }}</v-list-item-title
                       >
                       <v-list-item-subtitle
                         >Area: {{ data.item.area }}</v-list-item-subtitle
@@ -66,9 +67,6 @@
                   </template>
                 </template>
               </v-autocomplete>
-
-                
-             
 
               <v-menu
                 v-model="datemenu"
@@ -86,9 +84,13 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
-                    @input="$v.actaexternamiento.contenido.fechacreacion.$touch()"
-                @blur="$v.actaexternamiento.contenido.fechacreacion.$touch()"
-                :error-messages="errorfechacreacion"
+                    @input="
+                      $v.actaexternamiento.contenido.fechacreacion.$touch()
+                    "
+                    @blur="
+                      $v.actaexternamiento.contenido.fechacreacion.$touch()
+                    "
+                    :error-messages="errorfechacreacion"
                     color="#009900"
                     outlined
                   ></v-text-field>
@@ -100,60 +102,56 @@
                 ></v-date-picker>
               </v-menu>
 
-               <v-text-field
-               v-model="actaexternamiento.contenido.entidaddisposicion"
-          label="Ingrese nueva entidad disposicion"
+              <v-text-field
+                v-model="actaexternamiento.contenido.entidaddisposicion"
+                label="Ingrese nueva entidad disposicion"
                 outlined
-               @input="$v.actaexternamiento.contenido.entidaddisposicion.$touch()"
-                @blur="$v.actaexternamiento.contenido.entidaddisposicion.$touch()"
+                @input="
+                  $v.actaexternamiento.contenido.entidaddisposicion.$touch()
+                "
+                @blur="
+                  $v.actaexternamiento.contenido.entidaddisposicion.$touch()
+                "
                 :error-messages="errorentidaddisposicion"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
-
- <v-text-field
-               v-model="actaexternamiento.contenido.numeroresolucion"
-          label="Ingrese nuevo numero resolucion"
+              <v-text-field
+                v-model="actaexternamiento.contenido.numeroresolucion"
+                label="Ingrese nuevo numero resolucion"
                 outlined
-               @input="$v.actaexternamiento.contenido.numeroresolucion.$touch()"
+                @input="
+                  $v.actaexternamiento.contenido.numeroresolucion.$touch()
+                "
                 @blur="$v.actaexternamiento.contenido.numeroresolucion.$touch()"
                 :error-messages="errornumeroresolucion"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
-
-               <v-text-field
-               v-model="actaexternamiento.contenido.numerooficio"
-          label="Ingrese nuevo numero oficio"
+              <v-text-field
+                v-model="actaexternamiento.contenido.numerooficio"
+                label="Ingrese nuevo numero oficio"
                 outlined
-               @input="$v.actaexternamiento.contenido.numerooficio.$touch()"
+                @input="$v.actaexternamiento.contenido.numerooficio.$touch()"
                 @blur="$v.actaexternamiento.contenido.numerooficio.$touch()"
                 :error-messages="errornumerooficio"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
-
-               <v-text-field
-               v-model="actaexternamiento.contenido.observaciones"
-          label="Ingrese nuevas observaciones"
+              <v-text-field
+                v-model="actaexternamiento.contenido.observaciones"
+                label="Ingrese nuevas observaciones"
                 outlined
-               @input="$v.actaexternamiento.contenido.observaciones.$touch()"
+                @input="$v.actaexternamiento.contenido.observaciones.$touch()"
                 @blur="$v.actaexternamiento.contenido.observaciones.$touch()"
                 :error-messages="errorobservaciones"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
-              
-
-
-
-            
-
-                
               <div>
                 <vue-dropzone
                   ref="myVueDropzone"
@@ -193,9 +191,9 @@
 </template>
 <script>
 import axios from "axios";
-import Vue from 'vue'
-import Vuelidate from 'vuelidate'
-Vue.use(Vuelidate)
+import Vue from "vue";
+import Vuelidate from "vuelidate";
+Vue.use(Vuelidate);
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState, mapGetters } from "vuex";
@@ -222,27 +220,31 @@ export default {
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
       }, //utilizado en los formularios como un prop
       actaexternamiento: {
-        
-        id:"", tipo:"", historialcontenido:[], creadordocumento:"", fechacreacion:new Date().toISOString()
-, 
-        area:"social", fase:"3", idresidente:"", estado:"",
+        id: "",
+        tipo: "ActaExternamiento",
+        historialcontenido: [],
+        creadordocumento: "",
+        fechacreacion: new Date().toISOString(),
+        area: "social",
+        fase: "3",
+        idresidente: "",
+        estado: "",
 
         contenido: {
-        responsable: "",      
-                      
-        entidaddisposicion:"",  
-        numeroresolucion:"",  
-        numerooficio:"",  
-        observaciones:"",
-        
-        firmas:[]
+          responsable: "",
+
+          entidaddisposicion: "",
+          numeroresolucion: "",
+          numerooficio: "",
+          observaciones: "",
+
+          firmas: [],
         },
-       
       },
     };
   },
   created() {
-    console.log(this.user)
+    console.log(this.user);
   },
   methods: {
     ...mapMutations(["setUsuarios", "addUsuario"]),
@@ -258,23 +260,25 @@ export default {
         );
       } else {
         console.log("no hay errores");
-        this.actaexternamiento.contenido.firmas = this.actaexternamiento.contenido.firmas.map(function(val) {
-    return {
-         urlFirma:"val",nombre:"",cargo:""
-        }
-        }),
-      
-         
-          
-               await axios
-          .post("/actaexternamiento/register", this.actaexternamiento)
-          .then((res) => {
-            console.log(this.actaexternamiento)
-            this.actaexternamiento = res.data;
-            this.addUsuario(this.actaexternamiento);
-            this.cerrarDialogo();
-          })
-          .catch((err) => console.log(err));
+        console.log(this.actaexternamiento.contenido.firmas)
+        this.actaexternamiento.contenido.firmas = this.actaexternamiento.contenido.firmas.map(
+          function(val) {
+            return {
+              urlFirma: "val",
+              nombre: "",
+              cargo: "",
+            }
+          }
+        );
+          await axios
+            .post("/actaexternamiento/register", this.actaexternamiento)
+            .then((res) => {
+              console.log(this.actaexternamiento);
+              this.actaexternamiento = res.data;
+              this.addUsuario(this.actaexternamiento);
+              this.cerrarDialogo();
+            })
+            .catch((err) => console.log(err));
         await this.mensaje(
           "success",
           "listo",
@@ -296,12 +300,10 @@ export default {
     afterSuccess(file, response) {
       console.log(file);
       this.actaexternamiento.contenido.firmas.push(file.dataURL.split(",")[1]);
-      this.$v.actaexternamiento.contenido.firmas.$model = file.dataURL.split(",")[1];
+
       //console.log(file.dataURL.split(",")[1]);
     },
     afterRemoved(file, error, xhr) {
-      this.actaexternamiento.contenido.firmas = "";
-      this.$v.actaexternamiento.contenido.firmas.$model = "";
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -313,121 +315,118 @@ export default {
     },
     limpiarUsuario() {
       return {
-       
         contenido: {
-       
-       responsable: "",      
-                      
-        entidaddisposicion:"",  
-        numeroresolucion:"",  
-        numerooficio:"",  
-        observaciones:"",
-        
-        firmas:[]
+          responsable: "",
+
+          entidaddisposicion: "",
+          numeroresolucion: "",
+          numerooficio: "",
+          observaciones: "",
+
+          firmas: [],
         },
       };
     },
   },
   computed: {
     ...mapState(["usuarios"]),
-     ...mapGetters(["user"]),
+    ...mapGetters(["user"]),
     verifyColor() {
       return "red";
-   
     },
-    
-   
-    
-    errorresponsable () {
-      const errors = []
-      if (!this.$v.actaexternamiento.contenido.responsable.$dirty) return errors
-          !this.$v.actaexternamiento.contenido.responsable.required && errors.push('Debe ingresar el responsable Obligatoriamente')
-          
-      return errors
-      },
-    errorfechacreacion () {
-      const errors = []
-      if (!this.$v.actaexternamiento.contenido.fechacreacion.$dirty) return errors
-          !this.$v.actaexternamiento.contenido.fechacreacion.required && errors.push('Debe Ingresar una Fecha de Creacion Obligatoriamente')
-        
-          var dateselected =  new Date(this.actaexternamiento.fechacreacion);
-          var maxdate = new Date();
-          maxdate.setFullYear(maxdate.getFullYear());
-          
-      return errors
+
+    errorresponsable() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.contenido.responsable.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.contenido.responsable.required &&
+        errors.push("Debe ingresar el responsable Obligatoriamente");
+
+      return errors;
     },
-          errorentidaddisposicion () {
-      const errors = []
-      if (!this.$v.actaexternamiento.contenido.entidaddisposicion.$dirty) return errors
-          !this.$v.actaexternamiento.contenido.entidaddisposicion.required && errors.push('Debe ingresar entidad disposicion Obligatoriamente')
-          
-      return errors
-      },
-          errornumeroresolucion () {
-      const errors = []
-      if (!this.$v.actaexternamiento.contenido.numeroresolucion.$dirty) return errors
-          !this.$v.actaexternamiento.contenido.numeroresolucion.required && errors.push('Debe ingresar el numero resolucion Obligatoriamente')
-          
-      return errors
-      },
-          errornumerooficio () {
-      const errors = []
-      if (!this.$v.actaexternamiento.contenido.numerooficio.$dirty) return errors
-          !this.$v.actaexternamiento.contenido.numerooficio.required && errors.push('Debe ingresar el numero oficio Obligatoriamente')
-          
-      return errors
-      },
-          errorobservaciones () {
-      const errors = []
-      if (!this.$v.actaexternamiento.contenido.observaciones.$dirty) return errors
-          !this.$v.actaexternamiento.contenido.observaciones.required && errors.push('Debe ingresar observaciones Obligatoriamente')
-          
-      return errors
+    errorfechacreacion() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.contenido.fechacreacion.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.contenido.fechacreacion.required &&
+        errors.push("Debe Ingresar una Fecha de Creacion Obligatoriamente");
+
+      var dateselected = new Date(this.actaexternamiento.fechacreacion);
+      var maxdate = new Date();
+      maxdate.setFullYear(maxdate.getFullYear());
+
+      return errors;
+    },
+    errorentidaddisposicion() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.contenido.entidaddisposicion.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.contenido.entidaddisposicion.required &&
+        errors.push("Debe ingresar entidad disposicion Obligatoriamente");
+
+      return errors;
+    },
+    errornumeroresolucion() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.contenido.numeroresolucion.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.contenido.numeroresolucion.required &&
+        errors.push("Debe ingresar el numero resolucion Obligatoriamente");
+
+      return errors;
+    },
+    errornumerooficio() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.contenido.numerooficio.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.contenido.numerooficio.required &&
+        errors.push("Debe ingresar el numero oficio Obligatoriamente");
+
+      return errors;
+    },
+    errorobservaciones() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.contenido.observaciones.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.contenido.observaciones.required &&
+        errors.push("Debe ingresar observaciones Obligatoriamente");
+
+      return errors;
     },
     errorImagen() {
       return this.$v.actaexternamiento.contenido.firmas.required == false &&
         this.$v.actaexternamiento.contenido.firmas.$dirty == true
         ? true
-        : false; 
+        : false;
     },
   },
   validations() {
     return {
       actaexternamiento: {
-           
-
-               
         contenido: {
-                   
-               
-              
-                 responsable:{
-                  required
-                 },               
-              
-                fechacreacion:{
-                  required
-             
-                 
-                     },
-              entidaddisposicion:{
-                  required
-                     },
-              numeroresolucion:{
-                  required
-                     },
-              numerooficio:{
-                  required
-                     },
-              observaciones:{
-                  required
-                    },
+          responsable: {
+            required,
+          },
 
-        
-                firmas:{
-                  required,
-          
-                },
+          fechacreacion: {
+            required,
+          },
+          entidaddisposicion: {
+            required,
+          },
+          numeroresolucion: {
+            required,
+          },
+          numerooficio: {
+            required,
+          },
+          observaciones: {
+            required,
+          },
+
+          firmas: {
+            required,
+          },
         },
       },
     };

@@ -29,14 +29,14 @@
                 chips
                 dense
                 outlined
-                v-model="informe.creadordocumento"
+                v-model="informe.contenido.evaluador"
                 color="#009900"
                 label="Educador responsable"
                 item-text="usuario"
                 item-value="id"
-                @input="$v.informe.creadordocumento.$touch()"
-                @blur="$v.informe.creadordocumento.$touch()"
-                :error-messages="errorCreador"
+                @input="$v.informe.contenido.evaluador.$touch()"
+                @blur="$v.informe.contenido.evaluador.$touch()"
+                :error-messages="errorEvaluador"
               >
                 <template v-slot:selection="data">
                   <v-chip
@@ -940,10 +940,10 @@ export default {
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
     },
-    errorCreador() {
+    errorEvaluador() {
       const errors = [];
-      if (!this.$v.informe.creadordocumento.$dirty) return errors;
-      !this.$v.informe.creadordocumento.required &&
+      if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
+      !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un educador obligatoriamente");
       return errors;
     },
