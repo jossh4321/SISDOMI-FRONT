@@ -223,8 +223,7 @@ export default {
       }, //utilizado en los formularios como un prop
       actaexternamiento: {
         
-        id:"", tipo:"", historialcontenido:[], creadordocumento:"", fechacreacion:new Date().toISOString()
-, 
+        id:"", tipo:"", historialcontenido:[], creadordocumento:"", fechacreacion:new Date().toISOString(), 
         area:"social", fase:"3", idresidente:"", estado:"",
 
         contenido: {
