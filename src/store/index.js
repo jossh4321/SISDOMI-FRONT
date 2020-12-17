@@ -25,6 +25,7 @@ export default new Vuex.Store({
         sesionesEducativas: [],
         incidencias:[],
         fichaEvaluacionEduativa:[],
+        talleres:[],
     },
     mutations: {
         toggleDrawer(state) {
@@ -115,6 +116,17 @@ export default new Vuex.Store({
         },replaceEvaluacion(state, value) {
         var index = state.fichaEvaluacionEduativa.findIndex(x => x.id == value.id);
          state.fichaEvaluacionEduativa.splice(index, 1, value);
+        },
+        // talleres
+        setTalleres(state, value) {
+            state.talleres = value;
+        },
+        addTaller(state, value) {
+            state.talleres.push(value);
+        },
+        replaceTaller(state, value) {
+            var index = state.talleres.findIndex(x => x.id == value.id);
+            state.talleres.splice(index, 1, value);
         },
     },
     modules: {

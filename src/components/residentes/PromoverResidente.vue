@@ -256,7 +256,7 @@ export default {
     vueDropzone: vue2Dropzone,
   },
   data() {
-    return {
+    return {      
       items1:
         [{value: 2, text:'Fase 2'},
         {value: 3, text:'Fase 3'}],
@@ -434,6 +434,7 @@ export default {
           this.progresoResidente.fase = 2
           this.progresoResidente.nombre = "desarrollo"
           this.progresoFase.educativa.documentos = [
+            {tipo:"PlanIntervencionIndividualEducativo", estado:"Pendiente"},
             {tipo:"InformeEducativoEvolutivo", estado:"Pendiente"}
           ]
         }else if(this.progresoFase.fase === 3){
@@ -448,13 +449,15 @@ export default {
         this.progresoResidente.estado = "inicio"
         //Actualizando en Residente
         this.residente.progreso[this.residente.progreso.length-1].fechafinalizacion = this.progresoResidente.fechaingreso;
+        let faseAnterior= this.residente.progreso[this.residente.progreso.length-1].fase;
         this.residente.progreso.push(this.progresoResidente);
         console.log(this.residente);
         console.log(this.progresoFase);
         var residenteFase ={
           residente: this.residente, 
           progresoFase: this.progresoFase,
-          promocion: true
+          promocion: true,
+          faseAnterior
         }
         await axios
           .put("/Residente", residenteFase)
@@ -493,7 +496,7 @@ export default {
           await this.mensaje(
             "success",
             "Listo",
-            "Sesion Educativa Modificada Satisfactoriamente",
+            "Residente promovido satisfactoriamente",
             "<strong>Se redirigira a la interfaz de Gestión<strong>"
           );
           

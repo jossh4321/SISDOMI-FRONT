@@ -591,6 +591,7 @@ export default {
     },
   },
   methods:{
+    ...mapMutations(["replaceTaller"]),
     limpiar(){
       this.taller.titulo="";
       this.taller.descripcion="";
@@ -766,6 +767,8 @@ export default {
           axios
           .put("/Taller/actualizarTallerEP", tallerEP)
           .then((res) => {
+            this.replaceTaller(res.data);
+            
             this.messageSweet(
               "success",
               "Actualización del Taller de escuela para padres",
@@ -808,6 +811,7 @@ export default {
     },
   },
   computed:{
+    ...mapState(["talleres"]),
     ...mapGetters(["user"]),
     show: {
       get() {

@@ -1,6 +1,13 @@
 <template>
   <v-card>
-    <v-card-title>Documentos</v-card-title>
+    <v-card-title
+      class="pr-3"
+      >Documentos
+      <v-spacer></v-spacer>
+      <v-btn fab rounded color="primary" x-small @click="closeDialogDetailDocuments">
+        <v-icon dark small>mdi-close</v-icon>
+      </v-btn>
+    </v-card-title>
     <v-list>
       <template v-for="(areaDocumento, index) in areaDocuments">
         <template v-if="areaDocumento.documentos.length > 1">
@@ -93,7 +100,7 @@ export default {
         .then((res) => {
           let area = "";
           let informe = "";
-          
+
           area = this.evaluateArea(res.data.area);
           informe = this.evaluateDocumento(res.data.tipo);
 
@@ -143,6 +150,9 @@ export default {
       this.typeDocument = "";
       this.showInfoDocument = false;
     },
+    closeDialogDetailDocuments() {
+      this.$emit('close-detail-documents');
+    }
   },
   filters: {
     typeDocument(value) {

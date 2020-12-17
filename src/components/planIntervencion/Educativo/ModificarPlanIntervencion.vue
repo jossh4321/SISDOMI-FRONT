@@ -64,6 +64,7 @@
                       hide-no-data
                       hide-selected
                       return-object
+                      readonly
                       @input="$v.residente.id.$touch()"
                       @blur="$v.residente.id.$touch()"
                       :error-messages="errorResidente"
@@ -384,6 +385,30 @@ export default {
       },
       searchResidente: null,
       loadingSearch: false,
+      fasesPlanIntervencion: {
+        fases: [1, 2],
+        area: "educativa",
+        documentoEstadosAnteriores: [
+          {
+            tipo: "InformeEducativoInicial",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualEducativo",
+            estado: "Pendiente",
+          },
+        ],
+        documentoEstadosActuales: [
+          {
+            tipo: "PlanIntervencionIndividualEducativo",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualEducativo",
+            estado: "Completo",
+          },
+        ],
+      },
     };
   },
   props: {
@@ -483,7 +508,7 @@ export default {
       this.loadingSearch = true;
 
       axios
-        .get("/residente/planes/area/educativa")
+        .post("/residente/all/fases/documentos", this.fasesPlanIntervencion)
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
             return {

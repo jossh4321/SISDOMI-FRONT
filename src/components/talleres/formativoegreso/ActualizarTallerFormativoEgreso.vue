@@ -735,6 +735,7 @@ export default {
     },
   },
   methods:{
+    ...mapMutations(["replaceTaller"]),
     limpiar(){
       this.taller.titulo="";
       this.taller.descripcion="";
@@ -984,6 +985,8 @@ export default {
         await axios
           .put("/Taller/actualizarTallerFE", taller)
           .then((res) => {
+            this.replaceTaller(res.data);
+
             this.messageSweet(
               "success",
               "Actualización del Taller formativo de egreso",
@@ -1051,6 +1054,7 @@ export default {
         });
   },
   computed:{
+    ...mapState(["talleres"]),
     ...mapGetters(["user"]),
     show: {
       get() {

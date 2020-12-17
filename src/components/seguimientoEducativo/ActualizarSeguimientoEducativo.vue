@@ -101,36 +101,42 @@
                                   locale="es-es"
                                 ></v-date-picker>
                               </v-menu>
-                                  <v-text-field
-                                  v-model="seguimiento.contenido.modalidad"
-                                  @input="$v.seguimiento.contenido.modalidad.$touch()"
-                                  @blur="$v.seguimiento.contenido.modalidad.$touch()"
-                                  :error-messages="errorModalidad"
-                                  label="Modalidad"
-                                  outlined
-                                  
-                                  color="#009900"
-                                ></v-text-field>
-                                <v-text-field
-                                  v-model="seguimiento.contenido.nivel"
-                                  @input="$v.seguimiento.contenido.nivel.$touch()"
-                                  @blur="$v.seguimiento.contenido.nivel.$touch()"
-                                   :error-messages="errorNivel"
-                                  label="Nivel"
-                                  outlined
-                                  
-                                  color="#009900"
-                                ></v-text-field>
-                                <v-text-field
-                                  v-model="seguimiento.contenido.grado"
-                                  @input="$v.seguimiento.contenido.grado.$touch()"
-                                  @blur="$v.seguimiento.contenido.grado.$touch()"
-                                 :error-messages="errorGrado"
-                                  label="Grado"
-                                  outlined
-                                  
-                                  color="#009900"
-                                ></v-text-field>
+                                 <v-select
+                          label="Modalidad"
+                          v-model="seguimiento.contenido.modalidad"
+                          :items="itemsModalidad"
+                          color="#009900"
+                          :item-text="itemsModalidad.text"
+                          :item-value="itemsModalidad.value"
+                          @input="$v.seguimiento.contenido.modalidad.$touch()"
+                          @blur="$v.seguimiento.contenido.modalidad.$touch()"
+                          :error-messages="errorModalidad"
+                          outlined
+                        ></v-select>
+                                 <v-select     
+                        label="Nivel"
+                        v-model="seguimiento.contenido.nivel"
+                        :items="itemsNivel"
+                        color="#009900"
+                        :item-text="itemsNivel.text"
+                        :item-value="itemsNivel.value"
+                        @input="$v.seguimiento.contenido.nivel.$touch()"
+                        @blur="$v.seguimiento.contenido.nivel.$touch()"
+                        :error-messages="errorNivel"
+                        outlined
+                      ></v-select>
+                      <v-select
+                          label="Grado"
+                          v-model="seguimiento.contenido.grado"
+                          :items="itemsGrado"
+                          color="#009900"
+                          :item-text="itemsGrado.text"
+                          :item-value="itemsGrado.value"
+                          @input="$v.seguimiento.contenido.grado.$touch()"
+                          @blur="$v.seguimiento.contenido.grado.$touch()"
+                          :error-messages="errorGrado"
+                          outlined
+                        ></v-select>
                                 <v-text-field
                                   v-model="seguimiento.contenido.añoescolar"
                                   @input="$v.seguimiento.contenido.añoescolar.$touch()"
@@ -463,7 +469,7 @@
                   elevation="0"
                   color="#FAFAFA"
                   style="margin-top:5px"
-                  height="50"
+                  height="80"
                   v-for="(item, index) in seguimiento.contenido.trimestre"
                   :key="index"
                 >
@@ -490,7 +496,7 @@
                           style="margin-right:15px;margin-top:-5px"
                           dark
                           color="#2E9CCF"
-                          @click="abrirDialogoNotas(item.puntajes)"
+                          @click="abrirDialogoNotas(item.puntajes,index)"
                         >
                           Añadir Notas
                         </v-btn> 
@@ -560,10 +566,10 @@
                 elevation="0"
                 color="#4ABBEF"
                 style="margin-top:5px; margin-bottom:15px"
-                height="30"
+                height="50"
                 >
                   <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col cols="4">
+                    <v-col cols="5">
                       <article>
                         <span style="font-size:16px">Curso</span>
                       </article>
@@ -584,13 +590,13 @@
                   elevation="0"
                   color="#FAFAFA"
                   style="margin-top:5px"
-                  height="50"
+                  height="60"
                   v-for="(item, index) in notas"
                   :key="index"
                   
                 >
                   <v-row style="margin-left:10px;heigh:100%;" align="center">
-                    <v-col :cols="4">
+                    <v-col :cols="5">
                       <article>
                         <span style="font-size:16px">{{item.area}}</span>
                       </article>
@@ -707,12 +713,31 @@ export default {
         dictDefaultMessage:
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
       },
+      
+        itemsModalidad: [
+            { value: 'EBA', text: 'Educacion Basica Alternativa'},
+            { value: 'EBE', text: 'Educacion Basica Especial'},
+            { value: 'EBR', text: 'Educacion Basica Regular'}
+          ],
+          itemsNivel: [
+            { value: 'PRIMARIA', text: 'Nivel Primaria'},
+            { value: 'SECUNDARIA', text: 'Nivel Secundaria'},
+            //{ value: 'SUPERIOR', text: 'Estudio Superior'}
+          ],
+          itemGrado: [
+            { value: '1', text: '1'},
+            { value: '2', text: '2'},
+            { value: '3', text: '3'},
+            { value: '4', text: '4'},
+            { value: '5', text: '5'}
+          ],
       //separacion
         imagen: "",
          firma:{urlfirma:"",nombre:"",cargo:""},
          trimestre:{orden:"",puntajes:[],analisiseducativo:"",recomendaciones:""},
          puntajes:{area:"",promedio:""},
          notas:[], 
+         index:"",
     }
   },
   methods:{
@@ -724,8 +749,9 @@ export default {
        cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
        },
-       abrirDialogoNotas(notas){
+       abrirDialogoNotas(notas,index){
         this.notas=notas;
+        this.index=index;
         this.dialog1=true;
         console.log(this.notas)
         
@@ -752,27 +778,7 @@ export default {
     async modificarSeguimiento(){
       this.seguimiento.creadordocumento = this.user.id;
     console.log(this.seguimiento)
-     this.$v.seguimiento.$touch();
-      if (this.$v.seguimiento.$invalid) {
-        console.log('hay errores');
-        this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
-      } else {
-        console.log('no hay errores');
-    await axios
-          .put("/SeguimientoEducativo/informese", this.seguimiento)
-          .then((res) => {
-            this.replaceSeguimiento(res.data);
-            this.cerrarDialogo();
-          })
-          .catch((err) => console.log(err));
-        await this.mensaje(
-          "success",
-          "listo",
-          "Seguimiento educativo modificado Satisfactoriamente",
-          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
-        );
-        location.reload();//metodo de js para refrescar la pagina
-      }
+    
     },
      guardarSeguimientoFirma(){
         this.$v.seguimiento.contenido.firmas.$touch();
@@ -840,7 +846,7 @@ export default {
            this.$v.puntajes.$touch();
    if(!this.$v.puntajes.$invalid ){ 
       let puntajesd={area:this.puntajes.area,promedio:this.puntajes.promedio};
-       this.seguimiento.contenido.trimestre[0].puntajes.push(puntajesd);
+       this.seguimiento.contenido.trimestre[this.index].puntajes.push(puntajesd);
       
        console.log(this.trimestre.puntajes)
 
@@ -850,7 +856,7 @@ export default {
    }
     },
     eliminarNotas(index){
-     this.seguimiento.contenido.trimestre[0].puntajes.splice(index,1)
+     this.seguimiento.contenido.trimestre[this.index].puntajes.splice(index,1)
      
     },
 
@@ -860,6 +866,14 @@ export default {
       return "red";
     },
     ...mapGetters(["user"]),
+     itemsGrado(){
+         const listaGrados = [{value:"1",text: "Primero"},{value:"2",text: "Segundo"},{value:"3",text: "Tercero"},
+           {value:"4",text: "Cuarto"},{value:"5",text: "Quinto"}];
+           if(this.seguimiento.contenido.nivel == 'PRIMARIA'){ 
+             listaGrados.push({value:"6",text: "Sexto"})}
+           this.seguimiento.contenido.grado = "1";
+          return listaGrados;
+      },
    errorResidente() {
       const errors = [];
       if (!this.$v.seguimiento.idresidente.$dirty) return errors;
@@ -889,31 +903,25 @@ export default {
       return errors;
     },
    errorModalidad() {
-      const errors = [];
-      if (!this.$v.seguimiento.contenido.modalidad.$dirty) return errors;
-      !this.$v.seguimiento.contenido.modalidad.required &&
-        errors.push("Debe ingresar una Modalidad Obligatoriamente");
-      !this.$v.seguimiento.contenido.modalidad.minLength &&
-        errors.push("La Modalidad debe tener al menos 3 caracteres");
-      return errors;
+     const errors = [];
+        if (!this.$v.seguimiento.contenido.modalidad.$dirty) return errors;
+        !this.$v.seguimiento.contenido.modalidad.required &&
+          errors.push("Debe Ingresar una modalidad Obligatoriamente");
+        return errors;
     },
     errorNivel() {
       const errors = [];
-      if (!this.$v.seguimiento.contenido.nivel.$dirty) return errors;
-      !this.$v.seguimiento.contenido.nivel.required &&
-        errors.push("Debe ingresar un Nivel Obligatoriamente");
-      !this.$v.seguimiento.contenido.nivel.minLength &&
-        errors.push("El Nivel  debe tener al menos 3 caracteres");
-      return errors;
+          if (!this.$v.seguimiento.contenido.nivel.$dirty) return errors;
+          !this.$v.seguimiento.contenido.nivel.required &&
+            errors.push("Debe Seleccionar un Nivel Obligatoriamente");
+          return errors;
     },
      errorGrado() {
       const errors = [];
-      if (!this.$v.seguimiento.contenido.grado.$dirty) return errors;
-      !this.$v.seguimiento.contenido.grado.required &&
-        errors.push("Debe ingresar un Grado Obligatoriamente");
-      !this.$v.seguimiento.contenido.grado.minLength &&
-        errors.push("El Grado  debe tener al menos 3 caracteres");
-      return errors;
+          if (!this.$v.seguimiento.contenido.grado.$dirty) return errors;
+          !this.$v.seguimiento.contenido.grado.required &&
+            errors.push("Debe Seleccionar un Grado Obligatoriamente");
+          return errors;
     },
     errorAñoEscolar() {
       const errors = [];
@@ -1020,15 +1028,14 @@ export default {
       contenido:{
            modalidad:{
               required,
-              minLength: minLength(3)
             },
            nivel:{
               required,
-              minLength: minLength(3)
+              
             },
            grado:{
               required,
-              minLength: minLength(3)
+             
             },
            añoescolar:{
               required,

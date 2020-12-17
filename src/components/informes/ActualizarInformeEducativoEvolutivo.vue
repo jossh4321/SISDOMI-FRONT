@@ -16,50 +16,13 @@
         <v-stepper-content step="1">
           <div class="container-user">
             <form>
-              <v-autocomplete
-                v-model="informe.idresidente"
-                :items="listaresidentes"
-                filled
-                chips
-                dense
-                outlined
-                color="#009900"
+              <v-text-field
+                v-model="residente"
                 label="Usuaria CAR"
-                item-text="nombre"
-                item-value="id"
-              >
-                <template v-slot:selection="data">
-                  <v-chip
-                    v-bind="data.attrs"
-                    :input-value="data.selected"
-                    style="margin-top:5px"
-                  >
-                    <v-avatar left color="#b3b3ff" size="24">
-                      <span style="font-size:12px">UE</span>
-                    </v-avatar>
-                    {{ data.item.nombre + " " + data.item.apellido }}
-                  </v-chip>
-                </template>
-                <template v-slot:item="data">
-                  <template>
-                    <v-list-item-avatar>
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size:12px">US</span>
-                      </v-avatar>
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title
-                        >Nombre completo: {{ data.item.nombre }}
-                        {{ data.item.apellido }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle
-                        >Nro. Documento:
-                        {{ data.item.numerodocumento }}</v-list-item-subtitle
-                      >
-                    </v-list-item-content>
-                  </template>
-                </template>
-              </v-autocomplete>
+                outlined
+                readonly
+                color="#009900"
+              ></v-text-field>
               <v-autocomplete
                 :items="listaeducadores"
                 filled
@@ -119,44 +82,77 @@
                 color="#009900"
               ></v-text-field>
               <v-row>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="informe.contenido.iereinsersion.modalidad"
-                    label="Modalidad"
-                    outlined
-                    @input="
-                      $v.informe.contenido.iereinsersion.modalidad.$touch()
-                    "
-                    @blur="
-                      $v.informe.contenido.iereinsersion.modalidad.$touch()
-                    "
-                    :error-messages="errorModalidadIE"
-                    color="#009900"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="informe.contenido.iereinsersion.nivel"
-                    label="Nivel Educativo"
-                    outlined
-                    @input="$v.informe.contenido.iereinsersion.nivel.$touch()"
-                    @blur="$v.informe.contenido.iereinsersion.nivel.$touch()"
-                    :error-messages="errorNivelIE"
-                    color="#009900"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field
-                    v-model="informe.contenido.iereinsersion.grado"
-                    label="Grado"
-                    outlined
-                    @input="$v.informe.contenido.iereinsersion.grado.$touch()"
-                    @blur="$v.informe.contenido.iereinsersion.grado.$touch()"
-                    :error-messages="errorGradoIE"
-                    color="#009900"
-                  ></v-text-field>
-                </v-col>
+                  <v-col cols="12" md="4">
+                    <v-select
+                          label="Modalidad"
+                          v-model="informe.contenido.iereinsersion.modalidad"
+                          :items="itemsModalidad"
+                          color="#009900"
+                          :item-text="itemsModalidad.text"
+                          :item-value="itemsModalidad.value"
+                          @input="$v.informe.contenido.iereinsersion.modalidad.$touch()"
+                          @blur="$v.informe.contenido.iereinsersion.modalidad.$touch()"
+                          :error-messages="errorModalidadIE"
+                          outlined
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12" md="4">
+                    <v-select     
+                        label="Nivel Educativo"
+                        v-model="informe.contenido.iereinsersion.nivel"
+                        :items="itemsNivel"
+                        color="#009900"
+                        :item-text="itemsNivel.text"
+                        :item-value="itemsNivel.value"
+                        @input="$v.informe.contenido.iereinsersion.nivel.$touch()"
+                        @blur="$v.informe.contenido.iereinsersion.nivel.$touch()"
+                        :error-messages="errorNivelIE"
+                        outlined
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12" md="4">
+                    <v-select
+                      label="Grado"
+                      v-model="informe.contenido.iereinsersion.grado"
+                      :items="itemsGrado"
+                      color="#009900"
+                      :item-text="itemsGrado.text"
+                      :item-value="itemsGrado.value"
+                      @input="$v.informe.contenido.iereinsersion.grado.$touch()"
+                      @blur="$v.informe.contenido.iereinsersion.grado.$touch()"
+                      :error-messages="errorGradoIE"
+                      outlined
+                    ></v-select>                   
+                  </v-col>
               </v-row>
+              <v-menu
+                  v-model="datemenu"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="informe.fechacreacion"
+                      label="Fecha de Evaluación"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                      color="#009900"
+                      @input="$v.informe.fechacreacion.$touch()"
+                      @blur="$v.informe.fechacreacion.$touch()"
+                      :error-messages="errorFechaEvaluacion"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="informe.fechacreacion"
+                    @input="menu2 = false"
+                    locale="es-es"
+                  ></v-date-picker>
+                </v-menu>
               <v-textarea
                 v-model="informe.contenido.antecedentes"
                 label="Antecedentes"
@@ -632,6 +628,15 @@ export default {
   },
   data() {
     return {
+      itemsModalidad: [
+        { value: 'EBA', text: 'Educacion Basica Alternativa'},
+        { value: 'EBE', text: 'Educacion Basica Especial'},
+        { value: 'EBR', text: 'Educacion Basica Regular'}
+      ],
+      itemsNivel: [
+        { value: 'PRIMARIA', text: 'Nivel Primaria'},
+        { value: 'SECUNDARIA', text: 'Nivel Secundaria'},
+      ],
       fileList: [],
       datemenu: false,
       step: 1,
@@ -667,11 +672,13 @@ export default {
       firmas: { urlfirma: "", nombre: "", cargo: "" },
       imagen: "",
       pdf: "",
+      residente: ""
     };
   },
   async created() {
     this.cargarLogros();    
-    this.cargarRecomendaciones();    
+    this.cargarRecomendaciones();
+    this.obtenerResidente();    
   },
   methods: {
     ...mapMutations(["replaceInforme"]),
@@ -743,6 +750,14 @@ export default {
           "<strong>Se redirigira a la Interfaz de Gestión<strong>"
         );
       }
+    },
+    async obtenerResidente() {
+      await axios
+        .get("/residente/id?id=" + this.informe.idresidente)
+        .then((x) => {
+          this.residente = x.data.nombre + " " + x.data.apellido;
+        })
+        .catch((err) => console.log(err));
     },
     agregarLogros() {
       this.$v.logro.$touch();
@@ -854,6 +869,14 @@ export default {
   computed: {
     verifyColor() {
       return "red";
+    },
+    itemsGrado(){
+         const listaGrados = [{value:"1",text: "Primero"},{value:"2",text: "Segundo"},{value:"3",text: "Tercero"},
+           {value:"4",text: "Cuarto"},{value:"5",text: "Quinto"}];
+           if(this.informe.contenido.iereinsersion.nivel == 'PRIMARIA'){ 
+             listaGrados.push({value:"6",text: "Sexto"})}
+           this.informe.contenido.iereinsersion.grado = "1";
+          return listaGrados;
     },
     errorNombreIE() {
       const errors = [];
@@ -991,6 +1014,9 @@ export default {
           required,
         },
         creadordocumento: {
+          required,
+        },
+        fechacreacion: {
           required,
         },
         contenido: {
