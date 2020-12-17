@@ -17,6 +17,7 @@ import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 import GestionActa from '../views/Acta/GestionarActa.vue';
 import ModificarPerfil from '../views/perfil/ModificarPerfil.vue';
 import GestionarFichaEvaluacionEducativa from '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
+import GestionarEvaluacionEducativa from '../views/Evaluacion/GestionarEvaluacion.vue';
 //Prueba
 import PruebaActa from '../views/Acta/PruebaActa.vue';
 
@@ -134,7 +135,8 @@ const routes = [{
             {
                 path: 'evaluacionEducativa',
                 name: 'GestionarFichaEvaluacionEducativa',
-                component: GestionarFichaEvaluacionEducativa
+                /*component: GestionarFichaEvaluacionEducativa*/
+                component: GestionarEvaluacionEducativa
             },
             {
                 path: 'estadisticas',
