@@ -124,41 +124,46 @@
                 ></v-text-field>
                 <v-row>
                   <v-col cols="12" md="4">
-                    <v-text-field
-                      v-model="informe.contenido.iereinsersion.modalidad"
-                      label="Modalidad"
-                      outlined
-                      @input="
-                        $v.informe.contenido.iereinsersion.modalidad.$touch()
-                      "
-                      @blur="
-                        $v.informe.contenido.iereinsersion.modalidad.$touch()
-                      "
-                      :error-messages="errorModalidadIE"
-                      color="#009900"
-                    ></v-text-field>
+                    <v-select
+                          label="Modalidad"
+                          v-model="informe.contenido.iereinsersion.modalidad"
+                          :items="itemsModalidad"
+                          color="#009900"
+                          :item-text="itemsModalidad.text"
+                          :item-value="itemsModalidad.value"
+                          @input="$v.informe.contenido.iereinsersion.modalidad.$touch()"
+                          @blur="$v.informe.contenido.iereinsersion.modalidad.$touch()"
+                          :error-messages="errorModalidadIE"
+                          outlined
+                    ></v-select>
                   </v-col>
                   <v-col cols="12" md="4">
-                    <v-text-field
-                      v-model="informe.contenido.iereinsersion.nivel"
-                      label="Nivel Educativo"
-                      outlined
-                      @input="$v.informe.contenido.iereinsersion.nivel.$touch()"
-                      @blur="$v.informe.contenido.iereinsersion.nivel.$touch()"
-                      :error-messages="errorNivelIE"
-                      color="#009900"
-                    ></v-text-field>
+                    <v-select     
+                        label="Nivel Educativo"
+                        v-model="informe.contenido.iereinsersion.nivel"
+                        :items="itemsNivel"
+                        color="#009900"
+                        :item-text="itemsNivel.text"
+                        :item-value="itemsNivel.value"
+                        @input="$v.informe.contenido.iereinsersion.nivel.$touch()"
+                        @blur="$v.informe.contenido.iereinsersion.nivel.$touch()"
+                        :error-messages="errorNivelIE"
+                        outlined
+                    ></v-select>
                   </v-col>
                   <v-col cols="12" md="4">
-                    <v-text-field
-                      v-model="informe.contenido.iereinsersion.grado"
+                    <v-select
                       label="Grado"
-                      outlined
+                      v-model="informe.contenido.iereinsersion.grado"
+                      :items="itemsGrado"
+                      color="#009900"
+                      :item-text="itemsGrado.text"
+                      :item-value="itemsGrado.value"
                       @input="$v.informe.contenido.iereinsersion.grado.$touch()"
                       @blur="$v.informe.contenido.iereinsersion.grado.$touch()"
                       :error-messages="errorGradoIE"
-                      color="#009900"
-                    ></v-text-field>
+                      outlined
+                    ></v-select>                   
                   </v-col>
                 </v-row>
                 <v-menu
@@ -571,6 +576,15 @@ export default {
   },
   data() {
     return {
+      itemsModalidad: [
+        { value: 'EBA', text: 'Educacion Basica Alternativa'},
+        { value: 'EBE', text: 'Educacion Basica Especial'},
+        { value: 'EBR', text: 'Educacion Basica Regular'}
+      ],
+      itemsNivel: [
+        { value: 'PRIMARIA', text: 'Nivel Primaria'},
+        { value: 'SECUNDARIA', text: 'Nivel Secundaria'},
+      ],
       fileList: [],
       datemenu: false,
       dialogVistaPreviaFirma: false,
@@ -621,9 +635,9 @@ export default {
           recomendaciones: [],
           iereinsersion: {
             nombre: "",
-            modalidad: "",
-            nivel: "",
-            grado: "",
+            modalidad: "EBA",
+            nivel: "PRIMARIA",
+            grado: "1",
           },
           anexos: [],
           firmas: [],
@@ -826,9 +840,9 @@ export default {
           recomendaciones: [],
           iereinsersion: {
             nombre: "",
-            modalidad: "",
-            nivel: "",
-            grado: "",
+            modalidad: "EBA",
+            nivel: "PRIMARIA",
+            grado: "1",
           },
           anexos: [],
           firmas: [],
@@ -842,6 +856,14 @@ export default {
     ...mapGetters(["user"]),
     verifyColor() {
       return "red";
+    },
+    itemsGrado(){
+         const listaGrados = [{value:"1",text: "Primero"},{value:"2",text: "Segundo"},{value:"3",text: "Tercero"},
+           {value:"4",text: "Cuarto"},{value:"5",text: "Quinto"}];
+           if(this.informe.contenido.iereinsersion.nivel == 'PRIMARIA'){ 
+             listaGrados.push({value:"6",text: "Sexto"})}
+           this.informe.contenido.iereinsersion.grado = "1";
+          return listaGrados;
     },
     errorNombreIE() {
       const errors = [];
