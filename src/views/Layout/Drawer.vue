@@ -196,7 +196,14 @@ export default {
           icon: "dashboard",
           name: "GestionarSesionesEducativas",
           href: "/dashboard/sesioneseducativas"
-        },        
+        },      
+        {
+          title: "Gestionar Evaluacion",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarEvaluacion",
+          href: "/dashboard/evaluacioneducativa"
+        },          
         {
           title: "Expedientes Matriz",
           group: "admin",
@@ -224,6 +231,13 @@ export default {
           icon: "dashboard",
           name: "CambiarContrasena",
           href: "/dashboard/CambiarContrasena"
+        },
+        {
+          title: "Estadísticas",
+          group: "admin",
+          icon: "dashboard",
+          name: "ConsultaEstadisticas",
+          href: "/dashboard/estadisticas"
         }
       ],
       scrollSettings: {
