@@ -338,7 +338,7 @@ export default {
       const errors = []
       if (!this.$v.actaexternamiento.datos.fechacreacion.$dirty) return errors
           !this.$v.actaexternamiento.datos.fechacreacion.required && errors.push('Debe Ingresar una Fecha de Creacion Obligatoriamente')
-          //validating whether the user are an adult
+        
           var dateselected =  new Date(this.actaexternamiento.fechacreacion);
           var maxdate = new Date();
           maxdate.setFullYear(maxdate.getFullYear());
