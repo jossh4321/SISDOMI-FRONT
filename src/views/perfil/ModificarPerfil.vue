@@ -1,18 +1,23 @@
 <template>
   <v-card>
     <v-card-title class="justify-center">Modificar Perfil</v-card-title>
+        
 
     <v-stepper v-model="step">
-      <v-stepper-header>
-        <v-stepper-step editable step="1"> Datos Generales </v-stepper-step>
-
-        <v-divider></v-divider>
-      </v-stepper-header>
-
-      <v-stepper-items>
-        <v-stepper-content step="1">
+       <v-stepper-header>
+      <v-stepper-step
+        editable
+        step="1"
+        >
+          Datos Generales
+         </v-stepper-step>
+         <v-divider></v-divider>
+          </v-stepper-header>
+         <v-stepper-items >
+           <v-stepper-content step="1">
           <div class="container-user">
             <form>
+              
               <v-text-field
                 v-model="usuario.datos.nombre"
                 label="Ingrese los Nombres"
@@ -21,6 +26,8 @@
                 @blur="$v.usuario.datos.nombre.$touch()"
                 :error-messages="errorNombre"
                 color="#009900"
+
+                
               ></v-text-field>
               <v-text-field
                 v-model="usuario.datos.apellido"
@@ -80,59 +87,56 @@
                 color="#009900"
               ></v-text-field>
               <v-textarea
-                v-model="usuario.datos.direccion"
-                label="Ingrese el la direccion"
-                auto-grow
-                outlined
-                rows="2"
-                row-height="25"
-                @input="$v.usuario.datos.direccion.$touch()"
-                @blur="$v.usuario.datos.direccion.$touch()"
-                :error-messages="errorDireccion"
-                color="#009900"
-                shaped
-              ></v-textarea>
-              <v-text-field
-                v-model="usuario.datos.email"
+                  v-model="usuario.datos.direccion"
+                  label="Ingrese el la direccion"
+                  auto-grow
+                  outlined
+                  rows="2"
+                   row-height="25"
+                  @input="$v.usuario.datos.direccion.$touch()"
+                  @blur="$v.usuario.datos.direccion.$touch()"
+                  :error-messages="errorDireccion"
+                  color="#009900"
+                  shaped
+                 ></v-textarea>
+                 <v-text-field
+                  v-model="usuario.datos.email"
                 label="Ingrese el Correo Electronico"
                 outlined
                 @input="$v.usuario.datos.email.$touch()"
                 @blur="$v.usuario.datos.email.$touch()"
                 :error-messages="errorEmail"
                 color="#009900"
-              ></v-text-field>
-
-          <div>
-              <vue-dropzone ref="myVueDropzone"
-            @vdropzone-success="afterSuccess"
-            @vdropzone-removed-file="afterRemoved"
-            @vdropzone-mounted="mounteddropzone"
-            id="dropzone" :options="dropzoneOptions">
-            </vue-dropzone>
-          </div>
-          <v-card v-if="errorImagen" color="red">
-            <v-card-text class="text-center" style="color:white">Debe Subir una imagen del usuario Obligatoriamente</v-card-text>
-          </v-card>
-          <v-divider class="divider-custom"></v-divider>
-
-              <v-row>
-                <v-col>
-                  <v-btn block @click="step = 2" color="success">
-                    <v-icon left>mdi-page-next-outline</v-icon>
-                    <span>Modificar Perfil</span>
-                  </v-btn>
-                </v-col>
-                <v-col>
-                  <v-btn block @click="cerrarDialogo()" color="primary">
-                    <v-icon left>mdi-close-outline</v-icon>
-                    <span>Cerrar</span>
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </form>
+                ></v-text-field>
+                <div>
+                 <vue-dropzone ref="myVueDropzone"
+                 
+                    @vdropzone-success=" registerFile"
+                    @vdropzone-removed-file="removedFile"
+                    @vdropzone-mounted="mounteddropzone"
+                    id="dropzone" :options="dropzoneOptions">
+                 </vue-dropzone>
+                    </div>
+                   <v-card v-if="errorImagen" color="red">
+                   <v-card-text class="text-center" style="color:white">Debe Subir una imagen del usuario Obligatoriamente</v-card-text>
+                  
+                   </v-card>
+                   <v-divider class="divider-custom"></v-divider>
+                    <v-row>
+                      <v-col>
+                     <v-btn block @click="actualizarUsuarioPerfil()" color="success">
+                      <v-icon left>mdi-content-save-all-outline</v-icon>
+                      <span>Modificar Perfil</span>
+                      </v-btn>
+                     </v-col>
+                      <v-btn block @click="cerrarDialogo()" color="primary">
+                     <v-icon left>mdi-close-outline</v-icon>
+                     <span>Cerrar</span>
+                     </v-btn>
+                    </v-row>
+           </form>
           </div>
         </v-stepper-content>
-        
       </v-stepper-items>
     </v-stepper>
   </v-card>
@@ -144,8 +148,10 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
+import { mapGetters } from "vuex";
+
 export default {
-  props: ["listaroles"],
+  props: [],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -158,16 +164,17 @@ export default {
         thumbnailWidth: 250,
         maxFilesize: 3.0,
         maxFiles: 1,
-        acceptedFiles: ".jpg, .png, jpeg",
+        acceptedFiles: ".jpg",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
         dictDefaultMessage:
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
-        
-      }, 
-      //utilizado en los formularios como un prop
+      },imagen:{},
+
+
       usuario: {
-        
+        usuario: "",
+        clave: "",
         datos: {
           nombre: "",
           apellido: "",
@@ -178,48 +185,65 @@ export default {
           email: "",
           imagen: "",
         },
-      },  imagen:{tipo:"url",modificado:"no"}
+      },
     };
   },
-  created() {},
+  created() {
+    this.DialogloadUsuarioModificacion();   
+  },
   methods: {
-    ...mapMutations(["setUsuarios", "addUsuario"]),
-   
-    resetUsuarioValidationState() {
-      this.$refs.myVueDropzone.removeAllFiles();
-      this.$v.usuario.$reset();
+    ...mapMutations([]),
+  mounteddropzone(){
+      var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg" };
+      var url = this.usuario.datos.imagen;
+      this.$refs.myVueDropzone.manuallyAddFile(file, this.usuario.datos.imagen,null,null,true);      
     },
-    async actualizarUsuario(){
+ 
+    async DialogloadUsuarioModificacion(){
+      var user = {};
+      await axios.get("/usuario/id?id="+this.user.id)
+      .then(res => {
+         user = res.data; 
+         user.datos.fechanacimiento = res.data.datos
+                  .fechanacimiento.split("T")[0];
+                   this.usuario=user;
+      })
+      .catch(err => console.log(err));
+      return user;  
+    },
+     async actualizarUsuarioPerfil(){
+       
        this.$v.$touch();
       if (this.$v.$invalid) {
-        console.log('hay errores');
-        this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
+        await this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
       } else {
-        console.log('no hay errores');
-        await axios.put("/usuario?tipo="+this.imagen.tipo+"&modificado="+this.imagen.modificado,this.usuario)
-          .then(res => {
-            var resultado = res.data;
-            this.replaceUsuario(resultado);
-            this.cerrarDialogo();
-          }).catch(err => console.log(err));
-          await this.mensaje('success','listo','Usuario Actualizado Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
+        
+        //console.log(this.usuario);
+        await axios.put("/Perfil/modificarperfil",this.usuario)
+          
+        await this.mensaje('success','listo','Perfil Actualizado Satisfactoriamente');
+            
       }
     },
+     resetUsuarioValidationState() {
+     this.$refs.myVueDropzone.removeAllFiles();
+        this.$v.usuario.$reset();
+    },  
     cerrarDialogo() {
-      this.usuario = this.limpiarUsuario();
-      this.step = 1;
       this.resetUsuarioValidationState();
-      this.$emit("close-dialog-save");
+      this.$emit("close-dialog-update");
+     
     },
-    afterSuccess(file, response) {
-      console.log(file);
-      this.usuario.datos.imagen = file.dataURL.split(",")[1];
-      this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
-      //console.log(file.dataURL.split(",")[1]);
+
+    registerFile(file, response) {
+  this.usuario.datos.imagen=file
+  consolo.log(this.usuario.datos.imagen)
+     
     },
-    afterRemoved(file, error, xhr) {
-      this.usuario.datos.imagen = "";
-      this.$v.usuario.datos.imagen.$model = "";
+
+  removedFile(file, error, xhr) {
+     this.usuario.datos.imagen={}
+     
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -229,24 +253,11 @@ export default {
         footer: footer,
       });
     },
-    limpiarUsuario() {
-      return {
-        
-        datos: {
-          nombre: "",
-          apellido: "",
-          fechanacimiento: "",
-          tipodocumento: "",
-          numerodocumento: "",
-          direccion: "",
-          email: "",
-          imagen: "",
-        },
-      };
-    },
   },
   computed: {
     ...mapState(["usuarios"]),
+    ...mapGetters(["user"]),
+
     verifyColor() {
       return "red";
     },
@@ -349,13 +360,7 @@ export default {
         errors.push("Debe seleccionar un Rol obligatoriamente");
       return errors;
     },
-    errorEstado() {
-      const errors = [];
-      if (!this.$v.usuario.estado.$dirty) return errors;
-      !this.$v.usuario.estado.required &&
-        errors.push("Debe seleccionar un Estado obligatoriamente");
-      return errors;
-    },
+   
     errorImagen() {
       return this.$v.usuario.datos.imagen.required == false &&
         this.$v.usuario.datos.imagen.$dirty == true
@@ -370,12 +375,7 @@ export default {
           required,
           minLength: minLength(4),
         },
-        rol: {
-          required,
-        },
-        estado: {
-          required,
-        },
+        
         datos: {
           nombre: {
             required,

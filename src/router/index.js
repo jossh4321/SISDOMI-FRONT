@@ -119,7 +119,7 @@ const routes = [{
                 component: PruebaActa
             },
             {
-                path: 'ModificarPerfil',
+                path: 'modificarPerfil',
                 name: 'Perfil',
                 component: ModificarPerfil
             },
