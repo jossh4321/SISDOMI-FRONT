@@ -25,7 +25,7 @@
                 dense
                 outlined
                 color="#009900"
-                label="Seleccione un residente del Sistema"
+                label="Seleccione un responsable del Sistema"
                 item-text="nombre"
                 item-value="id"
                 @input="$v.actaexternamiento.contenido.responsable.$touch()"
@@ -198,7 +198,7 @@ import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 export default {
@@ -223,8 +223,9 @@ export default {
       }, //utilizado en los formularios como un prop
       actaexternamiento: {
         
-        id:"", tipo:"", historialcontenido:"", creadordocumento:"", fechacreacion:"", 
-        area:"", fase:"", idresidente:"", estado:"",
+        id:"", tipo:"", historialcontenido:[], creadordocumento:"", fechacreacion:new Date().toISOString()
+, 
+        area:"social", fase:"3", idresidente:"", estado:"",
 
         contenido: {
         responsable: "",      
@@ -234,13 +235,15 @@ export default {
         numerooficio:"",  
         observaciones:"",
         
-        firma:[]
+        firmas:[]
         },
        
       },
     };
   },
-  created() {},
+  created() {
+    console.log(this.user)
+  },
   methods: {
     ...mapMutations(["setUsuarios", "addUsuario"]),
     async registrarUsuario() {
@@ -255,7 +258,15 @@ export default {
         );
       } else {
         console.log("no hay errores");
-        await axios
+        this.actaexternamiento.contenido.firmas = this.actaexternamiento.contenido.firmas.map(function(val) {
+    return {
+         urlFirma:"val",nombre:"",cargo:""
+        }
+        }),
+      
+         
+          
+               await axios
           .post("/actaexternamiento/register", this.actaexternamiento)
           .then((res) => {
             console.log(this.actaexternamiento)
@@ -284,13 +295,13 @@ export default {
     },
     afterSuccess(file, response) {
       console.log(file);
-      this.actaexternamiento.contenido.firma = file.dataURL.split(",")[1];
-      this.$v.actaexternamiento.contenido.firma.$model = file.dataURL.split(",")[1];
+      this.actaexternamiento.contenido.firmas.push(file.dataURL.split(",")[1]);
+      this.$v.actaexternamiento.contenido.firmas.$model = file.dataURL.split(",")[1];
       //console.log(file.dataURL.split(",")[1]);
     },
     afterRemoved(file, error, xhr) {
-      this.actaexternamiento.contenido.firma = "";
-      this.$v.actaexternamiento.contenido.firma.$model = "";
+      this.actaexternamiento.contenido.firmas = "";
+      this.$v.actaexternamiento.contenido.firmas.$model = "";
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -312,13 +323,14 @@ export default {
         numerooficio:"",  
         observaciones:"",
         
-        firma:[]
+        firmas:[]
         },
       };
     },
   },
   computed: {
     ...mapState(["usuarios"]),
+     ...mapGetters(["user"]),
     verifyColor() {
       return "red";
    
@@ -373,8 +385,8 @@ export default {
       return errors
     },
     errorImagen() {
-      return this.$v.actaexternamiento.contenido.firma.required == false &&
-        this.$v.actaexternamiento.contenido.firma.$dirty == true
+      return this.$v.actaexternamiento.contenido.firmas.required == false &&
+        this.$v.actaexternamiento.contenido.firmas.$dirty == true
         ? true
         : false; 
     },
@@ -382,33 +394,7 @@ export default {
   validations() {
     return {
       actaexternamiento: {
-             id:{required
-              },
-               tipo:{
-                  required
-                  },
-             historialcontenido:{
-                  required
-                  },
-           creadordocumento:{
-                  required
-                  },
-                   fechacreacion:{
-                  required
-                  },
-
-        area:{
-                  required
-                  },
-                   fase:{
-                  required
-                  },
-                   idresidente:{
-                  required
-                  },
-                   estado:{
-                  required
-                  },
+           
 
                
         contenido: {
@@ -438,7 +424,7 @@ export default {
                     },
 
         
-                firma:{
+                firmas:{
                   required,
           
                 },
