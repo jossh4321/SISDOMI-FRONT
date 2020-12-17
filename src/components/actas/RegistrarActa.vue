@@ -1,154 +1,157 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Registrar Acta de externamiento</v-card-title>
+    <v-card-title class="justify-center"
+      >Registrar Acta de externamiento</v-card-title
+    >
 
     <v-stepper v-model="step">
       <v-stepper-header>
-        <v-stepper-step editable step="1"> Datos Generales </v-stepper-step>
+        <v-stepper-step editable step="1"> Registro de Datos </v-stepper-step>
 
         <v-divider></v-divider>
-
-        <v-stepper-step editable step="2">     Registro de Datos </v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-items>
         <v-stepper-content step="1">
           <div class="container-user">
             <form>
-              <v-text-field
-                v-model="usuario.datos.CreadorDocumento"
-          label="Ingrese el tipo"
+              <v-autocomplete
+                v-model="actaexternamiento.contenido.responsable"
+                :items="listaActas"
+                filled
+                chips
+                dense
                 outlined
-                @input="$v.usuario.datos.tipo.$touch()"
-                @blur="$v.usuario.datos.tipo.$touch()"
-                :error-messages="errortipo"
                 color="#009900"
-              ></v-text-field>
-              <v-text-field
-                v-model="usuario.datos.fechacreacion"
-          label="Ingrese fecha creacion"
-                outlined
-                @input="$v.usuario.datos.fechacreacion.$touch()"
-                @blur="$v.usuario.datos.fechacreacion.$touch()"
-                :error-messages="errorfechacreacion"
-                color="#009900"
-              ></v-text-field>
-                <v-text-field
-                v-model="usuario.datos.area"
-          label="Ingrese el area"
-                outlined
-                @input="$v.usuario.datos.area.$touch()"
-                @blur="$v.usuario.datos.area.$touch()"
-                :error-messages="errorarea"
-                color="#009900"
-              ></v-text-field>
-            
-              <v-text-field
-                v-model="usuario.datos.fase"
-          label="Ingrese la fase"
-                outlined
-                @input="$v.usuario.datos.fase.$touch()"
-                @blur="$v.usuario.datos.fase.$touch()"
-                :error-messages="errorfase"
-                color="#009900"
-              ></v-text-field>
-            
-             
-              <v-row>
-                <v-col>
-                  <v-btn block @click="step = 2" color="success">
-                    <v-icon left>mdi-page-next-outline</v-icon>
-                    <span>Continuar</span>
-                  </v-btn>
-                </v-col>
-                <v-col>
-                  <v-btn block @click="cerrarDialogo()" color="primary">
-                    <v-icon left>mdi-close-outline</v-icon>
-                    <span>Cerrar</span>
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </form>
-          </div>
-        </v-stepper-content>
-        <v-stepper-content step="2">
-          <div class="container-user">
-            <form>
-              <v-text-field
-                v-model="usuario.idresidente"
-          label="Ingrese nuevo residente"
-                outlined
-                @input="$v.usuario.idresidente.$touch()"
-                @blur="$v.usuario.idresidente.$touch()"
-                :error-messages="erroridresidente"
-                class="inputTextField"
-                color="#009900"
-              ></v-text-field>
+                label="Seleccione un responsable del Sistema"
+                item-text="nombre"
+                item-value="id"
+                @input="$v.actaexternamiento.contenido.responsable.$touch()"
+                @blur="$v.actaexternamiento.contenido.responsable.$touch()"
+                :error-messages="errorresponsable"
+              >
+                <template v-slot:selection="data">
+                  <v-chip
+                    v-bind="data.attrs"
+                    :input-value="data.selected"
+                    style="margin-top: 5px"
+                  >
+                    <v-avatar left color="#b3b3ff" size="24">
+                      <span style="font-size: 12px">RT</span>
+                    </v-avatar>
+                    {{ data.item.nombre + " " + data.item.apellido }}
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <template>
+                    <v-list-item-avatar>
+                      <v-avatar left color="#b3b3ff" size="24">
+                        <span style="font-size: 12px">RT</span>
+                      </v-avatar>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        >Rol:
+                        {{
+                          data.item.nombre + " " + data.item.apellido
+                        }}</v-list-item-title
+                      >
+                      <v-list-item-subtitle
+                        >Area: {{ data.item.area }}</v-list-item-subtitle
+                      >
+                      <v-list-item-subtitle
+                        >descripcion:
+                        {{ data.item.descripcion }}</v-list-item-subtitle
+                      >
+                    </v-list-item-content>
+                  </template>
+                </template>
+              </v-autocomplete>
 
-               <v-text-field
-               v-model="usuario.entidaddisposicion"
-          label="Ingrese nueva entidad disposicion"
+              <v-menu
+                v-model="datemenu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="actaexternamiento.contenido.fechacreacion"
+                    label="Ingrese fecha creacion"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    @input="
+                      $v.actaexternamiento.contenido.fechacreacion.$touch()
+                    "
+                    @blur="
+                      $v.actaexternamiento.contenido.fechacreacion.$touch()
+                    "
+                    :error-messages="errorfechacreacion"
+                    color="#009900"
+                    outlined
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="actaexternamiento.contenido.fechacreacion"
+                  @input="datemenu = false"
+                  locale="es-es"
+                ></v-date-picker>
+              </v-menu>
+
+              <v-text-field
+                v-model="actaexternamiento.contenido.entidaddisposicion"
+                label="Ingrese nueva entidad disposicion"
                 outlined
-               @input="$v.usuario.entidaddisposicion.$touch()"
-                @blur="$v.usuario.entidaddisposicion.$touch()"
+                @input="
+                  $v.actaexternamiento.contenido.entidaddisposicion.$touch()
+                "
+                @blur="
+                  $v.actaexternamiento.contenido.entidaddisposicion.$touch()
+                "
                 :error-messages="errorentidaddisposicion"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
-
- <v-text-field
-               v-model="usuario.numeroresolucion"
-          label="Ingrese nuevo numero resolucion"
+              <v-text-field
+                v-model="actaexternamiento.contenido.numeroresolucion"
+                label="Ingrese nuevo numero resolucion"
                 outlined
-               @input="$v.usuario.numeroresolucion.$touch()"
-                @blur="$v.usuario.numeroresolucion.$touch()"
+                @input="
+                  $v.actaexternamiento.contenido.numeroresolucion.$touch()
+                "
+                @blur="$v.actaexternamiento.contenido.numeroresolucion.$touch()"
                 :error-messages="errornumeroresolucion"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
-
-               <v-text-field
-               v-model="usuario.numerooficio"
-          label="Ingrese nuevo numero oficio"
+              <v-text-field
+                v-model="actaexternamiento.contenido.numerooficio"
+                label="Ingrese nuevo numero oficio"
                 outlined
-               @input="$v.usuario.numerooficio.$touch()"
-                @blur="$v.usuario.numerooficio.$touch()"
+                @input="$v.actaexternamiento.contenido.numerooficio.$touch()"
+                @blur="$v.actaexternamiento.contenido.numerooficio.$touch()"
                 :error-messages="errornumerooficio"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
-
-               <v-text-field
-               v-model="usuario.observaciones"
-          label="Ingrese nuevas observaciones"
+              <v-text-field
+                v-model="actaexternamiento.contenido.observaciones"
+                label="Ingrese nuevas observaciones"
                 outlined
-               @input="$v.usuario.observaciones.$touch()"
-                @blur="$v.usuario.observaciones.$touch()"
+                @input="$v.actaexternamiento.contenido.observaciones.$touch()"
+                @blur="$v.actaexternamiento.contenido.observaciones.$touch()"
                 :error-messages="errorobservaciones"
                 class="inputTextField"
                 color="#009900"
               ></v-text-field>
 
-              
-
-
-
-                <v-select
-                v-model="usuario.estado"
-          :items="['creado', 'modificado']"
-           label="Ingrese el Estado"
-                outlined
-                 @input="$v.usuario.estado.$touch()"
-                @blur="$v.usuario.estado.$touch()"
-                :error-messages="errorestado"
-                class="inputTextField"
-                color="#009900"
-              ></v-select>
-
-                
               <div>
                 <vue-dropzone
                   ref="myVueDropzone"
@@ -161,8 +164,7 @@
               </div>
               <v-card v-if="errorImagen" color="red">
                 <v-card-text class="text-center" style="color: white"
-                  >Debe Subir una imagen del Usuario
-                  Obligatoriamente</v-card-text
+                  >Debe Subir una imagen Obligatoriamente</v-card-text
                 >
               </v-card>
               <v-divider class="divider-custom"></v-divider>
@@ -189,16 +191,16 @@
 </template>
 <script>
 import axios from "axios";
-import Vue from 'vue'
-import Vuelidate from 'vuelidate'
-Vue.use(Vuelidate)
+import Vue from "vue";
+import Vuelidate from "vuelidate";
+Vue.use(Vuelidate);
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 export default {
-  props: ["actaexternamiento"],
+  props: ["listaActas"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -217,24 +219,33 @@ export default {
         dictDefaultMessage:
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
       }, //utilizado en los formularios como un prop
-      usuario: {
-        
-        datos: {
-        CreadorDocumento:" ",
-        fechacreacion:" ",
-        area:" ",
-        fase:" ", 
-        idresidente:" ",       
-        estado:" ",
-        entidaddisposicion:" ",  
-        numeroresolucion:" ",  
-        numerooficio:" ",  
-        observaciones:" "
+      actaexternamiento: {
+        id: "",
+        tipo: "ActaExternamiento",
+        historialcontenido: [],
+        creadordocumento: "",
+        fechacreacion: new Date().toISOString(),
+        area: "social",
+        fase: "3",
+        idresidente: "",
+        estado: "",
+
+        contenido: {
+          responsable: "",
+
+          entidaddisposicion: "",
+          numeroresolucion: "",
+          numerooficio: "",
+          observaciones: "",
+
+          firmas: [],
         },
       },
     };
   },
-  created() {},
+  created() {
+    console.log(this.user);
+  },
   methods: {
     ...mapMutations(["setUsuarios", "addUsuario"]),
     async registrarUsuario() {
@@ -249,15 +260,25 @@ export default {
         );
       } else {
         console.log("no hay errores");
-        await axios
-          .post("/usuario", this.usuario)
-          .then((res) => {
-            console.log(this.usuario)
-            this.usuario = res.data;
-            this.addUsuario(this.usuario);
-            this.cerrarDialogo();
-          })
-          .catch((err) => console.log(err));
+        console.log(this.actaexternamiento.contenido.firmas)
+        this.actaexternamiento.contenido.firmas = this.actaexternamiento.contenido.firmas.map(
+          function(val) {
+            return {
+              urlFirma: "val",
+              nombre: "",
+              cargo: "",
+            }
+          }
+        );
+          await axios
+            .post("/actaexternamiento/register", this.actaexternamiento)
+            .then((res) => {
+              console.log(this.actaexternamiento);
+              this.actaexternamiento = res.data;
+              this.addUsuario(this.actaexternamiento);
+              this.cerrarDialogo();
+            })
+            .catch((err) => console.log(err));
         await this.mensaje(
           "success",
           "listo",
@@ -268,23 +289,21 @@ export default {
     },
     resetUsuarioValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
-      this.$v.usuario.$reset();
+      this.$v.actaexternamiento.$reset();
     },
     cerrarDialogo() {
-      this.usuario = this.limpiarUsuario();
+      this.actaexternamiento = this.limpiarUsuario();
       this.step = 1;
       this.resetUsuarioValidationState();
       this.$emit("close-dialog-save");
     },
     afterSuccess(file, response) {
       console.log(file);
-      this.usuario.datos.imagen = file.dataURL.split(",")[1];
-      this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
+      this.actaexternamiento.contenido.firmas.push(file.dataURL.split(",")[1]);
+
       //console.log(file.dataURL.split(",")[1]);
     },
     afterRemoved(file, error, xhr) {
-      this.usuario.datos.imagen = "";
-      this.$v.usuario.datos.imagen.$model = "";
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -296,166 +315,117 @@ export default {
     },
     limpiarUsuario() {
       return {
-       
-        datos: {
-        CreadorDocumento:" ",
-        fechacreacion:" ",
-        area:" ",
-        fase:" ", 
-        idresidente:" ",       
-        estado:" ",
-        entidaddisposicion:" ",  
-        numeroresolucion:" ",  
-        numerooficio:" ",  
-        observaciones:" "
+        contenido: {
+          responsable: "",
+
+          entidaddisposicion: "",
+          numeroresolucion: "",
+          numerooficio: "",
+          observaciones: "",
+
+          firmas: [],
         },
       };
     },
   },
   computed: {
     ...mapState(["usuarios"]),
+    ...mapGetters(["user"]),
     verifyColor() {
       return "red";
     },
-    errorNombreUsuario() {
+
+    errorresponsable() {
       const errors = [];
-      if (!this.$v.usuario.usuario.$dirty) return errors;
-      !this.$v.usuario.usuario.required &&
-        errors.push("Debe ingresar un Nombre de Usuario Obligatoriamente");
-      !this.$v.usuario.usuario.minLength &&
-        errors.push("El Nombre de Usuario debe poseer al menos 4 caracteres");
+      if (!this.$v.actaexternamiento.contenido.responsable.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.contenido.responsable.required &&
+        errors.push("Debe ingresar el responsable Obligatoriamente");
 
       return errors;
     },
-    errortipo () {
-      const errors = []
-      if (!this.$v.usuario.datos.CreadorDocumento.$dirty) return errors
-          !this.$v.usuario.datos.CreadorDocumento.required && errors.push('Debe ingresar el tipo Obligatoriamente')
-          !this.$v.usuario.datos.CreadorDocumento.minLength && errors.push('El Nombre debe tener al menos 3 caracteres')
-      return errors
+    errorfechacreacion() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.contenido.fechacreacion.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.contenido.fechacreacion.required &&
+        errors.push("Debe Ingresar una Fecha de Creacion Obligatoriamente");
+
+      var dateselected = new Date(this.actaexternamiento.fechacreacion);
+      var maxdate = new Date();
+      maxdate.setFullYear(maxdate.getFullYear());
+
+      return errors;
     },
-    errorarea () {
-      const errors = []
-      if (!this.$v.usuario.datos.area.$dirty) return errors
-          !this.$v.usuario.datos.area.required && errors.push('Debe ingresar un area Obligatoriamente')
-          !this.$v.usuario.datos.area.minLength && errors.push('El area debe tener al menos 3 caracteres')
-      return errors
+    errorentidaddisposicion() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.contenido.entidaddisposicion.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.contenido.entidaddisposicion.required &&
+        errors.push("Debe ingresar entidad disposicion Obligatoriamente");
+
+      return errors;
     },
-    erroridresidente () {
-      const errors = []
-      if (!this.$v.usuario.datos.idresidente.$dirty) return errors
-          !this.$v.usuario.datos.idresidente.required && errors.push('Debe ingresar el idresidente Obligatoriamente')
-          
-      return errors
-      },
-    errorfechacreacion () {
-      const errors = []
-      if (!this.$v.usuario.datos.fechacreacion.$dirty) return errors
-          !this.$v.usuario.datos.fechacreacion.required && errors.push('Debe Ingresar una Fecha de Creacion Obligatoriamente')
-          //validating whether the user are an adult
-          var dateselected =  new Date(this.usuario.fechacreacion);
-          var maxdate = new Date();
-          maxdate.setFullYear(maxdate.getFullYear());
-          
-      return errors
+    errornumeroresolucion() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.contenido.numeroresolucion.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.contenido.numeroresolucion.required &&
+        errors.push("Debe ingresar el numero resolucion Obligatoriamente");
+
+      return errors;
     },
-     errorfase () {
-      const errors = []
-      if (!this.$v.usuario.datos.fase.$dirty) return errors
-          !this.$v.usuario.datos.fase.required && errors.push('Debe ingresar la fase Obligatoriamente')
-          
-      return errors
-       
-    },errorestado(){
-                const errors = []
-      if (!this.$v.usuario.estado.$dirty) return errors
-          !this.$v.usuario.estado.required && errors.push('Debe seleccionar un Estado obligatoriamente')
-          return errors
+    errornumerooficio() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.contenido.numerooficio.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.contenido.numerooficio.required &&
+        errors.push("Debe ingresar el numero oficio Obligatoriamente");
+
+      return errors;
     },
-          errorentidaddisposicion () {
-      const errors = []
-      if (!this.$v.usuario.datos.entidaddisposicion.$dirty) return errors
-          !this.$v.usuario.datos.entidaddisposicion.required && errors.push('Debe ingresar entidad disposicion Obligatoriamente')
-          
-      return errors
-      },
-          errornumeroresolucion () {
-      const errors = []
-      if (!this.$v.usuario.datos.numeroresolucion.$dirty) return errors
-          !this.$v.usuario.datos.numeroresolucion.required && errors.push('Debe ingresar el numero resolucion Obligatoriamente')
-          
-      return errors
-      },
-          errornumerooficio () {
-      const errors = []
-      if (!this.$v.usuario.datos.numerooficio.$dirty) return errors
-          !this.$v.usuario.datos.numerooficio.required && errors.push('Debe ingresar el numero oficio Obligatoriamente')
-          
-      return errors
-      },
-          errorobservaciones () {
-      const errors = []
-      if (!this.$v.usuario.datos.observaciones.$dirty) return errors
-          !this.$v.usuario.datos.observaciones.required && errors.push('Debe ingresar observaciones Obligatoriamente')
-          
-      return errors
+    errorobservaciones() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.contenido.observaciones.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.contenido.observaciones.required &&
+        errors.push("Debe ingresar observaciones Obligatoriamente");
+
+      return errors;
     },
     errorImagen() {
-      return this.$v.usuario.datos.imagen.required == false &&
-        this.$v.usuario.datos.imagen.$dirty == true
+      return this.$v.actaexternamiento.contenido.firmas.required == false &&
+        this.$v.actaexternamiento.contenido.firmas.$dirty == true
         ? true
-        : false; 
+        : false;
     },
   },
   validations() {
     return {
-      usuario: {
-        usuario: {
-          required,
-          minLength: minLength(4),
-        },
-        rol: {
-          required,
-        },
-        estado: {
-          required,
-        },
-        datos: {
-          CreadorDocumento:{
-                required,
-                minLength: minLength(3)
-              },
-              area:{
-                required,
-                minLength: minLength(3)
-                             
-                
-                },
-              idresidente:{
-                  required
-                                
-                },fase:{
-                  required,
-                  minLength: minLength(10)
-                },fechacreacion:{
-                  required
-                },estado:{
-                  required,
-                  minLength: minLength(10)
-                     },
-              entidaddisposicion:{
-                  required
-                     },
-              numeroresolucion:{
-                  required
-                     },
-              numerooficio:{
-                  required
-                     },
-              observaciones:{
-                  required
-                },imagen:{
-                  required,
+      actaexternamiento: {
+        contenido: {
+          responsable: {
+            required,
+          },
+
+          fechacreacion: {
+            required,
+          },
+          entidaddisposicion: {
+            required,
+          },
+          numeroresolucion: {
+            required,
+          },
+          numerooficio: {
+            required,
+          },
+          observaciones: {
+            required,
+          },
+
+          firmas: {
+            required,
           },
         },
       },

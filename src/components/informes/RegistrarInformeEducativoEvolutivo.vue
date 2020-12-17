@@ -70,14 +70,14 @@
                   chips
                   dense
                   outlined
-                  v-model="informe.creadordocumento"
+                  v-model="informe.contenido.evaluador"
                   color="#009900"
                   label="Educador responsable"
                   item-text="usuario"
                   item-value="id"
-                  @input="$v.informe.creadordocumento.$touch()"
-                  @blur="$v.informe.creadordocumento.$touch()"
-                  :error-messages="errorCreador"
+                  @input="$v.informe.contenido.evaluador.$touch()"
+                  @blur="$v.informe.contenido.evaluador.$touch()"
+                  :error-messages="errorEvaluador"
                 >
                   <template v-slot:selection="data">
                     <v-chip
@@ -124,41 +124,46 @@
                 ></v-text-field>
                 <v-row>
                   <v-col cols="12" md="4">
-                    <v-text-field
-                      v-model="informe.contenido.iereinsersion.modalidad"
-                      label="Modalidad"
-                      outlined
-                      @input="
-                        $v.informe.contenido.iereinsersion.modalidad.$touch()
-                      "
-                      @blur="
-                        $v.informe.contenido.iereinsersion.modalidad.$touch()
-                      "
-                      :error-messages="errorModalidadIE"
-                      color="#009900"
-                    ></v-text-field>
+                    <v-select
+                          label="Modalidad"
+                          v-model="informe.contenido.iereinsersion.modalidad"
+                          :items="itemsModalidad"
+                          color="#009900"
+                          :item-text="itemsModalidad.text"
+                          :item-value="itemsModalidad.value"
+                          @input="$v.informe.contenido.iereinsersion.modalidad.$touch()"
+                          @blur="$v.informe.contenido.iereinsersion.modalidad.$touch()"
+                          :error-messages="errorModalidadIE"
+                          outlined
+                    ></v-select>
                   </v-col>
                   <v-col cols="12" md="4">
-                    <v-text-field
-                      v-model="informe.contenido.iereinsersion.nivel"
-                      label="Nivel Educativo"
-                      outlined
-                      @input="$v.informe.contenido.iereinsersion.nivel.$touch()"
-                      @blur="$v.informe.contenido.iereinsersion.nivel.$touch()"
-                      :error-messages="errorNivelIE"
-                      color="#009900"
-                    ></v-text-field>
+                    <v-select     
+                        label="Nivel Educativo"
+                        v-model="informe.contenido.iereinsersion.nivel"
+                        :items="itemsNivel"
+                        color="#009900"
+                        :item-text="itemsNivel.text"
+                        :item-value="itemsNivel.value"
+                        @input="$v.informe.contenido.iereinsersion.nivel.$touch()"
+                        @blur="$v.informe.contenido.iereinsersion.nivel.$touch()"
+                        :error-messages="errorNivelIE"
+                        outlined
+                    ></v-select>
                   </v-col>
                   <v-col cols="12" md="4">
-                    <v-text-field
-                      v-model="informe.contenido.iereinsersion.grado"
+                    <v-select
                       label="Grado"
-                      outlined
+                      v-model="informe.contenido.iereinsersion.grado"
+                      :items="itemsGrado"
+                      color="#009900"
+                      :item-text="itemsGrado.text"
+                      :item-value="itemsGrado.value"
                       @input="$v.informe.contenido.iereinsersion.grado.$touch()"
                       @blur="$v.informe.contenido.iereinsersion.grado.$touch()"
                       :error-messages="errorGradoIE"
-                      color="#009900"
-                    ></v-text-field>
+                      outlined
+                    ></v-select>                   
                   </v-col>
                 </v-row>
                 <v-menu
@@ -555,14 +560,14 @@
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 function esTexto(value) {
   return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
 function esParrafo(value) {
-  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ-]+$/.test(value); 
 }
 export default {
   props: ["listaresidentes", "visible", "titulo", "listaeducadores"],
@@ -571,6 +576,15 @@ export default {
   },
   data() {
     return {
+      itemsModalidad: [
+        { value: 'EBA', text: 'Educacion Basica Alternativa'},
+        { value: 'EBE', text: 'Educacion Basica Especial'},
+        { value: 'EBR', text: 'Educacion Basica Regular'}
+      ],
+      itemsNivel: [
+        { value: 'PRIMARIA', text: 'Nivel Primaria'},
+        { value: 'SECUNDARIA', text: 'Nivel Secundaria'},
+      ],
       fileList: [],
       datemenu: false,
       dialogVistaPreviaFirma: false,
@@ -611,7 +625,7 @@ export default {
         creadordocumento: "",
         fechacreacion: "",
         area: "educativa",
-        fase: "acogida",
+        fase: "2",
         idresidente: "",
         estado: "creado",
         contenido: {
@@ -621,13 +635,14 @@ export default {
           recomendaciones: [],
           iereinsersion: {
             nombre: "",
-            modalidad: "",
-            nivel: "",
-            grado: "",
+            modalidad: "EBA",
+            nivel: "PRIMARIA",
+            grado: "1",
           },
           anexos: [],
           firmas: [],
           codigodocumento: "",
+          evaluador: "",
         },
       },
     };
@@ -664,9 +679,12 @@ export default {
     },
     async registrarInforme() {
       await this.sendPDFFiles();
+      this.informe.creadordocumento = this.user.id;      
       if (this.titulo === "Registrar Informe Educativo Evolutivo") {
+        this.informe.fase = "2"
         this.informe.tipo = "InformeEducativoEvolutivo";
       } else {
+        this.informe.fase = "3"
         this.informe.tipo = "InformeEducativoFinal";
       }
       console.log(this.informe);
@@ -815,7 +833,7 @@ export default {
         creadordocumento: "",
         fechacreacion: "",
         area: "educativa",
-        fase: "acogida",
+        fase: "2",
         idresidente: "",
         estado: "creado",
         contenido: {
@@ -825,9 +843,9 @@ export default {
           recomendaciones: [],
           iereinsersion: {
             nombre: "",
-            modalidad: "",
-            nivel: "",
-            grado: "",
+            modalidad: "EBA",
+            nivel: "PRIMARIA",
+            grado: "1",
           },
           anexos: [],
           firmas: [],
@@ -838,8 +856,17 @@ export default {
   },
   computed: {
     ...mapState(["informes"]),
+    ...mapGetters(["user"]),
     verifyColor() {
       return "red";
+    },
+    itemsGrado(){
+         const listaGrados = [{value:"1",text: "Primero"},{value:"2",text: "Segundo"},{value:"3",text: "Tercero"},
+           {value:"4",text: "Cuarto"},{value:"5",text: "Quinto"}];
+           if(this.informe.contenido.iereinsersion.nivel == 'PRIMARIA'){ 
+             listaGrados.push({value:"6",text: "Sexto"})}
+           this.informe.contenido.iereinsersion.grado = "1";
+          return listaGrados;
     },
     errorNombreIE() {
       const errors = [];
@@ -902,11 +929,11 @@ export default {
       !this.$v.informe.idresidente.required &&
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
-    },
-    errorCreador() {
+    },    
+    errorEvaluador() {
       const errors = [];
-      if (!this.$v.informe.creadordocumento.$dirty) return errors;
-      !this.$v.informe.creadordocumento.required &&
+      if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
+      !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un educador obligatoriamente");
       return errors;
     },
@@ -985,10 +1012,7 @@ export default {
       informe: {
         idresidente: {
           required,
-        },
-        creadordocumento: {
-          required,
-        },
+        },       
         fechacreacion: {
           required,
         },
@@ -1000,6 +1024,9 @@ export default {
           situacionactual: {
             required,
             esParrafo,
+          },
+          evaluador: {
+            required,            
           },
           iereinsersion: {
             nombre: {

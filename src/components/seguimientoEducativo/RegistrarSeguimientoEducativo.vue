@@ -68,56 +68,6 @@
                               </template>
                             </template>
                           </v-autocomplete>
-                              <v-autocomplete
-                              :items="listaeducadores"
-                              filled
-                              chips
-                              dense
-                              outlined
-                              v-model="seguimiento.creadordocumento"
-                              color="#009900"
-                              label="Educador responsable"
-                              item-text="usuario"
-                              item-value="id"
-                            @input="$v.seguimiento.creadordocumento.$touch()"
-                             @blur="$v.seguimiento.creadordocumento.$touch()"
-                            :error-messages="errorEducador"
-                              
-                            >
-                              <template v-slot:selection="data">
-                                <v-chip
-                                  v-bind="data.attrs"
-                                  :input-value="data.selected"
-                                  style="margin-top:5px"
-                                >
-                                  <v-avatar left color="#b3b3ff" size="24">
-                                    <span style="font-size:12px">RT</span>
-                                  </v-avatar>
-                                  {{ data.item.datos.nombre + " " +  data.item.datos.apellido  }}
-                                </v-chip>
-                              </template>
-                              <template v-slot:item="data">
-                                <template>
-                                  <v-list-item-avatar>
-                                    <v-avatar left color="#b3b3ff" size="24">
-                                      <span style="font-size:12px">UC</span>
-                                    </v-avatar>
-                                  </v-list-item-avatar>
-                                  <v-list-item-content>
-                                    <v-list-item-title
-                                      >Nombre completo: {{ data.item.datos.nombre }}
-                                      {{ data.item.datos.apellido }}
-                                    </v-list-item-title>
-                                    <v-list-item-subtitle
-                                      >Nro. Documento:
-                                      {{
-                                        data.item.datos.numerodocumento
-                                      }}</v-list-item-subtitle
-                                    >
-                                  </v-list-item-content>
-                                </template>
-                              </template>
-                            </v-autocomplete>
                               <v-menu
                                 v-model="datemenu"
                                 :close-on-content-click="false"
@@ -147,37 +97,44 @@
                                   locale="es-es"
                                 ></v-date-picker>
                               </v-menu>
-
-                      <v-text-field
-                        v-model="seguimiento.contenido.modalidad"
-                        @input="$v.seguimiento.contenido.modalidad.$touch()"
-                        @blur="$v.seguimiento.contenido.modalidad.$touch()"
-                        :error-messages="errorModalidad"
-                        label="Modalidad"
-                        outlined
-                        
-                        color="#009900"
-                      ></v-text-field>
-                      <v-text-field
+                      
+                       <v-select
+                          label="Modalidad"
+                          v-model="seguimiento.contenido.modalidad"
+                          :items="itemsModalidad"
+                          color="#009900"
+                          :item-text="itemsModalidad.text"
+                          :item-value="itemsModalidad.value"
+                          @input="$v.seguimiento.contenido.modalidad.$touch()"
+                          @blur="$v.seguimiento.contenido.modalidad.$touch()"
+                          :error-messages="errorModalidad"
+                          outlined
+                        ></v-select>
+                      <v-select     
+                        label="Nivel"
                         v-model="seguimiento.contenido.nivel"
+                        :items="itemsNivel"
+                        color="#009900"
+                        :item-text="itemsNivel.text"
+                        :item-value="itemsNivel.value"
                         @input="$v.seguimiento.contenido.nivel.$touch()"
                         @blur="$v.seguimiento.contenido.nivel.$touch()"
                         :error-messages="errorNivel"
-                        label="Nivel"
                         outlined
-                        
-                        color="#009900"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="seguimiento.contenido.grado"
-                        @input="$v.seguimiento.contenido.grado.$touch()"
-                        @blur="$v.seguimiento.contenido.grado.$touch()"
-                        :error-messages="errorGrado"
-                        label="Grado"
-                        outlined
-                        
-                        color="#009900"
-                      ></v-text-field>
+                      ></v-select>
+                      <v-select
+                          label="Grado"
+                          v-model="seguimiento.contenido.grado"
+                          :items="itemsGrado"
+                          color="#009900"
+                          :item-text="itemsGrado.text"
+                          :item-value="itemsGrado.value"
+                          @input="$v.seguimiento.contenido.grado.$touch()"
+                          @blur="$v.seguimiento.contenido.grado.$touch()"
+                          :error-messages="errorGrado"
+                          outlined
+                        ></v-select>
+                    
                       <v-text-field
                         v-model="seguimiento.contenido.añoescolar"
                         @input="$v.seguimiento.contenido.añoescolar.$touch()"
@@ -466,7 +423,7 @@
                 elevation="0"
                 color="#FFBAB0"
                 style="margin-top:5px; margin-bottom:15px"
-                height="30"
+                height="80"
                 >
                   <v-row style="margin-left:10px;heigh:100%" align="center">
                     <v-col cols="2">
@@ -493,13 +450,13 @@
                     </v-col>
                   </v-row>
                 </v-card>
-                <!-- Cuerpo del car -->
+                <!-- Cuerpo del car  el heig en este caso e sla altura de los nombres d e los curosos-->
                 <v-card
                   tile
                   elevation="0"
                   color="#FAFAFA"
                   style="margin-top:5px"
-                  height="50"
+                  height="60" 
                   v-for="(item, index) in seguimiento.contenido.trimestre"
                   :key="index"
                 >
@@ -717,6 +674,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength,maxLength, email, helpers,numeric } from "vuelidate/lib/validators";
 import moment from "moment";
+import { mapGetters } from "vuex";
 export default {
 name:'RegistrarSeguimientoEducativo',
 props:["listaresidentes","listaeducadores"],
@@ -752,6 +710,24 @@ data(){
         dictDefaultMessage:
           "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
       },
+      itemsModalidad: [
+            { value: 'EBA', text: 'Educacion Basica Alternativa'},
+            { value: 'EBE', text: 'Educacion Basica Especial'},
+            { value: 'EBR', text: 'Educacion Basica Regular'}
+          ],
+          itemsNivel: [
+            { value: 'PRIMARIA', text: 'Nivel Primaria'},
+            { value: 'SECUNDARIA', text: 'Nivel Secundaria'},
+            //{ value: 'SUPERIOR', text: 'Estudio Superior'}
+          ],
+          itemGrado: [
+            { value: '1', text: '1'},
+            { value: '2', text: '2'},
+            { value: '3', text: '3'},
+            { value: '4', text: '4'},
+            { value: '5', text: '5'}
+          ],
+          
 
 
       //separacion
@@ -768,8 +744,8 @@ data(){
       historialcontenido:[],
       creadordocumento:"",
       fechacreacion:"",
-      area:"Educativa",
-      fase:"acogida",
+      area:"educativa",
+      fase:"1",
       idresidente:"",
       estado:"creado",
       contenido:{
@@ -825,8 +801,10 @@ methods:{
     },
     ////////////HACER LA CONSULTA CON LA API  REGISTRAR
     async registrarSeguimiento() {
-       this.$v.$touch();
-      if (this.$v.$invalid) {
+       this.seguimiento.creadordocumento = this.user.id;
+       console.log(this.seguimiento)
+       this.$v.seguimiento.$touch();
+      if (this.$v.seguimiento.$invalid) {
         console.log("hay errores");
         this.mensaje(
           "error",
@@ -932,7 +910,7 @@ methods:{
    }
     },
     eliminarNotas(index){
-     this.seguimiento.contenido.trimestre[0].puntajes.splice(index,1)
+     this.seguimiento.contenido.trimestre[this.index].puntajes.splice(index,1)
      
     },
     
@@ -941,6 +919,15 @@ methods:{
     verifyColor() {
       return "red";
     },
+    ...mapGetters(["user"]),
+     itemsGrado(){
+         const listaGrados = [{value:"1",text: "Primero"},{value:"2",text: "Segundo"},{value:"3",text: "Tercero"},
+           {value:"4",text: "Cuarto"},{value:"5",text: "Quinto"}];
+           if(this.seguimiento.contenido.nivel == 'PRIMARIA'){ 
+             listaGrados.push({value:"6",text: "Sexto"})}
+           this.seguimiento.contenido.grado = "1";
+          return listaGrados;
+      },
     errorResidente() {
       const errors = [];
       if (!this.$v.seguimiento.idresidente.$dirty) return errors;
@@ -948,13 +935,13 @@ methods:{
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
     },
-    errorEducador() {
-      const errors = [];
-      if (!this.$v.seguimiento.creadordocumento.$dirty) return errors;
-      !this.$v.seguimiento.creadordocumento.required &&
-        errors.push("Debe seleccionar un educador obligatoriamente");
-      return errors;
-    },
+    //errorEducador() {
+   ///   const errors = [];
+   ///   if (!this.$v.seguimiento.creadordocumento.$dirty) return errors;
+   ///   !this.$v.seguimiento.creadordocumento.required &&
+    //    errors.push("Debe seleccionar un educador obligatoriamente");
+   //   return errors;
+   // },
      errorFechaCreacion() {
       const errors = [];
       if (!this.$v.seguimiento.fechacreacion.$dirty) return errors;
@@ -969,32 +956,28 @@ methods:{
 
       return errors;
     },
-   errorModalidad() {
-      const errors = [];
-      if (!this.$v.seguimiento.contenido.modalidad.$dirty) return errors;
-      !this.$v.seguimiento.contenido.modalidad.required &&
-        errors.push("Debe ingresar una Modalidad Obligatoriamente");
-      !this.$v.seguimiento.contenido.modalidad.minLength &&
-        errors.push("La Modalidad debe tener al menos 3 caracteres");
-      return errors;
+   
+      errorModalidad() {
+        const errors = [];
+        if (!this.$v.seguimiento.contenido.modalidad.$dirty) return errors;
+        !this.$v.seguimiento.contenido.modalidad.required &&
+          errors.push("Debe Ingresar una modalidad Obligatoriamente");
+        return errors;
+      
     },
     errorNivel() {
       const errors = [];
-      if (!this.$v.seguimiento.contenido.nivel.$dirty) return errors;
-      !this.$v.seguimiento.contenido.nivel.required &&
-        errors.push("Debe ingresar un Nivel Obligatoriamente");
-      !this.$v.seguimiento.contenido.nivel.minLength &&
-        errors.push("El Nivel  debe tener al menos 3 caracteres");
-      return errors;
+          if (!this.$v.seguimiento.contenido.nivel.$dirty) return errors;
+          !this.$v.seguimiento.contenido.nivel.required &&
+            errors.push("Debe Seleccionar un Nivel Obligatoriamente");
+          return errors;
     },
      errorGrado() {
       const errors = [];
-      if (!this.$v.seguimiento.contenido.grado.$dirty) return errors;
-      !this.$v.seguimiento.contenido.grado.required &&
-        errors.push("Debe ingresar un Grado Obligatoriamente");
-      !this.$v.seguimiento.contenido.grado.minLength &&
-        errors.push("El Grado  debe tener al menos 3 caracteres");
-      return errors;
+          if (!this.$v.seguimiento.contenido.grado.$dirty) return errors;
+          !this.$v.seguimiento.contenido.grado.required &&
+            errors.push("Debe Seleccionar un Grado Obligatoriamente");
+          return errors;
     },
     errorAñoEscolar() {
       const errors = [];
@@ -1031,11 +1014,11 @@ methods:{
       errors.push("Debe ingresar un orden");
     !this.$v.trimestre.orden.minLength &&
       errors.push("El trimestre debe tener  al menos 1 caracteres");
-    return errors;
     !this.$v.trimestre.orden.numeric &&
         errors.push(
           "Debe Ingresar valores Numericos"
         );
+   return errors;
     },
     errorAnalisisTrimestre(){
    const errors = [];
@@ -1063,8 +1046,7 @@ methods:{
     !this.$v.puntajes.area.minLength &&
       errors.push("El puntaje debe tener 2 caracteres");
     return errors;
-    !this.$v.trimestre.orden.numeric &&
-      errors.push("Debe Ingresar valores Numericos");
+    
     
     },
     errorPromedioPuntajes(){
@@ -1074,8 +1056,9 @@ methods:{
       errors.push("Debe ingresar un promedio");
     !this.$v.puntajes.promedio.minLength &&
       errors.push("el puntaje  debe tener al menos 2 caracteres");
-    return errors;
-    
+    !this.$v.puntajes.promedio.numeric &&
+      errors.push("Debe Ingresar valores Numericos");
+     return errors;
     },
     errorImagen() {
       return this.$v.firma.urlfirma.required == false &&
@@ -1089,7 +1072,7 @@ methods:{
           seguimiento:{
       historialcontenido:[],
       creadordocumento:{
-          required,
+          //required
                   },
       fechacreacion:{
           required,
@@ -1101,15 +1084,14 @@ methods:{
       contenido:{
            modalidad:{
               required,
-              minLength: minLength(3)
             },
            nivel:{
               required,
-              minLength: minLength(3)
+              
             },
            grado:{
               required,
-              minLength: minLength(3)
+              
             },
            añoescolar:{
               required,

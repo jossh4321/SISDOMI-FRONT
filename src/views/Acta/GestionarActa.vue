@@ -36,7 +36,7 @@
                 >  <v-icon left>mdi-account-multiple-plus-outline</v-icon> <span>Registrar Acta</span>
                  </v-btn>       
                    </template>
-                <RegistrarActa   @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
+                <RegistrarActa :listaActas="listaActas" @close-dialog-save="closeDialogRegistrar()"></RegistrarActa>
             </v-dialog>
             <!---->
           </v-toolbar>
@@ -69,7 +69,7 @@
       <v-dialog persistent
                 v-model="dialogoactualizacion" 
                 max-width="880px">
-        <ActualizarActa v-if="dialogoactualizacion" :usuario="usuario"  @close-dialog-update="closeDialogActualizar()"></ActualizarActa>
+        <ActualizarActa v-if="dialogoactualizacion" :usuario="usuario" :listaActas="listaActas"  @close-dialog-update="closeDialogActualizar()"></ActualizarActa>
 
       </v-dialog>
       <!-----><!--Hola -->
@@ -121,12 +121,12 @@ export default {
       dialogoregistro: false,
       dialogoactualizacion: false,
       dialogodetalle:false,
-      
+      listaActas: [],
     };
   },
   async created(){
       this.obtenerUsuarios();
-      
+      this.ObtenerResidente();
   },
   methods: {
     ...mapMutations(["setUsuarios","replaceUsuario"]),
@@ -155,6 +155,15 @@ export default {
     async abrirDialogoActualizar(id){
         this.usuario = await this.loadUsuarioModificacion(id);
         this.dialogoactualizacion = !this.dialogoactualizacion;
+    },
+    async ObtenerResidente(){
+      await axios
+      .get("/residente/all")
+      .then((x) => {
+        this.listaActas = x.data;
+        console.log(this.listaActas);
+       })
+       .catch((err)=> console.log(err));
     },
     // Abre
     async abrirDialogoDetalle(id){

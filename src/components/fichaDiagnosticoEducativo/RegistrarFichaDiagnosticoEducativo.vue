@@ -626,7 +626,7 @@ components:{
         creadordocumento:"",
         fechacreacion:"",
         area:"educativa",
-        fase:"acogida",
+        fase:"1",
         estado:"creacion",
         contenido:{
           ultimaie:"",
@@ -645,6 +645,7 @@ components:{
     }
   },
     methods:{
+      ...mapMutations(["addEvaluacion"]),
       cerrarDialogo(){
          this.step = 1;
         this.$emit("close-dialog-save");
@@ -673,9 +674,23 @@ components:{
         footer: footer,
       });
     },
-      registrarFichaEvaluacion(){
+        async registrarFichaEvaluacion(){
         this.fichaEvaluacion.creadordocumento = this.user.id;
         console.log(this.fichaEvaluacion)
+        await axios
+          .post("/EvaluacionDiagnosticoEducativo/fichaEvaluacionDE", this.fichaEvaluacion)
+          .then((res) => {
+            this.addEvaluacion(res.data);
+            this.cerrarDialogo();
+          })
+          .catch((err) => console.log(err));
+        await this.mensaje(
+          "success",
+          "listo",
+          "Ficha Diagnostico Evaluacion Educativa registrado Satisfactoriamente",
+          "<strong>Se redirigira a la Interfaz de Gestion<strong>",      
+        );
+         location.reload();//metodo de js para refrescar la pagina
       },
        ///metodo para agregar firma residente
     guardarFirma(){

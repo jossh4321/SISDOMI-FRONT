@@ -21,6 +21,10 @@
                     label="Usuario"
                     type="text"
                     v-model="model.username"
+                    :error-messages="usernameErrors"
+                    @input="$v.model.username.$touch()"
+                    @blur="$v.model.username.$touch()"
+                    :required="true"
                   ></v-text-field>
                   <v-text-field
                     append-icon="lock"
@@ -28,11 +32,20 @@
                     id="password"
                     type="password"
                     v-model="model.password"
+                    :error-messages="passwordErrors"
+                    @input="$v.model.password.$touch()"
+                    @blur="$v.model.password.$touch()"
+                    :required="true"
                   ></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>
-                  <v-btn block color="primary" @click="logIn(model)" :loading="loading">Iniciar Sesión</v-btn>
+                  <v-btn block color="primary"
+                   @click="logIn(model)" 
+                   :loading="loading"
+                   type="submit"
+                   :disabled="$v.$invalid"
+                   >Iniciar Sesión</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -45,6 +58,7 @@
 <script>
 import axios from 'axios';
 import { mapActions, mapGetters } from 'vuex';
+import { required } from 'vuelidate/lib/validators';
 
 export default {
     name: 'login',
@@ -56,11 +70,43 @@ export default {
             }
         }
     },
+    
+    validations:{
+        model:{
+          username:{
+            required
+          },
+          password:{
+            required
+          }
+        }
+    },
+
     methods: {
-       ...mapActions(['logIn'])
+       ...mapActions(['logIn']),
     },
     computed: {
-      ...mapGetters(['loading'])
+      ...mapGetters(['loading']),
+      usernameErrors(){
+         const errors = []
+          if (!this.$v.model.username.$dirty) {
+            return errors
+          }
+          !this.$v.model.username.required && errors.push('El campo de usuario no puede estar en blanco')
+          return errors
+      },
+      passwordErrors(){
+         const errors = []
+          if (!this.$v.model.password.$dirty) {
+            return errors
+          }
+          !this.$v.model.password.required && errors.push('El campo de contrasena no puede estar en blanco')
+          return errors
+      },
+      //submit: function() {
+      //if (this.$v.$invalid) return;
+      //alert('Gracias!');
+    //}
     }
 };
 </script>

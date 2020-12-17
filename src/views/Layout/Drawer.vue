@@ -136,6 +136,13 @@ export default {
         },
         { header: "Admin" },
         {
+          title: "Anexos",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarAnexos",
+          href: "/dashboard/anexos"
+        },
+        {
           title: "Gestion de Usuarios",
           group: "admin",
           icon: "dashboard",
@@ -150,11 +157,18 @@ export default {
           href: "/dashboard/residentes"
         },
         {
-          title: "Gestionar Seguimiento Educativo",
+          title: "Gestion Ficha Ingreso",
           group: "admin",
           icon: "dashboard",
-          name: "GestionarSeguimientoEducativo",
-          href: "/dashboard/seguimientoEducativo"
+          name: "GestionarFichaIngreso",
+          href: "/dashboard/fichaIngreso"
+        },        
+        {
+          title: "Gestionar Informes",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionInforme",
+          href: "/dashboard/informes"
         },
         {
           title: "Planes",
@@ -164,30 +178,38 @@ export default {
           href: "/dashboard/planIntervencion"
         },
         {
+          title: "Gestionar Seguimiento Educativo",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarSeguimientoEducativo",
+          href: "/dashboard/seguimientoEducativo"
+        },        
+        {
           title: "Gestionar Talleres",
           group: "admin",
           icon: "dashboard",
           name: "GestionTalleres",
           href: "/dashboard/talleres"
-        },
-        {
-          title: "Gestionar Informes",
-          group: "admin",
-          icon: "dashboard",
-          name: "GestionInforme",
-          href: "/dashboard/informes"
-        },{
-          title: "Gestion Ficha Ingreso",
-          group: "admin",
-          icon: "dashboard",
-          name: "GestionarFichaIngreso",
-          href: "/dashboard/fichaIngreso"
         },{
           title: "Gestion Sesiones Educativas",
           group: "admin",
           icon: "dashboard",
           name: "GestionarSesionesEducativas",
           href: "/dashboard/sesioneseducativas"
+        },      
+        {
+          title: "Gestionar Evaluacion",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarEvaluacion",
+          href: "/dashboard/evaluacioneducativa"
+        },          
+        {
+          title: "Expedientes Matriz",
+          group: "admin",
+          icon: "dashboard",
+          name: "ConsultaExpedienteMatriz",
+          href: "/dashboard/expedientes"
         },
         {
           title: "Gestion Acta de externamiento",
@@ -197,13 +219,6 @@ export default {
           href: "/dashboard/Actas"
         },
         {
-          title: "Expedientes Matriz",
-          group: "admin",
-          icon: "dashboard",
-          name: "ConsultaExpedienteMatriz",
-          href: "/dashboard/expedientes"
-        },
-        {
           title: "Gestion de Incidencias",
           group: "admin",
           icon: "dashboard",
@@ -211,13 +226,12 @@ export default {
           href: "/dashboard/incidencias"
         },
         {
-          title: "Gestionar Ficha Evaluacion Educativa",
+          title: "Cambiar de Contrasena",
           group: "admin",
           icon: "dashboard",
-          name: "GestionarFichaEvaluacionEducativa",
-          href: "/dashboard/evaluacionEducativa"
-        },
-
+          name: "CambiarContrasena",
+          href: "/dashboard/CambiarContrasena"
+        }
       ],
       scrollSettings: {
         maxScrollbarLength: 160,

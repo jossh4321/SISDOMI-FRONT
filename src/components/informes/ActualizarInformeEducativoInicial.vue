@@ -15,53 +15,13 @@
         <v-stepper-content step="1">
           <div class="container-user">
             <form>
-              <v-autocomplete
-                :items="listaresidentes"
-                v-model="informe.idresidente"
-                filled
-                chips
-                dense
-                outlined
-                color="#009900"
+               <v-text-field
+                v-model="residente"
                 label="Usuaria CAR"
-                item-text="nombre"
-                item-value="id"
-                @input="$v.informe.idresidente.$touch()"
-                @blur="$v.informe.idresidente.$touch()"
-                :error-messages="errorResidente"
-              >
-                <template v-slot:selection="data">
-                  <v-chip
-                    v-bind="data.attrs"
-                    :input-value="data.selected"
-                    style="margin-top: 5px"
-                  >
-                    <v-avatar left color="#b3b3ff" size="24">
-                      <span style="font-size: 12px">RT</span>
-                    </v-avatar>
-                    {{ data.item.nombre + " " + data.item.apellido }}
-                  </v-chip>
-                </template>
-                <template v-slot:item="data">
-                  <template>
-                    <v-list-item-avatar>
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size: 12px">UC</span>
-                      </v-avatar>
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title
-                        >Nombre completo: {{ data.item.nombre }}
-                        {{ data.item.apellido }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle
-                        >Nro. Documento:
-                        {{ data.item.numerodocumento }}</v-list-item-subtitle
-                      >
-                    </v-list-item-content>
-                  </template>
-                </template>
-              </v-autocomplete>
+                outlined
+                readonly
+                color="#009900"
+              ></v-text-field>
 
               <v-autocomplete
                 :items="listaeducadores"
@@ -608,11 +568,13 @@ export default {
       imagen: "",
       fileList: [],
       dialogVistaPreviaAnexos : false,
+      residente: "",
     };
   },
   async created() {
     this.cargarConclusiones();
     this.cargarAnexos();
+    this.obtenerResidente();
   },
   methods: {    
     ...mapMutations(["replaceInforme"]),
@@ -636,6 +598,14 @@ export default {
           titulo: listaTitulos[index],
         });
       }      
+    },
+    async obtenerResidente() {
+      await axios
+        .get("/residente/id?id=" + this.informe.idresidente)
+        .then((x) => {
+          this.residente = x.data.nombre + " " + x.data.apellido;
+        })
+        .catch((err) => console.log(err));
     },
     async actualizarInformeEducativoInicial() {
       await this.sendPDFFiles();

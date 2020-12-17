@@ -132,8 +132,8 @@
                   style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA"
                 >
                   <v-row>
-                    <v-col cols="11"> <v-card-title>Documentos Escolares (Opcional)</v-card-title></v-col>
-                    <v-col cols="1">
+                    <v-col cols="10"> <v-card-title>Documentos Escolares (Opcional)</v-card-title></v-col>
+                    <v-col cols="2">
                        <v-btn
                         class="mx-2"
                         fab
@@ -147,6 +147,8 @@
                       </v-btn>
                     </v-col>
                   </v-row>
+
+                
                   
                   <template v-if="fichaIngreso.contenido.ieprocedencia.documentosEscolares == 0">
                     <v-card style="margin:10px">
@@ -608,7 +610,7 @@ export default {
             creadordocumento: "",
             fechacreacion: "",
             area: "educativa",
-            fase: "acogida",
+            fase: "1",
             idresidente: "",
             estado: "creado",
             contenido: {

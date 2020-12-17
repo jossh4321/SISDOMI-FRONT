@@ -52,13 +52,21 @@
 
                     <v-row>
                       <v-col>
-                        <v-btn block @click="cerrarDialogoSeleccion()" color="primary">
+                        <v-btn
+                          block
+                          @click="cerrarDialogoSeleccion()"
+                          color="primary"
+                        >
                           <v-icon left>mdi-close-outline</v-icon>
                           <span>Cerrar</span>
                         </v-btn>
                       </v-col>
                       <v-col>
-                        <v-btn block @click="abrirDialogoRegistroFichaIngreso()" color="success">
+                        <v-btn
+                          block
+                          @click="abrirDialogoRegistroFichaIngreso()"
+                          color="success"
+                        >
                           <v-icon left>mdi-page-next-outline</v-icon>
                           <span>Continuar</span>
                         </v-btn>
@@ -79,7 +87,7 @@
               <v-icon left> mdi-pencil</v-icon>
               <span>Actualizar</span>
             </v-btn>
-            <v-btn color="info" dark @click="abrirDialogoConsultar(item.id)">
+            <v-btn color="info" dark @click="abrirDialogoConsultar(item)">
               <v-icon left> mdi-file-eye </v-icon>
               <span>Consultar</span>
             </v-btn>
@@ -87,115 +95,85 @@
         </template>
       </v-data-table>
       <!--Dialogo de Registro de Fichas de Ingreso-->
-      <v-dialog v-model="dialogoRegistroFichaIngreso" persistent > 
-        <v-component :is="selectorFichaIngreso" 
-        :listaresidentes="listaresidentes"
-        :listaeducadores="listaeducadores"
-        @cerrar-modal-registro-ficha-ingreso="cerrarDialogoRegistroFichaIngreso">
+      <v-dialog v-model="dialogoRegistroFichaIngreso" persistent max-width="850px">
+        <v-component
+          :is="selectorFichaIngreso"
+          :listaresidentes="listaresidentes"
+          :listaeducadores="listaeducadores"
+          @cerrar-modal-registro-ficha-ingreso="cerrarDialogoRegistroFichaIngreso"
+        >
         </v-component>
       </v-dialog>
       <!--Dialogo de Modificar-->
-      <v-dialog v-model="dialogoModificacionFichaIngreso" persistent > 
-        <v-component :is="selectorFichaIngreso" 
-        :listaresidentes="listaresidentes"
-        :listaeducadores="listaeducadores"
-        :fichaIngreso="fichaIngreso"
-        ref="modificarFichaIngreso"
-        @cerrar-modal-edicion-ficha-ingreso="cerrarDialogoModificacionFichaIngreso">
+      <v-dialog v-model="dialogoModificacionFichaIngreso" persistent max-width="850px">
+        <v-component
+          :is="selectorFichaIngreso"
+          :listaresidentes="listaresidentes"
+          :listaeducadores="listaeducadores"
+          :fichaIngreso="fichaIngreso"
+          ref="modificarFichaIngreso"
+          @cerrar-modal-edicion-ficha-ingreso="
+            cerrarDialogoModificacionFichaIngreso
+          "
+        >
         </v-component>
       </v-dialog>
-
-
-
-      <!--v-dialog persistent
-                v-model="dialogoactualizacion" 
-                max-width="880px">
-        <ModificarFichaIngresoEducativa
-        v-if="dialogoaFIEctualizacion" 
-        :fichaIngresos="fichaIngresos" 
-          :listaroles="listaroles" 
+      <!--Dialogo de Consultar-->
+      <v-dialog v-model="dialogoConsultaFichaIngreso" persistent max-width="850px">
+        <v-component
+          :is="selectorFichaIngreso"
+          ref="consultarFichaIngreso"
+          :fichaIngreso="fichaIngreso"
           :listaresidentes="listaresidentes"
-          :listaeducadores="listaeducadores" 
-        @close-dialog-update="closeDialogActualizar()">
-        </ModificarFichaIngresoEducativa>  
+          :listaeducadores="listaeducadores"
+          @cerrar-modal-detalle-ficha-ingreso="
+            cerrarDialogoConsultarFichaIngreso
+          "
+        >
+        </v-component>
       </v-dialog>
-      <v-dialog persistent
-                v-model="dialogoactualizacion" 
-                max-width="880px">
-        <ModificarFichaIngresoSocial
-        v-if="dialogoaFIEctualizacion" 
-        :fichaIngresos="fichaIngresos" 
-          :listaroles="listaroles" 
-          :listaresidentes="listaresidentes"
-          :listaeducadores="listaeducadores" 
-        @close-dialog-update="closeDialogActualizar()">
-        </ModificarFichaIngresoSocial>  
-      </v-dialog>
-      <v-dialog persistent
-                v-model="dialogoactualizacion" 
-                max-width="880px">
-        <ModificarFichaIngresoPsicologica
-        v-if="dialogoaFIPctualizacion" 
-        :fichaIngresos="fichaIngresos" 
-          :listaroles="listaroles" 
-          :listaresidentes="listaresidentes"
-          :listaeducadores="listaeducadores" 
-        @close-dialog-update="closeDialogActualizar()">
-        </ModificarFichaIngresoPsicologica>  
-      </v-dialog-->
-     <!--Dialogo de Consultar-->
-      <!--v-dialog persistent
-          v-model="dialogoFIPconsultar" 
-          max-width="880px">
-        <ConsultarFichaIngresoPsicologica ::fichaIngresos="fichaIngresos" @close-dialog-detail="closeDialogDetalle()"/>
-      </v-dialog>
-       <v-dialog persistent
-          v-model="dialogoFISconsultar" 
-          max-width="880px">
-        <ConsultarFichaIngresoSocial ::fichaIngresos="fichaIngresos"  @close-dialog-detail="closeDialogDetalle()"/>
-      </v-dialog>
-      <v-dialog persistent
-          v-model="dialogoFIEconsultar" 
-          max-width="880px">
-        <ConsultarFichaIngresoEducativa ::fichaIngresos="fichaIngresos"  @close-dialog-detail="closeDialogDetalle()"/>
-      </v-dialog-->
     </v-card>
   </div>
 </template>
 <script>
-import axios from 'axios';
-import SeleccionarFichaIngreso from '@/components/fichaIngreso/SeleccionarFichaIngreso.vue'
-/* 
-import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue'
-import ModificarFichaIngresoSocial  from '@/components/fichaIngreso/ModificarFichaIngresoSocial.vue'
-import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue' 
-import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/ModificarFichaIngresoPsicologica.vue'
-import RegistrarPlanIntervencion from '@/components/planIntervencion/RegistrarPlanIntervencion.vue'
-*/
+import axios from "axios";
+import SeleccionarFichaIngreso from "@/components/fichaIngreso/SeleccionarFichaIngreso.vue";
 import RegistrarFichaIngresoEducativa from '@/components/fichaIngreso/RegistrarFichaIngresoEducativa.vue'
 import RegistrarFichaIngresoPsicologica from '@/components/fichaIngreso/Psicologica/RegistrarFichaIngresoPsicologica.vue'
 import RegistrarFichaIngresoSocial from '@/components/fichaIngreso/Social/RegistrarFichaIngresoSocial.vue'
 import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue'
+import ModificarFichaIngresoSocial from '@/components/fichaIngreso/Social/ModificarFichaIngresoSocial.vue'
+import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/Psicologica/ModificarFichaIngresoPsicologica.vue'
 import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
 import ConsultarFichaIngresoPsicologica from '@/components/fichaIngreso/Psicologica/ConsultarFichaIngresoPsicologica.vue'
 import ConsultarFichaIngresoSocial from '@/components/fichaIngreso/Social/ConsultarFichaIngresoSocial.vue'
 
-import {mapMutations, mapState} from "vuex";
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarFicha",
   components: {
     RegistrarFichaIngresoEducativa,RegistrarFichaIngresoPsicologica,RegistrarFichaIngresoSocial,
-    ModificarFichaIngresoEducativa
+    ModificarFichaIngresoEducativa,ModificarFichaIngresoSocial,ModificarFichaIngresoPsicologica,
+    ConsultarFichaIngresoEducativa,ConsultarFichaIngresoSocial,ConsultarFichaIngresoPsicologica
   },
   data() {
     return {
       search: "",
       residente: {},
-      selectorFichaIngreso:"",
+      selectorFichaIngreso: "",
       items: [
-            { value: 'RegistrarFichaIngresoSocial', text: 'Ficha de Ingreso Social'},
-            { value: 'RegistrarFichaIngresoEducativa', text: 'Ficha de Ingreso Educativa'},
-            { value: 'RegistrarFichaIngresoPsicologica', text: 'Ficha de Ingreso Psicologica'}
+        {
+          value: "RegistrarFichaIngresoSocial",
+          text: "Ficha de Ingreso Social",
+        },
+        {
+          value: "RegistrarFichaIngresoEducativa",
+          text: "Ficha de Ingreso Educativa",
+        },
+        {
+          value: "RegistrarFichaIngresoPsicologica",
+          text: "Ficha de Ingreso Psicologica",
+        },
       ],
       headers: [
         {
@@ -214,8 +192,16 @@ export default {
       dialogDialogNuevaFichaIngreso: false,
       listaresidentes: [],
       listaeducadores: [],
-      dialogoRegistroFichaIngreso:false,
-      dialogoModificacionFichaIngreso:false,
+      dialogoRegistroFichaIngreso: false,
+      dialogoModificacionFichaIngreso: false,
+      dialogoConsultaFichaIngreso: false,
+      documentoFase: {
+        fase: "1",
+        area: "educativa",
+        documentoanterior: "FichaEducativaIngreso",
+        documentoactual: "FichaEducativaIngreso",
+        estadodocumentoanterior: "Pendiente",
+      },
     };
   },
   async created() {
@@ -228,41 +214,74 @@ export default {
     ...mapMutations(["setFichaIngreso"]),
     async abrirDialogoModificar(item) {
       console.log(item);
+      await this.obtenerResidentesModificacion();
       await this.obtenerfichaIngreso(item.id);
        if(item.tipo == "FichaEducativaIngreso"){
           this.selectorFichaIngreso = "ModificarFichaIngresoEducativa";
        }
+       else if(item.tipo == "FichaSocialIngreso"){
+          this.selectorFichaIngreso = "ModificarFichaIngresoSocial";
+       }
+       else if(item.tipo == "FichaPsicologicaIngreso"){
+          this.selectorFichaIngreso = "ModificarFichaIngresoPsicologica";
+       }
        this.dialogoModificacionFichaIngreso = true;
+    },async abrirDialogoConsultar(item){
+       await this.obtenerfichaIngresoDetalle(item.id)
+       if(item.tipo == "FichaEducativaIngreso"){
+         this.selectorFichaIngreso = "ConsultarFichaIngresoEducativa";
+       }
+       else if(item.tipo == "FichaSocialIngreso"){
+         this.selectorFichaIngreso = "ConsultarFichaIngresoSocial";
+       }
+       else if(item.tipo == "FichaPsicologicaIngreso"){
+         this.selectorFichaIngreso = "ConsultarFichaIngresoPsicologica";
+       }
+       this.dialogoConsultaFichaIngreso = true;
     },
-    detailItem(item) {},
     closeDialogDetalle() {
-      this.dialogoFIEconsultar=false
-      this.dialogoFIPconsultar=false
-      this.dialogoFISconsultar=false
+      this.dialogoFIEconsultar = false;
+      this.dialogoFIPconsultar = false;
+      this.dialogoFISconsultar = false;
     },
-   closeDialogActualizar() {
-   this.dialogoaFIEctualizacion=false
-   this.dialogoaFISctualizacion=false
-   this.dialogoaFIPctualizacion=false
+    closeDialogActualizar() {
+      this.dialogoaFIEctualizacion = false;
+      this.dialogoaFISctualizacion = false;
+      this.dialogoaFIPctualizacion = false;
     },
-    async abrirDialogoRegistroFichaIngreso(){
+    async abrirDialogoRegistroFichaIngreso() {
       await this.obtenerResidentes();
       await this.obtenerEducadores();
       this.dialogoRegistroFichaIngreso = true;
     },
-    cerrarDialogoSeleccion(){
+    cerrarDialogoSeleccion() {  
       this.dialogDialogNuevaFichaIngreso = false;
       this.selectorFichaIngreso = "";
     },
-    /*abrirDialogoRegistroFichaIngreso(){
+
+    cerrarDialogoRegistroFichaIngreso() {
       this.dialogDialogNuevaFichaIngreso = false;
-      this.dialogoRegistroFichaIngreso = true;
-    }*/cerrarDialogoRegistroFichaIngreso(){
       this.dialogoRegistroFichaIngreso = false;
       this.selectorFichaIngreso = "";
-    },cerrarDialogoModificacionFichaIngreso(){
+    },
+    cerrarDialogoModificacionFichaIngreso() {
       this.dialogoModificacionFichaIngreso = false;
       this.selectorFichaIngreso = "";
+    },
+    cerrarDialogoConsultarFichaIngreso() {
+      this.dialogoConsultaFichaIngreso = false;
+      this.selectorFichaIngreso = "";
+    },
+    //Obtener Detalle de Ficha Ingreso
+    async obtenerfichaIngresoDetalle(id) {
+      await axios
+        .get(`/Documento/fichaingreso/detalle/${id}`)
+        .then((res) => {
+          //console.log( "porfavor" )
+          this.fichaIngreso = res.data;
+          console.log(res.data);
+        })
+        .catch((err) => console.log(err));
     },
     //Obtener una ficha de ingreso espefica
     async obtenerfichaIngreso(id) {
@@ -270,11 +289,10 @@ export default {
         .get(`/Documento/fichaingreso/idficha/${id}`)
         .then((res) => {
           //console.log( "porfavor" )
-          this.fichaIngreso=res.data;
+          this.fichaIngreso = res.data;
           console.log(res.data);
         })
         .catch((err) => console.log(err));
-
     },
     //Obtener Todas las Fcifas de Ingreso
     async obtenerfichasIngresos() {
@@ -299,6 +317,14 @@ export default {
     },
     //obtener todos los residentes
     async obtenerResidentes() {
+      await axios
+        .post("/residente/all/estadofase", this.documentoFase)
+        .then((x) => {
+          this.listaresidentes = x.data;
+        })
+        .catch((err) => console.log(err));
+    },
+    async obtenerResidentesModificacion() {
       await axios
         .get("/residente/all")
         .then((x) => {

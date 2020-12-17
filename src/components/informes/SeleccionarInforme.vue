@@ -25,7 +25,7 @@
                         </v-btn>
                         <RegistrarInformeEducativoEvolutivo 
                             v-if="showRegistrarInformeEE" 
-                            :listaresidentes="listaresidentes" 
+                            :listaresidentes="listaresidentesIEE" 
                             :listaeducadores="listaeducadores" 
                             :visible="showRegistrarInformeEE" 
                             :titulo="titulo" 
@@ -106,9 +106,33 @@ export default {
         showRegistrarInformeSE: false,
         showRegistrarInformePI: false,
         showRegistrarInformePE: false,
-        listaresidentesIEI: []
+        listaresidentesIEI: [],
+        listaresidentesIEE: [],
+        faseEducativaInicial: {            
+            fase: "1",
+            area: "educativa",
+            documentoanterior: "FichaEducativaIngreso",
+            documentoactual: "InformeEducativoInicial",
+            estadodocumentoanterior: "Completo",
+        },
+        faseEducativaEvolutivo: {            
+            fase: "2",
+            fasedocumentoanterior:"2",
+            area: "educativa",
+            documentoanterior: "PlanIntervencionIndividualEducativo",
+            documentoactual: "InformeEducativoEvolutivo",
+            estadodocumentoanterior: "Completo",
+            estadodocumentoactual: " "
+        },
+        faseEducativaFinal: {            
+            fase: "3",
+            area: "educativa",
+            documentoanterior: "InformeEducativoEvolutivo",
+            documentoactual: "InformeEducativoFinal",
+            estadodocumentoanterior: "Completo",
+        }
       }
-    },
+    }, 
     async created(){
         this.obtenerResidentesIEI();
     },
@@ -116,18 +140,20 @@ export default {
         cerrarDialogo(){            
             this.$emit("close-dialog-save");
         },
-        abrirDialogo(){
+        async abrirDialogo(){
             console.log(this.items.value);
             switch(this.items.value){
-                case "1":                     
+                case "1":                                         
                     this.showRegistrarInformeEI = true;
                     break;
                 case "2":
                     this.titulo = "Registrar Informe Educativo Evolutivo"
+                    await this.obtenerResidentesIEE();
                     this.showRegistrarInformeEE = true;
                     break;
                 case "3":
                     this.titulo = "Registrar Informe Educativo Final"
+                    await this.obtenerResidentesIEF();
                     this.showRegistrarInformeEE = true;
                     break;
                 case "4":
@@ -165,7 +191,25 @@ export default {
           console.log(this.listaresidentesIEI);
         })
         .catch((err) => console.log(err));
-    },
-     }
+     },
+     async obtenerResidentesIEE() {      
+      await axios
+        .post("/residente/all/estadofase", this.faseEducativaEvolutivo)
+        .then((x) => {
+          this.listaresidentesIEE = x.data;
+          console.log(this.listaresidentesIEE);
+        })
+        .catch((err) => console.log(err));
+     },
+     async obtenerResidentesIEF() {      
+      await axios
+        .post("/residente/all/estadofase", this.faseEducativaFinal)
+        .then((x) => {
+          this.listaresidentesIEE = x.data;
+          console.log(this.listaresidentesIEE);
+        })
+        .catch((err) => console.log(err));
+     },
+    }
 }
 </script>

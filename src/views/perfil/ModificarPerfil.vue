@@ -1,8 +1,6 @@
 <template>
   <v-card>
     <v-card-title class="justify-center">Modificar Perfil</v-card-title>
-        
-
     <v-stepper v-model="step">
        <v-stepper-header>
       <v-stepper-step
@@ -86,7 +84,8 @@
                 :error-messages="errorNumeroDocumento"
                 color="#009900"
               ></v-text-field>
-              <v-textarea
+
+               <v-textarea
                   v-model="usuario.datos.direccion"
                   label="Ingrese el la direccion"
                   auto-grow
@@ -98,30 +97,29 @@
                   :error-messages="errorDireccion"
                   color="#009900"
                   shaped
-                 ></v-textarea>
+               ></v-textarea>
+
                  <v-text-field
                   v-model="usuario.datos.email"
-                label="Ingrese el Correo Electronico"
-                outlined
-                @input="$v.usuario.datos.email.$touch()"
-                @blur="$v.usuario.datos.email.$touch()"
-                :error-messages="errorEmail"
-                color="#009900"
+                  label="Ingrese el Correo Electronico"
+                  outlined
+                  @input="$v.usuario.datos.email.$touch()"
+                  @blur="$v.usuario.datos.email.$touch()"
+                  :error-messages="errorEmail"
+                  color="#009900"
                 ></v-text-field>
-                <div>
+                
                  <vue-dropzone ref="myVueDropzone"
-                 
                     @vdropzone-success=" registerFile"
                     @vdropzone-removed-file="removedFile"
                     @vdropzone-mounted="mounteddropzone"
                     id="dropzone" :options="dropzoneOptions">
                  </vue-dropzone>
-                    </div>
-                   <v-card v-if="errorImagen" color="red">
+                 
+                  <v-card v-if="errorImagen" color="red">
                    <v-card-text class="text-center" style="color:white">Debe Subir una imagen del usuario Obligatoriamente</v-card-text>
-                  
-                   </v-card>
-                   <v-divider class="divider-custom"></v-divider>
+                  </v-card>
+                  <v-divider class="divider-custom"></v-divider>
                     <v-row>
                       <v-col>
                      <v-btn block @click="actualizarUsuarioPerfil()" color="success">
@@ -196,7 +194,10 @@ export default {
   mounteddropzone(){
       var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg" };
       var url = this.usuario.datos.imagen;
-      this.$refs.myVueDropzone.manuallyAddFile(file, this.usuario.datos.imagen,null,null,true);      
+      this.$refs.myVueDropzone.manuallyAddFile(file, url);
+       this. this.usuario.datos.imagen.push(
+        this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[0]
+      );      
     },
  
     async DialogloadUsuarioModificacion(){
@@ -232,7 +233,7 @@ export default {
     cerrarDialogo() {
       this.resetUsuarioValidationState();
       this.$emit("close-dialog-update");
-     
+    
     },
 
     registerFile(file, response) {

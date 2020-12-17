@@ -652,7 +652,7 @@ export default {
         tipo: "TallerFormativoEgreso",
         fechacreacion: new Date(),
         area: "educativa",
-        fase: "reinsercion",
+        fase: "3",
         titulo: "",
         descripcion: "",
         contenido:{
@@ -761,6 +761,7 @@ export default {
     },
   },
   methods:{
+    ...mapMutations(["addTaller"]),
     limpiar(){
       this.tallerFormativoE.titulo="";
       this.tallerFormativoE.descripcion="";
@@ -984,6 +985,8 @@ export default {
         axios
           .post("/Taller/crearTFE", tallerFormativoE)
           .then((res) => {
+            this.addTaller(res.data);
+
             this.messageSweet(
               "success",
               "Registro del Taller formativo de egreso",
@@ -1010,6 +1013,7 @@ export default {
     },
   },
   computed:{
+    ...mapState(["talleres"]),
     ...mapGetters(["user"]),
     show: {
       get() {

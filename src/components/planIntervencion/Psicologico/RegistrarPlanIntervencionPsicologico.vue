@@ -498,7 +498,7 @@ export default {
       },
       listImages: [],
       planResidentePsicologico: {
-        tipo: "PlanIntervencionIndividual",
+        tipo: "PlanIntervencionIndividualPsicologico",
         historialcontenido: [],
         creadordocumento: "",
         fechacreacion: new Date(),
@@ -641,7 +641,7 @@ export default {
               sexo: res.sexo,
               motivoIngreso: res.motivoIngreso,
               estado: res.estado,
-              faseActual: res.progreso[res.progreso.length - 1].nombre,
+              faseActual: res.progreso[res.progreso.length - 1].fase.toString(),
             };
           });
 
@@ -784,7 +784,7 @@ export default {
     getTitleByFaseResident() {
       if (this.residente != null) {
         if (this.residente.faseActual != "") {
-          if (this.residente.faseActual == "acogida") {
+          if (this.residente.faseActual == "1") {
             this.planResidentePsicologico.contenido.titulo =
               "Plan de Intervención psicológica";
           } else {
