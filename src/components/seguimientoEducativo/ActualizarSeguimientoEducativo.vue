@@ -778,27 +778,7 @@ export default {
     async modificarSeguimiento(){
       this.seguimiento.creadordocumento = this.user.id;
     console.log(this.seguimiento)
-     this.$v.seguimiento.$touch();
-      if (this.$v.seguimiento.$invalid) {
-        console.log('hay errores');
-        this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
-      } else {
-        console.log('no hay errores');
-    await axios
-          .put("/SeguimientoEducativo/informese", this.seguimiento)
-          .then((res) => {
-            this.replaceSeguimiento(res.data);
-            this.cerrarDialogo();
-          })
-          .catch((err) => console.log(err));
-        await this.mensaje(
-          "success",
-          "listo",
-          "Seguimiento educativo modificado Satisfactoriamente",
-          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
-        );
-        location.reload();//metodo de js para refrescar la pagina
-      }
+    
     },
      guardarSeguimientoFirma(){
         this.$v.seguimiento.contenido.firmas.$touch();

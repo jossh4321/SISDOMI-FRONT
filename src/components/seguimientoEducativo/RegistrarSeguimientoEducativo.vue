@@ -802,6 +802,7 @@ methods:{
     ////////////HACER LA CONSULTA CON LA API  REGISTRAR
     async registrarSeguimiento() {
        this.seguimiento.creadordocumento = this.user.id;
+       console.log(this.seguimiento)
        this.$v.seguimiento.$touch();
       if (this.$v.seguimiento.$invalid) {
         console.log("hay errores");
