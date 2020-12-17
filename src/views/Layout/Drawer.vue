@@ -224,6 +224,13 @@ export default {
           icon: "dashboard",
           name: "CambiarContrasena",
           href: "/dashboard/CambiarContrasena"
+        },
+        {
+          title: "Estadísticas",
+          group: "admin",
+          icon: "dashboard",
+          name: "ConsultaEstadisticas",
+          href: "/dashboard/estadisticas"
         }
       ],
       scrollSettings: {
