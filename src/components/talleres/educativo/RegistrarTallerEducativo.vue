@@ -761,6 +761,7 @@ export default {
     },
   },
   methods:{
+    ...mapMutations(["addTaller"]),
     limpiar(){
       this.tallerEdu.titulo="";
       this.tallerEdu.descripcion="";
@@ -984,6 +985,8 @@ export default {
         axios
           .post("/Taller/crearTE", tallerEdu)
           .then((res) => {
+            this.addTaller(res.data);
+
             this.messageSweet(
               "success",
               "Registro del Taller educativo",
@@ -1010,6 +1013,7 @@ export default {
     },
   },
   computed:{
+    ...mapState(["talleres"]),
     ...mapGetters(["user"]),
     show: {
       get() {
