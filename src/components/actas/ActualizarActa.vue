@@ -205,18 +205,16 @@ export default {
          //imagen:{tipo:"url",modificado:"no"},            
     actaexternamiento: {
         
-         id:"", tipo:"", historialcontenido:[], creadordocumento:"", fechacreacion:new Date().toISOString(), 
+         id:"", tipo:"ActaExternamiento", historialcontenido:[], creadordocumento:"", fechacreacion:new Date().toISOString(), 
         area:"social", fase:"3", idresidente:"", estado:"",
 
         contenido: {
 
-        responsable: "",      
-                      
+        responsable:"",                           
         entidaddisposicion:"",  
         numeroresolucion:"",  
         numerooficio:"",  
-        observaciones:"",
-        
+        observaciones:"",        
         firmas:[]
         },
       },
@@ -239,13 +237,13 @@ export default {
         this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
       } else {
         console.log('no hay errores');
-        await axios.put("/actaexternamiento/update"+this.firmas.tipo+"&modificado="+this.firmas.modificado,this.actaexternamiento)
+        await axios.put("/actaexternamiento/update?tipo="+this.firmas.tipo+"&modificado="+this.firmas.modificado,this.actaexternamiento)
           .then(res => {
             var resultado = res.data;
             this.replaceUsuario(resultado);
             this.cerrarDialogo();
           }).catch(err => console.log(err));
-          await this.mensaje('success','listo','Usuario Actualizado Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
+          await this.mensaje('success','listo','Acta Actualizada Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
       }
     },
     resetUsuarioValidationState(){

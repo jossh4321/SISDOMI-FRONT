@@ -135,8 +135,8 @@ const routes = [{
             {
                 path: 'evaluacionEducativa',
                 name: 'GestionarFichaEvaluacionEducativa',
-                component: GestionarFichaEvaluacionEducativa
-                //component: GestionarEvaluacionEducativa
+                //component: GestionarFichaEvaluacionEducativa
+                component: GestionarEvaluacionEducativa
             },
             {
                 path: 'estadisticas',
