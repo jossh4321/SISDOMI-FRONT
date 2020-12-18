@@ -521,7 +521,7 @@ export default {
           ]
         }else if(this.progresoFase.fase === 3){
           this.progresoResidente.fase = 3
-          this.progresoResidente.nombre = "seguimiento"
+          this.progresoResidente.nombre = "reinserción"
           this.progresoFase.educativa.documentos = [
             {tipo:"InformeEducativoFinal", estado:"Pendiente"}
           ]
