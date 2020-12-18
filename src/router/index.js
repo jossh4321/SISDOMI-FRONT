@@ -32,6 +32,8 @@ import CambiarContrasena from '@/views/CambiarContrasena/Cambiarcontrasena.vue';
 /* Importación del axios para la verificación del token */
 import axios from '../store/index.js';
 
+
+
 import ConsultaEstadisticas from '@/views/Estadisticas/ConsultaEstadisticas.vue';
 
 Vue.use(VueRouter);
