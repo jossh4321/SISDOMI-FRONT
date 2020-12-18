@@ -44,7 +44,8 @@
                   </v-row>
                 </v-card>
               </v-card>
-              <v-row>
+              <div style="margin:15px">
+                <v-row>
                 <v-col>
                   <v-select
                     :items="itemFamilias"
@@ -66,15 +67,16 @@
                   ></v-textarea>
                 </v-col>
               </v-row>
+              </div>
+              
 
               <v-card
-                style="margin-top:1%;margin-bottom:1%;padding-bottom: 15px;background-color:#EAEAEA"
+                style="margin-top:1%;margin-bottom:1%;padding: 10px 0px 15px 0px;background-color:#EAEAEA"
                 >
-                <v-chip
-                  class="ma-2"
-                  color="green"
-                  text-color="white"
-                >Motivo de ingreso</v-chip>
+                <v-card style="border:0.5px solid black; margin:10px;" color="success">
+                                <v-card-title style="font-size:20px">Motivo de ingreso del Residente</v-card-title>
+                              </v-card>
+                
                 <v-card
                   tile
                   elevation="0"
@@ -92,17 +94,12 @@
                 </v-card>
               </v-card>
 
-              <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
-                <v-card-title>
-                  <v-row>
-                    <v-col :cols="8">Composición Familiar</v-col>
-                    <v-col :cols="4" align="right">
-                      <v-dialog v-model="dialogAgregarFamiliar" persistent max-width="600px">
-                        <v-card align="center">
+               <v-dialog v-model="dialogAgregarFamiliar" persistent max-width="700px">
+                        <v-card align="center" max-width="inherit">
                           <v-card-title>
                             <span class="headline">Datos familiar</span>
                           </v-card-title>
-                          <v-card-text>
+                          <v-card-text style="padding-top:10px">
                             <v-textarea
                               label="Nombres"
                               v-model="familiar.nombre"
@@ -200,18 +197,25 @@
                               outlined
                               color="#009900"
                               rows="1"
+                              readonly
                               auto-grow
                             ></v-textarea>
+                            <v-row style="margin:15px 15px 0px 15px">
+                              <v-col cols="12">
+                                <v-btn block color="error" @click="cerrarAgregarFamiliar()">
+                                  <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>Cerrar
+                                </v-btn>
+                              </v-col>
+                            </v-row>
                           </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="error" @click="cerrarAgregarFamiliar()">
-                              <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>Cerrar
-                            </v-btn>
-                          </v-card-actions>
+                            
                         </v-card>
                       </v-dialog>
-                    </v-col>
+
+              <v-card style="margin-top:1%;margin-bottom:1%;padding-bottom:1%;background-color:#EAEAEA">
+                <v-card-title>
+                  <v-row>
+                    <v-col :cols="12">Composición Familiar</v-col>
                   </v-row>
                 </v-card-title>
 
@@ -237,8 +241,9 @@
                       <v-col>
                         <v-row style="padding:0;margin:0">
                           <v-col style="padding:0;margin:0">
-                            <v-btn fab x-small dark color="blue" @click="modalConsultar(index)">
+                            <v-btn  dark color="blue" @click="modalConsultar(index)">
                               <v-icon dark>mdi-eye</v-icon>
+                              <span>Ver Detalle</span>
                             </v-btn>
                           </v-col>
                         </v-row>
@@ -247,6 +252,7 @@
                   </div>
                 </v-card-text>
               </v-card>
+             
 
               <v-row>
                 <v-col>
@@ -372,11 +378,9 @@
               <v-card
                 style="margin-top:1%;margin-bottom:1%;padding-bottom: 15px;background-color:#EAEAEA"
                 >
-                <v-chip
-                  class="ma-2"
-                  color="green"
-                  text-color="white"
-                >Habitantes de la vivienda</v-chip>
+                 <v-card style="border:0.5px solid black; margin:10px;" color="success">
+                                <v-card-title style="font-size:20px">Habitantes de la vivienda</v-card-title>
+                              </v-card>
                 <v-card
                   tile
                   elevation="0"
@@ -395,11 +399,9 @@
               </v-card>
 
               <v-card style="margin-top:30px;padding:5px 5px;padding-bottom:15px;background-color:#EAEAEA">
-                <v-chip
-                  class="ma-2"
-                  color="green"
-                  text-color="white"
-                >Servicios</v-chip>
+                <v-card style="border:0.5px solid black; margin:10px;" color="success">
+                                <v-card-title style="font-size:20px">Servicios Basicos Adquiridos</v-card-title>
+                              </v-card>
                 <v-card
                   color="#FAFAFA"
                   style="margin-top:5px; margin-top: 20px;"
@@ -489,11 +491,11 @@
               <v-card
                 style="margin-top:1%;margin-bottom:1%;padding-bottom: 15px;background-color:#EAEAEA"
               >
-                <v-chip
-                  class="ma-2"
-                  color="green"
-                  text-color="white"
-                >Ingresos</v-chip>
+
+              <v-card style="border:0.5px solid black; margin:10px;" color="success">
+                                <v-card-title style="font-size:20px">Ingresos</v-card-title>
+                              </v-card>
+                
 
                 <v-card
                   tile
@@ -515,11 +517,9 @@
             <v-card
               style="margin-top:1%;margin-bottom:1%;padding-bottom: 15px;background-color:#EAEAEA"
               >
-              <v-chip
-                  class="ma-2"
-                  color="green"
-                  text-color="white"
-                >Egresos</v-chip>
+              <v-card style="border:0.5px solid black; margin:10px;" color="success">
+                                <v-card-title style="font-size:20px">Egresos</v-card-title>
+                              </v-card>
               <v-card
                 tile
                 elevation="0"
@@ -596,11 +596,9 @@
               </v-row>
 
               <v-card style="margin-top:30px;padding:5px 5px;padding-bottom:15px;background-color:#EAEAEA">
-                <v-chip
-                  class="ma-2"
-                  color="green"
-                  text-color="white"
-                >Antecedentes penales en familares del residente</v-chip>
+                <v-card style="border:0.5px solid black; margin:10px;" color="success">
+                                <v-card-title style="font-size:20px">Antecedentes penales en familares del residente</v-card-title>
+                              </v-card>
                 <v-card
                   color="#FAFAFA"
                   style="margin-top:5px"
@@ -748,7 +746,7 @@ export default {
     cerrarAgregarFamiliar() {
       this.dialogAgregarFamiliar = false;
 
-      this.familiar.nombre = "";
+      /*this.familiar.nombre = "";
       this.familiar.apellido = "";
       this.familiar.parentesco = "";
       this.familiar.edad = "";
@@ -758,7 +756,7 @@ export default {
       this.familiar.observaciones = "";
       this.familiar.numerodocumento = "";
 
-      this.$v.familiar.$reset();
+      this.$v.familiar.$reset();*/
     },
     modalConsultar(index) {
       this.accion = "consultar";

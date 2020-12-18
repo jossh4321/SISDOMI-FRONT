@@ -124,9 +124,22 @@ const routes = [{
                 component: ModificarPerfil
             },
             {
+
                 path:'evaluacionEducativa',
                 name:'GestionarFichaEvaluacionEducativa',
-                component:GestionarFichaEvaluacionEducativa
+                component:GestionarFichaEvaluacionEducativa,
+            },
+            {
+                path: 'evaluacionEducativa',
+                name: 'GestionarFichaEvaluacionEducativa',
+                component: GestionarFichaEvaluacionEducativa
+                //component: GestionarEvaluacionEducativa
+            },
+            {
+                path: 'estadisticas',
+                name: 'ConsultaEstadisticas',
+                component: ConsultaEstadisticas
+
             }
         ],
 

@@ -670,7 +670,7 @@ import {
 } from "vuelidate/lib/validators";
 import moment from "moment";
 export default {
-  name: "DetalleResidente",
+  name: "ActualizarResidente",
   props: ["residente"],
   data() {
     return {

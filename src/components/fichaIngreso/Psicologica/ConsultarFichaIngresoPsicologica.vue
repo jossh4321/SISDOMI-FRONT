@@ -137,17 +137,13 @@
                 </v-container>
               </v-card>
 
-              <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
-                <v-card-title>
-                  <v-row>
-                    <v-col :cols="8">Padres del residente</v-col>
-                    <v-col :cols="4" align="right">
-                      <v-dialog v-model="dialogAgregarpadre" persistent max-width="600px">
-                        <v-card align="center">
+
+              <v-dialog v-model="dialogAgregarpadre" persistent max-width="700px">
+                        <v-card align="center" max-width="inherit">
                           <v-card-title>
                             <span class="headline">Datos de los padres</span>
                           </v-card-title>
-                          <v-card-text>
+                          <v-card-text style="padding-top:10px">
                             <v-textarea
                               label="Nombres"
                               v-model="padre.nombre"
@@ -223,16 +219,20 @@
                                 ></v-textarea>
                               </v-col>
                             </v-row>
+                            <v-row style="margin:15px 15px 0px 15px">
+                              <v-col cols="12">
+                                <v-btn block color="error" @click="cerrarAgregarPadre()">
+                                  <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>Cerrar
+                                </v-btn>
+                              </v-col>
+                            </v-row>
                           </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="error" @click="cerrarAgregarPadre()">
-                              <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>Cerrar
-                            </v-btn>
-                          </v-card-actions>
                         </v-card>
                       </v-dialog>
-                    </v-col>
+              <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
+                <v-card-title>
+                  <v-row>
+                    <v-col :cols="12">Padres del residente</v-col>
                   </v-row>
                 </v-card-title>
 
@@ -255,14 +255,9 @@
                       <v-col>
                         <v-row style="padding:0;margin:0">
                           <v-col style="padding:0;margin:0">
-                            <v-btn
-                              fab
-                              x-small
-                              dark
-                              color="blue"
-                              @click="modalConsultarPadre(index)"
-                            >
+                            <v-btn  dark color="blue" @click="modalConsultarPadre(index)">
                               <v-icon dark>mdi-eye</v-icon>
+                              <span>Ver Detalle</span>
                             </v-btn>
                           </v-col>
                         </v-row>
@@ -272,12 +267,8 @@
                 </v-card-text>
               </v-card>
 
-              <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
-                <v-card-title>
-                  <v-row>
-                    <v-col :cols="8">Hermanos del residente</v-col>
-                    <v-col :cols="4" align="right">
-                      <v-dialog v-model="dialogAgregarhermano" persistent max-width="600px">
+
+               <v-dialog v-model="dialogAgregarhermano" persistent max-width="600px">
                         <v-card align="center">
                           <v-card-title>
                             <span class="headline">Datos de los hermanos</span>
@@ -311,16 +302,20 @@
                               auto-grow
                               readonly
                             ></v-textarea>
+                            <v-row style="margin:15px 15px 0px 15px">
+                              <v-col cols="12">
+                                <v-btn block color="error" @click="cerrarAgregarhermano()">
+                                  <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>Cerrar
+                                </v-btn>
+                              </v-col>
+                            </v-row>
                           </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="error" @click="cerrarAgregarhermano()">
-                              <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>Cerrar
-                            </v-btn>
-                          </v-card-actions>
                         </v-card>
                       </v-dialog>
-                    </v-col>
+              <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
+                <v-card-title>
+                  <v-row>
+                    <v-col :cols="12">Hermanos del residente</v-col>
                   </v-row>
                 </v-card-title>
 
@@ -343,14 +338,9 @@
                       <v-col>
                         <v-row style="padding:0;margin:0">
                           <v-col style="padding:0;margin:0">
-                            <v-btn
-                              fab
-                              x-small
-                              dark
-                              color="blue"
-                              @click="modalConsultarhermano(index)"
-                            >
+                            <v-btn  dark color="blue" @click="modalConsultarhermano(index)">
                               <v-icon dark>mdi-eye</v-icon>
+                              <span>Ver Detalle</span>
                             </v-btn>
                           </v-col>
                         </v-row>
@@ -513,7 +503,6 @@
                     <v-col>
                       <v-menu
                         v-model="menu2"
-                        :close-on-content-click="false"
                         :nudge-right="40"
                         transition="scale-transition"
                         offset-y
@@ -522,14 +511,13 @@
                       >
                         <template v-slot:activator="{ on, attrs }">
                           <v-text-field
-                            v-model="fichaIngreso.contenido.adicciones.ultimodiaconsumo"
+                            :value="fichaIngreso.contenido.adicciones.ultimodiaconsumo.split('T')[0]"
                             label="Último dia de consumo"
                             prepend-icon="mdi-calendar"
                             readonly
                             v-bind="attrs"
                             v-on="on"
                             outlined
-                            clearable
                           ></v-text-field>
                         </template>
                         <v-date-picker
@@ -630,7 +618,7 @@
                       >
                         <template v-slot:activator="{ on, attrs }">
                           <v-text-field
-                            v-model="fichaIngreso.contenido.desarrollosexual.menarquia"
+                            :value="fichaIngreso.contenido.desarrollosexual.menarquia.split('T')[0]"
                             label="Menarquía"
                             prepend-icon="mdi-calendar"
                             readonly
@@ -752,14 +740,10 @@
                     </v-col>
                   </v-row>
 
-                  <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
-                    <v-card-title>
-                      <v-row>
-                        <v-col :cols="8">Trata sexual</v-col>
-                        <v-col :cols="4" align="right">
-                          <v-dialog v-model="dialogAgregartratasexual" persistent max-width="600px">
-                            <v-card align="center">
-                              <v-card-title>
+
+                  <v-dialog v-model="dialogAgregartratasexual" persistent max-width="700px">
+                            <v-card align="center" width="inherit">
+                              <v-card-title style="margin-bottom:10px">
                                 <span class="headline">Datos de la trata sexual</span>
                               </v-card-title>
                               <v-card-text>
@@ -844,16 +828,22 @@
                                     </v-row>
                                   </v-card>
                                 </v-card>
+                                    <v-row style="margin:15px 15px 0px 15px">
+                                      <v-col cols="12">
+                                        <v-btn block color="error" @click="cerrarAgregartratasexual()">
+                                          <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>Cerrar
+                                        </v-btn>
+                                      </v-col>
+                                    </v-row>
                               </v-card-text>
-                              <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="error" @click="cerrarAgregartratasexual()">
-                                  <v-icon left class="mr-0 icon-plan">mdi-close</v-icon>Cerrar
-                                </v-btn>
-                              </v-card-actions>
                             </v-card>
                           </v-dialog>
-                        </v-col>
+
+
+                  <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
+                    <v-card-title>
+                      <v-row>
+                        <v-col :cols="12">Trata sexual</v-col>
                       </v-row>
                     </v-card-title>
 
@@ -878,18 +868,13 @@
                           <v-col>{{ item.lugar }}</v-col>
                           <v-col>
                             <v-row style="padding:0;margin:0">
-                              <v-col style="padding:0;margin:0">
-                                <v-btn
-                                  fab
-                                  x-small
-                                  dark
-                                  color="blue"
-                                  @click="modalConsultartratasexual(index)"
-                                >
-                                  <v-icon dark>mdi-eye</v-icon>
-                                </v-btn>
-                              </v-col>
-                            </v-row>
+                          <v-col style="padding:0;margin:0">
+                            <v-btn  dark color="blue" @click="modalConsultartratasexual(index)">
+                              <v-icon dark>mdi-eye</v-icon>
+                              <span>Ver Detalle</span>
+                            </v-btn>
+                          </v-col>
+                        </v-row>
                           </v-col>
                         </v-row>
                       </div>

@@ -97,7 +97,7 @@
                   :error-messages="errorDireccion"
                   color="#009900"
                   shaped
-               ></v-textarea>
+              ></v-textarea>
 
                  <v-text-field
                   v-model="usuario.datos.email"
@@ -132,7 +132,7 @@
                      <span>Cerrar</span>
                      </v-btn>
                     </v-row>
-           </form>
+              </form>
           </div>
         </v-stepper-content>
       </v-stepper-items>

@@ -111,6 +111,33 @@
                                 </template>
                               </template>
                             </v-autocomplete>
+                             <v-menu
+                                v-model="datemenu"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="290px"
+                              >
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-text-field
+                                    v-model="fichaEvaluacion.fechacreacion"
+                                    label="Fecha de Evaluación"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    color="#009900"
+                                    
+                                    
+                                  ></v-text-field>
+                                </template>
+                                <v-date-picker
+                                  v-model="fichaEvaluacion.fechacreacion"
+                                  @input="menu2 = false"
+                                  locale="es-es"
+                                ></v-date-picker>
+                              </v-menu>
                              <v-text-field
                               v-model="fichaEvaluacion.contenido.ultimaie"
                               label="Ultima Institucion Educacion"
@@ -598,6 +625,7 @@ components:{
 },
   data(){
     return{
+      datemenu: false,
      step:1,
      dialog:false, // dialogo firma
      dialogVistaPreviaFirma: false,
@@ -676,7 +704,7 @@ components:{
           "Ficha Diagnostico Evaluacion Educativa modificado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
-        location.reload();//metodo de js para refrescar la pagina
+        location.reload();
       },
        ///metodo para agregar firma residente
     guardarFirma(){
