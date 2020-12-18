@@ -26,14 +26,14 @@
         <div class="container-user">
       <form>
         <v-text-field
-           v-model="usuario.tipo"
+           v-model="actaexternamiento.tipo"
           label="Ingrese el tipo"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-text-field
-          v-model="usuario.fechacreacion"
+          v-model="actaexternamiento.fechacreacion"
           label="Ingrese fechacreacion"
           outlined
           readonly
@@ -42,14 +42,14 @@
                       
        
         <v-text-field
-          v-model="usuario.area"
+          v-model="actaexternamiento.area"
           label="Ingrese el area"
           outlined
           readonly
           color="#009900"
         ></v-text-field>
         <v-textarea
-          v-model="usuario.fase"
+          v-model="actaexternamiento.fase"
           label="Ingrese la fase"
           auto-grow
           outlined
@@ -83,7 +83,7 @@
         <div  class="container-user">
       <form>
         <v-text-field
-          v-model="usuario.residente"
+          v-model="actaexternamiento.residente"
           label="Ingrese el nombre de residente"
           outlined
           readonly
@@ -92,7 +92,7 @@
         ></v-text-field>
         
         <v-text-field
-          v-model="usuario.entidaddisposicion"
+          v-model="actaexternamiento.entidaddisposicion"
           label="Ingrese nueva entidad disposicion"
           outlined
           readonly
@@ -101,7 +101,7 @@
         ></v-text-field>
 
         <v-text-field
-         v-model="usuario.numeroresolucion"
+         v-model="actaexternamiento.numeroresolucion"
           label="Ingrese nuevo numero resolucion"
           outlined
           readonly
@@ -110,7 +110,7 @@
         ></v-text-field>
 
         <v-text-field
-           v-model="usuario.numerooficio"
+           v-model="actaexternamiento.numerooficio"
           label="Ingrese nuevo numero oficio"
           outlined
           readonly
@@ -119,7 +119,7 @@
         ></v-text-field>
           
        <v-text-field
-          v-model="usuario.observaciones"
+          v-model="actaexternamiento.observaciones"
           label="Ingrese nuevas observaciones"
           outlined
           readonly
@@ -129,7 +129,7 @@
            
         
         <v-select
-        v-model="usuario.estado"
+        v-model="actaexternamiento.estado"
           :items="['creado', 'modificado']"
           label="Ingrese el Estado"
           dense
@@ -161,7 +161,7 @@ import { mapMutations, mapState} from "vuex";
 import moment from 'moment'
 export default {
     name:"VisualizarActa",
-   props:["usuario"],
+   props:["actaexternamiento"],
    components: {
   },
   data() {

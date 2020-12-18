@@ -16,8 +16,7 @@ import GestionarIncidencias from "../views/Incidencias/GestionarIncidencias.vue"
 import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 import GestionActa from '../views/Acta/GestionarActa.vue';
 import ModificarPerfil from '../views/perfil/ModificarPerfil.vue';
-import GestionarFichaEvaluacionEducativa from '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
-import GestionarEvaluacionEducativa from '../views/Evaluacion/GestionarEvaluacion.vue';
+import GestionarFichaEvaluacionEducativa from  '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
 //Prueba
 import PruebaActa from '../views/Acta/PruebaActa.vue';
 
@@ -28,10 +27,8 @@ import GestionarPlanes from '@/views/PlanIntervencion/GestionarPlanes.vue';
 import GestionarExpedientes from '@/views/ExpedienteMatriz/GestionarExpedientes.vue';
 import ExpedienteResidente from '@/views/ExpedienteMatriz/ExpedienteResidente.vue';
 
-import CambiarContrasena from '@/views/CambiarContrasena/Cambiarcontrasena.vue';
 /* Importación del axios para la verificación del token */
 import axios from '../store/index.js';
-
 
 
 import ConsultaEstadisticas from '@/views/Estadisticas/ConsultaEstadisticas.vue';
@@ -125,25 +122,21 @@ const routes = [{
                 component: PruebaActa
             },
             {
-                path: 'CambiarContrasena',
-                name: 'Cambiarcontrasena',
-                component: CambiarContrasena
-            },
-            {
-                path: 'ModificarPerfil',
+                path: 'modificarPerfil',
                 name: 'Perfil',
                 component: ModificarPerfil
             },
             {
-                path: 'evaluacionEducativa',
-                name: 'GestionarFichaEvaluacionEducativa',
-                component: GestionarFichaEvaluacionEducativa
-                //component: GestionarEvaluacionEducativa
+
+                path:'evaluacionEducativa',
+                name:'GestionarFichaEvaluacionEducativa',
+                component:GestionarFichaEvaluacionEducativa,
             },
             {
                 path: 'estadisticas',
                 name: 'ConsultaEstadisticas',
                 component: ConsultaEstadisticas
+
             }
         ],
 

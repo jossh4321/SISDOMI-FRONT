@@ -90,6 +90,8 @@ export default {
           click: (e) => {
            //
            this.$router.push('/dashboard/ModificarPerfil')
+           
+           
           },
         },
         {
