@@ -120,11 +120,11 @@ export default {
           href: "/dashboard",
         },
         {
-          title: "Widgets",
-          group: "widgets",
-          component: "widgets",
-          icon: "tune",
-          items: [{ name: "social", title: "Social", href: "/widgets/social" }],
+          title: "Home",
+          group: "apps",
+          icon: "home",
+          name: "Home",
+          href: "/dashboard/home",
         },
         { header: "UI Elements" },
         {
