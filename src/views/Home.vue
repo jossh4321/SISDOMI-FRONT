@@ -98,7 +98,7 @@ export default {
   },
   methods: {
     abrirVista() {
-      console.log("llega");
+      this.$router.push('/dashboard/Tratamiento')
     },
   }
 };
