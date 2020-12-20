@@ -23,7 +23,7 @@
                 class="pa-4 mx-auto"
                 :class="{ 'on-hover': hover }"
                 max-width="90%"
-                @click.native="imprimir()"
+                @click.native="abrirVista(opcion.interfazUrl)"
                 style="cursor: pointer"
               >
                 <v-img
