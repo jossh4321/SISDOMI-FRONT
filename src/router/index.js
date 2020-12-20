@@ -32,6 +32,8 @@ import axios from '../store/index.js';
 
 
 import ConsultaEstadisticas from '@/views/Estadisticas/ConsultaEstadisticas.vue';
+import Tratamiento from '@/views/Home/Tratamiento.vue';
+import Fase1 from '@/views/Home/Fase1.vue';
 
 Vue.use(VueRouter);
 
@@ -137,7 +139,17 @@ const routes = [{
                 name: 'ConsultaEstadisticas',
                 component: ConsultaEstadisticas
 
-            }
+            },
+            {
+                path: 'tratamiento',
+                name: 'Tratamiento',
+                component: Tratamiento
+            },
+            {
+                path: 'fase1',
+                name: 'Fase1',
+                component: Fase1
+            },
         ],
 
         component: () =>
