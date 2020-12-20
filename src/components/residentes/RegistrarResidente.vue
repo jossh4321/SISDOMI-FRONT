@@ -134,13 +134,13 @@
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
                             <v-combobox
-                            v-model="telefonos.parentesco"
-                            :items="itemParentesco"
-                            label="Parentesco"                            
-                            @input="$v.telefonos.parentesco.$touch()"
+                              v-model="telefonos.parentesco"
+                              :items="itemParentesco"
+                              label="Parentesco"
+                              @input="$v.telefonos.parentesco.$touch()"
                               @blur="$v.telefonos.parentesco.$touch()"
                               :error-messages="errorParentesco"
-                          ></v-combobox>                            
+                            ></v-combobox>
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field
@@ -292,14 +292,65 @@
           <div class="container-user">
             <form>
               <!--aQUI ESTARA LO Q  CONTENDRA -->
-              <v-text-field
-                v-model="residente.ubigeo"
-                @input="$v.residente.ubigeo.$touch()"
-                @blur="$v.residente.ubigeo.$touch()"
-                :error-messages="errorUbigeo"
-                label="Ingrese el Ubigeo"
-                color="#009900"
-              ></v-text-field>
+              <h4>Ubigeo</h4>
+              <v-row>
+                <v-col>
+                  <v-autocomplete
+                    :items="this.departamentos"
+                    filled
+                    dense
+                    v-model="idDepartamento"
+                    outlined
+                    color="#009900"
+                    label="Departamento"
+                    item-text="nombreDepartamento"
+                    item-value="idDepartamento"
+                    @change="obtenerProvincias()"
+                    @input="$v.idDepartamento.$touch()"
+                    @blur="$v.idDepartamento.$touch()"
+                    :error-messages="errorDepartamento"
+                  >
+                  </v-autocomplete>
+                </v-col>
+                <v-col>
+                  <v-autocomplete
+                    :items="this.provincias"                    
+                    filled
+                    dense
+                    outlined                    
+                    color="#009900"
+                    label="Provincia"
+                    v-model="idProvincia"
+                    item-text="nombreProvincia"
+                    item-value="idProvincia"
+                    @change="obtenerDistritos()"
+                    @input="$v.idProvincia.$touch()"
+                    @blur="$v.idProvincia.$touch()"
+                    :error-messages="errorProvincia"
+                  >
+                  </v-autocomplete>
+                </v-col>
+                <v-col>
+                  <v-autocomplete
+                    :items="this.distritos"
+                    filled
+                    dense
+                    outlined
+                    color="#009900"
+                    label="Distrito"
+                    v-model="residente.ubigeo"
+                    @input="$v.residente.ubigeo.$touch()"
+                    @blur="$v.residente.ubigeo.$touch()"
+                    :error-messages="errorDistrito"
+                    item-text="nombreDistrito"
+                    item-value="idDistrito"
+                    
+                  >
+                  </v-autocomplete>
+                </v-col>
+              </v-row>
+
+
               <v-text-field
                 v-model="residente.juzgadoProcedencia"
                 @input="$v.residente.juzgadoProcedencia.$touch()"
@@ -696,7 +747,7 @@ export default {
           value: { nombre: "En adopcion", previcion: true },
         },
       ],
-      itemParentesco: [ "Madre", "Padre", "Tio(a)", "Hermano(a)"],        
+      itemParentesco: ["Madre", "Padre", "Tio(a)", "Hermano(a)"],
       miFase: { nombre: "Acogida", fase: 1 },
       residente: {
         id: "",
@@ -715,9 +766,17 @@ export default {
         progreso: [],
         estado: "",
       },
+      departamentos: [],
+      provincias: [],
+      distritos: [],
+      idDepartamento: "",
+      idProvincia: "",
+      idDistrito: "",
     };
   },
-  created() {},
+  async created() {
+    this.obtenerDepartamentos();
+  },
   watch: {
     verificarPrevicion() {},
   },
@@ -932,8 +991,37 @@ export default {
       var date = dateMongo[0].split("-");
       return date[2] + "/" + date[1] + "/" + date[0];
     },
+    async obtenerDepartamentos() {
+      await axios
+        .get("/ubigeo/allDepartamentos")
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          this.departamentos = res.data;
+        })
+        .catch((err) => console.log(err));
+    },
+    async obtenerProvincias() {
+      await axios
+        .get(`/ubigeo/provincias/departamento/${this.idDepartamento}`)
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          this.provincias = res.data;
+        })
+        .catch((err) => console.log(err));
+    },
+    async obtenerDistritos() {
+      await axios
+        .get(`/ubigeo/distritos/provincia/${this.idProvincia}`)
+        .then((res) => {
+          var info = {};
+          info = res.data;                  
+          this.distritos = res.data;
+        })
+        .catch((err) => console.log(err));
+    },
   },
-
   computed: {
     ///validaciones
     ...mapState(["residentes"]),
@@ -1008,13 +1096,25 @@ export default {
         errors.push("El Lugar de Nacimiento debe tener al menos 3 caracteres");
       return errors;
     },
-    errorUbigeo() {
+    errorDepartamento() {
+      const errors = [];
+      if (!this.$v.idDepartamento.$dirty) return errors;
+      !this.$v.idDepartamento.required &&
+        errors.push("Debe seleccionar el departamento obligatoriamente");
+      return errors;
+    },
+    errorProvincia() {
+      const errors = [];
+      if (!this.$v.idProvincia.$dirty) return errors;
+      !this.$v.idProvincia.required &&
+        errors.push("Debe seleccionar la provincia obligatoriamente");
+      return errors;
+    },
+    errorDistrito() {
       const errors = [];
       if (!this.$v.residente.ubigeo.$dirty) return errors;
       !this.$v.residente.ubigeo.required &&
-        errors.push("Debe ingresar un Ubigeo Obligatoriamente");
-      !this.$v.residente.ubigeo.minLength &&
-        errors.push("El Lugar de Nacimiento debe tener al menos 3 caracteres");
+        errors.push("Debe seleccionar el distrito obligatoriamente");
       return errors;
     },
     errorJuzgadoProcedencia() {
@@ -1166,9 +1266,8 @@ export default {
           minLength: minLength(4),
         },
         ubigeo: {
-          required,
-          minLength: minLength(4),
-        },
+          required,          
+        },        
         juzgadoProcedencia: {
           required,
           minLength: minLength(3),
@@ -1192,7 +1291,7 @@ export default {
               minLength: minLength(4),
             },
             parentesco: {
-              required,              
+              required,
             },
           },
         },
@@ -1235,7 +1334,7 @@ export default {
           minLength: minLength(4),
         },
         parentesco: {
-          required,          
+          required,
         },
       },
       progreso: {
@@ -1244,6 +1343,12 @@ export default {
         fechafinalizacion: { required },
         estado: { required },
       },
+       idDepartamento: {
+          required,
+        },
+        idProvincia: {
+          required,
+        },
     };
   },
 };
