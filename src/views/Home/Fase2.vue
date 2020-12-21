@@ -38,7 +38,7 @@
         <!--  style="position: relative;"  -->
         <v-container class="fill-height">
           <v-card class="card">
-            <v-card-title>Residentes actuales en la Fase 1</v-card-title>
+            <v-card-title>Residentes actuales en la Fase 2</v-card-title>
             <v-container>
               <v-row>
                 <v-col xs="12" sm="12" md="12" lg="12" xl="12">

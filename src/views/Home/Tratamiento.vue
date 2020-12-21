@@ -44,7 +44,7 @@
                     class="pa-4 mx-auto"
                     :class="{ 'on-hover': hover }"
                     max-width="90%"
-                    @click.native="abrirFase(id)"
+                    @click.native="abrirFase(fase.id)"
                     style="cursor: pointer"
                   >
                     <v-img
