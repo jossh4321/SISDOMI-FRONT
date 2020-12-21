@@ -26,6 +26,7 @@ import GestionarPlanes from '@/views/PlanIntervencion/GestionarPlanes.vue';
 /* Rutas para la consulta de expediente */
 import GestionarExpedientes from '@/views/ExpedienteMatriz/GestionarExpedientes.vue';
 import ExpedienteResidente from '@/views/ExpedienteMatriz/ExpedienteResidente.vue';
+import ProgresoResidente from '@/views/Home/Progreso.vue'
 
 /* Importación del axios para la verificación del token */
 import axios from '../store/index.js';
@@ -149,7 +150,11 @@ const routes = [{
                 path: 'fase1',
                 name: 'Fase1',
                 component: Fase1
-            },
+            },{
+                path:'ProgresoResidente',
+                name:'ProgresoResidente',
+                component: ProgresoResidente
+            }
         ],
 
         component: () =>

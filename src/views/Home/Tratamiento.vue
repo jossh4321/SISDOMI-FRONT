@@ -27,94 +27,43 @@
     </v-app-bar>
     <v-sheet class="overflow-hidden"> <!--  style="position: relative;"  -->
       <v-container class="fill-height">
-        <v-card class="card">
-          <v-card-title>Fases del Tratamiento</v-card-title>
+        <v-card class="card mx-auto" width="100%">
+          <v-card-title class="justify-center" 
+          style="font-size: 35px">Fases del Tratamiento</v-card-title>
           <v-container>
             <v-row>
-              <v-col>
+              <v-col  v-for="fase in fases"
+                      :key="fase.id"
+                      xs="12"
+                      sm="6"
+                      md="6"
+                      lg="4"
+                      xl="4">
                 <v-hover v-slot="{ hover }">
                   <v-card
-                    class="pa-4 mx-auto rounded-xl"
+                    class="pa-4 mx-auto"
                     :class="{ 'on-hover': hover }"
-                    max-width="200"
-                    max-height="250"
+                    max-width="90%"
                     @click.native="abrirFase1()"
-                    style="cursor: pointer;"
-                    rounded-pill
+                    style="cursor: pointer"
                   >
                     <v-img
-                      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                      height="150px"
-                      class="pa-4 mx-auto rounded-xl"
+                      :src="fase.imagenUrl"
+                      height="200px"
+                      class="pa-4 mx-auto"
                     ></v-img>
-
-                    <v-card-title class="justify-center">Fase 1</v-card-title>
-                  </v-card>
-                </v-hover>
-              </v-col>
-
-              <v-col>
-                <v-hover v-slot="{ hover }">
-                  <v-card
-                    class="pa-4 mx-auto rounded-xl"
-                    :class="{ 'on-hover': hover }"
-                    max-width="200"
-                    max-height="250"
-                    @click.native="abrirVista()"
-                    style="cursor: pointer;"
-                    rounded-pill
-                  >
-                    <v-img
-                      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                      height="150px"
-                      class="pa-4 mx-auto rounded-xl"
-                    ></v-img>
-
-                    <v-card-title class="justify-center">Fase 2</v-card-title>
-                  </v-card>
-                </v-hover>
-              </v-col>
-
-              <v-col>
-                <v-hover v-slot="{ hover }">
-                  <v-card
-                    class="pa-4 mx-auto rounded-xl"
-                    :class="{ 'on-hover': hover }"
-                    max-width="200"
-                    max-height="250"
-                    @click.native="abrirVista()"
-                    style="cursor: pointer;"
-                    rounded-pill
-                  >
-                    <v-img
-                      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                      height="150px"
-                      class="pa-4 mx-auto rounded-xl"
-                    ></v-img>
-
-                    <v-card-title class="justify-center">Fase 3</v-card-title>
-                  </v-card>
-                </v-hover>
-              </v-col>
-
-              <v-col>
-                <v-hover v-slot="{ hover }">
-                  <v-card
-                    class="pa-4 mx-auto rounded-xl"
-                    :class="{ 'on-hover': hover }"
-                    max-width="200"
-                    max-height="250"
-                    @click.native="abrirVista()"
-                    style="cursor: pointer;"
-                    rounded-pill
-                  >
-                    <v-img
-                      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                      height="150px"
-                      class="pa-4 mx-auto rounded-xl"
-                    ></v-img>
-
-                    <v-card-title class="justify-center">Fase 4</v-card-title>
+                    <v-card-title class="justify-center">
+                          {{fase.titulo}}
+                      </v-card-title>
+                       <v-card-text style="text-align: justify">
+                  {{ fase.descripcion }}
+                </v-card-text>
+                <v-btn block class="my-button" color="success">
+                  <v-icon left dark @click.native="imprimir()">
+                    {{ fase.boton.icono }}
+                  </v-icon>
+                  {{ fase.boton.texto }}
+                </v-btn>
                   </v-card>
                 </v-hover>
               </v-col>
@@ -156,7 +105,38 @@ export default {
   data() {
     return {
       drawer: false,
-      group: null
+      group: null,
+      fases:[
+        {
+          id:1,
+          titulo: "Fase I: Acogida",
+          descripcion:"Se raliza el registro de déficit y fortalezas del niño, niña y adolescente y la evaluación preliminar de sus necesidades de atención e incidendencia.",
+          imagenUrl: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+          interfazUrl: "/dashboard/Fase1",
+          boton: { texto: "Ir a la Fase I", icono: "mdi-cloud-upload" },
+        },{
+          id:2,
+          titulo: "Fase II: Desarrollo",
+          descripcion:"se ejecuta la intervención propiamente dicha, orientada a la reparación emocional y social de los NNA y sus familias, con una duración promedio de doce meses",
+          imagenUrl: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+          interfazUrl: "/dashboard/Fase1",
+          boton: { texto: "Ir a la Fase II", icono: "mdi-cloud-upload" },
+        },{
+          id:3,
+          titulo: "Fase III: Reinsercion",
+          descripcion:"periodo previo a la salida del menor del CAR, sea para reintegrarse con su familia de origen o extensa, para integrarse a una nueva familia (adopción) o para iniciar una vida independiente dada su próxima mayoría de edad.",
+          imagenUrl: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+          interfazUrl: "/dashboard/Fase1",
+          boton: { texto: "Ir a la Fase III", icono: "mdi-cloud-upload" },
+        },{
+          id:4,
+          titulo: "Fase IV: Seguimiento",
+          descripcion:"proceso de intervención en la cual se realizara acciones de seguimiento después del egreso, a fin de contribuir con el mantenimiento de los logros alcanzados y evitar retrocesos que afecten el progreso logrado.",
+          imagenUrl: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+          interfazUrl: "/dashboard/Fase1",
+          boton: { texto: "Ir a la Fase IV", icono: "mdi-cloud-upload" },
+        }
+      ]
     };
   },
   watch: {
@@ -185,14 +165,16 @@ export default {
   background-color: white;
 }
 .on-hover:hover {
-  transform-origin: center center;
-  animation: scale 500ms ease-in-out forwards;
-  background-color: #ff695b;
-  transition: background-color 500ms ease-in-out;
+    box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    transition: height 0.3s, box-shadow 0.3s;
+    transform-origin: center center;
+    animation: scale 300ms ease-in-out forwards;
+    background-color: #d3f1ec;
+    transition: background-color 300ms ease-in-out;
 }
 @keyframes scale {
   to {
-    transform: scale(1.1);
+    transform: scale(1.01);
   }
 }
 </style>
