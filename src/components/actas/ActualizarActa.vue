@@ -184,7 +184,7 @@ import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
 export default {
  //  props:["listaActas","actaexternamiento","usuario"],
-     props:["listaActas","usuario"],
+     props:["listaActas","actaexternamientos"],
    components: {
     vueDropzone: vue2Dropzone,
   },
@@ -337,6 +337,7 @@ export default {
   validations() {
     return {
         
+actaexternamiento: {
 
                
         contenido: {
@@ -368,8 +369,9 @@ export default {
         
                 firmas:{
                   required,
-          }
-        }
+          },
+        },
+        },
   }
   }
 };
