@@ -8,30 +8,38 @@
       </v-card>
     </template>
     <template v-else>
-      <v-app-bar color="deep-purple accent-4" dense dark>
+      <v-app-bar color="primary accent-4" dense dark>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-
-        <v-toolbar-title>Tratamiento - Fase 3</v-toolbar-title>
-
+          <span> 
+            <v-chip
+              class="ma-2"
+              color="white"
+              label
+              text-color="green"
+              @click="navegarto('/dashboard/Home')"
+            >
+              <v-icon left>
+                mdi-home
+              </v-icon>
+              Menú principal
+            </v-chip>
+            > 
+            <v-chip
+              class="ma-2"
+              color="white"
+              label
+              text-color="primary"
+              @click="navegarto('/dashboard/Tratamiento')"
+            >
+              <v-icon left>
+                mdi-label
+              </v-icon>
+              Tratamiento
+            </v-chip>
+            >
+            Fase 3
+          </span>
         <v-spacer></v-spacer>
-
-        <v-btn icon>
-          <v-icon>mdi-magnify</v-icon>
-        </v-btn>
-
-        <v-menu left bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" v-on="on">
-              <v-icon>mdi-dots-vertical</v-icon>
-            </v-btn>
-          </template>
-
-          <v-list>
-            <v-list-item v-for="n in 5" :key="n" @click="() => {}">
-              <v-list-item-title>Option {{ n }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
       </v-app-bar>
 
       <v-sheet class="overflow-hidden">
@@ -336,6 +344,9 @@ export default {
         params: { idresidente: id}
       })*/
     },
+    navegarto(ruta){
+      this.$router.push(ruta)
+    }
   },
 
   computed: {}
