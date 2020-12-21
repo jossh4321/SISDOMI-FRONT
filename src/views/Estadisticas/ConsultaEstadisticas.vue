@@ -192,8 +192,7 @@ export default {
             return {
               residente: res.nombre + " " + res.apellido,
               id: res.id,
-              numeroDocumento: res.numeroDocumento,
-              progreso: res.progreso,
+              numeroDocumento: res.numeroDocumento
             };
           });
 

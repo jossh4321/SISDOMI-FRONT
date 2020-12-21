@@ -25,6 +25,7 @@
 
 <script>
 import { GChart } from "vue-google-charts";
+import axios from "axios";
 
 export default {
   name: "estadistica-progreso-residente",
@@ -32,60 +33,109 @@ export default {
     return {
       chartData: [],
       chartOptions: {
-        chart: {
-          title: "Cantidad de residente por grado académico",
-          subtitle:
-            "Total de residentes por grado académico y dividido según su modalidad",
-        },
+        //timeline: { colorByRowLabel: true },
       },
       loadingChart: true,
     };
   },
   methods: {
-    createdStadisticsFases() {
+    createdStadisticsProgressByFase() {
+      axios
+        .get(
+          "/estadisticas/residente/" +
+            this.residente.id +
+            "/area/" +
+            "educativa"
+        )
+        .then((res) => {
+          this.createdStadisticsFases(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    createdStadisticsFases(progressFaseResident) {
       let chartDataFinal = [];
 
       let chartDataFase = [
         {
           tipo: "Acogida",
           color: "#7570b3",
+          fase: 1,
         },
         {
           tipo: "Desarrollo",
           color: "#4285F4",
+          fase: 2,
         },
         {
           tipo: "Reinsercion",
           color: "#1b9e77",
+          fase: 3,
         },
         {
           tipo: "Seguimiento",
           color: "#1b9e77",
+          fase: 4,
         },
       ];
 
       let datasFase = [];
+      let initDateDocument = null;
 
-      chartDataFinal.push(["Fases", "Inicio", "Fin"]);
+      chartDataFinal.push(["Fases", "Tipo", "Inicio", "Fin"]);
 
       chartDataFase.forEach((fase) => {
         datasFase = [];
 
-        let dataQuantityFase = this.residente.progreso.find(
-          (x) => x.nombre == fase.tipo.toLowerCase()
-        );
-
         datasFase.push(fase.tipo);
 
-        if (dataQuantityFase != null) {
-          datasFase.push(new Date(dataQuantityFase.fechaingreso));
-          datasFase.push(new Date(dataQuantityFase.fechafinalizacion));
+        let progressResident = progressFaseResident.progreso.find(
+          (p) => p.fase == fase.fase
+        );
+
+        if (progressResident !== undefined) {
+          console.log(progressResident);
+          initDateDocument = new Date(progressResident.fechaingreso);
+
+          let faseResident = progressFaseResident.fases.find(
+            (f) => f.fase == progressResident.fase
+          );
+
+          faseResident.documentos.forEach((document) => {
+            if (document.tipo != undefined) {
+              datasFase.push(document.tipo);
+              datasFase.push(initDateDocument);
+
+              datasFase.push(new Date(document.fechaCreacion));
+
+              initDateDocument = new Date(document.fechaCreacion);
+            } else {
+              datasFase.push(null);
+
+              const DateNow = new Date();
+
+              datasFase.push(DateNow);
+              datasFase.push(DateNow);
+            }
+            chartDataFinal.push(datasFase);
+
+            datasFase = [];
+            datasFase.push(fase.tipo);
+          });
         } else {
-          datasFase.push(new Date());
-          datasFase.push(new Date());
+          const DateNow = new Date();
+
+          datasFase.push(fase.tipo);
+          datasFase.push(DateNow);
+          datasFase.push(DateNow);
+
+          chartDataFinal.push(datasFase);
         }
-        chartDataFinal.push(datasFase);
       });
+
+      console.log(chartDataFinal);
+
       this.chartData = chartDataFinal;
       this.loadingChart = false;
     },
@@ -99,7 +149,8 @@ export default {
     GChart,
   },
   created() {
-    this.createdStadisticsFases();
+    this.createdStadisticsProgressByFase();
+    //this.createdStadisticsFases();
   },
 };
 </script>
