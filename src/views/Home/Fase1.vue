@@ -106,8 +106,20 @@
                   </div>
                 </v-card>
               </template>
+              <template v-else-if="listaCompleta && listaResidentes.length == 0">
+                <v-alert
+                  text
+                  outlined
+                  border="left"
+                  color="deep-orange"
+                  width="97%"
+                  class="ml-3"
+                  icon="info"
+                >
+                  No se ha encontrado residentes en esta fase
+                </v-alert>
+              </template>
               <template v-else>
-
                 <v-row>
                   <v-col
                     v-for="residente in listaResidentes"
@@ -158,7 +170,6 @@
                     </v-hover>
                   </v-col>
                 </v-row>
-
               </template>
             </v-container>
           </v-card>
