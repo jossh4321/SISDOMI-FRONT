@@ -34,6 +34,9 @@ import axios from '../store/index.js';
 import ConsultaEstadisticas from '@/views/Estadisticas/ConsultaEstadisticas.vue';
 import Tratamiento from '@/views/Home/Tratamiento.vue';
 import Fase1 from '@/views/Home/Fase1.vue';
+import Fase2 from '@/views/Home/Fase2.vue';
+import Fase3 from '@/views/Home/Fase3.vue';
+import Fase4 from '@/views/Home/Fase4.vue';
 
 Vue.use(VueRouter);
 
@@ -149,6 +152,21 @@ const routes = [{
                 path: 'fase1',
                 name: 'Fase1',
                 component: Fase1
+            },
+            {
+                path: 'fase2',
+                name: 'Fase2',
+                component: Fase2
+            },
+            {
+                path: 'fase3',
+                name: 'Fase3',
+                component: Fase3
+            },
+            {
+                path: 'fase4',
+                name: 'Fase4',
+                component: Fase4
             },
         ],
 
