@@ -69,7 +69,7 @@
       <v-dialog persistent
                 v-model="dialogoactualizacion" 
                 max-width="880px">
-        <ActualizarActa v-if="dialogoactualizacion" :usuario="usuario" :listaActas="listaActas"  @close-dialog-update="closeDialogActualizar()"></ActualizarActa>
+        <ActualizarActa v-if="dialogoactualizacion" :actaexternamiento="actaexternamiento" :listaActas="listaActas"  @close-dialog-update="closeDialogActualizar()"></ActualizarActa>
 
       </v-dialog>
       <!-----><!--Hola -->
@@ -77,7 +77,7 @@
       <v-dialog persistent
                 v-model="dialogodetalle" 
                 max-width="880px">
-          <ConsultarActa :usuario="usuario" @close-dialog-detail="closeDialogDetalle()"></ConsultarActa>
+          <ConsultarActa :actaexternamiento="actaexternamiento" @close-dialog-detail="closeDialogDetalle()"></ConsultarActa>
       </v-dialog>
       <!----->
     </v-card>
@@ -99,7 +99,7 @@ export default {
     return {
       search: "",
       //obj usado para almacenar datos de usuario en la actualizacion y consulta
-      usuario:{},
+      actaexternamiento:{},
       //lsita de cabeceras de la data table
       headers: [
         {
@@ -131,7 +131,7 @@ export default {
   methods: {
     ...mapMutations(["setUsuarios","replaceUsuario"]),
     testing2(){
-        axios.get("/usuario/saludos")
+        axios.get("/actaexternamiento/saludos")
         .then(x => {
           console.log(x.data);
         }).catch(err => console.log(err));
@@ -153,7 +153,7 @@ export default {
     },
     //llamando al API para obtener los datos de un usuario especifico
     async abrirDialogoActualizar(id){
-        this.usuario = await this.loadUsuarioModificacion(id);
+        this.actaexternamiento = await this.loadUsuarioModificacion(id);
         this.dialogoactualizacion = !this.dialogoactualizacion;
     },
     async ObtenerResidente(){
@@ -167,7 +167,7 @@ export default {
     },
     // Abre
     async abrirDialogoDetalle(id){
-        this.usuario = await this.loadUsuarioDetalle(id); //Pide
+        this.actaexternamiento = await this.loadUsuarioDetalle(id); //Pide
         this.dialogodetalle = !this.dialogodetalle;
     },
     async loadUsuarioModificacion(id){
@@ -197,23 +197,23 @@ export default {
             .then(res => {
                    this.setUsuarios(res.data);
             }).catch(err => console.log(err));
-    }, async cambiarEstadoUsuario(usuario){
+    }, async cambiarEstadoUsuario(actaexternamiento){
        await this.$swal({
             title: 'Esta Seguro?',
-            text: usuario.estado=="activo"?
-                    "Se desactivara el usuario "+usuario.usuario:
-                    "Se activara el usuario "+usuario.usuario,
+            text: actaexternamiento.estado=="activo"?
+                    "Se desactivara el usuario "+actaexternamiento.actaexternamiento:
+                    "Se activara el usuario "+actaexternamiento.actaexternamiento,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: usuario.estado=="activo"?'Desactivar':'Activar',
+            confirmButtonText: actaexternamiento.estado=="activo"?'Desactivar':'Activar',
             cancelButtonText:"Cancelar"
           }).then((result) => {
             if (result.isConfirmed) {
-              var estadonuevo= usuario.estado=="activo"?
+              var estadonuevo= actaexternamiento.estado=="activo"?
                     "inactivo":"activo";
-              axios.put("/usuario/estado?id="+usuario.id+"&nuevoestado="+estadonuevo,usuario)
+              axios.put("/actaexternamiento/estado?id="+actaexternamiento.id+"&nuevoestado="+estadonuevo,actaexternamiento)
                 .then(res => {
                      this.replaceUsuario(res.data);
                      this.mensaje("success","Listo","Estado del Usuario modificado Satisfactoriamente")
@@ -229,6 +229,7 @@ export default {
     }
   },computed:{
     ...mapState(["usuarios"])
+    
   }
 };
 </script>

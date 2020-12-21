@@ -179,12 +179,12 @@
 import axios from 'axios';
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState} from "vuex";
+import { mapMutations, mapState, mapGetters} from "vuex";
 import { required, minLength,email,helpers } from 'vuelidate/lib/validators'
 import moment from 'moment'
 export default {
  //  props:["listaActas","actaexternamiento","usuario"],
-     props:["listaActas","usuario"],
+     props:["listaActas","actaexternamientos"],
    components: {
     vueDropzone: vue2Dropzone,
   },
@@ -205,23 +205,22 @@ export default {
          //imagen:{tipo:"url",modificado:"no"},            
     actaexternamiento: {
         
-         id:"", tipo:"", historialcontenido:"", creadordocumento:"", fechacreacion:"", 
-        area:"", fase:"", idresidente:"", estado:"",
+         id:"", tipo:"ActaExternamiento", historialcontenido:[], creadordocumento:"", fechacreacion:new Date().toISOString(), 
+        area:"social", fase:"3", idresidente:"", estado:"",
 
         contenido: {
 
-        responsable: "",      
-                      
+        responsable:"",                           
         entidaddisposicion:"",  
         numeroresolucion:"",  
         numerooficio:"",  
-        observaciones:"",
-        
-        firma:[]
+        observaciones:"",        
+        firmas:[]
         },
       },
     };
   },async created(){
+     console.log(this.user)
   },
   mounted(){
   },
@@ -229,7 +228,7 @@ export default {
     ...mapMutations(["setUsuarios","addUsuario","replaceUsuario"]),
     mounteddropzone(){
       var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg" };
-      this.$refs.myVueDropzone.manuallyAddFile(file, this.actaexternamiento.contenido.firma,null,null,true);      
+      this.$refs.myVueDropzone.manuallyAddFile(file, this.actaexternamiento.contenido.firmas,null,null,true);      
     },
     async actualizarUsuario(){
        this.$v.$touch();
@@ -238,13 +237,13 @@ export default {
         this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
       } else {
         console.log('no hay errores');
-        await axios.put("/actaexternamiento/update"+this.firma.tipo+"&modificado="+this.firma.modificado,this.actaexternamiento)
+        await axios.put("/actaexternamiento/update?tipo="+this.firmas.tipo+"&modificado="+this.firmas.modificado,this.actaexternamiento)
           .then(res => {
             var resultado = res.data;
             this.replaceUsuario(resultado);
             this.cerrarDialogo();
           }).catch(err => console.log(err));
-          await this.mensaje('success','listo','Usuario Actualizado Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
+          await this.mensaje('success','listo','Acta Actualizada Satisfactoriamente',"<strong>Se redirigira a la Interfaz de Gestion<strong>");
       }
     },
     resetUsuarioValidationState(){
@@ -256,13 +255,13 @@ export default {
       this.$emit("close-dialog-update");
     },
     afterSuccess(file,response){
-       this.actaexternamiento.contenido.firma = file.dataURL.split(",")[1];
-       this.$v.actaexternamiento.contenido.firma.$model = file.dataURL.split(",")[1];
-       this.firma ={ tipo: "base64", modificado:"si"};
+       this.actaexternamiento.contenido.firmas = file.dataURL.split(",")[1];
+       this.$v.actaexternamiento.contenido.firmas.$model = file.dataURL.split(",")[1];
+       this.firmas ={ tipo: "base64", modificado:"si"};
     },
     afterRemoved(file, error, xhr){
-      this.actaexternamiento.contenido.firma = "";
-       this.$v.actaexternamiento.contenido.firma.$model = "";
+      this.actaexternamiento.contenido.firmas = "";
+       this.$v.actaexternamiento.contenido.firmas.$model = "";
     }
     ,async mensaje(icono,titulo,texto,footer){
       await this.$swal({
@@ -277,6 +276,7 @@ export default {
   },
   computed:{
     ...mapState(["usuarios"]),
+    ...mapGetters(["user"]),
     verifyColor(){
         return 'red';
       },
@@ -331,38 +331,13 @@ export default {
           
       return errors
     },errorImagen(){
-      return this.$v.actaexternamiento.contenido.firma.required == false && this.$v.actaexternamiento.contenido.firma.$dirty == true ?true:false;
+      return this.$v.actaexternamiento.contenido.firmas.required == false && this.$v.actaexternamiento.contenido.firmas.$dirty == true ?true:false;
     }
   },
   validations() {
     return {
-         id:{required
-              },
-               tipo:{
-                  required
-                  },
-             historialcontenido:{
-                  required
-                  },
-           creadordocumento:{
-                  required
-                  },
-                   fechacreacion:{
-                  required
-                  },
-
-        area:{
-                  required
-                  },
-                   fase:{
-                  required
-                  },
-                   idresidente:{
-                  required
-                  },
-                   estado:{
-                  required
-                  },
+        
+actaexternamiento: {
 
                
         contenido: {
@@ -392,10 +367,11 @@ export default {
                     },
 
         
-                firma:{
+                firmas:{
                   required,
-          }
-        }
+          },
+        },
+        },
   }
   }
 };

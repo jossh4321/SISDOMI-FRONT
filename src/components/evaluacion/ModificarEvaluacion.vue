@@ -496,7 +496,7 @@
                       <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="aspectos.tipo"
-                          label="Nivel"
+                          label="Aspecto"
                           color="#009900"
                           
                         ></v-text-field>
@@ -504,7 +504,7 @@
                       <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="aspectos.descripcion"
-                          label="Observaciones"
+                          label="Descripción"
                           color="#009900"
                           
                         ></v-text-field>

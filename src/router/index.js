@@ -16,8 +16,7 @@ import GestionarIncidencias from "../views/Incidencias/GestionarIncidencias.vue"
 import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 import GestionActa from '../views/Acta/GestionarActa.vue';
 import ModificarPerfil from '../views/perfil/ModificarPerfil.vue';
-import GestionarFichaEvaluacionEducativa from '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
-import GestionarEvaluacionEducativa from '../views/Evaluacion/GestionarEvaluacion.vue';
+import GestionarFichaEvaluacionEducativa from  '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
 //Prueba
 import PruebaActa from '../views/Acta/PruebaActa.vue';
 
@@ -27,12 +26,18 @@ import GestionarPlanes from '@/views/PlanIntervencion/GestionarPlanes.vue';
 /* Rutas para la consulta de expediente */
 import GestionarExpedientes from '@/views/ExpedienteMatriz/GestionarExpedientes.vue';
 import ExpedienteResidente from '@/views/ExpedienteMatriz/ExpedienteResidente.vue';
+import ProgresoResidente from '@/views/Home/Progreso.vue'
 
-import CambiarContrasena from '@/views/CambiarContrasena/Cambiarcontrasena.vue';
 /* Importación del axios para la verificación del token */
 import axios from '../store/index.js';
 
+
 import ConsultaEstadisticas from '@/views/Estadisticas/ConsultaEstadisticas.vue';
+import Tratamiento from '@/views/Home/Tratamiento.vue';
+import Fase1 from '@/views/Home/Fase1.vue';
+import Fase2 from '@/views/Home/Fase2.vue';
+import Fase3 from '@/views/Home/Fase3.vue';
+import Fase4 from '@/views/Home/Fase4.vue';
 
 Vue.use(VueRouter);
 
@@ -123,25 +128,51 @@ const routes = [{
                 component: PruebaActa
             },
             {
-                path: 'CambiarContrasena',
-                name: 'Cambiarcontrasena',
-                component: CambiarContrasena
-            },
-            {
-                path: 'ModificarPerfil',
+                path: 'modificarPerfil',
                 name: 'Perfil',
                 component: ModificarPerfil
             },
             {
-                path: 'evaluacionEducativa',
-                name: 'GestionarFichaEvaluacionEducativa',
-                /*component: GestionarFichaEvaluacionEducativa*/
-                component: GestionarEvaluacionEducativa
+
+                path:'evaluacionEducativa',
+                name:'GestionarFichaEvaluacionEducativa',
+                component:GestionarFichaEvaluacionEducativa,
             },
             {
                 path: 'estadisticas',
                 name: 'ConsultaEstadisticas',
                 component: ConsultaEstadisticas
+
+            },
+            {
+                path: 'tratamiento',
+                name: 'Tratamiento',
+                component: Tratamiento
+            },
+            {
+                path: 'fase1',
+                name: 'Fase1',
+                component: Fase1
+            },
+            {
+                path: 'fase2',
+                name: 'Fase2',
+                component: Fase2
+            },
+            {
+                path: 'fase3',
+                name: 'Fase3',
+                component: Fase3
+            },
+            {
+                path: 'fase4',
+                name: 'Fase4',
+                component: Fase4
+            },
+            {
+                path:'ProgresoResidente',
+                name:'ProgresoResidente',
+                component: ProgresoResidente
             }
         ],
 

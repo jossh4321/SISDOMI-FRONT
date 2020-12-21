@@ -117,60 +117,87 @@
                           </v-autocomplete>
                         </v-col>
                   </v-row>
-
-                  <v-text-field
-                    v-model="fichaEvaluacion.contenido.ultimaie"
-                    label="Ultima Institucion Educacion"
-                    outlined
-                    color="#009900"
-                  ></v-text-field>
-
                   <v-row>
                         <v-col>
-                          <v-text-field
+                            <v-menu
+                                v-model="datemenu"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="290px"
+                              >
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-text-field
+                                    v-model="fichaEvaluacion.fechacreacion"
+                                    label="Fecha de Evaluación"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    color="#009900"
+                                    
+                                    
+                                  ></v-text-field>
+                                </template>
+                                <v-date-picker
+                                  v-model="fichaEvaluacion.fechacreacion"
+                                  @input="menu2 = false"
+                                  locale="es-es"
+                                ></v-date-picker>
+                            </v-menu>
+                        </v-col>
+                        <v-col>
+                            <v-text-field
+                              v-model="fichaEvaluacion.contenido.ultimaie"
+                              label="Ultima Institucion Educacion"
+                              outlined
+                              color="#009900"
+                            ></v-text-field>
+                        </v-col>
+                  </v-row>
+                  <v-row>
+                        <v-col>
+                             <v-text-field
                               v-model="fichaEvaluacion.contenido.tipoie"
                               label="Tipo de Institucion Educacion"
                               outlined
                               
                               color="#009900"
-                          ></v-text-field>
+                            ></v-text-field>
                         </v-col>
                         <v-col>
-                          <v-text-field
+                            <v-text-field
                               v-model="fichaEvaluacion.contenido.modalidad"
                               label="Modalidad"
                               outlined
-                              
                               color="#009900"
-                          ></v-text-field>
+                            ></v-text-field>
                         </v-col>
                   </v-row>
-                            
+
                   <v-row>
                         <v-col>
-                          <v-text-field
+                            <v-text-field
                               v-model="fichaEvaluacion.contenido.nivel"
                               label="Nivel"
                               outlined
                               
                               color="#009900"
-                          ></v-text-field>
+                            ></v-text-field>
                         </v-col>
                         <v-col>
-                          <v-text-field
-                            v-model="fichaEvaluacion.contenido.grado"
-                            label="Grado"
-                            outlined
-                            
-                            color="#009900"
-                          ></v-text-field>
+                            <v-text-field
+                              v-model="fichaEvaluacion.contenido.grado"
+                              label="Grado"
+                              outlined
+                              
+                              color="#009900"
+                            ></v-text-field>
                         </v-col>
                   </v-row>
-                            
-                            
-
                      <!--Botones de card -->
-                      <v-row>
+                     <v-row>
                         <v-col>
                           <v-btn block @click="cerrarDialogo()" color="primary">
                             <v-icon left>mdi-close-outline</v-icon>
@@ -495,7 +522,7 @@
                       <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="aspectos.tipo"
-                          label="Nivel"
+                          label="Aspecto"
                           color="#009900"
                           
                         ></v-text-field>
@@ -503,7 +530,7 @@
                       <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="aspectos.descripcion"
-                          label="Observaciones"
+                          label="Descripción"
                           color="#009900"
                           
                         ></v-text-field>
@@ -612,6 +639,7 @@ components:{
 },
   data(){
     return{
+      datemenu: false,
      step:1,
      dialog:false, // dialogo firma
      dialogVistaPreviaFirma: false,
@@ -644,7 +672,7 @@ components:{
      fichaEvaluacion:{
         id:"",
         tipo:"FichaEvaluacionDiagnosticoEducativo",
-        historialcontenido:"",
+        historialcontenido:[],
         creadordocumento:"",
         fechacreacion:"",
         area:"educativa",
@@ -698,7 +726,7 @@ components:{
     },
         async registrarFichaEvaluacion(){
         this.fichaEvaluacion.creadordocumento = this.user.id;
-        console.log(this.fichaEvaluacion)
+        console.log(this.fichaEvaluacion);
         await axios
           .post("/EvaluacionDiagnosticoEducativo/fichaEvaluacionDE", this.fichaEvaluacion)
           .then((res) => {
@@ -712,7 +740,7 @@ components:{
           "Ficha Diagnostico Evaluacion Educativa registrado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>",      
         );
-         location.reload();//metodo de js para refrescar la pagina
+        location.reload();
       },
        ///metodo para agregar firma residente
     guardarFirma(){
@@ -778,6 +806,7 @@ components:{
 
 }
 </script>
+
 
 <style>
 

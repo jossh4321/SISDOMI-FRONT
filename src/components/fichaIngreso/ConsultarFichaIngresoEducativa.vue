@@ -324,20 +324,8 @@
                     :key="i"
                   >
                         <v-row align="center">
-                          <v-col :cols="10" align="left">
+                          <v-col :cols="12" align="left">
                             <span>{{i | numeracionListaString("Observacion")}}  {{ observacion | extencionString}}</span>
-                          </v-col>
-                          <v-col :cols="2" align="right">
-                            <v-btn
-                                rounded
-                                color="primary"
-                                @click="eliminarObservacion(i)"
-                              >
-                                <v-icon left>
-                                  mdi-delete-forever-outline
-                                </v-icon>
-                                Borrar
-                              </v-btn>
                           </v-col>
                         </v-row>
                   </v-card>

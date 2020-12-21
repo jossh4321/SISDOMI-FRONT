@@ -3,6 +3,16 @@
     <v-card-title class="justify-center">Promover Residente: <span style="margin-left:5px;font-weight:bold">{{residente.nombre + " " + residente.apellido}}</span></v-card-title>
     <v-card style="padding: 15px 20px">
       <div class="container-user">
+        <v-card v-if="evitarPromocion()" color="#FFDFDF">
+          <v-alert
+            dense
+            outlined
+            type="error"
+            style="font-weight:bold;font-size:16px;"
+          >
+            No se puede promover al residente porque sus documentos de la fase actual no han sido completados.
+          </v-alert>
+        </v-card>
         <v-expansion-panels focusable>
           <v-expansion-panel no-gutters>
             <v-card style="border: 1px solid #c1c1c1">
@@ -109,6 +119,10 @@
                         ></v-text-field>
                       </v-col>
                     </v-row>
+                    <v-btn color="info" dark @click="abrirDialogoDetalleFase(residente.id)">
+                      <v-icon left> info </v-icon>
+                      <span>Visualizar</span>
+                    </v-btn>
                   </form>                   
               </v-expansion-panel-content>
             </v-card>
@@ -234,6 +248,14 @@
         </div>
       </v-card>
     </v-dialog>
+    <v-dialog persistent v-model="dialogofase" max-width="1000px">
+      <FasesResidente
+        :datosfase="datosfase"
+        :nombreResidente="residente.nombre +' '+ residente.apellido"
+        :dialogofase="dialogofase"
+        @close-dialog-fases="closeDialogDetalle()"
+      ></FasesResidente>
+    </v-dialog>
 
   </v-card>
 </template>
@@ -243,6 +265,7 @@ const m = moment();
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
+import FasesResidente from "@/components/residentes/FasesResidente.vue";
 import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
@@ -251,9 +274,9 @@ function esParrafo(value) {
 }
 export default {
   name: "PromoverResidente",
-  props: ["residente"],
+  props: ["residente","dialogopromover"],
   components: {
-    vueDropzone: vue2Dropzone,
+    vueDropzone: vue2Dropzone, FasesResidente
   },
   data() {
     return {      
@@ -262,6 +285,7 @@ export default {
         {value: 3, text:'Fase 3'}],
       items2:[{value: 3, text:'Fase 3'}],
       activado:false,
+      switchPromocion:false,
       progresoFase:{
         educativa:{
           documentos:[],
@@ -305,6 +329,8 @@ export default {
           "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
       },
       imagen:"",
+      datosfase:null,
+      dialogofase:false,
       dialogVistaPreviaFirma:false,
       dialog: false,
       dialog1: false,
@@ -315,6 +341,20 @@ export default {
       datemenu3: false, ///MODAL fecha finalizacion
       step: 1,
     };
+  },
+  watch:{
+    dialogopromover: async function(dialogopromover){
+      if(dialogopromover){
+        this.datosfase = await this.obtenerFase(this.residente.id);
+        console.log("datos fase obtenidos al volver a entrar");
+        console.log(this.datosfase);
+      }
+    }
+  },
+  async created(){
+    this.datosfase = await this.obtenerFase(this.residente.id);
+    console.log("datos fase obtenidos al crear");
+    console.log(this.datosfase);
   },
   methods: {
     ...mapMutations(["replaceResidente"]),
@@ -328,6 +368,24 @@ export default {
         text: texto,
         footer: footer,
       });
+    },
+    evitarPromocion(){
+      if(this.datosfase!==null){
+        console.log(this.datosfase);
+        for (let j = 0; j < this.datosfase.progreso[this.datosfase.progreso.length-1].educativa.documentos.length; j++){
+          if(this.datosfase.progreso[this.datosfase.progreso.length-1].educativa.documentos[j].estado!=="Completo"){
+            this.switchPromocion = true;
+            return true
+          }
+          console.log("ESTADO:");
+          console.log(this.datosfase.progreso[this.datosfase.progreso.length-1].educativa.documentos[j].estado);
+        }
+        this.switchPromocion = false;   
+        return false
+      }
+    },
+    closeDialogDetalle() {
+      this.dialogofase = false;
     },
     cerrarDialogo() {
       this.$emit("close-dialog-promover");
@@ -379,6 +437,7 @@ export default {
     },
     limpiar(){
       this.activado = false;
+      this.switchPromocion = false
       this.$refs.myVueDropzone.removeAllFiles();
       this.progresoResidente={
         fase:"",
@@ -413,9 +472,32 @@ export default {
       }
       
     },
+    async abrirDialogoDetalleFase(idresidente) {
+      this.dialogofase = !this.dialogofase;
+    },
+    async obtenerFase(idresidente) {
+      var fase = {};
+      await axios
+        .get("/fase/id?id=" + idresidente)
+        .then((res) => {
+          console.log(res);
+          fase = res.data;
+        })
+        .catch((err) => console.log(err));
+      console.log(fase);
+      return fase;
+    },
     async registrarDocumentoTransicionFase() {
       this.activado = true;
-      if (this.$v.progresoFase.$invalid) {
+      if(this.switchPromocion ===true){
+        this.mensaje(
+          "error",
+          "..Oops",
+          "No se puede promover al residente",
+          "<strong>Completar los documentos de su fase actual<strong>"
+        );
+      }
+      else if (this.$v.progresoFase.$invalid || this.switchPromocion ===true) {
         console.log("hay errores al modificar p llama");
         this.mensaje(
           "error",
@@ -439,7 +521,7 @@ export default {
           ]
         }else if(this.progresoFase.fase === 3){
           this.progresoResidente.fase = 3
-          this.progresoResidente.nombre = "seguimiento"
+          this.progresoResidente.nombre = "reinserción"
           this.progresoFase.educativa.documentos = [
             {tipo:"InformeEducativoFinal", estado:"Pendiente"}
           ]
@@ -509,6 +591,7 @@ export default {
   },
   computed:{
     ...mapGetters(["user"]),
+    
     errorSeleccionFase(){
       const errors = [];
       if (!this.$v.progresoFase.fase.$dirty) return errors;
@@ -536,6 +619,7 @@ export default {
       }
     },
   },
+  
   validations(){
     return{
       progresoFase:{

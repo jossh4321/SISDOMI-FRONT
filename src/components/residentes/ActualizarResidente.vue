@@ -139,13 +139,13 @@
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
                             <v-combobox
-                            v-model="telefonos.parentesco"
-                            :items="itemParentesco"
-                            label="Parentesco"                            
-                            @input="$v.telefonos.parentesco.$touch()"
+                              v-model="telefonos.parentesco"
+                              :items="itemParentesco"
+                              label="Parentesco"
+                              @input="$v.telefonos.parentesco.$touch()"
                               @blur="$v.telefonos.parentesco.$touch()"
                               :error-messages="errorParentesco"
-                          ></v-combobox>                            
+                            ></v-combobox>
                           </v-col>
                           <v-col cols="12" sm="6" md="4">
                             <v-text-field
@@ -304,16 +304,63 @@
           ><!--CONTIENE LOS STEPPERS 2 -->
           <div class="container-user">
             <form>
-              <v-text-field
-                style="margin-top:5px"
-                v-model="residente.ubigeo"
-                @input="$v.residente.ubigeo.$touch()"
-                @blur="$v.residente.ubigeo.$touch()"
-                :error-messages="errorUbigeo"
-                outlined
-                label="Ingrese el Ubigeo"
-                color="#009900"
-              ></v-text-field>
+              <h4>Ubigeo</h4>
+              <v-row>
+                <v-col>
+                  <v-autocomplete
+                    :items="this.departamentos"
+                    filled
+                    dense
+                    v-model="idDepartamento"
+                    outlined
+                    color="#009900"
+                    label="Departamento"
+                    item-text="nombreDepartamento"
+                    item-value="idDepartamento"
+                    @change="obtenerProvincias()"
+                    @input="$v.idDepartamento.$touch()"
+                    @blur="$v.idDepartamento.$touch()"
+                    :error-messages="errorDepartamento"
+                  >
+                  </v-autocomplete>
+                </v-col>
+                <v-col>
+                  <v-autocomplete
+                    :items="this.provincias"
+                    filled
+                    dense
+                    outlined
+                    color="#009900"
+                    label="Provincia"
+                    v-model="idProvincia"
+                    item-text="nombreProvincia"
+                    item-value="idProvincia"
+                    @change="obtenerDistritos()"
+                    @input="$v.idProvincia.$touch()"
+                    @blur="$v.idProvincia.$touch()"
+                    :error-messages="errorProvincia"
+                  >
+                  </v-autocomplete>
+                </v-col>
+                <v-col>
+                  <v-autocomplete
+                    :items="this.distritos"
+                    filled
+                    dense
+                    outlined
+                    color="#009900"
+                    label="Distrito"
+                    v-model="residente.ubigeo"
+                    @input="$v.residente.ubigeo.$touch()"
+                    @blur="$v.residente.ubigeo.$touch()"
+                    :error-messages="errorDistrito"
+                    item-text="nombreDistrito"
+                    item-value="idDistrito"
+                  >
+                  </v-autocomplete>
+                </v-col>
+              </v-row>
+
               <v-text-field
                 v-model="residente.juzgadoProcedencia"
                 @input="$v.residente.juzgadoProcedencia.$touch()"
@@ -670,7 +717,7 @@ import {
 } from "vuelidate/lib/validators";
 import moment from "moment";
 export default {
-  name: "DetalleResidente",
+  name: "ActualizarResidente",
   props: ["residente"],
   data() {
     return {
@@ -719,8 +766,18 @@ export default {
         { text: "Reinsercion", value: { nombre: "Desarrollo", fase: 3 } },
         { text: "Seguimiento", value: { nombre: "Desarrollo", fase: 4 } },
       ],
-      itemParentesco: [ "Madre", "Padre", "Tio(a)", "Hermano(a)"],        
+      itemParentesco: ["Madre", "Padre", "Tio(a)", "Hermano(a)"],
+      departamentos: [],
+      provincias: [],
+      distritos: [],
+      idDepartamento: "",
+      idProvincia: "",
+      idDistrito: "",
     };
+  },
+  async created() {
+    this.obtenerDistrito();
+    this.obtenerDepartamentos();
   },
   methods: {
     ...mapMutations(["replaceResidente"]),
@@ -903,6 +960,65 @@ export default {
       console.log(booleano);
       return booleano;
     },
+    async obtenerDepartamentos() {
+      await axios
+        .get("/ubigeo/allDepartamentos")
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          this.departamentos = res.data;          
+          this.obtenerProvincias();
+        })
+        .catch((err) => console.log(err));
+    },
+    async obtenerProvincias() {
+      await axios
+        .get(`/ubigeo/provincias/departamento/${this.idDepartamento}`)
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          console.log(res.data);
+          this.provincias = res.data;
+          this.obtenerDistritos();
+        })
+        .catch((err) => console.log(err));
+    },
+    async obtenerDistritos() {
+      await axios
+        .get(`/ubigeo/distritos/provincia/${this.idProvincia}`)
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          this.distritos = res.data;
+        })
+        .catch((err) => console.log(err));
+    },
+    async obtenerDistrito() {
+      await axios
+        .get(`/ubigeo/idDistrito?idDistrito=${this.residente.ubigeo}`)
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          this.distrito = res.data;
+          console.log(this.distrito);
+          this.residente.ubigeo = res.data.idDistrito;
+          this.idDepartamento = res.data.idDepartamento;
+          this.idProvincia = res.data.idProvincia;
+          this.obtenerProvincia();
+        })
+        .catch((err) => console.log(err));
+    },
+    async obtenerProvincia() {
+      await axios
+        .get(`/ubigeo/idProvincia?idProvincia=${this.idProvincia}`)
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          this.provincia = res.data;
+          console.log(this.provincia);
+        })
+        .catch((err) => console.log(err));
+    },
   },
   computed: {
     ...mapState(["residentes"]),
@@ -970,13 +1086,25 @@ export default {
         errors.push("El Lugar de Nacimiento debe tener al menos 3 caracteres");
       return errors;
     },
-    errorUbigeo() {
+    errorDepartamento() {
+      const errors = [];
+      if (!this.$v.idDepartamento.$dirty) return errors;
+      !this.$v.idDepartamento.required &&
+        errors.push("Debe seleccionar el departamento obligatoriamente");
+      return errors;
+    },
+    errorProvincia() {
+      const errors = [];
+      if (!this.$v.idProvincia.$dirty) return errors;
+      !this.$v.idProvincia.required &&
+        errors.push("Debe seleccionar la provincia obligatoriamente");
+      return errors;
+    },
+    errorDistrito() {
       const errors = [];
       if (!this.$v.residente.ubigeo.$dirty) return errors;
       !this.$v.residente.ubigeo.required &&
-        errors.push("Debe ingresar un Lugar de Nacimiento Obligatoriamente");
-      !this.$v.residente.ubigeo.minLength &&
-        errors.push("El Lugar de Nacimiento debe tener al menos 3 caracteres");
+        errors.push("Debe seleccionar el distrito obligatoriamente");
       return errors;
     },
     errorJuzgadoProcedencia() {
@@ -1048,7 +1176,7 @@ export default {
       const errors = [];
       if (!this.$v.telefonos.parentesco.$dirty) return errors;
       !this.$v.telefonos.parentesco.required &&
-        errors.push("Debe ingresar el parentesco obligatoriamente");      
+        errors.push("Debe ingresar el parentesco obligatoriamente");
       return errors;
     },
     errorTelefono() {
@@ -1129,7 +1257,6 @@ export default {
         },
         ubigeo: {
           required,
-          minLength: minLength(4),
         },
         juzgadoProcedencia: {
           required,
@@ -1154,7 +1281,7 @@ export default {
               minLength: minLength(4),
             },
             parentesco: {
-              required,              
+              required,
             },
           },
         },
@@ -1205,6 +1332,12 @@ export default {
         fechaingreso: { required },
         fechafinalizacion: { required },
         estado: { required },
+      },
+      idDepartamento: {
+        required,
+      },
+      idProvincia: {
+        required,
       },
     };
   },
