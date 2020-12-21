@@ -44,7 +44,7 @@
                     class="pa-4 mx-auto"
                     :class="{ 'on-hover': hover }"
                     max-width="90%"
-                    @click.native="abrirFase1()"
+                    @click.native="abrirFase(id)"
                     style="cursor: pointer"
                   >
                     <v-img
@@ -146,8 +146,8 @@ export default {
   },
   created() {},
   methods: {
-    abrirFase1() {
-      this.$router.push('/dashboard/Fase1')
+    abrirFase(id) {
+      this.$router.push(`/dashboard/Fase${id}`)
     },
     abrirVista() {
       console.log("llego");

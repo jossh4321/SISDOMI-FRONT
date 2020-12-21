@@ -153,13 +153,6 @@ const routes = [{
                 path: 'fase1',
                 name: 'Fase1',
                 component: Fase1
-<<<<<<< HEAD
-            },{
-                path:'ProgresoResidente',
-                name:'ProgresoResidente',
-                component: ProgresoResidente
-            }
-=======
             },
             {
                 path: 'fase2',
@@ -176,7 +169,11 @@ const routes = [{
                 name: 'Fase4',
                 component: Fase4
             },
->>>>>>> b00dc1ffe7b24f3d2e17465b1d0ddbb0ef28b577
+            {
+                path:'ProgresoResidente',
+                name:'ProgresoResidente',
+                component: ProgresoResidente
+            }
         ],
 
         component: () =>
