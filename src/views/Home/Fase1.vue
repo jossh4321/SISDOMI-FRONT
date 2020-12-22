@@ -357,17 +357,19 @@ export default {
   background-color: white;
 }
 .on-hover:hover {
-  transform-origin: center center;
-  animation: scale 500ms ease-in-out forwards;
-  background-color: #ff695b;
-  transition: background-color 500ms ease-in-out;
+   box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.5);
+    transition: height 0.3s, box-shadow 0.3s;
+    transform-origin: center center;
+    animation: scale 300ms ease-in-out forwards;
+    background-color: #d3f1ec;
+    transition: background-color 300ms ease-in-out;
 }
 .textsearch {
   background-color: #ff695b;
 }
 @keyframes scale {
   to {
-    transform: scale(1.1);
+    transform: scale(1.01);
   }
 }
 </style>
