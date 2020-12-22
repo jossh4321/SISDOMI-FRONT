@@ -15,7 +15,7 @@
           <div class="container-user">
             <form>
               <v-autocomplete
-                v-model="actaexternamiento.contenido.responsable"
+                v-model="actaexternamiento.idresidente"
                 :items="listaActas"
                 filled
                 chips
@@ -25,9 +25,9 @@
                 label="Seleccione un residente del Sistema"
                 item-text="nombre"
                 item-value="id"
-                @input="$v.actaexternamiento.contenido.responsable.$touch()"
-                @blur="$v.actaexternamiento.contenido.responsable.$touch()"
-                :error-messages="errorresponsable"
+                @input="$v.actaexternamiento.idresidente.$touch()"
+                @blur="$v.actaexternamiento.idresidente.$touch()"
+                :error-messages="erroridresidente"
               >
                 <template v-slot:selection="data">
                   <v-chip
@@ -237,6 +237,10 @@ export default {
         this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
       } else {
         console.log('no hay errores');
+
+        this.actaexternamiento.contenido.responsable = this.user.id;
+
+
         await axios.put("/actaexternamiento/update?tipo="+this.firmas.tipo+"&modificado="+this.firmas.modificado,this.actaexternamiento)
           .then(res => {
             var resultado = res.data;
@@ -281,7 +285,15 @@ export default {
         return 'red';
       },
      
-   
+    erroridresidente() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.idresidente.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.idresidente.required &&
+        errors.push("Debe ingresar el idresidente Obligatoriamente");
+
+      return errors;
+    },
    errorresponsable () {
       const errors = []
       if (!this.$v.actaexternamiento.contenido.responsable.$dirty) return errors
@@ -339,14 +351,12 @@ export default {
         
 actaexternamiento: {
 
-               
+               idresidente: {
+            required,
+          },
         contenido: {
                    
                
-              
-                 responsable:{
-                  required
-                 },               
               
                 fechacreacion:{
                   required
