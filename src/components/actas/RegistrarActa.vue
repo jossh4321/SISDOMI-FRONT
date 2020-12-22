@@ -16,7 +16,7 @@
           <div class="container-user">
             <form>
               <v-autocomplete
-                v-model="actaexternamiento.contenido.idresidente"
+                v-model="actaexternamiento.idresidente"
                 :items="listaActas"
                 filled
                 chips
@@ -26,9 +26,9 @@
                 label="Seleccione un idresidente del Sistema"
                 item-text="nombre"
                 item-value="id"
-                @input="$v.actaexternamiento.contenido.responsable.$touch()"
-                @blur="$v.actaexternamiento.contenido.responsable.$touch()"
-                :error-messages="errorresponsable"
+                @input="$v.actaexternamiento.idresidente.$touch()"
+                @blur="$v.actaexternamiento.idresidente.$touch()"
+                :error-messages="erroridresidente"
               >
                 <template v-slot:selection="data">
                   <v-chip
@@ -345,6 +345,15 @@ export default {
       return "red";
     },
 
+    erroridresidente() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.idresidente.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.idresidente.required &&
+        errors.push("Debe ingresar el idresidente Obligatoriamente");
+
+      return errors;
+    },
     errorresponsable() {
       const errors = [];
       if (!this.$v.actaexternamiento.contenido.responsable.$dirty)
@@ -420,9 +429,7 @@ idresidente: {
 
         contenido: {
          
-responsable: {
-            required,
-          },
+
           fechacreacion: {
             required,
           },
