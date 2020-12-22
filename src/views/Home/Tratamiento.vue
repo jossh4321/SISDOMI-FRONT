@@ -15,7 +15,19 @@
         </v-icon>
         Menú principal
       </v-chip>
-      > Tratamiento</span>
+      >
+      <v-chip
+        class="ma-2"
+        color="white"
+        outlined
+        pill
+      >
+        <v-icon left>
+          mdi-label
+        </v-icon>
+        Tratamiento
+      </v-chip>
+      </span>
       <v-spacer></v-spacer>
       
     </v-app-bar>

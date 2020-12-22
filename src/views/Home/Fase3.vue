@@ -37,7 +37,17 @@
               Tratamiento
             </v-chip>
             >
-            Fase 3
+            <v-chip
+              class="ma-2"
+              color="white"
+              outlined
+              pill
+            >
+              <v-icon left>
+                mdi-label
+              </v-icon>
+              Fase 3
+            </v-chip>
           </span>
         <v-spacer></v-spacer>
       </v-app-bar>
@@ -128,6 +138,16 @@
                 </v-alert>
               </template>
               <template v-else>
+                <v-row>
+                  <v-spacer></v-spacer>
+                  <v-chip
+                    color="success"
+                    dark
+                  >
+                    Se han encontrado {{ listaResidentes.length }} residentes
+                  </v-chip>
+                  <v-spacer></v-spacer>
+                </v-row>
                 <v-row>
                   <v-col
                     v-for="residente in listaResidentes"
