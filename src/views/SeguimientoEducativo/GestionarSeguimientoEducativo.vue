@@ -39,6 +39,7 @@
              :listaresidentes ="listaresidentes"
              :listaeducadores="listaeducadores"
              @close-dialog-save="closeDialogRegistrar()"
+             @cargarSeguimiento="obtenerSeguimiento()"
              >
              </RegistrarSeguimientoEducativo>
             </v-dialog>
@@ -68,7 +69,7 @@
           :listaresidentes ="listaresidentes"
           :listaeducadores="listaeducadores"
           :dialogodetalle ="dialogoactualizacion"
-          
+          @cargarSeguimiento="obtenerSeguimiento()"
 
           @close-dialog-edit="closeDialogModificar()"
         >
