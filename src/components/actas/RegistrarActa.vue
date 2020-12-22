@@ -220,7 +220,7 @@ export default {
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
       }, //utilizado en los formularios como un prop
       actaexternamiento: {
-        id: " ",
+        id: "",
         tipo: "ActaExternamiento",
         historialcontenido: [],
         creadordocumento: "",
@@ -239,13 +239,7 @@ export default {
           observaciones: "",
 
           firmas: [
-            {
-              urlfirma: "",
-              nombre: "",
-              cargo: "",
-            },
-
-
+            
           ],
         },
       },
@@ -327,12 +321,7 @@ export default {
           observaciones: "",
 
           firmas: [
-            {
-              urlfirma: "",
-              nombre: "",
-              cargo: "",
-            },
-
+            
           ],
         },
       };
