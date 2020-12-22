@@ -20,7 +20,7 @@
     </v-card-text>
     <v-card-text class="pt-0" v-if="isShowResidentsFieldProgress">
       <v-row>
-        <v-col cols="12" sm="6" md="4" lg="6" xl="6">
+        <v-col cols="12" sm="6" md="4" lg="4" xl="6">
           <v-autocomplete
             label="Nombres y apellidos del residente"
             outlined
@@ -53,6 +53,21 @@
             </template>
           </v-autocomplete>
         </v-col>
+        <v-col cols="12" sm="6" md="4" lg="4" xl="6">
+          <v-autocomplete
+            label="Área"
+            outlined
+            v-model="selectedArea"
+            :items="selectedAreas"
+            item-text="text"
+            item-value="value"
+            hide-no-data
+            hide-selected
+            return-object
+            @change="changeShowStadistic"
+          >
+          </v-autocomplete>
+        </v-col>
         <v-col
           cols="12"
           sm="6"
@@ -63,7 +78,7 @@
         >
           <v-btn
             color="primary"
-            :disabled="resident.id != '' ? false : true"
+            :disabled="isDisabledStadistic"
             @click="showStadistic"
           >
             Obtener estadísticas
@@ -72,7 +87,7 @@
       </v-row>
     </v-card-text>
     <v-card-text v-if="selectedType.value != '' && isShowStadistic">
-      <component :is="selectedType.value" :residente="resident"></component>
+      <component :is="selectedType.value" :residente="resident" :area="selectedArea.value"></component>
     </v-card-text>
   </v-card>
 </template>
@@ -132,6 +147,24 @@ export default {
       residentes: [],
       searchResident: null,
       isShowResidentsFieldProgress: false,
+      selectedAreas: [
+        {
+          text: "Educativa",
+          value: "educativa",
+        },
+        {
+          text: "Social",
+          value: "social",
+        },
+        {
+          text: "Psicológica",
+          value: "psicologica",
+        },
+      ],
+      selectedArea: {
+        text: "",
+        value: "",
+      },
     };
   },
   methods: {
@@ -162,7 +195,7 @@ export default {
     },
     changeShowStadistic() {
       this.isShowStadistic = false;
-    }
+    },
   },
   watch: {
     searchResident(value) {
@@ -192,7 +225,7 @@ export default {
             return {
               residente: res.nombre + " " + res.apellido,
               id: res.id,
-              numeroDocumento: res.numeroDocumento
+              numeroDocumento: res.numeroDocumento,
             };
           });
 
@@ -203,6 +236,13 @@ export default {
         .catch((err) => {
           console.error(err);
         });
+    },
+  },
+  computed: {
+    isDisabledStadistic() {
+      return this.resident.id != "" && this.selectedArea.text != ""
+        ? false
+        : true;
     },
   },
   components: {
