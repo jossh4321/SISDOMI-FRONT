@@ -238,6 +238,13 @@ export default {
           icon: "dashboard",
           name: "ConsultaEstadisticas",
           href: "/dashboard/estadisticas"
+        },
+        {
+          title: "Hoja de Productividad",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarHojaProductividad",
+          href: "/dashboard/hojaProductividad"
         }
       ],
       scrollSettings: {
