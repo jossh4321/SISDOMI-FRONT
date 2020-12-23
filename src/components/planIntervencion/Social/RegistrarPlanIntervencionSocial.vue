@@ -328,7 +328,7 @@ export default {
         id: "",
         tipo: "PlanIntervencionIndividualSocial",
         historialcontenido: [],
-        fechacreacion: new Date(),
+        fechacreacion: null,
         area: "social",
         idresidente: "",
         fase: "",

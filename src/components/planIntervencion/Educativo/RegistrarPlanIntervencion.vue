@@ -376,11 +376,11 @@ export default {
         id: "",
         tipo: "PlanIntervencionIndividualEducativo",
         historialcontenido: [],
-        fechacreacion: new Date(),
+        fechacreacion: null,
         area: "educativa",
         idresidente: "",
         fase: "",
-        estado: "creado",
+        estado: "creado", 
         creadordocumento: "",
         contenido: {
           car: "",

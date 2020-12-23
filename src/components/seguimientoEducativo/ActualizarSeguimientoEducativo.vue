@@ -71,36 +71,6 @@
                   </v-autocomplete>
                   
 
-                            <v-menu
-                                v-model="datemenu"
-                                :close-on-content-click="false"
-                                :nudge-right="40"
-                                transition="scale-transition"
-                                offset-y
-                                min-width="290px"
-                              >
-                                <template v-slot:activator="{ on, attrs }">
-                                  <v-text-field
-                                    v-model="seguimiento.fechacreacion"
-                                    label="Fecha de Evaluación"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    color="#009900"
-                                    @input="$v.seguimiento.fechacreacion.$touch()"
-                                    @blur="$v.seguimiento.fechacreacion.$touch()"
-                                    :error-messages="errorFechaCreacion"
-
-                                    
-                                  ></v-text-field>
-                                </template>
-                                <v-date-picker
-                                  v-model="seguimiento.fechacreacion"
-                                  @input="menu2 = false"
-                                  locale="es-es"
-                                ></v-date-picker>
-                              </v-menu>
                                  <v-select
                           label="Modalidad"
                           v-model="seguimiento.contenido.modalidad"
@@ -901,27 +871,6 @@ export default {
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
     },
-    //errorEducador() {
-   ///   const errors = [];
-   ///   if (!this.$v.seguimiento.creadordocumento.$dirty) return errors;
-   ///   !this.$v.seguimiento.creadordocumento.required &&
-    //    errors.push("Debe seleccionar un educador obligatoriamente");
-   //   return errors;
-   // },
-     errorFechaCreacion() {
-      const errors = [];
-      if (!this.$v.seguimiento.fechacreacion.$dirty) return errors;
-      !this.$v.seguimiento.fechacreacion.required &&
-        errors.push("Debe Ingresar una Fecha de Creacion Obligatoriamente");
-      //validating whether the user are an adult
-      //var dateselected = new Date(this.seguimiento.fechacreacion);
-      //var maxdate = new Date();
-      //maxdate.setFullYear(maxdate.getFullYear() - 1);
-      //!(dateselected.getTime() <= maxdate.getTime()) &&
-       // errors.push("La fecha de creacion no debe superar 1 año ");
-
-      return errors;
-    },
    errorModalidad() {
      const errors = [];
         if (!this.$v.seguimiento.contenido.modalidad.$dirty) return errors;
@@ -1037,10 +986,7 @@ export default {
       historialcontenido:[],
       creadordocumento:{
           //required
-                  },
-      fechacreacion:{
-          required,
-                  },
+                  },      
       idresidente:{
           required,
                   },
