@@ -16,19 +16,19 @@
           <div class="container-user">
             <form>
               <v-autocomplete
-                v-model="actaexternamiento.contenido.responsable"
+                v-model="actaexternamiento.idresidente"
                 :items="listaActas"
                 filled
                 chips
                 dense
                 outlined
                 color="#009900"
-                label="Seleccione un responsable del Sistema"
+                label="Seleccione un idresidente del Sistema"
                 item-text="nombre"
                 item-value="id"
-                @input="$v.actaexternamiento.contenido.responsable.$touch()"
-                @blur="$v.actaexternamiento.contenido.responsable.$touch()"
-                :error-messages="errorresponsable"
+                @input="$v.actaexternamiento.idresidente.$touch()"
+                @blur="$v.actaexternamiento.idresidente.$touch()"
+                :error-messages="erroridresidente"
               >
                 <template v-slot:selection="data">
                   <v-chip
@@ -238,7 +238,9 @@ export default {
           numerooficio: "",
           observaciones: "",
 
-          firmas: [],
+          firmas: [
+            
+          ],
         },
       },
     };
@@ -261,20 +263,15 @@ export default {
       } else {
         console.log("no hay errores");
         console.log(this.actaexternamiento.contenido.firmas)
-        this.actaexternamiento.contenido.firmas = this.actaexternamiento.contenido.firmas.map(
-          function(val) {
-            return {
-              urlFirma: "val",
-              nombre: "",
-              cargo: "",
-            }
-          }
-        );
+        this.actaexternamiento.contenido.responsable = this.user.id;
           await axios
             .post("/actaexternamiento/register", this.actaexternamiento)
             .then((res) => {
               console.log(this.actaexternamiento);
-              this.actaexternamiento = res.data;
+             
+              this.actaexternamiento.contenido.firmas.urlfirma = res.data;
+              this.actaexternamiento.contenido.firmas.nombre = this.user.actaexternamiento;
+              this.actaexternamiento.contenido.firmas.cargo = this.user.rol.id;
               this.addUsuario(this.actaexternamiento);
               this.cerrarDialogo();
             })
@@ -323,7 +320,9 @@ export default {
           numerooficio: "",
           observaciones: "",
 
-          firmas: [],
+          firmas: [
+            
+          ],
         },
       };
     },
@@ -335,6 +334,15 @@ export default {
       return "red";
     },
 
+    erroridresidente() {
+      const errors = [];
+      if (!this.$v.actaexternamiento.idresidente.$dirty)
+        return errors;
+      !this.$v.actaexternamiento.idresidente.required &&
+        errors.push("Debe ingresar el idresidente Obligatoriamente");
+
+      return errors;
+    },
     errorresponsable() {
       const errors = [];
       if (!this.$v.actaexternamiento.contenido.responsable.$dirty)
@@ -403,10 +411,13 @@ export default {
   validations() {
     return {
       actaexternamiento: {
-        contenido: {
-          responsable: {
+
+idresidente: {
             required,
           },
+
+        contenido: {
+         
 
           fechacreacion: {
             required,

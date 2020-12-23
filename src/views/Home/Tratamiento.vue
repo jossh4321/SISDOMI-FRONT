@@ -1,30 +1,37 @@
 <template>
   <div>
-    <v-app-bar color="deep-purple accent-4" dense dark>
+    <v-app-bar color="primary" dense dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Tratamiento</v-toolbar-title>
-
+      <span> 
+      <v-chip
+        class="ma-2"
+        color="white"
+        label
+        text-color="green"
+        @click="navegarto('/dashboard/Home')"
+      >
+        <v-icon left>
+          mdi-home
+        </v-icon>
+        Menú principal
+      </v-chip>
+      >
+      <v-chip
+        class="ma-2"
+        color="white"
+        outlined
+        pill
+      >
+        <v-icon left>
+          mdi-label
+        </v-icon>
+        Tratamiento
+      </v-chip>
+      </span>
       <v-spacer></v-spacer>
-
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-
-      <v-menu left bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn>
-        </template>
-
-        <v-list>
-          <v-list-item v-for="n in 5" :key="n" @click="() => {}">
-            <v-list-item-title>Option {{ n }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      
     </v-app-bar>
+
     <v-sheet class="overflow-hidden"> <!--  style="position: relative;"  -->
       <v-container class="fill-height">
         <v-card class="card mx-auto" width="100%">
@@ -106,6 +113,19 @@ export default {
     return {
       drawer: false,
       group: null,
+      itemsNavegacion: [
+        {
+          text: 'Menú principal',
+          disabled: false,
+          href: '/dashboard/Home',
+          style: 'font-size: 25px'
+        },
+        {
+          text: 'Tratamiento',
+          disabled: true,
+          href: '/dashboard/Tratamiento',
+        },
+      ],
       fases:[
         {
           id:1,
@@ -151,6 +171,9 @@ export default {
     },
     abrirVista() {
       console.log("llego");
+    },
+    navegarto(ruta){
+      this.$router.push(ruta)
     }
   },
 

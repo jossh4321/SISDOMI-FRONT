@@ -828,7 +828,7 @@ methods:{
           "Informe Seguimiento educativo registrado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>",      
         );
-         location.reload();//metodo de js para refrescar la pagina
+        this.$emit("cargarSeguimiento");
       }
       
     },
