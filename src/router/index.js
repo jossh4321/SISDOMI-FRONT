@@ -21,6 +21,9 @@ import GestionarHojaProductividad from  '../views/HojaProductividad/GestionarHoj
 //Prueba
 import PruebaActa from '../views/Acta/PruebaActa.vue';
 
+//Cambiar Contrasena
+import CambiarContrasena from '../views/CambiarContrasena/Cambiarcontrasena.vue';
+
 /* Rutas de sebas, fede, jaime y angello */
 import GestionarPlanes from '@/views/PlanIntervencion/GestionarPlanes.vue';
 
@@ -169,6 +172,11 @@ const routes = [{
                 path: 'fase4',
                 name: 'Fase4',
                 component: Fase4
+            },
+            {
+                path: 'CambiarContrasena',
+                name: 'cambiarContrasena',
+                component: CambiarContrasena
             },
             {
                 path:'ProgresoResidente',
