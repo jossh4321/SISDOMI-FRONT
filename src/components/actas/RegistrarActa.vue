@@ -67,41 +67,6 @@
                   </template>
                 </template>
               </v-autocomplete>
-
-              <v-menu
-                v-model="datemenu"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="actaexternamiento.contenido.fechacreacion"
-                    label="Ingrese fecha creacion"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    @input="
-                      $v.actaexternamiento.contenido.fechacreacion.$touch()
-                    "
-                    @blur="
-                      $v.actaexternamiento.contenido.fechacreacion.$touch()
-                    "
-                    :error-messages="errorfechacreacion"
-                    color="#009900"
-                    outlined
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="actaexternamiento.contenido.fechacreacion"
-                  @input="datemenu = false"
-                  locale="es-es"
-                ></v-date-picker>
-              </v-menu>
-
               <v-text-field
                 v-model="actaexternamiento.contenido.entidaddisposicion"
                 label="Ingrese nueva entidad disposicion"
@@ -224,7 +189,7 @@ export default {
         tipo: "ActaExternamiento",
         historialcontenido: [],
         creadordocumento: "",
-        fechacreacion: new Date().toISOString(),
+        fechacreacion: null,
         area: "social",
         fase: "3",
         idresidente: "",
@@ -351,20 +316,7 @@ export default {
         errors.push("Debe ingresar el responsable Obligatoriamente");
 
       return errors;
-    },
-    errorfechacreacion() {
-      const errors = [];
-      if (!this.$v.actaexternamiento.contenido.fechacreacion.$dirty)
-        return errors;
-      !this.$v.actaexternamiento.contenido.fechacreacion.required &&
-        errors.push("Debe Ingresar una Fecha de Creacion Obligatoriamente");
-
-      var dateselected = new Date(this.actaexternamiento.fechacreacion);
-      var maxdate = new Date();
-      maxdate.setFullYear(maxdate.getFullYear());
-
-      return errors;
-    },
+    },    
     errorentidaddisposicion() {
       const errors = [];
       if (!this.$v.actaexternamiento.contenido.entidaddisposicion.$dirty)
@@ -416,12 +368,7 @@ idresidente: {
             required,
           },
 
-        contenido: {
-         
-
-          fechacreacion: {
-            required,
-          },
+        contenido: {        
           entidaddisposicion: {
             required,
           },

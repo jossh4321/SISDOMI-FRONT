@@ -110,34 +110,7 @@
                                   </v-list-item-content>
                                 </template>
                               </template>
-                            </v-autocomplete>
-                            <v-menu
-                                v-model="datemenu"
-                                :close-on-content-click="false"
-                                :nudge-right="40"
-                                transition="scale-transition"
-                                offset-y
-                                min-width="290px"
-                              >
-                                <template v-slot:activator="{ on, attrs }">
-                                  <v-text-field
-                                    v-model="fichaEvaluacion.fechacreacion"
-                                    label="Fecha de Evaluación"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    color="#009900"
-                                    
-                                    
-                                  ></v-text-field>
-                                </template>
-                                <v-date-picker
-                                  v-model="fichaEvaluacion.fechacreacion"
-                                  @input="menu2 = false"
-                                  locale="es-es"
-                                ></v-date-picker>
-                              </v-menu>
+                            </v-autocomplete>                            
                              <v-text-field
                               v-model="fichaEvaluacion.contenido.ultimaie"
                               label="Ultima Institucion Educacion"
@@ -652,7 +625,7 @@ components:{
         tipo:"FichaEvaluacionDiagnosticoEducativo",
         historialcontenido:[],
         creadordocumento:"",
-        fechacreacion:"",
+        fechacreacion:null,
         area:"educativa",
         fase:"1",
         estado:"creacion",

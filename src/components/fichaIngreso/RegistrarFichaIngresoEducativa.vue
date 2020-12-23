@@ -602,7 +602,7 @@ export default {
             tipo: "FichaEducativaIngreso",
             historialcontenido: [],
             creadordocumento: "",
-            fechacreacion: "",
+            fechacreacion: null,
             area: "educativa",
             fase: "1",
             idresidente: "",
@@ -698,8 +698,7 @@ export default {
               nombre: this.user.usuario,
               cargo: this.user.rol.nombre
             };
-            this.fichaIngreso.creadordocumento = this.user.id;
-            this.fichaIngreso.fechacreacion = new Date().toISOString();
+            this.fichaIngreso.creadordocumento = this.user.id;            
             this.fichaIngreso.contenido.ieprocedencia.documentosEscolares = await this.registrarDocumentosEscolares();
             //fichaeducativaingreso
             await axios
@@ -782,7 +781,7 @@ export default {
                 tipo: "FichaEducativaIngreso",
                 historialcontenido: [],
                 creadordocumento: "",
-                fechacreacion: "",
+                fechacreacion: null,
                 area: "educativa",
                 fase: "acogida",
                 idresidente: "",

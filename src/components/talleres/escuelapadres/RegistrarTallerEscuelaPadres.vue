@@ -519,7 +519,7 @@ export default {
       tallerescuelapadres:{
         creadordocumento: "",
         tipo: "TallerEscuelaPadres",
-        fechacreacion: new Date(),
+        fechacreacion: null,
         area: "social",
         fase: "2",
         titulo: "",

@@ -501,7 +501,7 @@ export default {
         tipo: "PlanIntervencionIndividualPsicologico",
         historialcontenido: [],
         creadordocumento: "",
-        fechacreacion: new Date(),
+        fechacreacion: null,
         area: "psicologica",
         fase: "",
         estado: "creado",
