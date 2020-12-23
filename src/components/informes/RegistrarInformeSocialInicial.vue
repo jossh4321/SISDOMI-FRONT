@@ -825,7 +825,7 @@ export default {
         tipo: "InformeSocialInicial",
         historialcontenido: [],
         creadordocumento: "",
-        fechacreacion: "",
+        fechacreacion: null,
         area: "social",
         fase: "1",
         idresidente: "",
@@ -920,8 +920,7 @@ export default {
               console.log(resi);
               var info = {
                 id: res.data.id,
-                tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-                fechacreacion: res.data.fechacreacion.split("T")[0],
+                tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),                
                 codigodocumento: res.data.contenido.codigodocumento,
                 nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
               };

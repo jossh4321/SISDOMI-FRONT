@@ -64,34 +64,7 @@
                     </template>
                   </template>
                 </v-autocomplete>
-                <v-menu
-                  v-model="datemenu"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="informe.fechacreacion"
-                      label="Fecha de Evaluación"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      color="#009900"
-                      @input="$v.informe.fechacreacion.$touch()"
-                      @blur="$v.informe.fechacreacion.$touch()"
-                      :error-messages="errorFechaEvaluacion"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="informe.fechacreacion"
-                    @input="menu2 = false"
-                    locale="es-es"
-                  ></v-date-picker>
-                </v-menu>
+                
                 <v-textarea
                   v-model="informe.contenido.antecedentes"
                   label="Antecedentes"
@@ -412,6 +385,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
+import { mapGetters } from "vuex";
 function esParrafo(value) {
   return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
@@ -460,8 +434,8 @@ export default {
         id: "",
         tipo: "",
         historialcontenido: [],
-        creadordocumento: "5f9e4cdae4655cf92eaa4d5b",
-        fechacreacion: "",
+        creadordocumento: "5f9e4cdae4655cf92eaa4d5b",  
+        fechacreacion: null,
         area: "social",
         fase: "2",
         idresidente: "",
@@ -509,6 +483,7 @@ export default {
       console.log(this.informe.contenido.anexos);
     },
     async registrarInforme() {
+      this.informe.creadordocumento = this.user.id;
       await this.sendPDFFiles();
       if (this.titulo === "Registrar Informe Social Evolutivo") {
         this.informe.tipo = "InformeSocialEvolutivo";
@@ -539,8 +514,7 @@ export default {
             console.log(resi);
             var info = {
               id: res.data.id,
-              tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-              fechacreacion: res.data.fechacreacion.split("T")[0],
+              tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),              
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
@@ -642,7 +616,7 @@ export default {
         tipo: "",
         historialcontenido: [],
         creadordocumento: "",
-        fechacreacion: "",
+        fechacreacion: null,
         area: "social",
         fase: "acogida",
         idresidente: "",
@@ -660,6 +634,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(["user"]),
     verifyColor() {
       return "red";
     },
@@ -696,20 +671,7 @@ export default {
       !this.$v.informe.contenido.diagnosticosocial.esParrafo &&
         errors.push("El diagnostico social no debe contener caracteres especiales");
       return errors;
-    },
-    errorFechaEvaluacion() {
-      const errors = [];
-      if (!this.$v.informe.fechacreacion.$dirty) return errors;
-      !this.$v.informe.fechacreacion.required &&
-        errors.push("Debe ingresar la fecha de evaluación obligatoriamente");
-      //validating whether the user are an adult
-      var dateselected = new Date(this.informe.fechacreacion);
-      var maxdate = new Date();
-      !(dateselected.getTime() < maxdate.getTime()) &&
-        errors.push("La fecha no debe ser mayor a la actual");
-
-      return errors;
-    },
+    },    
     errorRecomendacion() {
       const errors = [];
       if (!this.$v.recomendacion.$dirty) return errors;
@@ -761,10 +723,7 @@ export default {
       informe: {
         idresidente: {
           required,
-        },
-        fechacreacion: {
-          required,
-        },
+        },        
         contenido: {
           antecedentes: {
             required,

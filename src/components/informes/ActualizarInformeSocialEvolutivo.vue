@@ -62,35 +62,7 @@
                       </v-list-item-content>
                     </template>
                   </template>
-                </v-autocomplete>
-                <v-menu
-                  v-model="datemenu"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="informe.fechacreacion"
-                      label="Fecha de Evaluación"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      color="#009900"
-                      @input="$v.informe.fechacreacion.$touch()"
-                      @blur="$v.informe.fechacreacion.$touch()"
-                      :error-messages="errorFechaEvaluacion"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="informe.fechacreacion"
-                    @input="menu2 = false"
-                    locale="es-es"
-                  ></v-date-picker>
-                </v-menu>
+                </v-autocomplete>                
                 <v-textarea
                   v-model="informe.contenido.antecedentes"
                   label="Antecedentes"
@@ -602,7 +574,6 @@ export default {
             var info = {
               id: res.data.id,
               tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-              fechacreacion: res.data.fechacreacion.split("T")[0],
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
@@ -708,28 +679,7 @@ export default {
     },
     afterRemoved2(file, error, xhr) {
       this.urlfirma = "";
-    },
-    limpiarInforme() {
-      return {
-        tipo: "",
-        historialcontenido: [],
-        creadordocumento: "",
-        fechacreacion: "",
-        area: "social",
-        fase: "acogida",
-        idresidente: "",
-        estado: "creado",
-        contenido: {
-          antecedentes: "",
-          situacionactual: "",
-          diagnosticosocial: "",
-          recomendaciones: [],
-          anexos: [],
-          firmas: [],
-          codigodocumento: "",
-        },
-      };
-    },
+    },    
   },
   computed: {
     verifyColor() {
@@ -768,20 +718,7 @@ export default {
       !this.$v.informe.contenido.diagnosticosocial.esParrafo &&
         errors.push("El diagnostico social no debe contener caracteres especiales");
       return errors;
-    },
-    errorFechaEvaluacion() {
-      const errors = [];
-      if (!this.$v.informe.fechacreacion.$dirty) return errors;
-      !this.$v.informe.fechacreacion.required &&
-        errors.push("Debe ingresar la fecha de evaluación obligatoriamente");
-      //validating whether the user are an adult
-      var dateselected = new Date(this.informe.fechacreacion);
-      var maxdate = new Date();
-      !(dateselected.getTime() < maxdate.getTime()) &&
-        errors.push("La fecha no debe ser mayor a la actual");
-
-      return errors;
-    },
+    },    
     errorRecomendacion() {
       const errors = [];
       if (!this.$v.recomendacion.$dirty) return errors;
