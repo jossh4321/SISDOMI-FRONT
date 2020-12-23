@@ -65,7 +65,7 @@
                 </template>
               </v-autocomplete>
 
-              <v-menu
+              <!-- <v-menu
                 v-model="datemenu"
                 :close-on-content-click="false"
                 :nudge-right="40"
@@ -97,7 +97,7 @@
                   @input="datemenu = false"
                   locale="es-es"
                 ></v-date-picker>
-              </v-menu>
+              </v-menu> -->
 
               <v-text-field
                 v-model="actaexternamiento.contenido.entidaddisposicion"
@@ -149,14 +149,14 @@
                 color="#009900"
               ></v-text-field>
 
-              <!-- <div>
+             <div>
               <vue-dropzone ref="myVueDropzone"
             @vdropzone-success="afterSuccess"
             @vdropzone-removed-file="afterRemoved"
             @vdropzone-mounted="mounteddropzone"
             id="dropzone" :options="dropzoneOptions">
             </vue-dropzone>
-          </div> -->
+          </div>  
 
               <v-divider class="divider-custom"></v-divider>
               <v-row>
@@ -232,7 +232,7 @@ export default {
   },
   created() {
     console.log(this.actaexternamiento);
-    this.actaexternamiento.fechacreacion = this.actaexternamiento.fechacreacion.split( "T" )
+    
   },
   mounted() {},
   methods: {
@@ -397,9 +397,7 @@ export default {
         idresidente: {
           required,
         },
-        fechacreacion: {
-          required,
-        },
+        
         contenido: {
           entidaddisposicion: {
             required,

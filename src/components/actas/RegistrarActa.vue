@@ -68,7 +68,7 @@
                 </template>
               </v-autocomplete>
 
-              <v-menu
+             <!--  <v-menu
                 v-model="datemenu"
                 :close-on-content-click="false"
                 :nudge-right="40"
@@ -100,7 +100,7 @@
                   @input="datemenu = false"
                   locale="es-es"
                 ></v-date-picker>
-              </v-menu>
+              </v-menu> -->
 
               <v-text-field
                 v-model="actaexternamiento.contenido.entidaddisposicion"
@@ -238,8 +238,7 @@ export default {
           numerooficio: "",
           observaciones: "",
 
-          firmas: [
-            
+          firmas: [         
           ],
         },
       },
@@ -416,12 +415,12 @@ idresidente: {
             required,
           },
 
+         
+
         contenido: {
          
 
-          fechacreacion: {
-            required,
-          },
+         
           entidaddisposicion: {
             required,
           },
