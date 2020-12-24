@@ -337,19 +337,21 @@ export default {
     };
   },
   async created() {
+    var miruta = "/residente/progreso/" + this.$route.params.id;
     await axios
         .get("/residente/all/fase/1")
         .then(res => {
             this.residentesFase = res.data;
-            console.log(res.data);
+            //console.log(res.data);
         })
         .catch((err) => console.log(err));
 
     await axios
-      .get("/residente/progreso/5f9f182cba5ac935cc3fe6f5")
+      .get(miruta)
       .then((res) => {
+        
         this.residente = res.data;
-        console.log(this.residente);
+        //console.log(this.residente);
       })
       .catch((err) => console.log(err));
 
