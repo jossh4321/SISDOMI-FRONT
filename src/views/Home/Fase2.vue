@@ -432,12 +432,8 @@ export default {
       this.$store.commit("toggleDrawer");
     },
     abrirProgresoFase2(id) {
-      console.log("te llevo al residente con id: " + id)
-      /*poner la ruta de colombo
-      this.$router.push({
-        name: '/dashboard/Fase1',
-        params: { idresidente: id}
-      })*/
+      var rutacompleta = "/dashboard/ProgresoResidente/" + id;
+      this.$router.push(rutacompleta);
     },
     navegarto(ruta){
       this.$router.push(ruta)

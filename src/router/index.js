@@ -173,14 +173,15 @@ const routes = [{
                 component: Fase4
             },
             {
-                path: 'CambiarContrasena',
+                   path: 'CambiarContrasena',
                 name: 'cambiarContrasena',
                 component: CambiarContrasena
             },
             {
-                path:'ProgresoResidente',
+                path:'ProgresoResidente/:id',
                 name:'ProgresoResidente',
-                component: ProgresoResidente
+                component: ProgresoResidente,
+                params: true
             }
         ],
 
