@@ -35,9 +35,48 @@
           v-for="(fase, i) in residente.fases.progreso"
           :key="i"
         >
-          <v-expansion-panel-header>{{
-            fases[i].titulo
-          }}</v-expansion-panel-header>
+          <v-expansion-panel-header>
+              <v-row>
+                  <v-col xs="12" sm="8"   md="8" lg="8" xl="8">
+                    <div class="card-item">
+                      <span>{{fases[i].titulo}}</span>
+                    </div>
+                  </v-col>
+                  <v-col xs="12" sm="4"   md="4" lg="4" xl="4" padding="auto">
+                    <template v-if="estadoFase(fase) == 'superada'">
+                      <v-card class="fase-superada">
+                        <v-icon color="#003300">
+                          mdi-check-decagram
+                        </v-icon>
+                        <span class="justify-center">
+                          Superada
+                        </span>
+                      </v-card>
+                    </template>
+                    <template v-else-if="estadoFase(fase) == 'actual'">
+                      <v-card class="fase-actual">
+                        <v-icon color="#000033">
+                          mdi-information
+                        </v-icon>
+                        <span class="justify-center">
+                          Actual
+                        </span>
+                      </v-card>
+                    </template>
+                    <template v-else>
+                      <v-card class="fase-proxima">
+                         <v-icon color="#331a00">
+                            mdi-alert-decagram
+                          </v-icon>
+                        <span class="justify-center">
+                          Proxima
+                        </span>
+                      </v-card>
+                    </template>
+                  
+                  </v-col>
+                </v-row>
+          </v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-card style="margin: 2%">
               <v-card-title class="justify-center"
@@ -73,7 +112,7 @@
                           </v-col>
                           <v-col cols="3">
                             <v-btn color="info" rounded block>
-                              <v-icon left> mdi-edit </v-icon>
+                              <v-icon left> mdi-information</v-icon>
                               Ver</v-btn
                             >
                           </v-col>
@@ -81,8 +120,9 @@
                         <template v-else>
                           <v-col cols="6" >
                             <v-btn color="success" block rounded>
-                              <v-icon left> mdi-edit </v-icon>
-                              Registrar</v-btn
+                              <v-icon left> mdi-book-plus </v-icon>
+                                <span>Registrar</span>
+                              </v-btn
                             >
                           </v-col>
                         </template>
@@ -120,16 +160,17 @@
                           </v-col>
                           <v-col cols="3">
                             <v-btn color="info" rounded block>
-                              <v-icon left> mdi-edit </v-icon>
+                              <v-icon left> mdi-information</v-icon>
                               Ver</v-btn
                             >
                           </v-col>
                         </template>
                         <template v-else>
                           <v-col cols="6" >
-                            <v-btn color="success" block rounded>
-                              <v-icon left> mdi-edit </v-icon>
-                              Registrar</v-btn
+                             <v-btn color="success" block rounded>
+                              <v-icon left> mdi-book-plus </v-icon>
+                                <span>Registrar</span>
+                              </v-btn
                             >
                           </v-col>
                         </template>
@@ -170,16 +211,17 @@
                           </v-col>
                           <v-col cols="3">
                             <v-btn color="info" rounded block>
-                              <v-icon left> mdi-edit </v-icon>
+                              <v-icon left> mdi-information</v-icon>
                               Ver</v-btn
                             >
                           </v-col>
                         </template>
                         <template v-else>
                           <v-col cols="6" >
-                            <v-btn color="success" block rounded>
-                              <v-icon left> mdi-edit </v-icon>
-                              Registrar</v-btn
+                             <v-btn color="success" block rounded>
+                              <v-icon left> mdi-book-plus </v-icon>
+                                <span>Registrar</span>
+                              </v-btn
                             >
                           </v-col>
                         </template>
@@ -313,14 +355,63 @@ export default {
 
 
   },
-  methods: {},
+  methods: {
+     estadoFase(fase){
+            var faseActual = this.residente.progreso.length;
+            if(fase.fase<faseActual){
+                //faseSuperada
+                return 'superada';
+            }else if(fase.fase == faseActual){
+                //faseActual
+                return 'actual';
+            }else{
+                //fase proxima
+                return 'proxima';
+            }
+        }
+  },
+  computed:{
+    
+  },
+  filters:{
+  }
 };
 </script>
 <style scoped>
 .card-item {
-  border: 2.5px solid #bbb;
-  border-radius: 5px;
   padding: 7px;
   margin: 5px;
+  border: none;
+  border-radius: none;
+}
+.fase-superada{
+  border: 2.6px solid #003300;
+  border-radius: 20px;
+  padding: 7px;
+  width: 90%;
+  color:	 #003300;
+  font-weight: bold;
+  text-align: center;
+  background-color: #00b300;
+}
+.fase-actual{
+  border: 2.6px solid #000033;
+  border-radius: 20px;
+  padding: 7px;
+  width: 90%;
+  color:	 #000033;
+  font-weight: bold;
+  text-align: center;
+  background-color: #1a1aff;
+}
+.fase-proxima{
+  border: 2.6px solid #331a00;
+  border-radius: 20px;
+  padding: 7px;
+  width: 90%;
+  color:	 #331a00;
+  font-weight: bold;
+  text-align: center;
+  background-color: #ffff00;
 }
 </style>
