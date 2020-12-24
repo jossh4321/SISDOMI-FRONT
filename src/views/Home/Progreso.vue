@@ -1,6 +1,16 @@
 <template >
-    <v-card v-if="residente != ''" height="inherit">
-
+    <div>
+      <template v-if="residente == ''">
+      <v-card elevation="3" outlined class="card" height="700px"
+       style="text-align: center; height: 700px; padding-top: 30px;">
+        <div class="progress">
+          <v-progress-circular size="80" width="10" color="red" indeterminate></v-progress-circular>
+        </div>
+        <v-card-title class="justify-center" style="margin-top:20px;color:red">Cargando Datos...</v-card-title>
+      </v-card>
+    </template>
+    <template v-else>
+    
          <v-app-bar
       color="deep-purple"
       dark
@@ -11,49 +21,11 @@
       
     </v-app-bar>
 
-    <v-navigation-drawer
-      v-model="drawer"
-      absolute
-      temporary
-    >
-      <v-list
-        nav
-        dense
-      >
-        <v-list-item-group
-          active-class="deep-purple--text text--accent-4"
-        >
-           <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="title">
-                Lista de Residentes
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                Actualmente en la fase I
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
+      <v-sheet class="overflow-hidden">
+        <v-container class="fill-height">
+          <v-card class="card">
 
-      <v-divider></v-divider>
-        <v-list-item
-          v-for="residente in residentesFase"
-          :key="residente.id"
-          link
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-account-multiple</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>{{ residente.nombre }} {{residente.apellido}}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        </v-list-item-group>
-      </v-list>
-      
-    </v-navigation-drawer>
-    <v-card height="inherit">
-         <v-card-title class="justify-center"
+              <v-card-title class="justify-center"
         >Progreso de {{ residente.nombre }} {{ residente.nombre }}</v-card-title
       >
 
@@ -221,20 +193,54 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
-      </v-card>
 
+          </v-card>
+        </v-container>
+          <v-navigation-drawer
+      v-model="drawer"
+      absolute
+      temporary
+    >
+      <v-list
+        nav
+        dense
+      >
+        <v-list-item-group
+          active-class="deep-purple--text text--accent-4"
+        >
+           <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title class="title">
+                Lista de Residentes
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                Actualmente en la fase I
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
 
+      <v-divider></v-divider>
+        <v-list-item
+          v-for="residente in residentesFase"
+          :key="residente.id"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-account-multiple</v-icon>
+          </v-list-item-icon>
 
-
-
-
-
-
-
-
-
-     
-    </v-card>
+          <v-list-item-content>
+            <v-list-item-title>{{ residente.nombre }} {{residente.apellido}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        </v-list-item-group>
+      </v-list>
+      
+    </v-navigation-drawer>
+      </v-sheet>
+      
+    </template>
+    </div>
 </template>
 <script>
 import VisualizadorResidente from "@/components/residentes/VisualizadorResidente.vue";
