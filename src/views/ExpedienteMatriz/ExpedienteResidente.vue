@@ -288,6 +288,40 @@
           </template>
         </v-card>
       </v-card-text>
+
+      <v-card-text>
+        <v-card elevation="0" outlined shaped>
+          <v-card-title>Hoja de Productividad</v-card-title>
+          <template v-if="hojaProductividad.length > 0">
+            <div>
+              <v-data-table
+                :headers="headerProductividad"
+                :items="hojaProductividad"
+                hide-default-footer
+                class="datatable"
+              >
+                <template v-slot:[`item.tipo`]="{ item }">
+                  {{ addWhitespaceBetweenUpperLower(item.tipo) | toCapitalize }}
+                </template>
+              </v-data-table>
+            </div>
+          </template>
+          <template v-else>
+            <v-alert
+              text
+              outlined
+              border="left"
+              color="deep-orange"
+              width="97%"
+              class="ml-3"
+              icon="info"
+            >
+              No se ha registrado ningún documento al residente
+            </v-alert>
+          </template>
+        </v-card>
+      </v-card-text>
+
       <v-dialog v-model="dialogDocuments" max-width="500">
         <detalle-documentos
           :areaDocuments="areaDocuments"
@@ -359,6 +393,7 @@ export default {
   data() {
     return {
       residente: null,
+      hojaProductividad: null,
       showInfo: true,
       dialogDocuments: false,
       dialogPDFs: false,
@@ -379,6 +414,18 @@ export default {
           value: "actions",
           sortable: false,
           align: "center",
+        },
+      ],
+      headerProductividad: [
+        {
+          text: "Tipo de Documento",
+          value: "tipo",
+          sortable: false,
+          align: "start",
+        },
+        {
+          text: "Número de Documentos registrados",
+          value: "cantidad",
         },
       ],
       areaDocuments: [],
@@ -418,6 +465,11 @@ export default {
     closeDetailDocuments() {
       this.dialogDocuments = false;
     },
+    addWhitespaceBetweenUpperLower(palabra){
+      palabra = palabra.replace(/([A-Z])/g, ' $1').trim();
+      palabra = palabra.replace(/([a-z])([A-Z])/g, '$1 $2');
+      return palabra;
+    }
   },
   filters: {
     toPhoneReference(value) {
@@ -439,6 +491,14 @@ export default {
         res.data.sexo = res.data.sexo.toLowerCase();
         this.residente = res.data;
         this.showInfo = false;
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    axios
+      .get("/hojaproductividad/" + this.idresidente)
+      .then((res) => {
+        this.hojaProductividad = res.data;
       })
       .catch((err) => {
         console.error(err);
