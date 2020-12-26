@@ -107,19 +107,25 @@
               </v-col>
               <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                 <v-text-field
-                  :value="planIntervencion.creador"
+                  :value="this.usuario"
                   label="Creador del plan"
                   outlined
                   readonly
                   color="success"
                 >
                 </v-text-field>
-                <v-img
+                <img
+                  width="240"
+                  height="170"
+                  :src="this.firma"
+                  alt=""
+                />
+                <!-- <v-img
                   :src="planIntervencion.contenido.firmas[0].urlfirma"
                   max-width="200"
                   max-height="200"
                 >
-                </v-img>
+                </v-img> -->
               </v-col>
               <v-btn block @click="cerrarDialogo()" color="primary">
                 <v-icon left>mdi-close-outline</v-icon>
@@ -134,18 +140,33 @@
 </template>
 
 <script>
+import axios from "axios";
 import VisualizacionMultiple from "@/components/planIntervencion/General/VisualizacionMultiple.vue";
 export default {
   name: "visualizar-plan-intervencion-social",
   data() {
     return {
       step: 1,
+      usuario:"",
+      firma:"",
     };
+  },
+  created() {
+    this.obtenerCreador();
   },
   methods: {
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
     },
+    async obtenerCreador() {
+        await axios
+        .get("/usuario/rol/permiso?id=" + this.planIntervencion.creador)
+        .then((x) => {
+          this.usuario = x.data.datos.nombre + " " + x.data.datos.apellido;
+          this.firma = x.data.datos.firma;
+        })
+        .catch((err) => console.log(err));
+      },
   },
   props: {
     planIntervencion: {
