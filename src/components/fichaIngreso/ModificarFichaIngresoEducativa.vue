@@ -478,7 +478,7 @@
                           <v-card-title>Datos del Informante</v-card-title>
                           <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
                               <v-text-field
-                                  v-model="this.user.usuario"
+                                  v-model="this.usuario"
                                   label="Autor del Informe de Incidencia"
                                   outlined
                                   color="info"
@@ -487,7 +487,7 @@
                           </v-card >
                                <v-card class="subcard" color="#e6f3ff">
                                    <v-text-field
-                                    v-model="this.user.rol.nombre"
+                                    v-model="this.cargo"
                                     label="Cargo del Autor"
                                     outlined
                                     color="info"
@@ -496,9 +496,17 @@
                                </v-card>
                         </v-card>
                   <v-row>
-                    <v-col :cols="12" align="left">
+                    <v-col :cols="12" align="center">
                       <div>
-                        <vue-dropzone
+                        <v-card-text>
+                              <img
+                                width="240"
+                                height="170"
+                                :src="this.firma"
+                                alt=""
+                              />
+                        </v-card-text>
+                        <!-- <vue-dropzone
                           ref="myVueDropzoneFirma"
                           @vdropzone-success="afterSuccessFirma"
                           @vdropzone-removed-file="afterRemovedFirma"
@@ -512,7 +520,7 @@
                             >Debe Subir una firma obligatoriamente
                             </v-card-text
                           >
-                        </v-card>
+                        </v-card> -->
                       </div>
                     </v-col>
                   </v-row>
@@ -609,7 +617,10 @@ export default {
          observacionAux:"",
          step:1,
          imagenFirma:{},
-        }
+        usuario: "",
+        cargo:"",
+        firma:"",
+      }
       },
     created() {
       this.imagenFirma = {urlOrigen: this.fichaIngreso.contenido.firma.urlfirma,
@@ -628,17 +639,28 @@ export default {
               }
             }
         });
+      this.obtenerCreador();
     },
     methods:{
       ...mapMutations(["replaceFichaIngreso"]),
-     mounteddropzone(){
+     /*mounteddropzone(){
             var file = { size: 123, name: "Firma del Documento", type: "image/jpg" };
             this.$refs.myVueDropzoneFirma.manuallyAddFile(file, this.fichaIngreso.contenido.firma.urlfirma,null,null,true);
-          },
+          },*/
       verificarAccion(accion){
           if(accion != "eliminado" || accion != undefined){
             return true;
           }else{return false}
+      },
+      async obtenerCreador() {
+        await axios
+        .get("/usuario/rol/permiso?id=" + this.fichaIngreso.creadordocumento)
+        .then((x) => {
+          this.usuario = x.data.datos.nombre + " " + x.data.datos.apellido;
+          this.cargo = x.data.rol.nombre;
+          this.firma = x.data.datos.firma;
+        })
+        .catch((err) => console.log(err));
       },
       agregarDocumentoEscolar(){
         this.$v.documentoEscolar.$touch();
@@ -671,14 +693,14 @@ export default {
               .ieprocedencia.documentosEscolares
               .splice(indice,1,item);
           }
-      },afterSuccessFirma(file, response){
+      },/*afterSuccessFirma(file, response){
           this.imagenFirma.modificar.estado = true;
           this.imagenFirma.modificar.file = file;
           console.log(this.imagenFirma.modificar.file);
       },afterRemovedFirma(){
           this.imagenFirma.modificar.estado = true;
           this.imagenFirma.modificar.file = {};
-      },afterSuccessDocumentos(file, response){
+      },*/afterSuccessDocumentos(file, response){
              this.documentoEscolar.file = file;
       },afterRemovedDocumentos(){
 
@@ -745,7 +767,7 @@ export default {
             this.$emit("cerrar-modal-edicion-ficha-ingreso");
             this.step = 1;
             this.$refs.myVueDropzoneDocumentosEscolares.removeAllFiles();    
-            this.$refs.myVueDropzoneFirma.removeAllFiles();  
+            //this.$refs.myVueDropzoneFirma.removeAllFiles();  
             this.observacionAux="";
             this.documentoEscolar ={titulo:"",file:""};
             this.$v.$reset();
@@ -763,10 +785,10 @@ export default {
             console.log(this.fichaIngreso);
             //var url = await this.registrarFirma(this.fichaIngreso.contenido.firma.urlfirma);
             var fichaIngresoPUT = this.fichaIngreso;
-            fichaIngresoPUT.contenido.firma.urlfirma =
+            /*fichaIngresoPUT.contenido.firma.urlfirma =
             this.imagenFirma.modificar.estado==true?
                   await this.modificaFirma():
-                  this.imagenFirma.urlOrigen;
+                  this.imagenFirma.urlOrigen;*/
             fichaIngresoPUT.contenido.ieprocedencia.documentosEscolares = 
             await this.modificarDocumentosEscolares(fichaIngresoPUT.contenido.ieprocedencia.documentosEscolares);
             //fichaeducativaingreso

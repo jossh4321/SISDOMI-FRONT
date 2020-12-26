@@ -1542,9 +1542,17 @@
                              </v-card>
                       </v-card>
                 <v-row>
-                  <v-col :cols="12" align="left">
+                  <v-col :cols="12" align="center">
                     <div>
-                      <vue-dropzone
+                      <v-card-text>
+                              <img
+                                width="240"
+                                height="170"
+                                :src="this.user.datos.firma"
+                                alt=""
+                              />
+                        </v-card-text>
+                      <!-- <vue-dropzone
                         ref="myVueDropzone"
                         @vdropzone-success="afterSuccess2"
                         @vdropzone-removed-file="afterRemoved2"
@@ -1557,7 +1565,7 @@
                           >Debe Subir una firma obligatoriamente
                           </v-card-text
                         >
-                      </v-card>
+                      </v-card> -->
                     </div>
                   </v-col>
                 </v-row>
@@ -1670,7 +1678,7 @@ export default {
         estado: "creado",
         contenido: {
           responsableturno: "",
-          firma: { urlfirma: "", nombre: "", cargo: "" },
+          /*firma: { urlfirma: "", nombre: "", cargo: "" },*/
           padres: [],
           hermanos: [],
           escolaridad: {
@@ -1872,7 +1880,7 @@ export default {
         estado: "creado",
         contenido: {
           responsableturno: "",
-          firma: { urlfirma: "", nombre: "", cargo: "" },
+          /*firma: { urlfirma: "", nombre: "", cargo: "" },*/
           padres: [],
           hermanos: [],
           escolaridad: {
@@ -1954,7 +1962,7 @@ export default {
       //limpiar los campos que contienen los datos acumulados
       this.$emit("cerrar-modal-registro-ficha-ingreso");
       this.step = 1;  
-      this.$refs.myVueDropzone.removeAllFiles();
+      //this.$refs.myVueDropzone.removeAllFiles();
       this.limpiarFichaIngreso();
       this.limpiarCampos();
       this.$v.$reset();
@@ -2513,13 +2521,13 @@ export default {
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
-    },
+    },/*
     afterSuccess2(file, response) {
       this.fichaIngreso.contenido.firma.urlfirma = file.dataURL.split(",")[1];
     },
     afterRemoved2(file, error, xhr) {
       this.fichaIngreso.contenido.firma.urlfirma = "";
-    },
+    },*/
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
         icon: icono,
@@ -2577,12 +2585,12 @@ export default {
 
       return errors;
     },
-    errorFirma() {
+    /*errorFirma() {
       return this.$v.fichaIngreso.contenido.firma.urlfirma.required == false &&
         this.$v.fichaIngreso.contenido.firma.urlfirma.$dirty == true
         ? true
         : false;
-    },
+    },*/
     errorpadres() {
       const errors = [];
 
