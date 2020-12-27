@@ -1956,7 +1956,7 @@ export default {
           },
           planintervencion: {
             required
-          },
+          },/*
           firma: {
             nombre: {
               required
@@ -1967,7 +1967,7 @@ export default {
             urlfirma: {
               required,
             },
-          },
+          },*/
         }
       },
       motivoIngreso:{

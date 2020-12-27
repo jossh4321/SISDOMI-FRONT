@@ -449,7 +449,7 @@ export default {
          },dialogoDocumentoEscolar:false,
          observacionAux:"",
          step:1,
-         imagenFirma:{urlOrigen: this.fichaIngreso.contenido.firma.urlfirma,
+         imagenFirma:{urlOrigen: "",
                         modificar:{estado:false,file:{}}},
         responsableTurnoAux:"",
         usuario: "",

@@ -2152,7 +2152,7 @@ export default {
           planintervencion: {
             required
           },
-          firma: {
+          /*firma: {
             nombre: {
               required
             },
@@ -2162,7 +2162,7 @@ export default {
             urlfirma: {
               required,
             },
-          }
+          }*/
         }
       },
       motivoIngreso:{

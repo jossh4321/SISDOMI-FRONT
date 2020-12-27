@@ -623,10 +623,11 @@ export default {
       }
       },
     created() {
+      /*
       this.imagenFirma = {urlOrigen: this.fichaIngreso.contenido.firma.urlfirma,
                         modificar:{estado:false,file:{}}};
       console.log("Se creo la instancia");
-      console.log(this.fichaIngreso);
+      console.log(this.fichaIngreso);*/
       this.fichaIngreso.contenido.ieprocedencia.documentosEscolares = this.fichaIngreso.contenido.ieprocedencia.documentosEscolares.map(
         (val)=>{
             return {
@@ -1076,12 +1077,12 @@ export default {
               },
               observaciones: {
                 required
-              },
+              },/*
               firma: {
                  urlfirma:{
                   required,
                 }
-              }
+              }*/
             },
       },documentoEscolar:{
         titulo:{required,
