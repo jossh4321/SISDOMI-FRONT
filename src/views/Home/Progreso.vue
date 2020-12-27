@@ -1,6 +1,6 @@
 <template >
     <div>
-      <template v-if="residente == ''">
+      <template v-if="cargaProgreso == false">
       <v-card elevation="3" outlined class="card" height="700px"
        style="text-align: center; height: 700px; padding-top: 30px;">
         <div class="progress">
@@ -32,7 +32,7 @@
       <VisualizadorResidente :residente="residente"></VisualizadorResidente>
       <v-expansion-panels focusable class="pa-4 mx-auto" max-width="90%">
         <v-expansion-panel
-          v-for="(fase, i) in residente.fases.progreso"
+          v-for="(fase, i) in listaFases"
           :key="i"
         >
           <v-expansion-panel-header>
@@ -43,7 +43,7 @@
                     </div>
                   </v-col>
                   <v-col xs="12" sm="4"   md="4" lg="4" xl="4" padding="auto">
-                    <template v-if="estadoFase(fase) == 'superada'">
+                    <template v-if="fase.status == 'anterior'">
                       <v-card class="fase-superada">
                         <v-icon color="#003300">
                           mdi-check-decagram
@@ -53,7 +53,7 @@
                         </span>
                       </v-card>
                     </template>
-                    <template v-else-if="estadoFase(fase) == 'actual'">
+                    <template v-else-if="fase.status == 'actual'">
                       <v-card class="fase-actual">
                         <v-icon color="#000033">
                           mdi-information
@@ -83,25 +83,34 @@
                 >Areas del Equipo Tecnico Multidisciplinario</v-card-title
               >
               <v-expansion-panels>
+                <!--Educativa-->
                 <v-expansion-panel>
                   <v-expansion-panel-header>Educativa</v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-alert
                       outlined
                       style="margin-top:10px"
-                      :type="documentosEducativa.estado == 'Completo'?'success':'warning'"
+                      :type="obtenerTipoAlertDocumento(documentosEducativa)"
                       prominent
                       border="left"
                       v-for="(documentosEducativa, i) in fase.educativa
                         .documentos"
                       :key="i"
                     >
-                      <v-row align="center">
+                       <v-row align="center" v-if="fase.status=='anterior'">
+                         <v-col cols="6">
+                            <v-btn color="info" rounded block>
+                              <v-icon left> mdi-information</v-icon>
+                              Ver</v-btn
+                            >
+                          </v-col>
+                       </v-row>
+                      <v-row align="center" v-else-if="fase.status=='actual'">
                         <v-col cols="6">
                           {{ documentosEducativa.tipo }}
                         </v-col>
                         <template
-                          v-if="documentosEducativa.estado == 'Completo'"
+                          v-if="documentosEducativa.indice == 'anterior'"
                         >
                           <v-col cols="3">
                             <v-btn color="warning" rounded block>
@@ -117,7 +126,7 @@
                             >
                           </v-col>
                         </template>
-                        <template v-else>
+                        <template v-else-if="documentosEducativa.indice == 'actual'">
                           <v-col cols="6" >
                             <v-btn color="success" block rounded>
                               <v-icon left> mdi-book-plus </v-icon>
@@ -126,10 +135,25 @@
                             >
                           </v-col>
                         </template>
+                        <template v-else>
+                          <v-col cols="6" >
+                            <div class="docs-siguiente">
+                              <span>Proximo a Registrar</span>
+                            </div>
+                          </v-col>
+                        </template>
                       </v-row>
+                       <v-row align="center" v-else>
+                         <v-col cols="6" >
+                            <div class="docs-siguiente">
+                              <span>Proximo a Registrar</span>
+                            </div>
+                          </v-col>
+                       </v-row>
                     </v-alert>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
+                <!--Psicologica-->
                 <v-expansion-panel>
                   <v-expansion-panel-header>Psicologica</v-expansion-panel-header>
                   <v-expansion-panel-content
@@ -137,19 +161,19 @@
                     <v-alert
                       outlined
                       style="margin-top:10px"
-                      :type="documentosPsicologico.estado == 'Completo'?'success':'warning'"
+                      :type="obtenerTipoAlertDocumento(documentosEducativa)"
                       prominent
                       border="left"
                       v-for="(documentosPsicologico, i) in fase.psicologica
                         .documentos"
                       :key="i"
                     >
-                      <v-row align="center">
+                       <v-row align="center">
                         <v-col cols="6">
-                          {{ documentosPsicologico.tipo }}
+                          {{ documentosEducativa.tipo }}
                         </v-col>
                         <template
-                          v-if="documentosPsicologico.estado == 'Completo'"
+                          v-if="documentosEducativa.indice == 'anterior'"
                         >
                           <v-col cols="3">
                             <v-btn color="warning" rounded block>
@@ -165,13 +189,20 @@
                             >
                           </v-col>
                         </template>
-                        <template v-else>
+                        <template v-else-if="documentosEducativa.indice == 'actual'">
                           <v-col cols="6" >
-                             <v-btn color="success" block rounded>
+                            <v-btn color="success" block rounded>
                               <v-icon left> mdi-book-plus </v-icon>
                                 <span>Registrar</span>
                               </v-btn
                             >
+                          </v-col>
+                        </template>
+                        <template v-else>
+                          <v-col cols="6" >
+                            <div class="docs-siguiente">
+                              <span>Proximo a Registrar</span>
+                            </div>
                           </v-col>
                         </template>
                       </v-row>
@@ -179,6 +210,7 @@
                     
                     </v-expansion-panel-content>
                 </v-expansion-panel>
+                <!--Social-->
                 <v-expansion-panel>
                   <v-expansion-panel-header
                     >Social</v-expansion-panel-header
@@ -195,12 +227,12 @@
                         .documentos"
                       :key="i"
                     >
-                      <v-row align="center">
+                       <v-row align="center">
                         <v-col cols="6">
-                          {{ documentosSocial.tipo }}
+                          {{ documentosEducativa.tipo }}
                         </v-col>
                         <template
-                          v-if="documentosSocial.estado == 'Completo'"
+                          v-if="documentosEducativa.indice == 'anterior'"
                         >
                           <v-col cols="3">
                             <v-btn color="warning" rounded block>
@@ -216,13 +248,20 @@
                             >
                           </v-col>
                         </template>
-                        <template v-else>
+                        <template v-else-if="documentosEducativa.indice == 'actual'">
                           <v-col cols="6" >
-                             <v-btn color="success" block rounded>
+                            <v-btn color="success" block rounded>
                               <v-icon left> mdi-book-plus </v-icon>
                                 <span>Registrar</span>
                               </v-btn
                             >
+                          </v-col>
+                        </template>
+                        <template v-else>
+                          <v-col cols="6" >
+                            <div class="docs-siguiente">
+                              <span>Proximo a Registrar</span>
+                            </div>
                           </v-col>
                         </template>
                       </v-row>
@@ -296,6 +335,8 @@ export default {
       drawer: false,
       residente: "",
       residentesFase:[],
+      listaFases:[],
+      cargaProgreso:false,
       fases: [
         {
           id: 1,
@@ -345,20 +386,56 @@ export default {
             //console.log(res.data);
         })
         .catch((err) => console.log(err));
-
     await axios
       .get(miruta)
       .then((res) => {
         
         this.residente = res.data;
-        //console.log(this.residente);
+        console.log(this.residente);
       })
       .catch((err) => console.log(err));
-
+    this.listaFases = this.obtenerSecuenciaDocumentos();
+    this.cargaProgreso = true;
+    console.log(this.listaFases);
 
   },
   methods: {
-     estadoFase(fase){
+    obtenerSecuenciaDocumentos(){
+      var residenteFaseDoc = this.residente;
+      var listaFases = residenteFaseDoc.fases.progreso;
+      var faseResidenteActual =  residenteFaseDoc.progreso[residenteFaseDoc.progreso.length-1];
+      var flag = false
+      listaFases = listaFases.map((fase)=>{
+          if(faseResidenteActual.fase == fase.fase){
+              fase['status'] = 'actual'
+              fase.educativa.documentos = this.obtenerEstadoDocumentosFaseArea(fase.educativa.documentos);
+              fase.social.documentos = this.obtenerEstadoDocumentosFaseArea(fase.social.documentos);
+              fase.psicologica.documentos = this.obtenerEstadoDocumentosFaseArea(fase.psicologica.documentos);
+          }else if(faseResidenteActual.fase > fase.fase){
+                fase['status'] = 'anterior';
+          }else{
+                fase['status'] = 'posterior';
+          }
+          return fase;
+
+      });
+      return listaFases;
+    },
+    obtenerEstadoDocumentosFaseArea(listaDocumentos){
+        var flag = false;
+        listaDocumentos=  listaDocumentos.map((val) =>{
+              if(val.estado.toLowerCase()=='pendiente' && flag == false){
+                val['indice'] = 'actual';
+                flag = true;
+              }else if(val.estado.toLowerCase()=='completo'){
+                val['indice'] = 'anterior';
+              }else{
+                  val['indice'] = 'posterior';
+              }
+              return val;
+        });
+        return listaDocumentos;
+    },estadoFase(fase){
             var faseActual = this.residente.progreso.length;
             if(fase.fase<faseActual){
                 //faseSuperada
@@ -370,7 +447,11 @@ export default {
                 //fase proxima
                 return 'proxima';
             }
-        }
+        },obtenerTipoAlertDocumento(documento){
+     if(documento.indice == 'actual'){return 'warning'}
+     else if(documento.indice == 'anterior'){return 'success'}
+     else return 'info';
+  },
   },
   computed:{
     
@@ -415,5 +496,12 @@ export default {
   font-weight: bold;
   text-align: center;
   background-color: #ffff00;
+}
+.docs-siguiente{
+  color:#2196F3;
+  border-radius: 5px;
+  border: 3px #2196F3 solid;
+  text-align: center;
+  font-weight: bold;
 }
 </style>
