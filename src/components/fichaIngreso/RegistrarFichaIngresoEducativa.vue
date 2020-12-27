@@ -1010,11 +1010,12 @@ export default {
               observaciones: {
                 required
               },
+              /*
               firma: {
                  urlfirma:{
                   required,
                 }
-              }
+              }*/
             },
       },documentoEscolar:{
         titulo:{required,

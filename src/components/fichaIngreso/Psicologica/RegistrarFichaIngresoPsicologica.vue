@@ -2963,12 +2963,12 @@ export default {
       contenido: {
         responsableturno: {
           required
-        },
+        },/*
         firma: {
           urlfirma: {
             required,
           },
-        },
+        },*/
         padres: {
           required
         },
