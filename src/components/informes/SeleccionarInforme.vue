@@ -44,7 +44,8 @@
                             @close="showRegistrarInformeSI=false"/>
                         <RegistrarInformeSocialEvolutivo                 
                             v-if="showRegistrarInformeSE"
-                            :listaresidentes="listaresidentes" 
+                            :listaresidentes="listaresidentes"
+                            :listasociales="listasociales" 
                             :visible="showRegistrarInformeSE"
                             :titulo="titulo"  
                             @close="showRegistrarInformeSE=false"/>
@@ -56,7 +57,8 @@
                             @close="showRegistrarInformePI=false"/>
                         <RegistrarInformePsicologicoEvolutivo                 
                             v-if="showRegistrarInformePE"
-                            :listaresidentes="listaresidentes" 
+                            :listaresidentes="listaresidentes"
+                            :listapsicologos="listapsicologos" 
                             :visible="showRegistrarInformePE"
                             :titulo="titulo"  
                             @close="showRegistrarInformePE=false"/>                       

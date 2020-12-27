@@ -305,7 +305,15 @@
                 </v-col>
                 <v-col cols="12" sm="12" md="12">
                   <div>
-                    <vue-dropzone
+                    <v-card-text>
+                      <img
+                        width="240"
+                        height="170"
+                        :src="this.firma"
+                        alt=""
+                      />
+                    </v-card-text>
+                    <!-- <vue-dropzone
                       ref="myVueDropzone"
                       @vdropzone-success="afterSuccess"
                       @vdropzone-removed-file="afterRemoved"
@@ -319,7 +327,7 @@
                       class="mt-2"
                     >
                       Debe ingresar una firma para el registro
-                    </v-alert>
+                    </v-alert> -->
                   </div>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
@@ -409,6 +417,7 @@ export default {
           },
         ],
       },
+      firma:"",
     };
   },
   props: {
@@ -550,8 +559,10 @@ export default {
     ].fase.toString();
 
     this.listResidentes.push(this.residente);
+    console.log(this.planI);
+    this.obtenerCreador();
   },
-  mounted() {
+  /*mounted() {
     var file = { size: 250, name: "firmatrabajador.jpg", type: "image/jpg" };
     var url = this.planI.contenido.firmas[0].urlfirma;
 
@@ -560,9 +571,17 @@ export default {
     this.firmaAux.push(
       this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[0]
     );
-  },
+  },*/
   methods: {
     ...mapMutations(["setResidentes"]),
+    async obtenerCreador() {
+        await axios
+        .get("/usuario/rol/permiso?id=" + this.planI.creador)
+        .then((x) => {
+          this.firma = x.data.datos.firma;
+        })
+        .catch((err) => console.log(err));
+      },
     async editPlan() {
       this.$v.$touch();
       if (this.$v.$invalid) {
@@ -575,7 +594,7 @@ export default {
           false
         );
       } else {
-        for (let index = 0; index < this.firmaAux.length; index++) {
+        /*for (let index = 0; index < this.firmaAux.length; index++) {
           if (
             this.firmaAux[index] != null &&
             this.firmaAux[index].dataURL != undefined
@@ -593,7 +612,7 @@ export default {
                 console.error(err);
               });
           }
-        }
+        }*/
 
         let planI = {
           id: this.planI.id,
@@ -619,7 +638,7 @@ export default {
           });
       }
     },
-    afterSuccess(file, response) {
+    /*afterSuccess(file, response) {
       this.firmaAux.push(file);
     },
     afterRemoved(file, error, xhr) {
@@ -628,7 +647,7 @@ export default {
       if (indexFile != -1) {
         this.firmaAux.splice(indexFile, 1);
       }
-    },
+    },*/
     mensaje(icono, titulo, texto, footer, valid) {
       this.$swal({
         icon: icono,

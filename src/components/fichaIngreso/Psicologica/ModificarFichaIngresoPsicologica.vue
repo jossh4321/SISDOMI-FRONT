@@ -1524,7 +1524,7 @@
                         <v-card-title>Datos del Informante</v-card-title>
                         <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
                             <v-text-field
-                                v-model="this.user.usuario"
+                                v-model="this.usuario"
                                 label="Autor de la ficha de ingreso"
                                 outlined
                                 color="info"
@@ -1533,7 +1533,7 @@
                         </v-card >
                              <v-card class="subcard" color="#e6f3ff">
                                  <v-text-field
-                                  v-model="this.user.rol.nombre"
+                                  v-model="this.cargo"
                                   label="Cargo del Autor"
                                   outlined
                                   color="info"
@@ -1542,9 +1542,17 @@
                              </v-card>
                       </v-card>
                 <v-row>
-                  <v-col :cols="12" align="left">
+                  <v-col :cols="12" align="center">
                     <div>
-                      <vue-dropzone
+                      <v-card-text>
+                              <img
+                                width="240"
+                                height="170"
+                                :src="this.firma"
+                                alt=""
+                              />
+                        </v-card-text>
+                      <!-- <vue-dropzone
                         ref="myVueDropzone"
                         @vdropzone-success="afterSuccess2"
                         @vdropzone-removed-file="afterRemoved2"
@@ -1558,7 +1566,7 @@
                           >Debe Subir una firma obligatoriamente
                           </v-card-text
                         >
-                      </v-card>
+                      </v-card>-->
                     </div>
                   </v-col>
                 </v-row>
@@ -1785,15 +1793,31 @@ export default {
         { value: "Facebook", text: "Facebook" },
         { value: "Email", text: "Email" },
         { value: "Video", text: "Video" }
-      ]
+      ],
+      usuario: "",
+      cargo:"",
+      firma:"",
       //fin datos ficha ingreso psicologica
     };
   },
+  async created() {
+      this.obtenerCreador();
+  },
   methods: {
     ...mapMutations(["replaceFichaIngreso"]),
-    mounteddropzone(){
+    /*mounteddropzone(){
       var file = { size: 123, name: "Firma del Documento", type: "image/jpg" };
       this.$refs.myVueDropzone.manuallyAddFile(file, this.fichaIngreso.contenido.firma.urlfirma,null,null,true);
+    },*/
+    async obtenerCreador() {
+        await axios
+        .get("/usuario/rol/permiso?id=" + this.fichaIngreso.creadordocumento)
+        .then((x) => {
+          this.usuario = x.data.datos.nombre + " " + x.data.datos.apellido;
+          this.cargo = x.data.rol.nombre;
+          this.firma = x.data.datos.firma;
+        })
+        .catch((err) => console.log(err));
     },
     limpiarCampos() {
       this.maltrato = {
@@ -1819,7 +1843,7 @@ export default {
     cerrarDialogo(){     
       this.$emit("cerrar-modal-edicion-ficha-ingreso");
       this.step = 1;
-      this.$refs.myVueDropzone.removeAllFiles();
+      //this.$refs.myVueDropzone.removeAllFiles();
       this.limpiarCampos();
       this.$v.$reset();
     },
@@ -1834,8 +1858,8 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        this.fichaIngreso.contenido.firma.nombre = this.user.usuario;
-        this.fichaIngreso.contenido.firma.cargo = this.user.rol.nombre;
+        //this.fichaIngreso.contenido.firma.nombre = this.user.usuario;
+        //this.fichaIngreso.contenido.firma.cargo = this.user.rol.nombre;
 
         let ficha = this.fichaIngreso;
         
@@ -2347,13 +2371,13 @@ export default {
     },
     eliminarredessociales(index) {
       this.fichaIngreso.contenido.actividades.redessociales.splice(index, 1);
-    },
+    },/*
     afterSuccess2(file, response) {
       this.fichaIngreso.contenido.firma.urlfirma = file.dataURL.split(",")[1];
     },
     afterRemoved2(file, error, xhr) {
       this.fichaIngreso.contenido.firma.urlfirma = "";
-    },
+    },*/
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
         icon: icono,
@@ -2411,12 +2435,12 @@ export default {
 
       return errors;
     },
-    errorFirma() {
+    /*errorFirma() {
       return this.$v.fichaIngreso.contenido.firma.urlfirma.required == false &&
         this.$v.fichaIngreso.contenido.firma.urlfirma.$dirty == true
         ? true
         : false;
-    },
+    },*/
     errorpadres() {
       const errors = [];
 

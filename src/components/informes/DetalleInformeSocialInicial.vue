@@ -414,95 +414,47 @@
               </v-dialog>
 
               <v-card
-                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
-              >
-                <v-card
-                  elevation="0"
-                  style="background-color:#EAEAEA"
-                  height="70"
+                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
-                  <v-card-title>Firmas</v-card-title>
-                </v-card>
-
-                <v-card
-                  color="#FAFAFA"
-                  style="margin-top:5px"
-                  height="60"
-                  v-for="(item, index) in informe.contenido.firmas"
-                  :key="index"
-                >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col :cols="8">
-                      <article>
-                        <img
-                          style="margin-right:5px;width:6% "
-                          src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
-                          alt="imagen usuario"
-                        />
-                        <span style="font-size:18px">
-                          {{ item.nombre }} {{ item.cargo }}</span
-                        >
-                      </article>
-                    </v-col>
-                    <v-col :cols="4" align="center">
-                      <v-dialog
-                        v-model="dialogVistaPreviaFirma"
-                        persistent
-                        max-width="600px"
-                      >
-                        <template v-slot:activator="{ on }">
-                          <v-btn
-                            v-on="on"
-                            fab
-                            icon=""
-                            x-small
-                            dark
-                            color="#EAEAEA"
-                            @click="verFirma(index)"
-                          >
-                            <img
-                              style="width:25% "
-                              src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
-                              alt="firma"
-                            />
-                          </v-btn>
-                        </template>
-                        <v-card align="center">
-                          <v-card-title>
-                            <span class="headline">Vista previa</span>
-                          </v-card-title>
-                          <v-card-text>
-                            <img
-                              v-if="imagen.includes('http')"
-                              width="100%"
-                              height="100%"
-                              :src="imagen"
-                              alt=""
-                            />
-                            <img
-                              v-else
-                              width="100%"
-                              height="100%"
-                              :src="'data:image/jpeg;base64,' + imagen"
-                              alt=""
-                            />
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              color="blue darken-1"
-                              text
-                              @click="cerrarVistaPreviaFirma()"
-                            >
-                              Cerrar
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="4" align="left">
+                        <v-text-field
+                          v-model="this.usuario"
+                          label="Nombre"
+                          color="#009900"
+                          readonly
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="left">
+                        <v-text-field
+                          v-model="this.cargo"
+                          label="Cargo"
+                          color="#009900"
+                          readonly
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                  <v-row>
+                    <v-col :cols="12" align="center">
+                      <div>
+                        <v-card-text>
+                              <img
+                                width="240"
+                                height="170"
+                                :src="this.firma"
+                                alt=""
+                              />
+                        </v-card-text>
+                      </div>
                     </v-col>
                   </v-row>
                 </v-card>
-              </v-card>
               <v-row>
                 <v-col>
                   <v-btn block @click="cerrarDialogo()" color="primary">
@@ -532,8 +484,9 @@ export default {
       residente: "",
       evaluador: "",
       motivoIngreso: "",
-      urlfirma: "",
-      firmas: { urlfirma: "", nombre: "", cargo: "" },
+      usuario: "",
+      cargo:"",
+      firma:"",
       familiar: {
         nombre: "",
         apellido: "",
@@ -545,22 +498,20 @@ export default {
         ocupacion: "",
         observaciones: "",
       },
-      urlfirma: "",
       dialogAgregarFamiliar: false,
       accion: "registrar",
       indice: "",
       recomendacion: "",
       recomendaciones: [],
-      dialogVistaPreviaFirma: false,
       dialogVistaPreviaAnexos: false,
-      imagen: "",
       fileList: [],
       pdf: "",
     };
   },
-  created() {
+  async created() {
     this.obtenerResidente();
     this.obtenerEvaluador();
+    this.obtenerCreador();
   },
   methods: {
     ...mapMutations(["addInforme"]),
@@ -570,6 +521,16 @@ export default {
         .then((x) => {
           this.residente = x.data.nombre + " " + x.data.apellido;
           this.motivoIngreso = x.data.motivoIngreso;
+        })
+        .catch((err) => console.log(err));
+    },
+    async obtenerCreador() {
+      await axios
+        .get("/usuario/rol/permiso?id=" + this.informe.creadordocumento)
+        .then((x) => {
+          this.usuario = x.data.datos.nombre + " " + x.data.datos.apellido;
+          this.cargo = x.data.rol.nombre;
+          this.firma = x.data.datos.firma;
         })
         .catch((err) => console.log(err));
     },
@@ -626,13 +587,6 @@ export default {
         index
       ].numerodocumento;
     },
-    verFirma(index) {
-      console.log(this.informe.contenido.firmas[index].urlfirma);
-      this.imagen = this.informe.contenido.firmas[index].urlfirma;
-    },
-    cerrarVistaPreviaFirma() {
-      this.dialogVistaPreviaFirma = false;
-    },
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
     },
@@ -675,3 +629,4 @@ export default {
   color: #00b782;
 }
 </style>
+

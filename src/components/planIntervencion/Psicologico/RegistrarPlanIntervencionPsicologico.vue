@@ -413,7 +413,15 @@
             <form>
               <v-row>
                 <v-col cols="12" sm="12">
-                  <vue-dropzone
+                  <v-card-text>
+                    <img
+                      width="240"
+                      height="170"
+                      :src="this.user.datos.firma"
+                      alt=""
+                    />
+                  </v-card-text>
+                  <!-- <vue-dropzone
                     ref="myVueDropzone"
                     :options="dropzoneOptions"
                     id="dropzone"
@@ -426,7 +434,7 @@
                     class="mt-2"
                   >
                     Debe ingresar una firma para el registro
-                  </v-alert>
+                  </v-alert> -->
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-btn
@@ -517,13 +525,13 @@ export default {
           requerimientos: [],
           codigoDocumento: "",
           titulo: "",
-          firmas: [
+          /*firmas: [
             {
               urlfirma: "",
               nombre: "",
               cargo: "",
             },
-          ],
+          ],*/
         },
       },
       residentes: [],
@@ -699,7 +707,7 @@ export default {
         );
         this.requerimiento = "";
       }
-    },
+    },/*
     registerFile(file, response) {
       this.listImages.push(file);
     },
@@ -709,7 +717,7 @@ export default {
       if (indexFile != -1) {
         this.listImages.splice(indexFile, 1);
       }
-    },
+    },*/
     async sendPlan() {
       this.$v.$touch();
 
@@ -721,7 +729,7 @@ export default {
           false
         );
       } else {
-        for (let index = 0; index < this.listImages.length; index++) {
+        /*for (let index = 0; index < this.listImages.length; index++) {
           let formData = new FormData();
           formData.append("file", this.listImages[index]);
           await axios
@@ -736,7 +744,7 @@ export default {
             .catch((err) => {
               console.error(err);
             });
-        }
+        }*/
 
         this.planResidentePsicologico.creadordocumento = this.user.id;
         this.planResidentePsicologico.idresidente = this.residente.id;
