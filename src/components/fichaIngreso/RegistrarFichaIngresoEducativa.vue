@@ -1036,4 +1036,7 @@ export default {
   margin-top: 0;
   color: #00b782;
 }
+.swal-modal {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
 </style>
