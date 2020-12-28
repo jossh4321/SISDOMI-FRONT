@@ -969,6 +969,7 @@ export default {
         this.informe.contenido.recomendaciones.push(recomendaciones);
         this.recomendaciones = this.informe.contenido.recomendaciones;
         this.recomendacion = "";
+        this.$v.recomendacion.$reset();
       }
     },
     eliminarRecomendaciones(recomendacion) {

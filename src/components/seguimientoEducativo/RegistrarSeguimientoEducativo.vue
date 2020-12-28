@@ -120,7 +120,7 @@
                 <v-dialog v-model="dialog" persistent max-width="850px">
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" v-on="on">
-                      Ver Firma de creador(es) de documento
+                      Ver Firma del creador de documento
                     </v-btn>
                   </template>
                   <v-card>
@@ -130,24 +130,30 @@
                     <v-card-text>
                       <!-- cuadros de texto para añadir firma-->
                       <v-text-field
-                        v-model="firma.cargo"
+                        v-model="this.user.rol.nombre"
                         label="Cargo"
                         outlined
-                        @input="$v.firma.cargo.$touch()"
-                        @blur="$v.firma.cargo.$touch()"
-                        :error-messages="errorCargoFirma"
+                        readonly
                         color="#009900"
                       ></v-text-field>
                       <v-text-field
-                        v-model="firma.nombre"
+                        v-model="this.user.usuario"
                         label="Nombre"
                         outlined
-                        @input="$v.firma.nombre.$touch()"
-                        @blur="$v.firma.nombre.$touch()"
-                        :error-messages="errorNombreFirma"
+                        readonly
                         color="#009900"
                       ></v-text-field>
-                      <div>
+                      <div align="center">
+                        <v-card-text>
+                          <img
+                            width="240"
+                            height="170"
+                            :src="this.user.datos.firma"
+                            alt=""
+                          />
+                        </v-card-text>
+                      </div>
+                     <!-- <div>
                         <vue-dropzone
                           ref="myVueDropzone"
                           @vdropzone-success="afterSuccess"
@@ -166,17 +172,17 @@
                         añadir
                       </v-btn>
 
-                      <v-divider class="divider-custom"></v-divider>
+                      <v-divider class="divider-custom"></v-divider> -->
                       <!-- cuadros de textofin -->
 
-                      <v-card
+                     <!-- <v-card
                         style="margin-top:30px;left-top:30px;padding:5px 5px;background-color:#EAEAEA"
                       >
                         <v-card-title style="font-size:22px;padding: 10px 10px;"
                           >Firma de creador(es) de documento</v-card-title
-                        >
+                        > -->
                         <!-- Cabecera -->
-                        <v-card
+                       <!-- <v-card
                           elevation="0"
                           color="#EAEAEA"
                           style="margin-top:5px; margin-bottom:15px"
@@ -203,9 +209,9 @@
                             </v-col>
                             <v-col align="right"> </v-col>
                           </v-row>
-                        </v-card>
+                        </v-card>-->
                         <!-- Cuerpo -->
-                        <v-card
+                        <!--<v-card
                           tile
                           elevation="0"
                           color="#FAFAFA"
@@ -264,7 +270,7 @@
                                   </v-icon>
                                 </v-btn>
                               </div>
-                            </v-col>
+                            </v-col>-->
 
                             <!--  <v-col align="right">
                                     <div style="margin-right:20px">
@@ -282,9 +288,9 @@
                                       
                                     </div>
                                   </v-col>-->
-                          </v-row>
+                         <!-- </v-row>
                         </v-card>
-                      </v-card>
+                      </v-card>-->
                       <!--fin-->
                       <!-- -->
                     </v-card-text>
@@ -297,13 +303,13 @@
                       >
                         Cerrar
                       </v-btn>
-                      <v-btn
+                      <!-- <v-btn
                         color="blue darken-1"
                         text
                         @click="guardarSeguimientoFirma()"
                       >
                         Guardar
-                      </v-btn>
+                      </v-btn> -->
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -746,7 +752,7 @@ export default {
           grado: "",
           añoescolar: "",
           trimestre: [],
-          firmas: [],
+          //firmas: [],
           codigodocumento: "",
         },
       },
@@ -767,7 +773,7 @@ export default {
       this.dialog1 = true;
       console.log(this.notas, index);
     },
-
+    /*
     afterSuccess(file, response) {
       console.log(file);
       this.firma.urlfirma = file.dataURL.split(",")[1];
@@ -777,7 +783,7 @@ export default {
 
     afterRemoved(file, error, xhr) {
       this.firma.urlfirma = "";
-    },
+    },*/
 
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -818,17 +824,17 @@ export default {
         );
         this.$emit("cargarSeguimiento");
       }
-    },
+    },/*
     guardarSeguimientoFirma() {
       this.$v.seguimiento.contenido.firmas.$touch();
       if (!this.$v.seguimiento.contenido.firmas.$invalid) {
         this.$v.firma.$reset();
         this.dialog = false;
       }
-    },
+    },*/
     cerrarSeguimientoFirma() {
-      this.$v.seguimiento.contenido.firmas.$reset();
-      this.$v.firma.$reset();
+      //this.$v.seguimiento.contenido.firmas.$reset();
+      //this.$v.firma.$reset();
       this.dialog = false;
     },
     guardarSeguimientoNotas() {
@@ -838,7 +844,7 @@ export default {
     },
 
     ///metodo para agregar firma residente
-    guardarFirma() {
+    /*guardarFirma() {
       this.$v.firma.$touch();
       if (!this.$v.firma.$invalid) {
         let firmad = {
@@ -864,7 +870,7 @@ export default {
       console.log(this.seguimiento.contenido.firmas[index].urlfirma);
       this.imagen = this.seguimiento.contenido.firmas[index].urlfirma;
       this.dialogVistaPreviaFirma = true;
-    },
+    },*/
     guardarTrimestre() {
       this.$v.trimestre.$touch();
       if (!this.$v.trimestre.$invalid) {
@@ -969,7 +975,7 @@ export default {
       !this.$v.seguimiento.contenido.añoescolar.minLength &&
         errors.push("El Año escolar  debe tener al menos 4 caracteres");
       return errors;
-    },
+    },/*
     errorCargoFirma() {
       const errors = [];
       if (!this.$v.firma.cargo.$dirty) return errors;
@@ -985,7 +991,7 @@ export default {
       !this.$v.firma.nombre.minLength &&
         errors.push("El nombre debe tener  al menos 4 caracteres");
       return errors;
-    },
+    },*/
     errorOrdenTrimestre() {
       const errors = [];
       if (!this.$v.trimestre.orden.$dirty) return errors;
@@ -1033,13 +1039,13 @@ export default {
       !this.$v.puntajes.promedio.numeric &&
         errors.push("Debe Ingresar valores Numericos");
       return errors;
-    },
+    },/*
     errorImagen() {
       return this.$v.firma.urlfirma.required == false &&
         this.$v.firma.urlfirma.$dirty == true
         ? true
         : false;
-    },
+    },*/
   },
   validations() {
     return {
@@ -1067,10 +1073,10 @@ export default {
             minLength: minLength(4),
           },
           trimestre: [],
-          firmas: [],
+          //firmas: [],
           codigodocumento: "",
         },
-      },
+      },/*
       firma: {
         cargo: {
           required,
@@ -1083,7 +1089,7 @@ export default {
         urlfirma: {
           required,
         },
-      },
+      },*/
       trimestre: {
         orden: {
           required,

@@ -804,7 +804,7 @@ export default {
     this.obtenerCreador();
   },
   methods: {
-    ...mapMutations(["addInforme"]),
+    ...mapMutations(["replaceInforme"]),
     async sendPDFFiles() {
       let listaTitulos = [];
       let listaanexos = this.fileList;
@@ -864,7 +864,7 @@ export default {
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
-            this.addInforme(info);
+            this.replaceInforme(info);
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
