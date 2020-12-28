@@ -578,6 +578,7 @@ export default {
       if (this.titulo === "Registrar Informe Psicologico Evolutivo") {
         this.informe.tipo = "InformePsicologicoEvolutivo";
       } else {
+        this.informe.fase = "3"
         this.informe.tipo = "InformePsicologicoFinal";
       }
       console.log(this.informe);

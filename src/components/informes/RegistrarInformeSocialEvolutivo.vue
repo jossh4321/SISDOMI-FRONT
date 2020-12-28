@@ -413,6 +413,7 @@ export default {
       if (this.titulo === "Registrar Informe Social Evolutivo") {
         this.informe.tipo = "InformeSocialEvolutivo";
       } else {
+        this.informe.fase = "3"
         this.informe.tipo = "InformeSocialFinal";
       }
       console.log(this.informe);

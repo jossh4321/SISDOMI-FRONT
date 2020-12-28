@@ -381,17 +381,17 @@ export default {
     evitarPromocion() {
       if (this.datosfase !== null) {
         console.log(this.datosfase);
-        for (
-          let j = 0;
-          j <
-          this.datosfase.progreso[this.datosfase.progreso.length - 1].educativa
-            .documentos.length;
-          j++
-        ) {
-          if (
-            this.datosfase.progreso[this.datosfase.progreso.length - 1]
-              .educativa.documentos[j].estado !== "Completo"
-          ) {
+        if(this.datosfase.progreso[this.datosfase.progreso.length - 1].educativa.estado == "completo" && 
+        this.datosfase.progreso[this.datosfase.progreso.length - 1].social.estado == "completo" &&
+        this.datosfase.progreso[this.datosfase.progreso.length - 1].psicologica.estado == "completo"){
+          this.switchPromocion = false;
+          return false;
+        }else{
+          this.switchPromocion = true;
+          return true;
+        }
+        /*for (let j = 0; j < this.datosfase.progreso[this.datosfase.progreso.length - 1].educativa.documentos.length;j++) {
+          if (this.datosfase.progreso[this.datosfase.progreso.length - 1].educativa.documentos[j].estado !== "Completo") {
             this.switchPromocion = true;
             return true;
           }
@@ -402,7 +402,7 @@ export default {
           );
         }
         this.switchPromocion = false;
-        return false;
+        return false;*/
       }
     },
     closeDialogDetalle() {
@@ -557,11 +557,32 @@ export default {
             },
             { tipo: "InformeEducativoEvolutivo", estado: "Pendiente" },
           ];
+          this.progresoFase.social.documentos = [
+            {
+              tipo: "PlanIntervencionIndividualSocial",
+              estado: "Pendiente",
+            },
+            { tipo: "InformeSocialEvolutivo", estado: "Pendiente" },
+          ];
+          this.progresoFase.psicologica.documentos = [
+            {
+              tipo: "PlanIntervencionIndividualPsicologico",
+              estado: "Pendiente",
+            },
+            { tipo: "InformePsicologicoEvolutivo", estado: "Pendiente" },
+          ];
         } else if (this.progresoFase.fase === 3) {
           this.progresoResidente.fase = 3;
           this.progresoResidente.nombre = "reinserción";
           this.progresoFase.educativa.documentos = [
             { tipo: "InformeEducativoFinal", estado: "Pendiente" },
+          ];
+          this.progresoFase.social.documentos = [
+            { tipo: "InformeSocialFinal", estado: "Pendiente" },
+            { tipo: "ActaExternamiento", estado: "Pendiente" },
+          ];
+          this.progresoFase.educativa.documentos = [
+            { tipo: "InformePsicologicoFinal", estado: "Pendiente" },
           ];
         }
         this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z";
