@@ -407,10 +407,22 @@ export default {
       }
       console.log(this.informe.contenido.anexos);
     },
+    async obtenerFaseResidente(idresidente){
+      var info = {};
+      await axios
+        .get("/residente/id?id=" + idresidente)
+        .then((res) => {
+          info = res.data;
+        })
+        .catch((err) => console.log(err));
+      console.log(info.progreso[info.progreso.length - 1].fase);
+      return info.progreso[info.progreso.length - 1].fase.toString();
+    },
     async registrarInforme() {
       this.informe.creadordocumento = this.user.id;
       await this.sendPDFFiles();
       if (this.titulo === "Registrar Informe Social Evolutivo") {
+        this.informe.fase = await this.obtenerFaseResidente(this.informe.idresidente);
         this.informe.tipo = "InformeSocialEvolutivo";
       } else {
         this.informe.fase = "3"
