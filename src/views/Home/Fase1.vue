@@ -471,7 +471,7 @@ export default {
       this.$store.commit("toggleDrawer");
     },
     abrirProgresoFase1(id) {
-      var rutacompleta = "/dashboard/ProgresoResidente/" + id;
+      var rutacompleta = "/dashboard/ProgresoF1Residente/" + id;
       this.$router.push(rutacompleta);
       /*poner la ruta de colombo
       this.$router.push({
