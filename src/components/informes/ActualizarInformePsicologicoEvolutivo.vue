@@ -63,7 +63,7 @@
                     </template>
                   </template>
                 </v-autocomplete>
-                <v-autocomplete
+                <!-- <v-autocomplete
                 :items="listapsicologos"
                 filled
                 chips
@@ -110,7 +110,7 @@
                     </v-list-item-content>
                   </template>
                 </template>
-              </v-autocomplete>
+              </v-autocomplete> -->
                 <v-menu
                   v-model="datemenu"
                   :close-on-content-click="false"
@@ -575,7 +575,7 @@ function esParrafo(value) {
   return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
 export default {
-  props: ["listaresidentes", "informe", "titulo", "listapsicologos"],
+  props: ["listaresidentes", "informe", "titulo"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -806,7 +806,7 @@ export default {
           anexos: [],
           firmas: [],
           codigodocumento: "",
-          evaluador: ""
+          //evaluador: ""
         },
       };
     },
@@ -889,14 +889,14 @@ export default {
           "La conclusion no debe contener caracteres especiales"
         );
       return errors;
-    },
+    },/*
     errorEvaluador() {
       const errors = [];
       if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
       !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un evaluador obligatoriamente");
       return errors;
-    },
+    },*/
     errorRecomendacion() {
       const errors = [];
       if (!this.$v.recomendacion.$dirty) return errors;
@@ -930,10 +930,10 @@ export default {
           },
           fechaevaluacion: {
             required,
-          },
+          },/*
           evaluador: {
             required,
-          },
+          },*/
         },
       },
       recomendacion: {

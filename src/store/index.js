@@ -26,7 +26,8 @@ export default new Vuex.Store({
         incidencias:[],
         fichaEvaluacionEduativa:[],
         talleres:[],
-        nombreCar:'DOMI'
+        nombreCar:'DOMI',
+        fase:""
     },
     getters :{
         nombreCar: (state) => {
@@ -135,6 +136,8 @@ export default new Vuex.Store({
             state.talleres.splice(index, 1, value);
         },setNombreCar(state, value){
             state.nombreCar = value;
+        },setFase(state,value){
+            state.fase = value;
         }
     },
     modules: {
