@@ -1,31 +1,35 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center"
-      >Registrar Plan de Intervención Individual</v-card-title
-    >
+    <v-card-title class="justify-center">Registrar Plan de Intervención Individual</v-card-title>
     <v-card-text>
       <v-stepper v-model="step">
         <v-stepper-header>
-          <v-stepper-step editable step="1"> Datos Generales </v-stepper-step>
+          <v-stepper-step editable step="1">Datos Generales</v-stepper-step>
           <v-divider></v-divider>
-          <v-stepper-step editable step="2"> Aspectos de intervención </v-stepper-step>
+          <v-stepper-step editable step="2">Aspectos de intervención</v-stepper-step>
         </v-stepper-header>
 
         <v-stepper-items>
           <v-stepper-content step="1">
             <div class="container-planI">
               <form>
+                <v-card class="subcard card-padre">
+                  <v-card class="subcard" style="margin-bottom:7px" color="#e6f3ff">
+                    <span>Residente: {{this.residente.nombre}} {{this.residente.apellido}}</span>
+                  </v-card>
+                  <v-card class="subcard" color="#e6f3ff">
+                    <span>Fecha de Ingreso: {{ this.residente.fechaingreso | fomatoFecha}}</span>
+                  </v-card>
+                </v-card>
                 <v-row>
                   <v-col cols="12" sm="6" md="6">
                     <v-text-field
-                      v-model.trim="getTitleByFaseResident"
+                      v-model.trim="planI.contenido.titulo"
                       label="Ingrese el nombre del plan"
                       outlined
                       readonly
                       color="#009900"
-                    >
-                    
-                    </v-text-field>
+                    ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
                     <v-text-field
@@ -72,12 +76,7 @@
                         outlined
                         color="#009900"
                       ></v-text-field>
-                      <v-btn
-                        class="ml-2"
-                        fab
-                        color="success"
-                        @click="addObjEspecifico"
-                      >
+                      <v-btn class="ml-2" fab color="success" @click="addObjEspecifico">
                         <v-icon>mdi-plus</v-icon>
                       </v-btn>
                     </div>
@@ -85,9 +84,7 @@
                       <h4
                         v-if="$v.planI.contenido.objetivoEspecificos.$error"
                         class="red--text"
-                      >
-                        Debe tener como mínimo un objetivo específico registrado
-                      </h4>
+                      >Debe tener como mínimo un objetivo específico registrado</h4>
                     </div>
                     <registro-multiple
                       name="Objetivos específicos"
@@ -97,25 +94,14 @@
                 </v-row>
                 <v-row>
                   <v-col cols="12" sm="6" md="6">
-                    <v-btn
-                      color="success"
-                      elevation="2"
-                      @click="step = 2"
-                      block
-                    >
-                      <v-icon left>mdi-page-next-outline</v-icon>
-                      <span>Continuar</span>
+                    <v-btn color="error" elevation="2" block @click="cerrarDialogo">
+                      <v-icon left>mdi-close-outline</v-icon>Cerrar
                     </v-btn>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
-                    <v-btn
-                      color="error"
-                      elevation="2"
-                      block
-                      @click="closeDialog"
-                    >
-                      <v-icon left>mdi-close-outline</v-icon>
-                      Cerrar
+                    <v-btn color="success" elevation="2" @click="step = 2" block>
+                      <v-icon left>mdi-page-next-outline</v-icon>
+                      <span>Continuar</span>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -137,20 +123,12 @@
                         outlined
                         color="#009900"
                       ></v-text-field>
-                      <v-btn
-                        class="ml-2"
-                        fab
-                        color="success"
-                        @click="addAspecto"
-                      >
+                      <v-btn class="ml-2" fab color="success" @click="addAspecto">
                         <v-icon>mdi-plus</v-icon>
                       </v-btn>
                     </div>
                     <div>
-                      <h4
-                        class="red--text"
-                        v-if="$v.planI.contenido.aspectosIntervencion.$error"
-                      >
+                      <h4 class="red--text" v-if="$v.planI.contenido.aspectosIntervencion.$error">
                         Debe tener como mínimo un aspecto de intervención
                         registrado
                       </h4>
@@ -158,8 +136,7 @@
                     <registro-multiple
                       name="Aspectos de Intervenciones"
                       :items="planI.contenido.aspectosIntervencion"
-                    >
-                    </registro-multiple>
+                    ></registro-multiple>
                   </v-col>
                   <v-col cols="12" sm="12" md="12">
                     <div class="w-100 d-flex">
@@ -172,20 +149,12 @@
                         outlined
                         color="#009900"
                       ></v-text-field>
-                      <v-btn
-                        class="ml-2"
-                        fab
-                        color="success"
-                        @click="addActividad"
-                      >
+                      <v-btn class="ml-2" fab color="success" @click="addActividad">
                         <v-icon>mdi-plus</v-icon>
                       </v-btn>
                     </div>
                     <div>
-                      <h4
-                        class="red--text"
-                        v-if="$v.planI.contenido.estrategias.$error"
-                      >
+                      <h4 class="red--text" v-if="$v.planI.contenido.estrategias.$error">
                         Debe tener como mínimo una actividad/estrategia
                         registrado
                       </h4>
@@ -193,8 +162,7 @@
                     <registro-multiple
                       name="Actividades/Estrategias"
                       :items="planI.contenido.estrategias"
-                    >
-                    </registro-multiple>
+                    ></registro-multiple>
                   </v-col>
                   <v-col cols="12" sm="12" md="12">
                     <div class="w-100 d-flex">
@@ -207,12 +175,7 @@
                         outlined
                         color="#009900"
                       ></v-text-field>
-                      <v-btn
-                        class="ml-2"
-                        fab
-                        color="success"
-                        @click="addIndicador"
-                      >
+                      <v-btn class="ml-2" fab color="success" @click="addIndicador">
                         <v-icon>mdi-plus</v-icon>
                       </v-btn>
                     </div>
@@ -220,14 +183,9 @@
                       <h4
                         class="red--text"
                         v-if="$v.planI.contenido.indicadores.$error"
-                      >
-                        Debe tener como mínimo un indicador registrado
-                      </h4>
+                      >Debe tener como mínimo un indicador registrado</h4>
                     </div>
-                    <registro-multiple
-                      name="Indicadores"
-                      :items="planI.contenido.indicadores"
-                    ></registro-multiple>
+                    <registro-multiple name="Indicadores" :items="planI.contenido.indicadores"></registro-multiple>
                   </v-col>
                   <v-col cols="12" sm="12" md="12">
                     <div class="w-100 d-flex">
@@ -248,47 +206,26 @@
                       <h4
                         class="red--text"
                         v-if="$v.planI.contenido.metas.$error"
-                      >
-                        Debe tener como mínimo una meta registrada
-                      </h4>
+                      >Debe tener como mínimo una meta registrada</h4>
                     </div>
-                    <registro-multiple
-                      name="Metas"
-                      :items="planI.contenido.metas"
-                    ></registro-multiple>
+                    <registro-multiple name="Metas" :items="planI.contenido.metas"></registro-multiple>
                   </v-col>
                   <v-col cols="12" sm="12" md="12">
                     <div>
                       <v-card-text>
-                        <img
-                          width="240"
-                          height="170"
-                          :src="this.user.datos.firma"
-                          alt=""
-                        />
+                        <img width="240" height="170" :src="this.user.datos.firma" alt />
                       </v-card-text>
                     </div>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
-                    <v-btn
-                      block
-                      color="success"
-                      elevation="2"
-                      @click="registrarPlan"
-                    >
-                      <v-icon left>mdi-content-save-all-outline</v-icon>
-                      <span>Finalizar</span>
+                    <v-btn color="error" elevation="2" block @click="cerrarDialogo">
+                      <v-icon left>mdi-close-outline</v-icon>Cerrar
                     </v-btn>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
-                    <v-btn
-                      color="error"
-                      elevation="2"
-                      block
-                      @click="closeDialog"
-                    >
-                      <v-icon left>mdi-close-outline</v-icon>
-                      Cerrar
+                    <v-btn block color="success" elevation="2" @click="registrarPlan">
+                      <v-icon left>mdi-content-save-all-outline</v-icon>
+                      <span>Finalizar</span>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -302,16 +239,15 @@
 </template>
 <script>
 import axios from "axios";
-import vue2Dropzone from "vue2-dropzone";
-import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, between } from "vuelidate/lib/validators";
 import RegistroMultiple from "@/components/planIntervencion/General/RegistroMultiple.vue";
+import moment from 'moment'
 
 export default {
+  props:["residente"],
   components: {
-    vueDropzone: vue2Dropzone,
-    RegistroMultiple,
+    RegistroMultiple
   },
   data() {
     return {
@@ -323,7 +259,7 @@ export default {
         area: "educativa",
         idresidente: "",
         fase: "2",
-        estado: "creado", 
+        estado: "creado",
         creadordocumento: "",
         contenido: {
           car: "",
@@ -335,9 +271,9 @@ export default {
           estrategias: [],
           indicadores: [],
           metas: [],
-          titulo: "",
-          codigoDocumento: "",
-        },
+          titulo: "Plan de Intervención Individual",
+          codigoDocumento: ""
+        }
       },
       datemenu: false,
       step: 1,
@@ -346,88 +282,64 @@ export default {
       actividadAux: "",
       indicadorAux: "",
       metaAux: "",
-      fasesPlanIntervencion: {
-        fases: [1, 2],
-        area: "educativa",
-        documentoEstadosAnteriores: [
-          {
-            tipo: "InformeEducativoInicial",
-            estado: "Completo",
-          },
-          {
-            tipo: "PlanIntervencionIndividualEducativo",
-            estado: "Pendiente",
-          },
-        ],
-        documentoEstadosActuales: [
-          {
-            tipo: "PlanIntervencionIndividualEducativo",
-            estado: "Completo",
-          },
-          {
-            tipo: "PlanIntervencionIndividualEducativo",
-            estado: "Completo",
-          },
-        ],
-      },
     };
   },
   validations() {
     return {
       objetivoespecificoAux: {
-        minLength: minLength(10),
+        minLength: minLength(10)
       },
       aspectoAux: {
-        minLength: minLength(10),
+        minLength: minLength(10)
       },
       actividadAux: {
-        minLength: minLength(10),
+        minLength: minLength(10)
       },
       indicadorAux: {
-        minLength: minLength(10),
+        minLength: minLength(10)
       },
       metaAux: {
-        minLength: minLength(10),
+        minLength: minLength(10)
       },
       planI: {
         contenido: {
           car: {
             required,
-            minLength: minLength(3),
+            minLength: minLength(3)
           },
           trimestre: {
             required,
-            between: between(1, 4),
+            between: between(1, 4)
           },
           objetivoGeneral: {
-            required,
+            required
           },
           objetivoEspecificos: {
             required,
-            minLength: minLength(1),
+            minLength: minLength(1)
           },
           aspectosIntervencion: {
             required,
-            minLength: minLength(1),
+            minLength: minLength(1)
           },
           estrategias: {
             required,
-            minLength: minLength(1),
+            minLength: minLength(1)
           },
           indicadores: {
             required,
-            minLength: minLength(1),
+            minLength: minLength(1)
           },
           metas: {
             required,
-            minLength: minLength(1),
+            minLength: minLength(1)
           },
           titulo: {
             required,
-            minLength: minLength(4),
-          },
-        },
-      },
+            minLength: minLength(4)
+          }
+        }
+      }
     };
   },
   methods: {
@@ -442,20 +354,28 @@ export default {
           false
         );
       } else {
-
         this.planI.creadordocumento = this.user.id;
 
         this.planI.idresidente = this.residente.id;
-        this.planI.fase = this.residente.faseActual;
 
         let planIntervencionIndividual = {
           idresidente: this.residente.id,
-          planintervencionindividual: this.planI,
+          planintervencionindividual: this.planI
         };
 
-        await axios
+        console.log(planIntervencionIndividual);
+
+        this.mensaje(
+                "success",
+                "Listo",
+                "Plan registrado Satisfactoriamente",
+                "<strong>Volviendo al progreso<strong>",
+                true
+              );
+
+        /* await axios
           .post("/PlanIntervencion/educativo", planIntervencionIndividual)
-          .then((res) => {
+          .then(res => {
             this.planI = res.data;
             if (this.planI.id !== "") {
               this.mensaje(
@@ -467,7 +387,7 @@ export default {
               );
             }
           })
-          .catch((err) => console.log(err));
+          .catch(err => console.log(err)); */
       }
     },
     mensaje(icono, titulo, texto, footer, valid) {
@@ -475,8 +395,8 @@ export default {
         icon: icono,
         title: titulo,
         text: texto,
-        footer: footer,
-      }).then((res) => {
+        footer: footer
+      }).then(res => {
         if (valid) {
           this.$emit("register-complete");
         }
@@ -517,32 +437,19 @@ export default {
         this.metaAux = "";
       }
     },
-    closeDialog() {
-      this.$emit("close-dialog");
-    },
+    cerrarDialogo(){
+      this.$emit("cerrar-modal-docf1");
+      this.step = 1;
+      //this.observacionAux="";
+      //this.fichaIngreso = this.limpiarFichaIngreso();
+      //this.documentoEscolar ={titulo:"",file:""};
+      this.$v.$reset();
+    },   
   },
   computed: {
     ...mapGetters(["user"]),
     verifyColor() {
       return "red";
-    },
-    getTitleByFaseResident() {
-      if (this.residente != null) {
-        if (this.residente.faseActual != "") {
-          if (this.residente.faseActual == "1") {
-            this.planI.contenido.titulo = "Plan de Intervención Educativa";
-          } else {
-            this.planI.contenido.titulo =
-              "Plan de Intervención Individual " + this.residente.residente;
-          }
-
-          return this.planI.contenido.titulo;
-        } else {
-          return "";
-        }
-      } else {
-        return "";
-      }
     },
     errorObjetivoEspecifico() {
       const errors = [];
@@ -709,10 +616,31 @@ export default {
       }
 
       return errors;
-    },
+    }
   },
+  filters:{
+        extencionString: (cadena)=>{
+          return cadena.length > 35? `${cadena.substring(0,34)}...` : cadena;
+        },numeracionListaString: (index, etiqueta)=>{
+           return `${etiqueta} ${++index}: `;
+        },generarAvatar:(datos)=>{
+          return `${datos.nombre.substring(0,1)}${datos.apellido.substring(0,1)}`;
+        },fomatoFecha: (fecha) =>{
+            var formato = moment(fecha);
+            return formato.format("llll");
+        }
+    },
   created() {
-      
+    //Calculo de edad
+    var hoy = new Date();
+    var cumpleanos = new Date(this.residente.fechanacimiento);
+    this.planI.contenido.edad = hoy.getFullYear() - cumpleanos.getFullYear();
+
+    this.objetivoespecificoAux = "";
+    this.aspectoAux = "";
+    this.actividadAux = "";
+    this.indicadorAux = "";
+    this.metaAux = "";
   }
 };
 </script>

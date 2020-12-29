@@ -63,69 +63,102 @@
             <VisualizadorResidente :residente="residente"></VisualizadorResidente>
 
             <v-card class="card" style="margin: 20px">
-                <v-card-title
-                    class="justify-center"
-                    >Progreso de Fase 2</v-card-title>
-                <v-timeline align-top :dense="$vuetify.breakpoint.smAndDown">
-                    <v-timeline-item
-                        :color="listaFases[1].educativa.documentos[0].estado == 'Completo' ? 'success' : listaFases[1].educativa.documentos[0].indice == 'actual' ? 'warning' : 'info'"
-                        icon="mdi-buffer"
-                    >
-                        <v-card :class="[listaFases[1].educativa.documentos[0].estado == 'Completo' ? 'fondoverde' : listaFases[1].educativa.documentos[0].indice == 'actual' ? 'fondobeige' : 'fondoazul']" dark>
-                        <v-card-title
-                        class="justify-center"
-                        style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
-                        >Plan de intervención Individual Educativo</v-card-title>
-
-                        <!-- <v-btn
-                          v-if="listaFases[1].educativa.documentos[0].estado == 'Completo'"
-                          block color="success" style="min-width: 180px!important; margin: 0 auto; margin-top: 20px;">
-                            <v-icon left dark>mdi-checkbox-marked-circle</v-icon>Registrar
+              <v-card-title class="justify-center">Progreso de Fase 2</v-card-title>
+              <v-timeline align-top :dense="$vuetify.breakpoint.smAndDown">
+                <v-timeline-item
+                  v-for="(documento,i) in fase.educativa.documentos"
+                  :key="i"
+                  :color="obtenerColorTimeLineItem(documento)"
+                  icon="mdi-buffer"
+                >
+                  <v-card :class="obtenerClaseTimeLineItem(documento)" dark>
+                    <v-card-title
+                      class="justify-center"
+                      style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
+                    >{{titulosDoc[documento.tipo].titulo}}</v-card-title>
+                    <template v-if="documento.indice == 'anterior'">
+                      <v-col cols="6" style="padding:2%">
+                        <v-btn color="warning" rounded block>
+                          <v-icon left>mdi-Edit</v-icon>Modificar
                         </v-btn>
-
+                      </v-col>
+                      <v-col cols="6" style="padding:2%">
+                        <v-btn color="info" rounded block>
+                          <v-icon left>mdi-information</v-icon>Ver
+                        </v-btn>
+                      </v-col>
+                    </template>
+                    <template v-else-if="documento.indice == 'actual'">
+                      <v-col cols="12">
                         <v-btn
-                          v-else
-                          block color="success" style="min-width: 180px!important; margin: 0 auto; margin-top: 20px;">
-                            <v-icon left dark>mdi-checkbox-marked-circle</v-icon>Registrar
-                        </v-btn> -->
-
-                        <template
-                          v-if="listaFases[1].educativa.documentos[0].indice == 'anterior'"
+                          color="success"
+                          block
+                          rounded
+                          @click="abrirDialogoRegistroDocumento(titulosDoc[documento.tipo].registrar)"
                         >
-                          <v-col cols="3">
-                            <v-btn color="warning" rounded block>
-                              <v-icon left> mdi-Edit </v-icon>
-                              Modificar
-                              </v-btn
-                            >
-                          </v-col>
-                          <v-col cols="3">
-                            <v-btn color="info" rounded block>
-                              <v-icon left> mdi-information</v-icon>
-                              Ver</v-btn
-                            >
-                          </v-col>
-                        </template>
-                        <template 
-                          v-else-if="listaFases[1].educativa.documentos[0].indice == 'actual'"
+                          <v-icon left>mdi-book-plus</v-icon>
+                          <span>Registrar</span>
+                        </v-btn>
+                      </v-col>
+                    </template>
+                    <template v-else>
+                      <v-col cols="12">
+                        <div class="docs-siguiente">
+                          <span>Proximo a Registrar</span>
+                        </div>
+                      </v-col>
+                    </template>
+                  </v-card>
+                </v-timeline-item>
+              </v-timeline>
+
+              <!-- <v-timeline align-top :dense="$vuetify.breakpoint.smAndDown">
+                  <v-timeline-item
+                      :color="listaFases[1].educativa.documentos[0].estado == 'Completo' ? 'success' : listaFases[1].educativa.documentos[0].indice == 'actual' ? 'warning' : 'info'"
+                      icon="mdi-buffer"
+                  >
+                      <v-card :class="[listaFases[1].educativa.documentos[0].estado == 'Completo' ? 'fondoverde' : listaFases[1].educativa.documentos[0].indice == 'actual' ? 'fondobeige' : 'fondoazul']" dark>
+                      <v-card-title
+                      class="justify-center"
+                      style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
+                      >Plan de intervención Individual Educativo</v-card-title>
+                      <template
+                        v-if="listaFases[1].educativa.documentos[0].indice == 'anterior'"
+                      >
+                        <v-col cols="3">
+                          <v-btn color="warning" rounded block>
+                            <v-icon left> mdi-Edit </v-icon>
+                            Modificar
+                            </v-btn
                           >
-                          <v-col cols="6" >
-                            <v-btn color="success" block rounded>
-                              <v-icon left> mdi-book-plus </v-icon>
-                                <span>Registrar</span>
-                              </v-btn
-                            >
-                          </v-col>
-                        </template>
-                        <template v-else>
-                          <v-col cols="6" >
-                            <div class="docs-siguiente">
-                              <span>Proximo a Registrar</span>
-                            </div>
-                          </v-col>
-                        </template>
-                        </v-card>
-                    </v-timeline-item>
+                        </v-col>
+                        <v-col cols="3">
+                          <v-btn color="info" rounded block>
+                            <v-icon left> mdi-information</v-icon>
+                            Ver</v-btn
+                          >
+                        </v-col>
+                      </template>
+                      <template 
+                        v-else-if="listaFases[1].educativa.documentos[0].indice == 'actual'"
+                        >
+                        <v-col cols="6" >
+                          <v-btn color="success" block rounded>
+                            <v-icon left> mdi-book-plus </v-icon>
+                              <span>Registrar</span>
+                            </v-btn
+                          >
+                        </v-col>
+                      </template>
+                      <template v-else>
+                        <v-col cols="6" >
+                          <div class="docs-siguiente">
+                            <span>Proximo a Registrar</span>
+                          </div>
+                        </v-col>
+                      </template>
+                      </v-card>
+                  </v-timeline-item>
 
                     <v-timeline-item
                         :color="listaFases[1].educativa.documentos[1].estado == 'Completo' ? 'success' : listaFases[1].educativa.documentos[1].indice == 'actual' ? 'warning' : 'info'"
@@ -174,32 +207,9 @@
                         </template>
                         </v-card>
                     </v-timeline-item>
-                </v-timeline>
+              </v-timeline>-->
             </v-card>
           </v-card>
-
-          <!-- <v-row>
-            <v-col xs="12" sm="6" md="6" lg="4" xl="4">
-              <v-card
-                class="pa-4 mx-auto"
-                :class="[listaFases[1].educativa.documentos[0].estado == 'Completo' ? 'fondoverde' : 'fondobeige']"
-                max-width="90%"
-                style="cursor: pointer"
-              >
-                <v-card-title
-                  class="justify-center"
-                  style="font-size: 13px;text-align: center;word-break: normal; padding-bottom: 0;"
-                ></v-card-title>
-                <v-card-title
-                  class="justify-center"
-                  style="font-size: 10px;text-align: center;word-break: normal; padding: 0;"
-                >Plan de intervencion individual educativo</v-card-title>
-                <v-btn block class="my-button" color="success">
-                  <v-icon left dark>mdi-checkbox-marked-circle</v-icon>Registrar
-                </v-btn>
-              </v-card>
-            </v-col>
-          </v-row> -->
         </v-container>
       </v-sheet>
       <v-navigation-drawer v-model="drawer" absolute temporary>
@@ -225,43 +235,58 @@
           </v-list-item-group>
         </v-list>
       </v-navigation-drawer>
+      <!--Dialogo de Registro de Fichas de Ingreso-->
+      <v-dialog v-model="dialogoRegistroDocumentos" persistent max-width="850px">
+        <v-component
+          :is="selectorRegistro"
+          :residente="residente"
+          @cerrar-modal-docf1="cerrarDialogoRegistroDocF1"
+        ></v-component>
+      </v-dialog>
     </template>
   </div>
 </template>
 <script>
 import VisualizadorResidente from "@/components/residentes/VisualizadorResidente.vue";
+import RegistrarPlanIntervencion from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/PlanIntervencion/RegistrarPlanIntervencion.vue";
+import RegistrarInformeEducativoEvolutivo from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/InformeEvolutivo/RegistrarInformeEducativoEvolutivo.vue";
+import RegistrarDocPromocion from "@/components/DocumentosInterfazTratamiento/Fase 2/RegistrarDocPromocion.vue";
 
 import axios from "axios";
 export default {
   name: "ProgresoResidente",
-  components: { VisualizadorResidente },
+  components: {
+    VisualizadorResidente,
+    //Plan
+    RegistrarPlanIntervencion,
+    //Informe
+    RegistrarInformeEducativoEvolutivo,
+    //Doc Trans
+    RegistrarDocPromocion
+  },
   data() {
     return {
       drawer: false,
       residente: "",
       residentesFase: [],
-      listaFases: [],
+      fase: [],
       cargaProgreso: false,
-      fases: [
-        {
-          id: 1,
-          titulo: "Fase I: Acogida",
-          descripcion:
-            "Se raliza el registro de déficit y fortalezas del niño, niña y adolescente y la evaluación preliminar de sus necesidades de atención e incidendencia.",
-          imagenUrl: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-          interfazUrl: "/dashboard/Fase1",
-          boton: { texto: "Ir a la Fase I", icono: "mdi-cloud-upload" }
+      selectorRegistro: "",
+      dialogoRegistroDocumentos: false,
+      titulosDoc: {
+        PlanIntervencionIndividualEducativo: {
+          titulo: "Plan Intervencion Individual Educativo",
+          registrar: "RegistrarPlanIntervencion",
+          modificar: "",
+          visualizar: ""
         },
-        {
-          id: 2,
-          titulo: "Fase II: Desarrollo",
-          descripcion:
-            "se ejecuta la intervención propiamente dicha, orientada a la reparación emocional y social de los NNA y sus familias, con una duración promedio de doce meses",
-          imagenUrl: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-          interfazUrl: "/dashboard/Fase1",
-          boton: { texto: "Ir a la Fase II", icono: "mdi-cloud-upload" }
-        }
-      ]
+        InformeEducativoEvolutivo: {
+          titulo: "Informe Educativo Evolutivo",
+          registrar: "RegistrarInformeEducativoEvolutivo",
+          modificar: "",
+          visualizar: ""
+        },
+      }
     };
   },
   async created() {
@@ -277,14 +302,16 @@ export default {
       .get(miruta)
       .then(res => {
         this.residente = res.data;
-        console.log("Dats compltos");
+        this.residente.id = this.$route.params.id;
+        console.log("Datos completos");
         console.log(this.residente);
       })
       .catch(err => console.log(err));
-    this.listaFases = this.obtenerSecuenciaDocumentos();
+    var quees = this.obtenerSecuenciaDocumentos();
+    this.fase = quees[1];
     this.cargaProgreso = true;
-    console.log("LSITA FASES");
-    console.log(this.listaFases);
+    console.log("LISTA FASES");
+    console.log(quees);
   },
   methods: {
     obtenerSecuenciaDocumentos() {
@@ -329,25 +356,27 @@ export default {
       });
       return listaDocumentos;
     },
-    estadoFase(fase) {
-      var faseActual = this.residente.progreso.length;
-      if (fase.fase < faseActual) {
-        //faseSuperada
-        return "superada";
-      } else if (fase.fase == faseActual) {
-        //faseActual
-        return "actual";
-      } else {
-        //fase proxima
-        return "proxima";
-      }
+    obtenerClaseTimeLineItem(documento) {
+      return documento.indice == "anterior"
+        ? "success"
+        : documento.indice == "actual"
+        ? "warning"
+        : "info";
     },
-    obtenerTipoAlertDocumento(documento) {
-      if (documento.indice == "actual") {
-        return "warning";
-      } else if (documento.indice == "anterior") {
-        return "success";
-      } else return "info";
+    obtenerColorTimeLineItem(documento) {
+      return documento.indice == "anterior"
+        ? "success"
+        : documento.indice == "actual"
+        ? "warning"
+        : "info";
+    },
+    abrirDialogoRegistroDocumento(componente) {
+      this.selectorRegistro = componente;
+      this.dialogoRegistroDocumentos = true;
+    },
+    cerrarDialogoRegistroDocF1() {
+      this.dialogoRegistroDocumentos = false;
+      this.selectorRegistro = "";
     },
     navegarto(ruta) {
       this.$router.push(ruta);
