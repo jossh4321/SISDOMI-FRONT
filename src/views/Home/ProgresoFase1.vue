@@ -41,7 +41,7 @@
             color="white"
             label
             text-color="primary"
-            @click="navegarto('/dashboard/Fase2')"
+            @click="navegarto('/dashboard/Fase1')"
           >
             <v-icon left>mdi-check</v-icon>Fase 1
           </v-chip>>
