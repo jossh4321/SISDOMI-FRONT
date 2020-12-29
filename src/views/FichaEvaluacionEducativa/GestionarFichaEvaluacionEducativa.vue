@@ -37,7 +37,7 @@
              <RegistrarFichaDiagnosticoEducativo
              :listaresidentes ="listaresidentes"
              :listaeducadores="listaeducadores"
-             
+             @cargarSeguimiento="obtenerEvaluacionDiagnosticoEducativo()"
              @close-dialog-save="closeDialogRegistrar()"
              >
              </RegistrarFichaDiagnosticoEducativo>
@@ -68,7 +68,7 @@
           :listaresidentes ="listaresidentes"
           :listaeducadores="listaeducadores"
           :dialogodetalle ="dialogoactualizacion"
-          
+          @cargarSeguimiento="obtenerEvaluacionDiagnosticoEducativo()"
 
           @close-dialog-edit="closeDialogModificar()"
         >
