@@ -650,7 +650,7 @@ export default {
       tallerFormativoE:{
         creadordocumento: "",
         tipo: "TallerFormativoEgreso",
-        fechacreacion: new Date(),
+        fechacreacion: null,
         area: "educativa",
         fase: "3",
         titulo: "",

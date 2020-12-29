@@ -210,6 +210,21 @@
                   Obligatoriamente</v-card-text
                 >
               </v-card>
+               <div>
+                <vue-dropzone
+                  ref="myVueDropzone"
+                  @vdropzone-success="afterSuccessFirma"
+                  @vdropzone-removed-file="afterRemovedFirma"
+                  id="dropzone"
+                  :options="dropzoneOptionsFirma"
+                >
+                </vue-dropzone>
+              </div>
+              <v-card v-if="errorFirma" color="red">
+                <v-card-text class="text-center" style="color: white"
+                  >Debe subir la firma del usuario obligatoriamente</v-card-text
+                >
+              </v-card>
               <v-divider class="divider-custom"></v-divider>
               <v-row>
                 <v-col>
@@ -261,7 +276,18 @@ export default {
         addRemoveLinks: true,
         dictDefaultMessage:
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
-      }, //utilizado en los formularios como un prop
+      }, 
+      dropzoneOptionsFirma: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFilesize: 3.0,
+        maxFiles: 1,
+        acceptedFiles: ".jpg, .png, jpeg",
+        headers: { "My-Awesome-Header": "header value" },
+        addRemoveLinks: true,
+        dictDefaultMessage:
+          "Seleccione la firma de su dispositivo o arrástrela aquí",
+      }, 
       usuario: {
         id: "",
         usuario: "",
@@ -277,6 +303,7 @@ export default {
           direccion: "",
           email: "",
           imagen: "",
+          firma: ""
         },
       },
     };
@@ -327,12 +354,20 @@ export default {
     afterSuccess(file, response) {
       console.log(file);
       this.usuario.datos.imagen = file.dataURL.split(",")[1];
-      this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
-      //console.log(file.dataURL.split(",")[1]);
+      this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];      
     },
     afterRemoved(file, error, xhr) {
       this.usuario.datos.imagen = "";
       this.$v.usuario.datos.imagen.$model = "";
+    },
+    afterSuccessFirma(file, response) {
+      console.log(file);
+      this.usuario.datos.firma = file.dataURL.split(",")[1];
+      this.$v.usuario.datos.firma.$model = file.dataURL.split(",")[1];      
+    },
+    afterRemovedFirma(file, error, xhr) {
+      this.usuario.datos.firma = "";
+      this.$v.usuario.datos.firma.$model = "";
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -477,6 +512,12 @@ export default {
         ? true
         : false;
     },
+    errorFirma() {
+      return this.$v.usuario.datos.firma.required == false &&
+        this.$v.usuario.datos.firma.$dirty == true
+        ? true
+        : false;
+    },
   },
   validations() {
     return {
@@ -527,6 +568,9 @@ export default {
           imagen: {
             required,
           },
+          firma: {
+            required,
+          },
         },
       },
     };
@@ -561,5 +605,8 @@ export default {
 
 .inputTextField {
   border-color: green;
+}
+div#dropzone {
+  margin: 10px 0px 10px 0px;
 }
 </style>

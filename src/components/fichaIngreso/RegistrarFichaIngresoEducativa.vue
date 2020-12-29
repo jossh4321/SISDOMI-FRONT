@@ -492,9 +492,18 @@
                                </v-card>
                         </v-card>
                   <v-row>
-                    <v-col :cols="12" align="left">
+                    <v-col :cols="12" align="center">
                       <div>
-                        <vue-dropzone
+
+                        <v-card-text>
+                              <img
+                                width="240"
+                                height="170"
+                                :src="this.user.datos.firma"
+                                alt=""
+                              />
+                        </v-card-text>
+                        <!-- <vue-dropzone
                           ref="myVueDropzoneFirma"
                           @vdropzone-success="afterSuccessFirma"
                           @vdropzone-removed-file="afterRemovedFirma"
@@ -502,12 +511,12 @@
                           :options="dropzoneOptionsFirma"
                         >
                         </vue-dropzone>
-                        <v-card v-if="errorFirma" class="error-card" color="red">
+                         <v-card v-if="errorFirma" class="error-card" color="red">
                           <v-card-text class="text-center" style="color: white"
                             >Debe Subir una firma obligatoriamente
                             </v-card-text
                           >
-                        </v-card>
+                        </v-card>-->
                       </div>
                     </v-col>
                   </v-row>
@@ -602,7 +611,7 @@ export default {
             tipo: "FichaEducativaIngreso",
             historialcontenido: [],
             creadordocumento: "",
-            fechacreacion: "",
+            fechacreacion: null,
             area: "educativa",
             fase: "1",
             idresidente: "",
@@ -623,11 +632,11 @@ export default {
               },
               responsableTurno: "",
               observaciones:[],
-              firma:{
+              /*firma:{
                   urlfirma:"",
                   nombre:"",
                   cargo:""
-              },
+              },*/
               codigoDocumento: "",
             },
           },
@@ -663,11 +672,11 @@ export default {
           this.$v.documentoEscolar.$reset();
       },eliminarDocumentoEscolar(indice){
           this.fichaIngreso.contenido.ieprocedencia.documentosEscolares.splice(indice,1);
-      },afterSuccessFirma(file, response){
+      },/*afterSuccessFirma(file, response){
           this.fichaIngreso.contenido.firma.urlfirma = file;
       },afterRemovedFirma(){
 
-      },afterSuccessDocumentos(file, response){
+      },*/afterSuccessDocumentos(file, response){
              this.documentoEscolar.file = file;
       },afterRemovedDocumentos(){
   
@@ -675,7 +684,7 @@ export default {
             this.$emit("cerrar-modal-registro-ficha-ingreso");
             this.step = 1;
             this.$refs.myVueDropzoneDocumentosEscolares.removeAllFiles();    
-            this.$refs.myVueDropzoneFirma.removeAllFiles();  
+            //this.$refs.myVueDropzoneFirma.removeAllFiles();  
             this.observacionAux="";
             this.fichaIngreso = this.limpiarFichaIngreso();
             this.documentoEscolar ={titulo:"",file:""};
@@ -692,14 +701,13 @@ export default {
                 "<strong>Verifique los campos Ingresados<strong>"
               );
           }else{
-            var url = await this.registrarFirma(this.fichaIngreso.contenido.firma.urlfirma);
+            /*var url = await this.registrarFirma(this.fichaIngreso.contenido.firma.urlfirma);
             this.fichaIngreso.contenido.firma={
               urlfirma : url,
               nombre: this.user.usuario,
               cargo: this.user.rol.nombre
-            };
-            this.fichaIngreso.creadordocumento = this.user.id;
-            this.fichaIngreso.fechacreacion = new Date().toISOString();
+            };*/
+            this.fichaIngreso.creadordocumento = this.user.id;            
             this.fichaIngreso.contenido.ieprocedencia.documentosEscolares = await this.registrarDocumentosEscolares();
             //fichaeducativaingreso
             await axios
@@ -782,7 +790,7 @@ export default {
                 tipo: "FichaEducativaIngreso",
                 historialcontenido: [],
                 creadordocumento: "",
-                fechacreacion: "",
+                fechacreacion: null,
                 area: "educativa",
                 fase: "acogida",
                 idresidente: "",
@@ -945,12 +953,12 @@ export default {
           this.$v.fichaIngreso.contenido.observaciones.$dirty == true
           ? true
           : false;
-    },errorFirma() {
+    },/*errorFirma() {
         return this.$v.fichaIngreso.contenido.firma.urlfirma.required == false &&
           this.$v.fichaIngreso.contenido.firma.urlfirma.$dirty == true
           ? true
           : false;
-      },errorResidente(){
+      },*/errorResidente(){
           const errors = [];
       if (!this.$v.fichaIngreso.idresidente.$dirty) return errors;
           !this.$v.fichaIngreso.idresidente.required &&
@@ -1002,11 +1010,12 @@ export default {
               observaciones: {
                 required
               },
+              /*
               firma: {
                  urlfirma:{
                   required,
                 }
-              }
+              }*/
             },
       },documentoEscolar:{
         titulo:{required,
@@ -1036,5 +1045,8 @@ export default {
 .dropzone-custom-title {
   margin-top: 0;
   color: #00b782;
+}
+.swal-modal {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 </style>

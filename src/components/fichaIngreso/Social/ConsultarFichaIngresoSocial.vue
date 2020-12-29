@@ -623,7 +623,7 @@
                           <v-card-title>Datos del Informante</v-card-title>
                           <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
                               <v-text-field
-                                  v-model="this.fichaIngreso.contenido.firma.nombre"
+                                  v-model="this.usuario"
                                   label="Autor de la ficha de ingreso"
                                   outlined
                                   color="info"
@@ -632,7 +632,7 @@
                           </v-card >
                                <v-card class="subcard" color="#e6f3ff">
                                    <v-text-field
-                                    v-model="this.fichaIngreso.contenido.firma.cargo"
+                                    v-model="this.cargo"
                                     label="Cargo del Autor"
                                     outlined
                                     color="info"
@@ -641,14 +641,22 @@
                                </v-card>
                         </v-card>
                   <v-row>
-                    <v-col :cols="12" align="left">
+                    <v-col :cols="12" align="center">
                       <div>
-                         <img
+                        <v-card-text>
+                              <img
+                                width="240"
+                                height="170"
+                                :src="this.firma"
+                                alt=""
+                              />
+                        </v-card-text>
+                         <!--<img
                            width="100%"
                            height="100%"
                            :src="this.fichaIngreso.contenido.firma.urlfirma"
                            alt=""
-                           />
+                           />-->
                       </div>
                     </v-col>
                   </v-row>
@@ -731,12 +739,27 @@ export default {
       urlfirma: "",
       firmas: { urlfirma: "", nombre: "", cargo: "" },
 
-      imagen: ""
+      imagen: "",
+      usuario: "",
+        cargo:"",
+        firma:"",
     };
   },
-
+  async created() {
+      this.obtenerCreador();
+  },
   methods: {
     ...mapMutations(["replaceFichaIngreso"]),
+    async obtenerCreador() {
+        await axios
+        .get("/usuario/rol/permiso?id=" + this.fichaIngreso.creadorDocumento.id)
+        .then((x) => {
+          this.usuario = x.data.datos.nombre + " " + x.data.datos.apellido;
+          this.cargo = x.data.rol.nombre;
+          this.firma = x.data.datos.firma;
+        })
+        .catch((err) => console.log(err));
+      },
     cerrarDialogo(){     
       this.$emit("cerrar-modal-detalle-ficha-ingreso");
       this.step = 1;

@@ -115,6 +115,7 @@
           v-if="dialogoISEactualizacion"
           :informe="informe"
           :titulo="titulo"
+          :listasociales="listasociales"
           :listaresidentes="listaresidentes"
           @close-dialog-update="closeDialogActualizar()"
         >
@@ -126,6 +127,7 @@
           :informe="informe"
           :titulo="titulo"
           :listaresidentes="listaresidentes"
+          :listapsicologos="listapsicologos"
           @close-dialog-update="closeDialogActualizar()"
         >
         </ActualizarInformePsicologicoEvolutivo>

@@ -137,7 +137,7 @@ export default {
         ],
         idresidente: "",
         idcreador: "",
-        fechacreacion: new Date(),
+        fechacreacion: null,
         area: "",
       },
       dropzoneOptions: {
@@ -247,7 +247,7 @@ export default {
         ],
         idresidente: "",
         idcreador: "",
-        fechacreacion: new Date(),
+        fechacreacion: null,
         area: "",
       };
     },

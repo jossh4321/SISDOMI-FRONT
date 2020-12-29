@@ -122,4 +122,8 @@ export default {
   z-index: 0;
   background-color: #EC242C;
 }
+
+.swal2-container {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif!important;
+}
 </style>

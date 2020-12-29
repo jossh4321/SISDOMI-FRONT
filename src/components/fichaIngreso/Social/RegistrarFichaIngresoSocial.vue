@@ -1042,9 +1042,17 @@
                                </v-card>
                         </v-card>
                   <v-row>
-                    <v-col :cols="12" align="left">
+                    <v-col :cols="12" align="center">
                       <div>
-                        <vue-dropzone
+                        <v-card-text>
+                              <img
+                                width="240"
+                                height="170"
+                                :src="this.user.datos.firma"
+                                alt=""
+                              />
+                        </v-card-text>
+                        <!-- <vue-dropzone
                           ref="myVueDropzone"
                           @vdropzone-success="afterSuccess2"
                           @vdropzone-removed-file="afterRemoved2"
@@ -1056,8 +1064,8 @@
                           <v-card-text class="text-center" style="color: white"
                             >Debe Subir una firma obligatoriamente
                             </v-card-text
-                          >
-                        </v-card>
+                          > 
+                        </v-card>-->
                       </div>
                     </v-col>
                   </v-row>
@@ -1176,7 +1184,7 @@ export default {
         tipo: "FichaSocialIngreso",
         historialcontenido: [],
         creadordocumento: "",
-        fechacreacion: new Date(),
+        fechacreacion: null,
         area: "social",
         fase: "1",
         idresidente: "",
@@ -1214,11 +1222,11 @@ export default {
           },
           diagnosticosocial: "",
           planintervencion: "",
-          firma :{
+          /*firma :{
             urlfirma:"",
             nombre:"",
             cargo:""
-          },
+          },*/
           codigodocumento: ""
         }
       },
@@ -1232,7 +1240,7 @@ export default {
       //limpiar los campos que contienen los datos acumulados
       this.$emit("cerrar-modal-registro-ficha-ingreso");
       this.step = 1;  
-      this.$refs.myVueDropzone.removeAllFiles();
+      //this.$refs.myVueDropzone.removeAllFiles();
       this.limpiarFichaIngreso();
       this.limpiarCampos();
       this.$v.$reset();
@@ -1264,11 +1272,11 @@ export default {
     async registrarFichaIngresoSocial() {
       //await this.sendPDFFiles();
       this.fichaIngreso.creadordocumento = this.user.id;
-      this.fichaIngreso.contenido.firma = {
+      /*this.fichaIngreso.contenido.firma = {
         urlfirma : this.fichaIngreso.contenido.firma.urlfirma,
         nombre: this.user.usuario,
         cargo: this.user.rol.nombre
-      };
+      };*/
 
       this.$v.fichaIngreso.$touch();
       if (this.$v.fichaIngreso.$invalid) {
@@ -1410,13 +1418,13 @@ export default {
     },
     /*cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
-    },*/
+    },
     afterSuccess2(file, response) {
       this.fichaIngreso.contenido.firma.urlfirma = file.dataURL.split(",")[1];
     },
     afterRemoved2(file, error, xhr) {
       this.fichaIngreso.contenido.firma.urlfirma = "";
-    },
+    },*/
     //Del modal de composicion familiar
     modalRegistrar() {
       this.accion = "registrar";
@@ -1599,7 +1607,7 @@ export default {
         tipo: "FichaSocialIngreso",
         historialcontenido: [],
         creadordocumento: "",
-        fechacreacion: new Date(),
+        fechacreacion: null,
         area: "social",
         fase: "acogida",
         idresidente: "",
@@ -1884,12 +1892,12 @@ export default {
         );
       return errors;
     },
-    errorFirma() {
+    /*errorFirma() {
         return this.$v.fichaIngreso.contenido.firma.urlfirma.required == false &&
           this.$v.fichaIngreso.contenido.firma.urlfirma.$dirty == true
           ? true
           : false;
-      },
+      },*/
     //validaciones para listas
     errorTextomotivoingreso() {
       const errors = [];
@@ -2144,7 +2152,7 @@ export default {
           planintervencion: {
             required
           },
-          firma: {
+          /*firma: {
             nombre: {
               required
             },
@@ -2154,7 +2162,7 @@ export default {
             urlfirma: {
               required,
             },
-          }
+          }*/
         }
       },
       motivoIngreso:{

@@ -271,7 +271,15 @@
                 </v-col>
                 <v-col cols="12" sm="12" md="12">
                   <div>
-                    <vue-dropzone
+                    <v-card-text>
+                    <img
+                      width="240"
+                      height="170"
+                      :src="this.user.datos.firma"
+                      alt=""
+                    />
+                  </v-card-text>
+                    <!-- <vue-dropzone
                       ref="myVueDropzone"
                       @vdropzone-success="afterSuccess"
                       @vdropzone-removed-file="afterRemoved"
@@ -281,7 +289,7 @@
                     </vue-dropzone>
                     <v-alert type="error" v-if="!$v.firmaAux.required">
                       Debe ingresar una firma para el registro
-                    </v-alert>
+                    </v-alert> -->
                   </div>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
@@ -328,7 +336,7 @@ export default {
         id: "",
         tipo: "PlanIntervencionIndividualSocial",
         historialcontenido: [],
-        fechacreacion: new Date(),
+        fechacreacion: null,
         area: "social",
         idresidente: "",
         fase: "",
@@ -341,13 +349,13 @@ export default {
           estrategias: [],
           indicadores: [],
           metas: [],
-          firmas: [
+          /*firmas: [
             {
               urlfirma: "",
               nombre: "",
               cargo: "",
             },
-          ],
+          ],*/
           codigoDocumento: "",
           titulo: "",
         },
@@ -438,10 +446,10 @@ export default {
             minLength: minLength(4),
           },
         },
-      },
+      },/*
       firmaAux: {
         required,
-      },
+      },*/
     };
   },
   watch: {
@@ -498,7 +506,7 @@ export default {
           false
         );
       } else {
-        for (let index = 0; index < this.firmaAux.length; index++) {
+        /*for (let index = 0; index < this.firmaAux.length; index++) {
           let formData = new FormData();
 
           formData.append("file", this.firmaAux[index]);
@@ -513,7 +521,7 @@ export default {
             .catch((err) => {
               console.error(err);
             });
-        }
+        }*/
 
         this.planI.creadordocumento = this.user.id;
         this.planI.idresidente = this.residente.id;
@@ -540,7 +548,7 @@ export default {
           })
           .catch((err) => console.log(err));
       }
-    },
+    },/*
     afterSuccess(file, response) {
       this.firmaAux.push(file);
     },
@@ -550,7 +558,7 @@ export default {
       if (indexFile != -1) {
         this.firmaAux.splice(indexFile, 1);
       }
-    },
+    },*/
     addObjetivos() {
       if (this.objetivosAux != "" && !this.$v.objetivosAux.$invalid) {
         this.planI.contenido.objetivos.push(this.objetivosAux);

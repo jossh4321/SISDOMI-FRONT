@@ -121,20 +121,20 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    v-model="informe.fechacreacion"
+                    v-model="informe.contenido.fechaevaluacion"
                     label="Fecha de Evaluación"
                     prepend-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
                     v-on="on"
                     color="#009900"
-                    @input="$v.informe.fechacreacion.$touch()"
-                    @blur="$v.informe.fechacreacion.$touch()"
+                    @input="$v.informe.contenido.fechaevaluacion.$touch()"
+                    @blur="$v.informe.contenido.fechaevaluacion.$touch()"
                     :error-messages="errorFechaEvaluacion"
                   ></v-text-field>
                 </template>
                 <v-date-picker
-                  v-model="informe.fechacreacion"
+                  v-model="informe.contenido.fechaevaluacion"
                   @input="menu2 = false"
                   locale="es-es"
                 ></v-date-picker>
@@ -404,160 +404,47 @@
               </v-card>
 
               <v-card
-                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
-              >
-                <v-card
-                  elevation="0"
-                  style="background-color:#EAEAEA"
-                  height="70"
+                  style="margin-top:30px;margin-bottom:10px;padding:5px 5px;background-color:#EAEAEA"
                 >
-                  <v-row style="margin:1%;heigh:100%" align="center">
-                    <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model="firmas.nombre"
-                        label="Nombre"
-                        color="#009900"
-                        @input="$v.firmas.nombre.$touch()"
-                        @blur="$v.firmas.nombre.$touch()"
-                        :error-messages="errorNombreFirma"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col :cols="4" align="left">
-                      <v-text-field
-                        v-model="firmas.cargo"
-                        label="Cargo"
-                        color="#009900"
-                        @input="$v.firmas.cargo.$touch()"
-                        @blur="$v.firmas.cargo.$touch()"
-                        :error-messages="errorCargoFirma"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col :cols="4" align="right">
-                      <v-btn fab small dark color="green" @click="agregarFirma">
-                        <v-icon dark>
-                          mdi-plus
-                        </v-icon>
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-card>
-                <v-row>
-                  <v-col :cols="12" align="right">
-                    <div>
-                      <vue-dropzone
-                        ref="myVueDropzone"
-                        @vdropzone-success="afterSuccess"
-                        @vdropzone-removed-file="afterRemoved"
-                                             @vdropzone-complete="afterComplete"
-
-                        id="dropzone"
-                        :options="dropzoneOptions"
-                      >
-                      </vue-dropzone>
-                    </div>
-                    <v-card v-if="errorUrlFirma" color="red">
-                      <v-card-text class="text-center" style="color: white"
-                        >Debe Subir una imagen de la firma
-                        obligatoriamente</v-card-text
-                      >
-                    </v-card>
-                    <v-divider class="divider-custom"></v-divider>
-                  </v-col>
-                </v-row>
-                <v-card
-                  color="#FAFAFA"
-                  style="margin-top:5px"
-                  height="60"
-                  v-for="(item, index) in informe.contenido.firmas"
-                  :key="index"
-                >
-                  <v-row style="margin-left:10px;heigh:100%" align="center">
-                    <v-col :cols="8">
-                      <article>
-                        <img
-                          style="margin-right:5px;width:6% "
-                          src="https://www.flaticon.es/svg/static/icons/svg/996/996443.svg"
-                          alt="imagen usuario"
-                        />
-                        <span style="font-size:18px">
-                          {{ item.nombre }} {{ item.cargo }}</span
-                        >
-                      </article>
-                    </v-col>
-                    <v-col :cols="2" align="center">
-                      <template>
-                        <v-btn
-                          fab
-                          icon=""
-                          x-small
-                          dark
-                          color="#EAEAEA"
-                          @click="verFirma(index)"
-                        >
-                          <img
-                            style="width:25% "
-                            src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
-                            alt="firma"
-                          />
-                        </v-btn>
-                      </template>
-                    </v-col>
-                    <v-col :cols="2" align="right">
-                      <div style="margin-right:20px">
-                        <v-btn
-                          fab
-                          x-small
-                          dark
-                          color="red"
-                          @click="eliminarFirma(index)"
-                        >
-                          <v-icon dark>
-                            mdi-minus
-                          </v-icon>
-                        </v-btn>
+                  <v-card
+                    elevation="0"
+                    style="background-color:#EAEAEA"
+                    height="70"
+                  >
+                    <v-row style="margin:1%;heigh:100%" align="center">
+                      <v-col :cols="4" align="left">
+                        <v-text-field
+                          v-model="this.usuario"
+                          label="Nombre"
+                          color="#009900"
+                          readonly
+                        ></v-text-field>
+                      </v-col>
+                      <v-col :cols="4" align="left">
+                        <v-text-field
+                          v-model="this.cargo"
+                          label="Cargo"
+                          color="#009900"
+                          readonly
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                  <v-row>
+                    <v-col :cols="12" align="center">
+                      <div>
+                        <v-card-text>
+                              <img
+                                width="240"
+                                height="170"
+                                :src="this.firma"
+                                alt=""
+                              />
+                        </v-card-text>
                       </div>
                     </v-col>
                   </v-row>
                 </v-card>
-              </v-card>
-
-              <v-dialog
-                v-model="dialogVistaPreviaFirma"
-                persistent
-                max-width="600px"
-              >
-                <v-card align="center">
-                  <v-card-title>
-                    <span class="headline">Vista previa</span>
-                  </v-card-title>
-                  <v-card-text>
-                    <img
-                      v-if="imagen.includes('http')"
-                      width="100%"
-                      height="100%"
-                      :src="imagen"
-                      alt=""
-                    />
-                    <img
-                      v-else
-                      width="100%"
-                      height="100%"
-                      :src="'data:image/jpeg;base64,' + imagen"
-                      alt=""
-                    />
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      color="blue darken-1"
-                      text
-                      @click="cerrarVistaPreviaFirma()"
-                    >
-                      Cerrar
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
 
               <v-row>
                 <v-col>
@@ -611,17 +498,6 @@ export default {
   },
   data() {
     return {
-      dropzoneOptions: {
-        url: "https://httpbin.org/post",
-        thumbnailWidth: 250,
-        maxFilesize: 5.0,
-        maxFiles: 1,
-        acceptedFiles: ".png",
-        headers: { "My-Awesome-Header": "header value" },
-        addRemoveLinks: true,
-        dictDefaultMessage:
-          "Seleccione la imagen de la firma su dispositivo o arrástrela aquí",
-      },
       step: 1,
       transtorno: "",
       transtornos: [],
@@ -629,16 +505,16 @@ export default {
       conclusiones: [],
       recomendacion: "",
       recomendaciones: [],
-      urlfirma: "",
-      firmas: { nombre: "", cargo: "" },
-      imagen: "",
-      dialogVistaPreviaFirma: false,
       datemenu: false,
+      usuario: "",
+      cargo:"",
+      firma:"",
     };
   },
   async created() {
     this.cargarConclusiones();
     this.cargarRecomendaciones();
+    this.obtenerCreador();
   },
   methods: {
     ...mapMutations(["replaceInforme"]),
@@ -667,7 +543,7 @@ export default {
             var info = {
               id: res.data.id,
               tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-              fechacreacion: res.data.fechacreacion.split("T")[0],
+              fechaevaluacion: res.data.contenido.fechaevaluacion.split("T")[0],
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
@@ -682,6 +558,16 @@ export default {
           "<strong>Se redirigirá a la interfaz de gestión<strong>"
         );
       }
+    },
+    async obtenerCreador() {
+        await axios
+        .get("/usuario/rol/permiso?id=" + this.informe.creadordocumento)
+        .then((x) => {
+          this.usuario = x.data.datos.nombre + " " + x.data.datos.apellido;
+          this.cargo = x.data.rol.nombre;
+          this.firma = x.data.datos.firma;
+        })
+        .catch((err) => console.log(err));
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -748,47 +634,6 @@ export default {
           object.splice(index, 1);
         }
       });
-    },
-    agregarFirma() {
-      this.$v.firmas.$touch();
-      this.$v.urlfirma.$touch();
-
-      if (!this.$v.firmas.$invalid && !this.$v.urlfirma.$invalid) {
-        let firmas = {
-          urlfirma: this.urlfirma,
-          nombre: this.firmas.nombre,
-          cargo: this.firmas.cargo,
-        };
-        this.informe.contenido.firmas.push(firmas);
-        this.$refs.myVueDropzone.removeAllFiles();
-
-        this.urlfirma = "";
-        this.firmas.nombre = "";
-        this.firmas.cargo = "";
-        this.$v.firmas.$reset();
-        this.$v.urlfirma.$reset();
-      }
-    },
-    eliminarFirma(index) {
-      this.informe.contenido.firmas.splice(index, 1);
-    },
-    verFirma(index) {
-      this.imagen = this.informe.contenido.firmas[index].urlfirma;
-      this.dialogVistaPreviaFirma = true;
-    },
-    cerrarVistaPreviaFirma() {
-      this.dialogVistaPreviaFirma = false;
-    },
-    afterSuccess(file, response) {
-      this.urlfirma = file.dataURL.split(",")[1];
-    },
-    afterRemoved(file, error, xhr) {
-      this.urlfirma = "";
-    },
-      afterComplete(file) {
-      if(file.status == "error"){
-         this.$refs.myVueDropzone.removeFile(file);
-      }
     },
     cerrarDialogo() {
       this.$emit("close-dialog-update");
@@ -874,36 +719,12 @@ export default {
         errors.push("La conclusión no debe contener caracteres especiales.");
       return errors;
     },
-    errorNombreFirma() {
-      const errors = [];
-      if (!this.$v.firmas.nombre.$dirty) return errors;
-      !this.$v.firmas.nombre.required &&
-        errors.push("Debe registrar el nombre obligatoriamente");
-      !this.$v.firmas.nombre.esTexto &&
-        errors.push("El nombre debe contener solo texto.");
-      return errors;
-    },
-    errorCargoFirma() {
-      const errors = [];
-      if (!this.$v.firmas.cargo.$dirty) return errors;
-      !this.$v.firmas.cargo.required &&
-        errors.push("Debe registrar el cargo obligatoriamente");
-      !this.$v.firmas.cargo.esTexto &&
-        errors.push("El cargo debe contener solo texto.");
-      return errors;
-    },
-    errorUrlFirma() {
-      return this.$v.urlfirma.required == false &&
-        this.$v.urlfirma.$dirty == true
-        ? true
-        : false;
-    },
     errorFechaEvaluacion() {
       const errors = [];
-      if (!this.$v.informe.fechacreacion.$dirty) return errors;
-      !this.$v.informe.fechacreacion.required &&
+      if (!this.$v.informe.contenido.fechaevaluacion.$dirty) return errors;
+      !this.$v.informe.contenido.fechaevaluacion.required &&
         errors.push("Debe ingresar la fecha de evaluación obligatoriamente");
-      var dateselected = new Date(this.informe.fechacreacion);
+      var dateselected = new Date(this.informe.contenido.fechaevaluacion);
       var maxdate = new Date();
       !(dateselected.getTime() < maxdate.getTime()) &&
         errors.push("La fecha no debe ser mayor a la actual");
@@ -916,10 +737,7 @@ export default {
       informe: {
         idresidente: {
           required,
-        },
-        fechacreacion: {
-          required,
-        },
+        },        
         contenido: {
           evaluador: {
             required,
@@ -936,6 +754,9 @@ export default {
             required,
             esParrafo,
           },
+          fechaevaluacion: {
+          required,
+        },
         },
       },
       transtorno: {
@@ -949,19 +770,6 @@ export default {
       conclusion: {
         required,
         esParrafo,
-      },
-      urlfirma: {
-        required,
-      },
-      firmas: {
-        nombre: {
-          required,
-          esTexto,
-        },
-        cargo: {
-          required,
-          esTexto,
-        },
       },
     };
   },

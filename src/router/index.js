@@ -17,9 +17,11 @@ import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 import GestionActa from '../views/Acta/GestionarActa.vue';
 import ModificarPerfil from '../views/perfil/ModificarPerfil.vue';
 import GestionarFichaEvaluacionEducativa from  '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
-import GestionarHojaProductividad from  '../views/HojaProductividad/GestionarHojaProductividad.vue';
 //Prueba
 import PruebaActa from '../views/Acta/PruebaActa.vue';
+
+//Cambiar Contrasena
+import CambiarContrasena from '../views/CambiarContrasena/Cambiarcontrasena.vue';
 
 /* Rutas de sebas, fede, jaime y angello */
 import GestionarPlanes from '@/views/PlanIntervencion/GestionarPlanes.vue';
@@ -28,6 +30,7 @@ import GestionarPlanes from '@/views/PlanIntervencion/GestionarPlanes.vue';
 import GestionarExpedientes from '@/views/ExpedienteMatriz/GestionarExpedientes.vue';
 import ExpedienteResidente from '@/views/ExpedienteMatriz/ExpedienteResidente.vue';
 import ProgresoResidente from '@/views/Home/Progreso.vue'
+import ProgresoF2Residente from '@/views/Home/ProgresoFase2.vue'
 
 /* Importación del axios para la verificación del token */
 import axios from '../store/index.js';
@@ -171,14 +174,21 @@ const routes = [{
                 component: Fase4
             },
             {
-                path:'ProgresoResidente',
-                name:'ProgresoResidente',
-                component: ProgresoResidente
+                   path: 'CambiarContrasena',
+                name: 'cambiarContrasena',
+                component: CambiarContrasena
             },
             {
-                path:'hojaProductividad',
-                name:'GestionarHojaProductividad',
-                component: GestionarHojaProductividad
+                path:'ProgresoResidente/:id',
+                name:'ProgresoResidente',
+                component: ProgresoResidente,
+                params: true
+            },
+            {
+                path:'ProgresoF2Residente/:id',
+                name:'ProgresoF2Residente',
+                component: ProgresoF2Residente,
+                params: true
             }
         ],
 
