@@ -45,55 +45,7 @@
                   </v-row>
                 </v-card>
               </v-card>
-
-              <v-autocomplete
-                :items="listaeducadores"
-                filled
-                chips
-                outlined
-                v-model="fichaIngreso.contenido.responsableturno"
-                color="#009900"
-                label="Responsable de turno"
-                item-text="usuario"
-                item-value="id"
-                readonly
-                style="margin-top: 20px"
-              >
-                <template v-slot:selection="data">
-                  <v-chip v-bind="data.attrs" :input-value="data.selected" style="margin-top:5px">
-                    <v-avatar left color="#b3b3ff" size="24">
-                      <span
-                        style="font-size:12px"
-                      >{{ data.item.datos.nombre.charAt(0) }} {{ data.item.datos.apellido.charAt(0) }}</span>
-                    </v-avatar>
-                    {{ data.item.datos.nombre + " " + data.item.datos.apellido }}
-                  </v-chip>
-                </template>
-                <template v-slot:item="data">
-                  <template>
-                    <v-list-item-avatar>
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span
-                          style="font-size:12px"
-                        >{{ data.item.datos.nombre.charAt(0) }} {{ data.item.datos.apellido.charAt(0) }}</span>
-                      </v-avatar>
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        Nombre completo: {{ data.item.datos.nombre }}
-                        {{ data.item.datos.apellido }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle>
-                        Nro. Documento:
-                        {{
-                        data.item.datos.numerodocumento
-                        }}
-                      </v-list-item-subtitle>
-                    </v-list-item-content>
-                  </template>
-                </template>
-              </v-autocomplete>
-
+              
               <v-card elevation="12" outlined>
                 <v-card-title>Escolaridad del residente</v-card-title>
                 <v-container grid-list-md text-xs-center>
@@ -1216,8 +1168,7 @@ export default {
         { value: "Facebook", text: "Facebook" },
         { value: "Email", text: "Email" },
         { value: "Video", text: "Video" }
-      ],
-      responsableTurnoAux:"",
+      ],      
       usuario: "",
       cargo:"",
       firma:"",
@@ -1380,9 +1331,7 @@ export default {
       });
     }
   },
-  async created() {
-      this.responsableTurnoAux = this.listaeducadores
-      .find(x => x.id == this.fichaIngreso.contenido.responsableturno)
+  async created() {      
     },
   computed: {
     ...mapGetters(["user"]),
@@ -1390,12 +1339,7 @@ export default {
         return `${this.fichaIngreso.residente.nombre} ${this.fichaIngreso.residente.apellido}`
     },obtenerIdentificacion(){
         return `${this.fichaIngreso.residente.tipoDocumento}: ${this.fichaIngreso.residente.numeroDocumento}`
-    },
-    ObtenerResponsableTurno(){
-         return `${this.responsableTurnoAux.datos.nombre} ${this.responsableTurnoAux.datos.apellido}`
-      },obtenerIdentificacionResponsable(){
-          return `${this.responsableTurnoAux.datos.tipodocumento}: ${this.responsableTurnoAux.datos.numerodocumento}`
-      },
+    },    
     show: {
       get() {
         return this.visible;

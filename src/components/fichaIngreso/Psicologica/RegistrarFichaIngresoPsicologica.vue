@@ -55,55 +55,7 @@
                   </v-list-item-content>
                 </template>
               </v-autocomplete>
-
-              <v-autocomplete
-                :items="listaeducadores"
-                filled
-                chips
-                outlined
-                v-model="fichaIngreso.contenido.responsableturno"
-                color="#009900"
-                label="Responsable de turno"
-                item-text="usuario"
-                item-value="id"
-                @input="$v.fichaIngreso.contenido.responsableturno.$touch()"
-                @blur="$v.fichaIngreso.contenido.responsableturno.$touch()"
-                :error-messages="errorresponsableturno"
-              >
-                <template v-slot:selection="data">
-                  <v-chip v-bind="data.attrs" :input-value="data.selected" style="margin-top:5px">
-                    <v-avatar left color="#b3b3ff" size="24">
-                      <span
-                        style="font-size:12px"
-                      >{{ data.item.datos.nombre.charAt(0) }} {{ data.item.datos.apellido.charAt(0) }}</span>
-                    </v-avatar>
-                    {{ data.item.datos.nombre + " " + data.item.datos.apellido }}
-                  </v-chip>
-                </template>
-                <template v-slot:item="data">
-                  <template>
-                    <v-list-item-avatar>
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span
-                          style="font-size:12px"
-                        >{{ data.item.datos.nombre.charAt(0) }} {{ data.item.datos.apellido.charAt(0) }}</span>
-                      </v-avatar>
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        Nombre completo: {{ data.item.datos.nombre }}
-                        {{ data.item.datos.apellido }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle>
-                        Nro. Documento:
-                        {{
-                        data.item.datos.numerodocumento
-                        }}
-                      </v-list-item-subtitle>
-                    </v-list-item-content>
-                  </template>
-                </template>
-              </v-autocomplete>
+              
 
               <v-card elevation="12" outlined>
                 <v-card-title>Escolaridad del residente</v-card-title>
@@ -1676,9 +1628,7 @@ export default {
         fase: "1",
         idresidente: "",
         estado: "creado",
-        contenido: {
-          responsableturno: "",
-          /*firma: { urlfirma: "", nombre: "", cargo: "" },*/
+        contenido: {          
           padres: [],
           hermanos: [],
           escolaridad: {
@@ -1878,9 +1828,7 @@ export default {
         fase: "1",
         idresidente: "",
         estado: "creado",
-        contenido: {
-          responsableturno: "",
-          /*firma: { urlfirma: "", nombre: "", cargo: "" },*/
+        contenido: {          
           padres: [],
           hermanos: [],
           escolaridad: {
@@ -2573,18 +2521,7 @@ export default {
         errors.push("Debe ingresar un residente obligatoriamente");
 
       return errors;
-    },
-    errorresponsableturno() {
-      const errors = [];
-
-      if (!this.$v.fichaIngreso.contenido.responsableturno.$dirty)
-        return errors;
-
-      !this.$v.fichaIngreso.contenido.responsableturno.required &&
-        errors.push("Debe ingresar un responsable de turno obligatoriamente");
-
-      return errors;
-    },
+    },    
     /*errorFirma() {
       return this.$v.fichaIngreso.contenido.firma.urlfirma.required == false &&
         this.$v.fichaIngreso.contenido.firma.urlfirma.$dirty == true
@@ -2961,9 +2898,7 @@ export default {
         required
       },
       contenido: {
-        responsableturno: {
-          required
-        },/*
+        /*
         firma: {
           urlfirma: {
             required,

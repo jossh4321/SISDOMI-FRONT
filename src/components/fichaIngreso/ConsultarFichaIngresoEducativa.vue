@@ -283,34 +283,6 @@
         <v-stepper-content step="3">
           <div  class="container-user">
             <form>
-                <v-card style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA">  
-                  <v-card-title>
-                        Responsable de Turno
-                  </v-card-title>
-                  <v-card style="margin:10px;padding:10px" height="100px">
-                    <v-row>
-                      <v-col cols="6">
-                        <v-text-field
-                                      :value="ObtenerResponsableTurno"
-                                      label="Nombre del Residente"
-                                      outlined
-                                      color="info"
-                                      readonly
-                                    ></v-text-field>
-                      </v-col>
-                      <v-col cols="6">
-                        <v-text-field
-                                      :value="obtenerIdentificacionResponsable"
-                                      label="Identificacion del Residente"
-                                      outlined
-                                      color="info"
-                                      readonly
-                                    ></v-text-field>
-                      </v-col>
-                      <v-col cols="2"></v-col>
-                    </v-row>
-                  </v-card>
-                </v-card>
                 <v-card
                   style="padding:10px;background-color:#EAEAEA"
                 >
@@ -450,8 +422,7 @@ export default {
          observacionAux:"",
          step:1,
          imagenFirma:{urlOrigen: "",
-                        modificar:{estado:false,file:{}}},
-        responsableTurnoAux:"",
+                        modificar:{estado:false,file:{}}},        
         usuario: "",
         cargo:"",
         firma:"",
@@ -459,11 +430,7 @@ export default {
       },
     async created() {
       console.log(this.listaeducadores);
-      console.log(this.fichaIngreso);
-      console.log( this.fichaIngreso.contenido.responsableturno)
-      this.responsableTurnoAux = this.listaeducadores
-      .find(x => x.id == this.fichaIngreso.contenido.responsableturno)
-      console.log(this.responsableTurnoAux);
+      console.log(this.fichaIngreso);            
       this.obtenerCreador();
     },
     methods:{
@@ -526,10 +493,6 @@ export default {
           return `${this.fichaIngreso.residente.nombre} ${this.fichaIngreso.residente.apellido}`
       },obtenerIdentificacion(){
           return `${this.fichaIngreso.residente.tipoDocumento}: ${this.fichaIngreso.residente.numeroDocumento}`
-      },ObtenerResponsableTurno(){
-         return `${this.responsableTurnoAux.datos.nombre} ${this.responsableTurnoAux.datos.apellido}`
-      },obtenerIdentificacionResponsable(){
-          return `${this.responsableTurnoAux.datos.tipodocumento}: ${this.responsableTurnoAux.datos.numerodocumento}`
       }
   }
 

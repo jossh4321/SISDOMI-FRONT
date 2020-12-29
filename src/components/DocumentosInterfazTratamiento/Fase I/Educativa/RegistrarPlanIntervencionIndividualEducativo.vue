@@ -329,6 +329,21 @@
         </v-stepper-items>
       </v-stepper>
     </v-card-text>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="340px">
+          <v-card-title class="justify-center">Registrando Plan de Intervencion Educativo Individual</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>
   </v-card>
 </template>
 <script>
@@ -355,7 +370,7 @@ export default {
         fechacreacion: null,
         area: "educativa",
         idresidente: "",
-        fase: this.residente.id,
+        fase: "",
         estado: "creado", 
         creadordocumento: "",
         contenido: {
@@ -431,6 +446,7 @@ export default {
           },
         ],
       },
+      cargaRegistro:false
     };
   },
   validations() {
@@ -557,38 +573,22 @@ export default {
           false
         );
       } else {
-        /*for (let index = 0; index < this.firmaAux.length; index++) {
-          let formData = new FormData();
-
-          formData.append("file", this.firmaAux[index]);
-
-          await axios
-            .post("/Media", formData)
-            .then((res) => {
-              this.planI.contenido.firmas[index].urlfirma = res.data;
-              this.planI.contenido.firmas[index].nombre = this.user.usuario;
-              this.planI.contenido.firmas[index].cargo = this.user.rol.id;
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        }*/
-
+        this.cargaRegistro = true;
         this.planI.creadordocumento = this.user.id;
-
         this.planI.idresidente = this.residente.id;
-        this.planI.fase = this.residente.faseActual;
-
+        this.planI.fase = this.residente.progreso[this.residente.progreso.length-1].fase.toString();
         let planIntervencionIndividual = {
           idresidente: this.residente.id,
           planintervencionindividual: this.planI,
         };
-
         await axios
           .post("/PlanIntervencion/educativo", planIntervencionIndividual)
           .then((res) => {
             this.planI = res.data;
             if (this.planI.id !== "") {
+              this.$emit("actualizar-progreso-fase1");
+              this.cargaRegistro = false;
+              this.closeDialog();
               this.mensaje(
                 "success",
                 "Listo",
@@ -671,18 +671,14 @@ export default {
     },
     getTitleByFaseResident() {
       if (this.residente != null) {
-        if (this.residente.faseActual != "") {
-          if (this.residente.faseActual == "1") {
+          if (this.residente.progreso[this.residente.progreso.length-1].fase == 1) {
             this.planI.contenido.titulo = "Plan de Intervención Educativa";
           } else {
             this.planI.contenido.titulo =
-              "Plan de Intervención Individual " + this.residente.residente;
+              "Plan de Intervención Individual " + this.residente.nombre+" "+this.residente.apellido;
           }
-
           return this.planI.contenido.titulo;
-        } else {
-          return "";
-        }
+        
       } else {
         return "";
       }
