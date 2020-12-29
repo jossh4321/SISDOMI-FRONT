@@ -113,6 +113,26 @@
                         </template>
                         </v-card>
                     </v-timeline-item>
+                    <!--Timeline final para registro de documento de transicion-->
+                <v-timeline-item
+                        color="success"
+                        icon="mdi-buffer"
+                    >
+                        <v-card class="warning" dark>
+                        <v-card-title
+                        class="justify-center"
+                        style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
+                        >{{titulosDoc["DocumentoTransicion"].titulo}}</v-card-title>
+                          <v-col cols="12">
+                            <v-btn color="success" block rounded 
+                            @click="abrirDialogoRegistroDocumento(titulosDoc['DocumentoTransicion'].registrar)">
+                              <v-icon left> mdi-book-plus </v-icon>
+                                <span>Registrar</span>
+                              </v-btn
+                            >
+                          </v-col>
+                        </v-card>
+                    </v-timeline-item>
                 </v-timeline>
             </v-card>
           </v-card>
@@ -157,11 +177,14 @@
 import VisualizadorResidente from "@/components/residentes/VisualizadorResidente.vue";
 import RegistrarFichaIngresoEducativa from '@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarFichaEducativaIngreso.vue'
 import RegistrarInformeEducativoInicial from '@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarInformeEducativoInicial.vue'
+import RegistrarPlanIntervencionEducativoIndividual from '@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarPlanIntervencionIndividualEducativo.vue'
+import RegistrarInformeSeguimientoEducativo from '@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarInformeSeguimientoEducativo.vue'
 import axios from "axios";
 export default {
   name: "ProgresoResidenteF1",
   components: { VisualizadorResidente,RegistrarFichaIngresoEducativa,
-  RegistrarInformeEducativoInicial },
+  RegistrarInformeEducativoInicial,RegistrarPlanIntervencionEducativoIndividual,
+  RegistrarInformeSeguimientoEducativo},
   data() {
     return {
       drawer: false,
@@ -186,13 +209,18 @@ export default {
           },
           PlanIntervencionIndividualEducativo:{
               titulo: 'Plan de Intervencion Educativo Individual',
-              registrar:'RegistrarFichaIngresoEducativa',
+              registrar:'RegistrarPlanIntervencionEducativoIndividual',
               modificar:'',
               visualizar:''
           }, 
           InformeSeguimientoEducativo: {
               titulo: 'Informe de Seguimiento Educativo',
-              registrar:'RegistrarFichaIngresoEducativa',
+              registrar:'RegistrarInformeSeguimientoEducativo',
+              modificar:'',
+              visualizar:''
+          },DocumentoTransicion:{
+              titulo: 'Documento de Transion de Fase',
+              registrar:'RegistrarInformeSeguimientoEducativo',
               modificar:'',
               visualizar:''
           }
