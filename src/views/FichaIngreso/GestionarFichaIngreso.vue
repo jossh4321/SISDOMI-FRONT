@@ -202,12 +202,26 @@ export default {
         documentoactual: "FichaEducativaIngreso",
         estadodocumentoanterior: "Pendiente",
       },
+      documentoSocialFase: {
+        fase: "1",
+        area: "social",
+        documentoanterior: "FichaSocialIngreso",
+        documentoactual: "FichaSocialIngreso",
+        estadodocumentoanterior: "Pendiente",
+      },
+      documentoPsicoFase: {
+        fase: "1",
+        area: "psicologica",
+        documentoanterior: "FichaPsicologicaIngreso",
+        documentoactual: "FichaPsicologicaIngreso",
+        estadodocumentoanterior: "Pendiente",
+      },
     };
   },
   async created() {
     this.obtenerfichasIngresos();
-    this.obtenerResidentes();
-    this.obtenerEducadores();
+    //this.obtenerResidentes();
+    //this.obtenerEducadores();
   },
 
   methods: {
@@ -250,7 +264,15 @@ export default {
       this.dialogoaFIPctualizacion = false;
     },
     async abrirDialogoRegistroFichaIngreso() {
-      await this.obtenerResidentes();
+      if(this.selectorFichaIngreso == "RegistrarFichaIngresoEducativa"){
+          await this.obtenerResidentes();
+       }
+       else if(this.selectorFichaIngreso == "RegistrarFichaIngresoSocial"){
+          await this.obtenerResidentesSocial();
+       }
+       else if(this.selectorFichaIngreso == "RegistrarFichaIngresoPsicologica"){
+          await this.obtenerResidentesPsico();
+       }
       await this.obtenerEducadores();
       this.dialogoRegistroFichaIngreso = true;
     },
@@ -319,6 +341,22 @@ export default {
     async obtenerResidentes() {
       await axios
         .post("/residente/all/estadofase", this.documentoFase)
+        .then((x) => {
+          this.listaresidentes = x.data;
+        })
+        .catch((err) => console.log(err));
+    },
+    async obtenerResidentesSocial() {
+      await axios
+        .post("/residente/all/estadofase", this.documentoSocialFase)
+        .then((x) => {
+          this.listaresidentes = x.data;
+        })
+        .catch((err) => console.log(err));
+    },
+    async obtenerResidentesPsico() {
+      await axios
+        .post("/residente/all/estadofase", this.documentoPsicoFase)
         .then((x) => {
           this.listaresidentes = x.data;
         })

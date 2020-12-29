@@ -23,13 +23,13 @@
                 readonly
                 color="#009900"
               ></v-text-field>
-                <v-text-field
+                <!-- <v-text-field
                 v-model="evaluador"
                 label="Evaluador"
                 outlined
                 readonly
                 color="#009900"
-              ></v-text-field>
+              ></v-text-field> -->
                 <v-textarea
                   v-model="informe.contenido.antecedentes"
                   label="Antecedentes"
@@ -271,13 +271,13 @@ export default {
       firma:"",
       pdf: "",
       residente: "",
-      evaluador: "",
+      //evaluador: "",
     };
   },
   async created() {
     this.obtenerResidente(),
-    this.obtenerCreador(),
-    this.obtenerEvaluador()
+    this.obtenerCreador()
+    //this.obtenerEvaluador()
   },
   methods: {
     cerrarDialogo() {
@@ -290,7 +290,7 @@ export default {
           this.residente = x.data.nombre + " " + x.data.apellido;
         })
         .catch((err) => console.log(err));
-    },
+    },/*
     async obtenerEvaluador() {
       await axios
         .get("/usuario/id?id=" + this.informe.contenido.evaluador)
@@ -298,7 +298,7 @@ export default {
           this.evaluador = res.data.datos.nombre + " " + res.data.datos.apellido;
         })
         .catch((err) => console.log(err));        
-    },
+    },*/
     async obtenerCreador() {
       await axios
         .get("/usuario/rol/permiso?id=" + this.informe.creadordocumento)

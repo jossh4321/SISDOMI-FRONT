@@ -83,7 +83,7 @@
                   ></v-textarea>
                 </div>
 
-               <v-autocomplete
+               <!-- <v-autocomplete
                   :items="listasociales"
                   filled
                   chips
@@ -130,7 +130,7 @@
                       </v-list-item-content>
                     </template>
                   </template>
-                </v-autocomplete>
+                </v-autocomplete>-->
 
                 <v-textarea
                   v-model="informe.contenido.antecedentes"
@@ -681,7 +681,7 @@ function esParrafo(value) {
   return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
 export default {
-  props: ["listaresidentes", "visible", "listasociales"],
+  props: ["listaresidentes", "visible"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -722,7 +722,7 @@ export default {
           recomendaciones: [],
           anexos: [],
           codigodocumento: "",
-          evaluador: "",
+          //evaluador: "",
         },
       },
       familiar: {
@@ -969,6 +969,7 @@ export default {
         this.informe.contenido.recomendaciones.push(recomendaciones);
         this.recomendaciones = this.informe.contenido.recomendaciones;
         this.recomendacion = "";
+        this.$v.recomendacion.$reset();
       }
     },
     eliminarRecomendaciones(recomendacion) {
@@ -1172,14 +1173,14 @@ export default {
     !this.$v.recomendacion.esParrafo &&
         errors.push("La recomendación no debe contener caracteres especiales.");  
       return errors;
-    },
+    },/*
     errorEvaluador() {
       const errors = [];
       if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
       !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un evaluador obligatoriamente");
       return errors;
-    },
+    },*/
     isDisabled() {
       if (this.accion == "consultar") {
         return true;
@@ -1223,9 +1224,9 @@ export default {
             required,
             esParrafo
           },
-          evaluador:{
+          /*evaluador:{
             required,
-          }
+          }*/
         },
       },
       familiar: {

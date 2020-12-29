@@ -24,13 +24,13 @@
                 readonly
                 color="#009900"
               ></v-text-field>
-              <v-text-field
+              <!-- <v-text-field
                 v-model="educador"
                 label="Educador Responsable"
                 outlined
                 readonly
                 color="#009900"
-              ></v-text-field>
+              ></v-text-field> -->
               <v-textarea
                 label="Lugar de Evaluación"
                 v-model="informe.contenido.lugarevaluacion"
@@ -271,7 +271,7 @@ export default {
       datemenu: false,
       step: 1,
       residente: "",
-      educador: "",
+      //educador: "",
       conclusion: "",
       dialogVistaPreviaAnexos: false,
       pdf: "",
@@ -282,7 +282,7 @@ export default {
   },
   async created() {
     this.obtenerResidente();
-    this.obtenerEducador();
+    //this.obtenerEducador();
     this.obtenerCreador();
   },
   methods: {
@@ -296,7 +296,7 @@ export default {
           this.residente = x.data.nombre + " " + x.data.apellido;
         })
         .catch((err) => console.log(err));
-    },
+    },/*
     async obtenerEducador() {
       await axios
         .get("/usuario/id?id=" + this.informe.contenido.evaluador)
@@ -304,7 +304,7 @@ export default {
           this.educador = res.data.datos.nombre + " " + res.data.datos.apellido;
         })
         .catch((err) => console.log(err));
-    },
+    },*/
     async obtenerCreador() {
       await axios
         .get("/usuario/rol/permiso?id=" + this.informe.creadordocumento)

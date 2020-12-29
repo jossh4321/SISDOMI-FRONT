@@ -178,7 +178,7 @@
                 <v-dialog v-model="dialog" persistent max-width="850px">
                   <template v-slot:activator="{ on }">
                     <v-btn color="primary" v-on="on">
-                      Ver Firma de creador(es) de documento
+                      Ver Firma del creador de documento
                     </v-btn>
                   </template>
                   <v-card>
@@ -186,15 +186,39 @@
                       <span class="headline"> Firma</span>
                     </v-card-title>
                     <v-card-text>
+                    <v-text-field
+                        v-model="this.cargo"
+                        label="Cargo"
+                        outlined  
+                        readonly
+                        color="#009900"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="this.usuario"
+                        label="Nombre"
+                        outlined  
+                        readonly 
+                        color="#009900"
+                    ></v-text-field>
+                    <div align="center">
+                    <v-card-text>
+                        <img
+                          width="240"
+                          height="170"
+                          :src="this.firma"
+                          alt=""
+                        />
+                    </v-card-text>
+                    </div> 
 
-            <v-card
+            <!-- <v-card
                 style="margin-top:30px;left-top:30px;padding:5px 5px;background-color:#EAEAEA"
               >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
-                  >Firma de creador(es) de documento</v-card-title
-                >
+                  >Firma del creador de documento</v-card-title
+                > -->
                 <!-- Cabecera -->
-                <v-card
+                <!-- <v-card
                 elevation="0"
                 color="#EAEAEA"
                 style="margin-top:5px; margin-bottom:15px"
@@ -219,9 +243,9 @@
                     <v-col align="right">
                     </v-col>
                   </v-row>
-                </v-card>
+                </v-card> -->
                 <!-- Cuerpo -->
-                <v-card
+                <!--<v-card
                   tile
                   elevation="0"
                   color="#FAFAFA"
@@ -261,7 +285,7 @@
                       
                     </v-col>
                     <v-col align="right">
-                      <div style="margin-right:20px">
+                      <div style="margin-right:20px">-->
                    <!--     <v-btn
                           style="margin-right:10px"
                           fab
@@ -274,11 +298,11 @@
                           </v-icon>
                         </v-btn>  -->
                         
-                      </div>
+                    <!--  </div>
                     </v-col>
                   </v-row>
                 </v-card>
-              </v-card>
+              </v-card> -->
 <!--fin-->
                           
 
@@ -508,7 +532,7 @@
                   </v-row>
                 </v-card>
               </v-card>
-                        <v-dialog
+                       <!-- <v-dialog
                                   v-model="dialogVistaPreviaFirma"
                                   persistent
                                   max-width="600px"
@@ -536,7 +560,7 @@
                                       </v-btn>
                                     </v-card-actions>
                                   </v-card>
-                        </v-dialog>
+                        </v-dialog> -->
 
 
               <!--Botones de card -->
@@ -579,28 +603,42 @@ data(){
     notas:[],
     educador:"",
     dialogVistaPreviaFirma: false,
-    
-    
+    usuario: "",
+    cargo:"",
+    firma:"",
   }
+  },
+  async created() {
+      this.obtenerCreador();
   },
   methods:{
       cerrarDialogo(){
         this.step=1;
         this.$emit("close-dialog-detail");
       },
+      async obtenerCreador() {
+        await axios
+        .get("/usuario/rol/permiso?id=" + this.seguimiento.creadordocumento)
+        .then((x) => {
+          this.usuario = x.data.datos.nombre + " " + x.data.datos.apellido;
+          this.cargo = x.data.rol.nombre;
+          this.firma = x.data.datos.firma;
+        })
+        .catch((err) => console.log(err));
+    },
       abrirDialogoNotas(notas){
         this.notas=notas;
         this.dialog1=true;
         console.log(this.notas)
       },
-       verFirma(index) {
+       /*verFirma(index) {
       console.log(this.seguimiento.contenido.firmas[index].urlfirma);
       this.imagen = this.seguimiento.contenido.firmas[index].urlfirma;
       this.dialogVistaPreviaFirma = true;
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
-    },
+    },*/
 },
 
 

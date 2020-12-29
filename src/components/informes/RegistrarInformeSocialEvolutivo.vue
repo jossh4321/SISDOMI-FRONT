@@ -64,7 +64,7 @@
                     </template>
                   </template>
                 </v-autocomplete>
-                <v-autocomplete
+               <!-- <v-autocomplete
                   :items="listasociales"
                   filled
                   chips
@@ -111,7 +111,7 @@
                       </v-list-item-content>
                     </template>
                   </template>
-                </v-autocomplete>
+                </v-autocomplete>-->
                 <v-textarea
                   v-model="informe.contenido.antecedentes"
                   label="Antecedentes"
@@ -333,7 +333,7 @@ function esTexto(value) {
   return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
 export default {
-  props: ["listaresidentes", "visible", "titulo","listasociales"],
+  props: ["listaresidentes", "visible", "titulo"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -372,7 +372,7 @@ export default {
           recomendaciones: [],
           anexos: [],
           codigodocumento: "",
-          evaluador: "",
+          //evaluador: "",
         },
       },
     };
@@ -407,12 +407,25 @@ export default {
       }
       console.log(this.informe.contenido.anexos);
     },
+    async obtenerFaseResidente(idresidente){
+      var info = {};
+      await axios
+        .get("/residente/id?id=" + idresidente)
+        .then((res) => {
+          info = res.data;
+        })
+        .catch((err) => console.log(err));
+      console.log(info.progreso[info.progreso.length - 1].fase);
+      return info.progreso[info.progreso.length - 1].fase.toString();
+    },
     async registrarInforme() {
       this.informe.creadordocumento = this.user.id;
       await this.sendPDFFiles();
       if (this.titulo === "Registrar Informe Social Evolutivo") {
+        this.informe.fase = await this.obtenerFaseResidente(this.informe.idresidente);
         this.informe.tipo = "InformeSocialEvolutivo";
       } else {
+        this.informe.fase = "3"
         this.informe.tipo = "InformeSocialFinal";
       }
       console.log(this.informe);
@@ -558,14 +571,14 @@ export default {
       !this.$v.informe.contenido.diagnosticosocial.esParrafo &&
         errors.push("El diagnostico social no debe contener caracteres especiales");
       return errors;
-    },
+    },/*
     errorEvaluador() {
       const errors = [];
       if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
       !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un evaluador obligatoriamente");
       return errors;
-    },    
+    },*/    
     errorRecomendacion() {
       const errors = [];
       if (!this.$v.recomendacion.$dirty) return errors;
@@ -607,9 +620,9 @@ export default {
             required,
             esParrafo,
           },
-          evaluador:{
+          /*evaluador:{
             required,
-          },
+          },*/
         },
       },
        recomendacion: {

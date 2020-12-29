@@ -1010,11 +1010,12 @@ export default {
               observaciones: {
                 required
               },
+              /*
               firma: {
                  urlfirma:{
                   required,
                 }
-              }
+              }*/
             },
       },documentoEscolar:{
         titulo:{required,
@@ -1044,5 +1045,8 @@ export default {
 .dropzone-custom-title {
   margin-top: 0;
   color: #00b782;
+}
+.swal-modal {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 </style>

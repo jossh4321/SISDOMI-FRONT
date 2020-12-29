@@ -66,7 +66,7 @@
                   </template>
                 </v-autocomplete>
 
-                <v-autocomplete
+                <!-- <v-autocomplete
                   :items="listaeducadores"
                   filled
                   chips
@@ -113,7 +113,7 @@
                       </v-list-item-content>
                     </template>
                   </template>
-                </v-autocomplete>
+                </v-autocomplete> -->
 
                 <v-textarea
                   label="Lugar de Evaluación"
@@ -356,16 +356,14 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 import { mapGetters } from "vuex";
-
 function esTexto(value) {
   return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value);
 }
-
 function esParrafo(value) {
   return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value);
 }
 export default {
-  props: ["listaresidentes", "listaeducadores", "visible"],
+  props: ["listaresidentes", "visible"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -404,7 +402,7 @@ export default {
           anexos: [],
           codigodocumento: "",
           lugarevaluacion: "",
-          evaluador: "",
+          //evaluador: "",
           fechaevaluacion: "",
         },
       },
@@ -569,14 +567,14 @@ export default {
       !this.$v.informe.idresidente.required &&
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
-    },
+    },/*
     errorCreador() {
       const errors = [];
       if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
       !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un educador obligatoriamente");
       return errors;
-    },
+    },*/
     errorLugarEvaluacion() {
       const errors = [];
       if (!this.$v.informe.contenido.lugarevaluacion.$dirty) return errors;
@@ -596,7 +594,6 @@ export default {
       var maxdate = new Date();
       !(dateselected.getTime() <= maxdate.getTime()) &&
         errors.push("La fecha no debe ser mayor a la actual");
-
       return errors;
     },
     errorSituacionAcademica() {
@@ -659,10 +656,10 @@ export default {
             required,
             minLength: minLength(100),
             esParrafo,
-          },
+          },/*
           evaluador: {
             required,
-          },
+          },*/
           fechaevaluacion: {
           required,
          },
@@ -684,7 +681,6 @@ export default {
   transform: translate(-50%, -50%);
   text-align: center;
 }
-
 .dropzone-custom-title {
   margin-top: 0;
   color: #00b782;

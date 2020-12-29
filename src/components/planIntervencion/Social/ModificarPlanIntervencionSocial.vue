@@ -425,10 +425,10 @@ export default {
             minLength: minLength(4),
           },
         },
-      },
+      },/*
       firmaAux: {
         required,
-      },
+      },*/
     };
   },
   props: {

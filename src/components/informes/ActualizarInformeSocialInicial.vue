@@ -82,7 +82,7 @@
                 ></v-textarea>
               </div>
 
-              <v-autocomplete
+              <!-- <v-autocomplete
                   :items="listasociales"
                   filled
                   chips
@@ -129,7 +129,7 @@
                       </v-list-item-content>
                     </template>
                   </template>
-                </v-autocomplete>
+                </v-autocomplete> -->
 
               <v-textarea
                 v-model="informe.contenido.antecedentes"
@@ -757,7 +757,7 @@ function esParrafo(value) {
 }
 
 export default {
-  props: ["listaresidentes", "visible", "informe", "listasociales"],
+  props: ["listaresidentes", "visible", "informe"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -804,7 +804,7 @@ export default {
     this.obtenerCreador();
   },
   methods: {
-    ...mapMutations(["addInforme"]),
+    ...mapMutations(["replaceInforme"]),
     async sendPDFFiles() {
       let listaTitulos = [];
       let listaanexos = this.fileList;
@@ -864,7 +864,7 @@ export default {
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
-            this.addInforme(info);
+            this.replaceInforme(info);
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -1245,14 +1245,14 @@ export default {
     !this.$v.recomendacion.esParrafo &&
         errors.push("La recomendación no debe contener caracteres especiales.");  
       return errors;
-    },
+    },/*
     errorEvaluador() {
       const errors = [];
       if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
       !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un evaluador obligatoriamente");
       return errors;
-    },
+    },*/
     isDisabled() {
       if (this.accion == "consultar") {
         return true;
@@ -1295,10 +1295,10 @@ export default {
           situacionactual: {
             required,
             esParrafo
-          },
+          },/*
           evaluador:{
             required,
-          }
+          }*/
         },
       },
       familiar: {
