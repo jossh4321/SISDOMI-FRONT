@@ -58,7 +58,7 @@
           <v-card class="card">
             <v-card-title
               class="justify-center"
-            >Datos generales del residente {{ residente.nombre }} {{ residente.nombre }}</v-card-title>
+            >Datos generales del residente {{ residente.nombre }} {{ residente.apellido }}</v-card-title>
 
             <VisualizadorResidente :residente="residente"></VisualizadorResidente>
 

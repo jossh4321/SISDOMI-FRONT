@@ -41,9 +41,9 @@
             color="white"
             label
             text-color="primary"
-            @click="navegarto('/dashboard/Fase1')"
+            @click="navegarto('/dashboard/Fase3')"
           >
-            <v-icon left>mdi-check</v-icon>Fase 1
+            <v-icon left>mdi-check</v-icon>Fase 3
           </v-chip>>
           <v-chip class="ma-2" color="white" outlined pill>
             <v-icon left>mdi-account-circle</v-icon>
@@ -117,7 +117,7 @@
             </v-card>
 
             <v-card class="card" style="margin: 20px">
-              <v-card-title class="justify-center">Progreso de Fase 1</v-card-title>
+              <v-card-title class="justify-center">Progreso de Fase 3</v-card-title>
               <v-timeline align-top :dense="$vuetify.breakpoint.smAndDown">
                 <v-timeline-item
                   v-for="(documento,i) in fase.educativa.documentos"
@@ -164,26 +164,6 @@
                     </template>
                   </v-card>
                 </v-timeline-item>
-                <!--Timeline final para registro de documento de transicion
-                <v-timeline-item
-                        color="success"
-                        icon="mdi-buffer"
-                    >
-                        <v-card class="warning" dark>
-                        <v-card-title
-                        class="justify-center"
-                        style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
-                        >{{titulosDoc["DocumentoTransicion"].titulo}}</v-card-title>
-                          <v-col cols="12">
-                            <v-btn color="success" block rounded 
-                            @click="abrirDialogoRegistroDocumento(titulosDoc['DocumentoTransicion'].registrar)">
-                              <v-icon left> mdi-book-plus </v-icon>
-                                <span>Registrar</span>
-                              </v-btn
-                            >
-                          </v-col>
-                        </v-card>
-                </v-timeline-item>-->
               </v-timeline>
             </v-card>
           </v-card>
@@ -195,7 +175,7 @@
             <v-list-item>
               <v-list-item-content>
                 <v-list-item-title class="title">Lista de Residentes</v-list-item-title>
-                <v-list-item-subtitle>Actualmente en la fase 1</v-list-item-subtitle>
+                <v-list-item-subtitle>Actualmente en la fase 3</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
@@ -212,42 +192,32 @@
           </v-list-item-group>
         </v-list>
       </v-navigation-drawer>
-      <!--Dialogo de Registro de Fichas de Ingreso-->
-      <v-dialog v-model="dialogoRegistroDocumentos" persistent max-width="850px">
+      
+      <!-- <v-dialog v-model="dialogoRegistroDocumentos" persistent max-width="850px">
         <v-component
           :is="selectorRegistro"
           :residente="residente"
           @cerrar-modal-docf1="cerrarDialogoRegistroDocF1"
         ></v-component>
       </v-dialog>
-      <!--Dialogo de Fase-->
+      
       <v-dialog persistent v-model="dialogopromocion" max-width="1000px">
-        <RegistrarPromocionFase2
+        <RegistrarPromocionFase3
           :residente="residenteProm"
           @close-dialog-promocion="cerrarDialogoPromocion"
-        ></RegistrarPromocionFase2>
-      </v-dialog>
+        ></RegistrarPromocionFase3>
+      </v-dialog> -->
     </template>
   </div>
 </template>
 <script>
 import VisualizadorResidente from "@/components/residentes/VisualizadorResidente.vue";
-import RegistrarFichaIngresoEducativa from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarFichaEducativaIngreso.vue";
-import RegistrarInformeEducativoInicial from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarInformeEducativoInicial.vue";
-import RegistrarPlanIntervencionEducativoIndividual from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarPlanIntervencionIndividualEducativo.vue";
-import RegistrarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarInformeSeguimientoEducativo.vue";
-import RegistrarPromocionFase2 from "@/components/DocumentosInterfazTratamiento/Fase I/RegistrarPromocionFase2.vue";
 
 import axios from "axios";
 export default {
-  name: "ProgresoResidenteF1",
+  name: "ProgresoResidente",
   components: {
     VisualizadorResidente,
-    RegistrarFichaIngresoEducativa,
-    RegistrarInformeEducativoInicial,
-    RegistrarPlanIntervencionEducativoIndividual,
-    RegistrarInformeSeguimientoEducativo,
-    RegistrarPromocionFase2
   },
   data() {
     return {
@@ -261,40 +231,21 @@ export default {
       dialogoRegistroDocumentos: false,
       dialogopromocion: false,
       titulosDoc: {
-        FichaEducativaIngreso: {
-          titulo: "Ficha Educativa de Ingreso",
-          registrar: "RegistrarFichaIngresoEducativa",
+        InformeEducativoFinal: {
+          titulo: "Informe Educativo Final",
+          registrar: "RegistrarInformeEducativoFinal",
           modificar: "",
           visualizar: ""
         },
-        InformeEducativoInicial: {
-          titulo: "Informe Educativo Inicial",
-          registrar: "RegistrarInformeEducativoInicial",
-          modificar: "",
-          visualizar: ""
-        },
-        PlanIntervencionIndividualEducativo: {
-          titulo: "Plan de Intervencion Educativo Individual",
-          registrar: "RegistrarPlanIntervencionEducativoIndividual",
-          modificar: "",
-          visualizar: ""
-        },
-        InformeSeguimientoEducativo: {
-          titulo: "Informe de Seguimiento Educativo",
-          registrar: "RegistrarInformeSeguimientoEducativo",
-          modificar: "",
-          visualizar: ""
-        }
       }
     };
   },
   async created() {
     var miruta = "/residente/progreso/" + this.$route.params.id;
     await axios
-      .get("/residente/all/fase/2")
+      .get("/residente/all/fase/3")
       .then(res => {
         this.residentesFase = res.data;
-        //console.log(res.data);
       })
       .catch(err => console.log(err));
     await axios
@@ -302,12 +253,15 @@ export default {
       .then(res => {
         this.residente = res.data;
         this.residente.id = this.$route.params.id;
+        console.log("Datos completos");
+        console.log(this.residente);
       })
       .catch(err => console.log(err));
-    this.fase = this.obtenerSecuenciaDocumentos()[0];
+    var quees = this.obtenerSecuenciaDocumentos();
+    this.fase = quees[2];
     this.cargaProgreso = true;
-    console.log("LSITA FASES");
-    console.log(this.fase);
+    console.log("LISTA FASES");
+    console.log(quees);
   },
   methods: {
     obtenerSecuenciaDocumentos() {
@@ -384,7 +338,6 @@ export default {
       this.residenteProm = await this.loadResidenteDetalle(this.residente.id);
       this.dialogopromocion = true;
     },
-
     async loadResidenteDetalle(idresidente) {
       var user = {};
       await axios
