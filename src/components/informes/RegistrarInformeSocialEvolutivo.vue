@@ -64,7 +64,7 @@
                     </template>
                   </template>
                 </v-autocomplete>
-                <v-autocomplete
+               <!-- <v-autocomplete
                   :items="listasociales"
                   filled
                   chips
@@ -111,7 +111,7 @@
                       </v-list-item-content>
                     </template>
                   </template>
-                </v-autocomplete>
+                </v-autocomplete>-->
                 <v-textarea
                   v-model="informe.contenido.antecedentes"
                   label="Antecedentes"
@@ -333,7 +333,7 @@ function esTexto(value) {
   return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
 export default {
-  props: ["listaresidentes", "visible", "titulo","listasociales"],
+  props: ["listaresidentes", "visible", "titulo"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -372,7 +372,7 @@ export default {
           recomendaciones: [],
           anexos: [],
           codigodocumento: "",
-          evaluador: "",
+          //evaluador: "",
         },
       },
     };
@@ -571,14 +571,14 @@ export default {
       !this.$v.informe.contenido.diagnosticosocial.esParrafo &&
         errors.push("El diagnostico social no debe contener caracteres especiales");
       return errors;
-    },
+    },/*
     errorEvaluador() {
       const errors = [];
       if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
       !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un evaluador obligatoriamente");
       return errors;
-    },    
+    },*/    
     errorRecomendacion() {
       const errors = [];
       if (!this.$v.recomendacion.$dirty) return errors;
@@ -620,9 +620,9 @@ export default {
             required,
             esParrafo,
           },
-          evaluador:{
+          /*evaluador:{
             required,
-          },
+          },*/
         },
       },
        recomendacion: {
