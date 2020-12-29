@@ -20,10 +20,10 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 //Notificaciones:
 //import './notification-hub'
 
+Vue.use(Vuelidate);
 Vue.use(VueSweetalert2);
 Vue.use(PerfectScrollbar);
 Vue.use(VueAxios, axios);
-Vue.use(Vuelidate);
 Vue.use(require('vue-moment'));
 
 

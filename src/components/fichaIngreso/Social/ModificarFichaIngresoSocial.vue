@@ -912,7 +912,7 @@
                           <v-card-title>Datos del Informante</v-card-title>
                           <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
                               <v-text-field
-                                  v-model="this.user.usuario"
+                                  v-model="this.usuario"
                                   label="Autor de la ficha de ingreso"
                                   outlined
                                   color="info"
@@ -921,7 +921,7 @@
                           </v-card >
                                <v-card class="subcard" color="#e6f3ff">
                                    <v-text-field
-                                    v-model="this.user.rol.nombre"
+                                    v-model="this.cargo"
                                     label="Cargo del Autor"
                                     outlined
                                     color="info"
@@ -930,9 +930,17 @@
                                </v-card>
                         </v-card>
                   <v-row>
-                    <v-col :cols="12" align="left">
+                    <v-col :cols="12" align="center">
                       <div>
-                        <vue-dropzone
+                        <v-card-text>
+                              <img
+                                width="240"
+                                height="170"
+                                :src="this.firma"
+                                alt=""
+                              />
+                        </v-card-text>
+                       <!-- <vue-dropzone
                           ref="myVueDropzone"
                           @vdropzone-success="afterSuccess2"
                           @vdropzone-removed-file="afterRemoved2"
@@ -946,7 +954,7 @@
                             >Debe Subir una firma obligatoriamente
                             </v-card-text
                           >
-                        </v-card>
+                        </v-card>-->
                       </div>
                     </v-col>
                   </v-row>
@@ -1061,20 +1069,35 @@ export default {
       urlfirma: "",
       firmas: { urlfirma: "", nombre: "", cargo: "" },
 
-      imagen: ""
+      imagen: "",
+      usuario: "",
+      cargo:"",
+      firma:"",
     };
   },
-
+  async created() {
+      this.obtenerCreador();
+  },
   methods: {
     ...mapMutations(["replaceFichaIngreso"]),
-    mounteddropzone(){
+    /*mounteddropzone(){
       var file = { size: 123, name: "Firma del Documento", type: "image/jpg" };
       this.$refs.myVueDropzone.manuallyAddFile(file, this.fichaIngreso.contenido.firma.urlfirma,null,null,true);
+    },*/
+    async obtenerCreador() {
+        await axios
+        .get("/usuario/rol/permiso?id=" + this.fichaIngreso.creadordocumento)
+        .then((x) => {
+          this.usuario = x.data.datos.nombre + " " + x.data.datos.apellido;
+          this.cargo = x.data.rol.nombre;
+          this.firma = x.data.datos.firma;
+        })
+        .catch((err) => console.log(err));
     },
     cerrarDialogo(){     
       this.$emit("cerrar-modal-edicion-ficha-ingreso");
       this.step = 1;
-      this.$refs.myVueDropzone.removeAllFiles();
+      //this.$refs.myVueDropzone.removeAllFiles();
       this.limpiarCampos();
       this.$v.$reset();
     },
@@ -1090,8 +1113,8 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        this.fichaIngreso.contenido.firma.nombre = this.user.usuario;
-        this.fichaIngreso.contenido.firma.cargo = this.user.rol.nombre;
+        //this.fichaIngreso.contenido.firma.nombre = this.user.usuario;
+        //this.fichaIngreso.contenido.firma.cargo = this.user.rol.nombre;
 
         let ficha = this.fichaIngreso;
 
@@ -1237,13 +1260,13 @@ export default {
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
-    },
+    },/*
     afterSuccess2(file, response) {
       this.fichaIngreso.contenido.firma.urlfirma = file.dataURL.split(",")[1];
     },
     afterRemoved2(file, error, xhr) {
       this.fichaIngreso.contenido.firma.urlfirma = "";
-    },
+    },*/
     //Del modal de composicion familiar
     modalRegistrar() {
       this.accion = "registrar";
@@ -1657,13 +1680,13 @@ export default {
           "Debe ingresar un plan de intervención para el residente"
         );
       return errors;
-    },
+    },/*
     errorFirma() {
       return this.$v.fichaIngreso.contenido.firma.urlfirma.required == false &&
         this.$v.fichaIngreso.contenido.firma.urlfirma.$dirty == true
         ? true
         : false;
-    },
+    },*/
     /*errorFirmas() {
       const errors = [];
       if (!this.$v.fichaIngreso.contenido.firmas.$dirty)
@@ -1933,7 +1956,7 @@ export default {
           },
           planintervencion: {
             required
-          },
+          },/*
           firma: {
             nombre: {
               required
@@ -1944,7 +1967,7 @@ export default {
             urlfirma: {
               required,
             },
-          },
+          },*/
         }
       },
       motivoIngreso:{

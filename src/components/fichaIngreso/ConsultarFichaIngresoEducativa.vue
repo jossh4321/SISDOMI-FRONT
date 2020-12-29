@@ -337,7 +337,7 @@
                           <v-card-title>Datos del Informante</v-card-title>
                           <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
                               <v-text-field
-                                  v-model="this.user.usuario"
+                                  v-model="this.usuario"
                                   label="Autor del Informe de Incidencia"
                                   outlined
                                   color="info"
@@ -346,7 +346,7 @@
                           </v-card >
                                <v-card class="subcard" color="#e6f3ff">
                                    <v-text-field
-                                    v-model="this.user.rol.nombre"
+                                    v-model="this.cargo"
                                     label="Cargo del Autor"
                                     outlined
                                     color="info"
@@ -355,9 +355,17 @@
                                </v-card>
                         </v-card>
                   <v-row>
-                    <v-col :cols="12" align="left">
+                    <v-col :cols="12" align="center">
                       <div>
-                        <vue-dropzone
+                        <v-card-text>
+                              <img
+                                width="240"
+                                height="170"
+                                :src="this.firma"
+                                alt=""
+                              />
+                        </v-card-text>
+                        <!-- <vue-dropzone
                           ref="myVueDropzoneFirma"
                           @vdropzone-success="afterSuccessFirma"
                           @vdropzone-removed-file="afterRemovedFirma"
@@ -365,7 +373,7 @@
                           id="dropzone2"
                           :options="dropzoneOptionsFirma"
                         >
-                        </vue-dropzone>
+                        </vue-dropzone> -->
                       </div>
                     </v-col>
                   </v-row>
@@ -441,9 +449,12 @@ export default {
          },dialogoDocumentoEscolar:false,
          observacionAux:"",
          step:1,
-         imagenFirma:{urlOrigen: this.fichaIngreso.contenido.firma.urlfirma,
+         imagenFirma:{urlOrigen: "",
                         modificar:{estado:false,file:{}}},
-        responsableTurnoAux:""
+        responsableTurnoAux:"",
+        usuario: "",
+        cargo:"",
+        firma:"",
         }
       },
     async created() {
@@ -452,14 +463,25 @@ export default {
       console.log( this.fichaIngreso.contenido.responsableturno)
       this.responsableTurnoAux = this.listaeducadores
       .find(x => x.id == this.fichaIngreso.contenido.responsableturno)
-      console.log(this.responsableTurnoAux)
+      console.log(this.responsableTurnoAux);
+      this.obtenerCreador();
     },
     methods:{
       ...mapMutations(["replaceFichaIngreso"]),
-     mounteddropzone(){
+     /*mounteddropzone(){
             var file = { size: 123, name: "Firma del Documento", type: "image/jpg" };
             this.$refs.myVueDropzoneFirma.manuallyAddFile(file, this.fichaIngreso.contenido.firma.urlfirma,null,null,true);
-          },
+          },*/
+      async obtenerCreador() {
+        await axios
+        .get("/usuario/rol/permiso?id=" + this.fichaIngreso.creadorDocumento.id)
+        .then((x) => {
+          this.usuario = x.data.datos.nombre + " " + x.data.datos.apellido;
+          this.cargo = x.data.rol.nombre;
+          this.firma = x.data.datos.firma;
+        })
+        .catch((err) => console.log(err));
+      },
       verificarAccion(accion){
           if(accion != "eliminado" || accion != undefined){
             return true;
@@ -470,14 +492,14 @@ export default {
       },verDocumentoEscolar(item){
           this.documentoEscolar = item;
           this.dialogoDocumentoEscolar=true;
-      },afterSuccessFirma(file, response){
+      },/*afterSuccessFirma(file, response){
           this.imagenFirma.modificar.estado = true;
           this.imagenFirma.modificar.file = file;
           console.log(this.imagenFirma.modificar.file);
       },afterRemovedFirma(){
           this.imagenFirma.modificar.estado = true;
           this.imagenFirma.modificar.file = {};
-      },afterSuccessDocumentos(file, response){
+      },*/afterSuccessDocumentos(file, response){
              this.documentoEscolar.file = file;
       },afterRemovedDocumentos(){
 
@@ -487,7 +509,7 @@ export default {
       },cerrarDialogo(){     
             this.$emit("cerrar-modal-detalle-ficha-ingreso");
             this.step = 1;
-            this.$refs.myVueDropzoneFirma.removeAllFiles();
+            //this.$refs.myVueDropzoneFirma.removeAllFiles();
         }
       }, 
      filters:{

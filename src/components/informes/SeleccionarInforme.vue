@@ -38,25 +38,27 @@
                             @close="showRegistrarInformeEI=false"/>
                         <RegistrarInformeSocialInicial                 
                             v-if="showRegistrarInformeSI"
-                            :listaresidentes="listaresidentes" 
+                            :listaresidentes="listaresidentesISI" 
                             :visible="showRegistrarInformeSI"  
                             :listasociales="listasociales"
                             @close="showRegistrarInformeSI=false"/>
                         <RegistrarInformeSocialEvolutivo                 
                             v-if="showRegistrarInformeSE"
-                            :listaresidentes="listaresidentes" 
+                            :listaresidentes="listaresidentes"
+                            :listasociales="listasociales" 
                             :visible="showRegistrarInformeSE"
                             :titulo="titulo"  
                             @close="showRegistrarInformeSE=false"/>
                         <RegistrarInformePsicologicoInicial        
-                            :listaresidentes="listaresidentes"    
+                            :listaresidentes="listaresidentesIPI"    
                             :listapsicologos="listapsicologos"
                             v-if="showRegistrarInformePI" 
                             :visible="showRegistrarInformePI"                                 
                             @close="showRegistrarInformePI=false"/>
                         <RegistrarInformePsicologicoEvolutivo                 
                             v-if="showRegistrarInformePE"
-                            :listaresidentes="listaresidentes" 
+                            :listaresidentes="listaresidentes"
+                            :listapsicologos="listapsicologos" 
                             :visible="showRegistrarInformePE"
                             :titulo="titulo"  
                             @close="showRegistrarInformePE=false"/>                       
@@ -108,6 +110,10 @@ export default {
         showRegistrarInformePE: false,
         listaresidentesIEI: [],
         listaresidentesIEE: [],
+        listaresidentesISI: [],
+        listaresidentesISE: [],
+        listaresidentesIPI: [],
+        listaresidentesIPE: [],
         faseEducativaInicial: {            
             fase: "1",
             area: "educativa",
@@ -130,11 +136,41 @@ export default {
             documentoanterior: "InformeEducativoEvolutivo",
             documentoactual: "InformeEducativoFinal",
             estadodocumentoanterior: "Completo",
+        },
+        faseSocialInicial: {            
+            fase: "1",
+            area: "social",
+            documentoanterior: "FichaSocialIngreso",
+            documentoactual: "InformeSocialInicial",
+            estadodocumentoanterior: "Completo",
+        },
+        faseSocialFinal: {            
+            fase: "3",
+            area: "social",
+            documentoanterior: "InformeSocialEvolutivo",
+            documentoactual: "InformeSocialFinal",
+            estadodocumentoanterior: "Completo",
+        },
+        fasePsicologicoInicial: {            
+            fase: "1",
+            area: "psicologica",
+            documentoanterior: "FichaPsicologicaIngreso",
+            documentoactual: "InformePsicologicoInicial",
+            estadodocumentoanterior: "Completo",
+        },
+        fasePsicologicoFinal: {            
+            fase: "3",
+            area: "psicologica",
+            documentoanterior: "InformePsicologicoEvolutivo",
+            documentoactual: "InformePsicologicoFinal",
+            estadodocumentoanterior: "Completo",
         }
       }
     }, 
     async created(){
         this.obtenerResidentesIEI();
+        this.obtenerResidentesISI();
+        this.obtenerResidentesIPI();
     },
      methods:{
         cerrarDialogo(){            
@@ -207,6 +243,42 @@ export default {
         .then((x) => {
           this.listaresidentesIEE = x.data;
           console.log(this.listaresidentesIEE);
+        })
+        .catch((err) => console.log(err));
+     },
+     async obtenerResidentesISI() {      
+      await axios
+        .post("/residente/all/estadofase", this.faseSocialInicial)
+        .then((x) => {
+          this.listaresidentesISI = x.data;
+          console.log(this.listaresidentesISI);
+        })
+        .catch((err) => console.log(err));
+     },
+     async obtenerResidentesISF() {      
+      await axios
+        .post("/residente/all/estadofase", this.faseSocialFinal)
+        .then((x) => {
+          this.listaresidentesISE = x.data;
+          console.log(this.listaresidentesISE);
+        })
+        .catch((err) => console.log(err));
+     },
+     async obtenerResidentesIPI() {      
+      await axios
+        .post("/residente/all/estadofase", this.fasePsicologicoInicial)
+        .then((x) => {
+          this.listaresidentesIPI = x.data;
+          console.log(this.listaresidentesIPI);
+        })
+        .catch((err) => console.log(err));
+     },
+     async obtenerResidentesIPF() {      
+      await axios
+        .post("/residente/all/estadofase", this.fasePsicologicoFinal)
+        .then((x) => {
+          this.listaresidentesIPE = x.data;
+          console.log(this.listaresidentesIPE);
         })
         .catch((err) => console.log(err));
      },

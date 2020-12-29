@@ -392,7 +392,15 @@
             <form>
               <v-row>
                 <v-col cols="12" sm="12">
-                  <vue-dropzone
+                  <v-card-text>
+                      <img
+                        width="240"
+                        height="170"
+                        :src="this.firma"
+                        alt=""
+                      />
+                    </v-card-text>
+                  <!-- <vue-dropzone
                     ref="myVueDropzone"
                     :options="dropzoneOptions"
                     id="dropzone"
@@ -405,7 +413,7 @@
                     class="mt-2"
                   >
                     Debe ingresar una firma para el registro
-                  </v-alert>
+                  </v-alert> -->
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-btn
@@ -485,6 +493,7 @@ export default {
         estado: "",
         faseActual: "",
       },
+      firma:"",
     };
   },
   props: {
@@ -493,9 +502,9 @@ export default {
     },
   },
   validations: {
-    listImages: {
+    /*listImages: {
       required,
-    },
+    },*/
     objetivoEspecifico: {
       minLength: minLength(10),
     },
@@ -627,6 +636,14 @@ export default {
     closeDialog() {
       this.$emit("close-dialog");
     },
+    async obtenerCreador() {
+        await axios
+        .get("/usuario/rol/permiso?id=" + this.planI.creador)
+        .then((x) => {
+          this.firma = x.data.datos.firma;
+        })
+        .catch((err) => console.log(err));
+      },
     addStep(step) {
       this.startSttepper = step;
     },
@@ -662,7 +679,7 @@ export default {
         this.planI.contenido.requerimientos.push(this.requerimiento);
         this.requerimiento = "";
       }
-    },
+    },/*
     registerFile(file, response) {
       this.listImages.push(file);
     },
@@ -672,7 +689,7 @@ export default {
       if (indexFile != -1) {
         this.listImages.splice(indexFile, 1);
       }
-    },
+    },*/
     messageSweet(icon, title, text, valid) {
       this.$swal({
         icon: icon,
@@ -695,7 +712,7 @@ export default {
           false
         );
       } else {
-        for (let index = 0; index < this.listImages.length; index++) {
+        /*for (let index = 0; index < this.listImages.length; index++) {
 
           if (
             this.listImages[index] != null &&
@@ -714,7 +731,7 @@ export default {
                 console.error(err);
               });
           }
-        }
+        }*/
 
         let planI = {
           id: this.planI.id,
@@ -1013,8 +1030,9 @@ export default {
     ].fase.toString();
 
     this.residentes.push(this.residente);
+    this.obtenerCreador();
   },
-  mounted() {
+  /*mounted() {
     var file = { size: 250, name: "firma_trabajador", type: "image/jpg" };
     var url = this.planI.contenido.firmas[0].urlfirma;
 
@@ -1023,7 +1041,7 @@ export default {
     this.listImages.push(
       this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[0]
     );
-  },
+  },*/
   components: {
     vueDropzone: vue2Dropzone,
     RegistroMultiple,
