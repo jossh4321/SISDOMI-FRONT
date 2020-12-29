@@ -62,6 +62,60 @@
 
             <VisualizadorResidente :residente="residente"></VisualizadorResidente>
 
+            <v-card style="padding: 15px 20px; margin: 20px;">
+              <div class="container-user">
+                <v-card style="padding:1%" elevation="0">
+                  <v-card-text>
+                    <v-row style="margin-left:2px">
+                      <v-col cols="8">
+                        <v-row
+                          class="my-1"
+                          align="center"
+                        >
+                          <v-col cols="12">
+                            <div class="text--primary" style="font-size: 25px">
+                              Documentos necesarios para promover al residente
+                            </div>
+                          </v-col>
+                          <strong class="mx-4 success--text text--darken-2">
+                            Documentos Completados: {{ obtenerDocumentosCompletos  }}
+                          </strong>
+
+                          <v-divider vertical></v-divider>
+
+                          <strong class="mx-4 text--darken-2" :class="[(4!=0) ? 'error--text' : 'info--text']"> <!-- remainingTasks -->
+                            Documentos Faltantes: {{ obtenerDocumentosFaltantes }} <!-- remainingTasks -->
+                          </strong>
+                        </v-row>
+                        <v-divider class="mt-4"></v-divider>
+                      </v-col>
+                      
+                      <v-col cols="4">
+                        <v-progress-circular
+                          :rotate="-90"
+                          :size="90"
+                          :width="9"
+                          color="green"
+                          :value="progressOne"
+                          class="mr-2"
+                        >{{progressOne}}<span style="font-size:12px">%</span></v-progress-circular>  <!-- progressOne -->
+                      </v-col>
+                      
+                    </v-row>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn 
+                      dark color="success"
+                      v-if="fase.educativa.estado == 'incompleto'"
+                      @click="registrarDocumentoTransicionFase()"
+                      >
+                      <span>Realizar promoción</span>
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </div>
+            </v-card>
+
             <v-card class="card" style="margin: 20px">
               <v-card-title class="justify-center">Progreso de Fase 2</v-card-title>
               <v-timeline align-top :dense="$vuetify.breakpoint.smAndDown">
@@ -243,6 +297,13 @@
           @cerrar-modal-docf1="cerrarDialogoRegistroDocF1"
         ></v-component>
       </v-dialog>
+      <!--Dialogo de Fase-->
+      <v-dialog persistent v-model="dialogopromocion" max-width="1000px">
+        <RegistrarPromocionFase3
+          :residente="residenteProm"
+          @close-dialog-promocion="cerrarDialogoPromocion"
+        ></RegistrarPromocionFase3>
+      </v-dialog>
     </template>
   </div>
 </template>
@@ -250,7 +311,7 @@
 import VisualizadorResidente from "@/components/residentes/VisualizadorResidente.vue";
 import RegistrarPlanIntervencion from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/PlanIntervencion/RegistrarPlanIntervencion.vue";
 import RegistrarInformeEducativoEvolutivo from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/InformeEvolutivo/RegistrarInformeEducativoEvolutivo.vue";
-import RegistrarDocPromocion from "@/components/DocumentosInterfazTratamiento/Fase 2/RegistrarDocPromocion.vue";
+import RegistrarPromocionFase3 from "@/components/DocumentosInterfazTratamiento/Fase 2/RegistrarPromocionFase3.vue";
 
 import axios from "axios";
 export default {
@@ -262,17 +323,19 @@ export default {
     //Informe
     RegistrarInformeEducativoEvolutivo,
     //Doc Trans
-    RegistrarDocPromocion
+    RegistrarPromocionFase3
   },
   data() {
     return {
       drawer: false,
       residente: "",
+      residenteProm: {},
       residentesFase: [],
       fase: [],
       cargaProgreso: false,
       selectorRegistro: "",
       dialogoRegistroDocumentos: false,
+      dialogopromocion: false,
       titulosDoc: {
         PlanIntervencionIndividualEducativo: {
           titulo: "Plan Intervencion Individual Educativo",
@@ -378,11 +441,46 @@ export default {
       this.dialogoRegistroDocumentos = false;
       this.selectorRegistro = "";
     },
+    cerrarDialogoPromocion() {
+      this.dialogopromocion = false;
+    },
     navegarto(ruta) {
       this.$router.push(ruta);
-    }
+    },
+    async registrarDocumentoTransicionFase() {
+      this.residenteProm = await this.loadResidenteDetalle(this.residente.id);
+      this.dialogopromocion = true;
+    },
+    async loadResidenteDetalle(idresidente) {
+      var user = {};
+      await axios
+        .get("/residente/id?id=" + idresidente)
+        .then((res) => {
+          console.log(res);
+          user = res.data;
+          user.fechaNacimiento = user.fechaNacimiento.split("T")[0];
+          user.fechaIngreso = user.fechaIngreso.split("T")[0];
+        })
+        .catch((err) => console.log(err));
+      console.log(user);
+      return user;
+    },
   },
-  computed: {},
+  computed: {
+    obtenerDocumentosCompletos () {
+      var numero = this.fase.educativa.documentos.filter(documento => documento.estado !== "Pendiente" ).length;
+      return numero;
+    },
+    obtenerDocumentosFaltantes () {
+      var numero = this.fase.educativa.documentos.filter(documento => documento.estado === "Pendiente" ).length;
+      return numero;
+    },
+
+    progressOne () {
+      var retorno = Math.round(this.obtenerDocumentosCompletos/this.fase.educativa.documentos.length * 100)
+      return retorno
+    },
+  },
   filters: {}
 };
 </script>
