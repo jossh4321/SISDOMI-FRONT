@@ -106,7 +106,7 @@
                   <v-card-actions>
                     <v-btn 
                       dark color="success"
-                      v-if="fase.educativa.estado == 'incompleto'"
+                      v-if="fase.educativa.estado != 'incompleto'"
                       @click="registrarDocumentoTransicionFase()"
                       >
                       <span>Realizar promoción</span>
