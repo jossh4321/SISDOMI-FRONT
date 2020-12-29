@@ -502,9 +502,9 @@ export default {
     },
   },
   validations: {
-    listImages: {
+    /*listImages: {
       required,
-    },
+    },*/
     objetivoEspecifico: {
       minLength: minLength(10),
     },

@@ -356,7 +356,7 @@ export default {
     },
     async obtenerResidentesPsico() {
       await axios
-        .post("/residente/all/estadofase", this.documentoPsicoFasee)
+        .post("/residente/all/estadofase", this.documentoPsicoFase)
         .then((x) => {
           this.listaresidentes = x.data;
         })
