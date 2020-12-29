@@ -8,17 +8,6 @@
     >
     <v-card style="padding: 15px 20px">
       <div class="container-user">
-        <v-card v-if="evitarPromocion()" color="#FFDFDF">
-          <v-alert
-            dense
-            outlined
-            type="error"
-            style="font-weight:bold;font-size:16px;"
-          >
-            No se puede promover al residente porque sus documentos de la fase
-            actual no han sido completados.
-          </v-alert>
-        </v-card>
         <v-expansion-panels focusable>
           <v-expansion-panel no-gutters>
             <v-card style="border: 1px solid #c1c1c1">
@@ -134,14 +123,6 @@
                       ></v-text-field>
                     </v-col>
                   </v-row>
-                  <v-btn
-                    color="info"
-                    dark
-                    @click="abrirDialogoDetalleFase(residente.id)"
-                  >
-                    <v-icon left> info </v-icon>
-                    <span>Visualizar</span>
-                  </v-btn>
                 </form>
               </v-expansion-panel-content>
             </v-card>
@@ -256,14 +237,6 @@
         </div>
       </v-card>
     </v-dialog>
-    <v-dialog persistent v-model="dialogofase" max-width="1000px">
-      <FasesResidente
-        :datosfase="datosfase"
-        :nombreResidente="residente.nombre + ' ' + residente.apellido"
-        :dialogofase="dialogofase"
-        @close-dialog-fases="closeDialogDetalle()"
-      ></FasesResidente>
-    </v-dialog>
   </v-card>
 </template>
 
@@ -281,7 +254,7 @@ function esParrafo(value) {
 }
 export default {
   name: "PromoverResidente",
-  props: ["residente", "dialogopromover"],
+  props: ["residente"],
   components: {
     vueDropzone: vue2Dropzone,
     FasesResidente,
@@ -378,39 +351,13 @@ export default {
         footer: footer,
       });
     },
-    evitarPromocion() {
-      if (this.datosfase !== null) {
-        console.log(this.datosfase);
-        if(this.datosfase.progreso[this.datosfase.progreso.length - 1].educativa.estado == "completo" && 
-        this.datosfase.progreso[this.datosfase.progreso.length - 1].social.estado == "completo" &&
-        this.datosfase.progreso[this.datosfase.progreso.length - 1].psicologica.estado == "completo"){
-          this.switchPromocion = false;
-          return false;
-        }else{
-          this.switchPromocion = true;
-          return true;
-        }
-        /*for (let j = 0; j < this.datosfase.progreso[this.datosfase.progreso.length - 1].educativa.documentos.length;j++) {
-          if (this.datosfase.progreso[this.datosfase.progreso.length - 1].educativa.documentos[j].estado !== "Completo") {
-            this.switchPromocion = true;
-            return true;
-          }
-          console.log("ESTADO:");
-          console.log(
-            this.datosfase.progreso[this.datosfase.progreso.length - 1]
-              .educativa.documentos[j].estado
-          );
-        }
-        this.switchPromocion = false;
-        return false;*/
-      }
-    },
     closeDialogDetalle() {
       this.dialogofase = false;
     },
     cerrarDialogo() {
-      this.$emit("close-dialog-promover");
+      this.$emit("close-dialog-promocion");
       this.limpiar();
+      this.$v.$reset();
     },
     convertDateFormat(string) {
       console.log(string);
@@ -499,9 +446,6 @@ export default {
           },
         });
     },
-    async abrirDialogoDetalleFase(idresidente) {
-      this.dialogofase = !this.dialogofase;
-    },
     async obtenerFase(idresidente) {
       var fase = {};
       await axios
@@ -516,37 +460,25 @@ export default {
     },
     async registrarDocumentoTransicionFase() {
       this.activado = true;
-      if (this.switchPromocion === true) {
-        this.mensaje(
-          "error",
-          "..Oops",
-          "No se puede promover al residente",
-          "<strong>Completar los documentos de su fase actual<strong>"
-        );
-      } else if (
-        this.$v.progresoFase.$invalid ||
-        this.switchPromocion === true
-      ) {
-        console.log("hay errores al modificar p llama");
+      if (this.$v.progresoFase.$invalid) {
         this.mensaje(
           "error",
           "..Oops",
           "Se encontraron errores en el formulario",
           "<strong>Verifique los campos Ingresados<strong>"
         );
-      } else {
+      } 
+      else {
         console.log(this.progresoFase.documentotransicion.fecha);
-        this.progresoFase.documentotransicion.fecha = this.convertDateFormat(
-          this.progresoFase.documentotransicion.fecha
-        );
-        console.log(
-          "primero fecha de documentotransicion: " +
-            this.progresoFase.documentotransicion.fecha
-        );
+        this.progresoFase.documentotransicion.fecha = this.convertDateFormat(this.progresoFase.documentotransicion.fecha);
+        console.log( "primero fecha de documentotransicion: " +
+            this.progresoFase.documentotransicion.fecha );
+
         this.progresoFase.documentotransicion.firma.nombre =
           this.user.datos.nombre + " " + this.user.datos.apellido;
         this.progresoFase.documentotransicion.firma.cargo = this.user.rol.nombre;
         this.progresoFase.documentotransicion.idcreador = this.user.id;
+
         if (this.progresoFase.fase === 2) {
           this.progresoResidente.fase = 2;
           this.progresoResidente.nombre = "desarrollo";
@@ -581,31 +513,29 @@ export default {
             { tipo: "InformeSocialFinal", estado: "Pendiente" },
             { tipo: "ActaExternamiento", estado: "Pendiente" },
           ];
-          this.progresoFase.psicologica.documentos = [
+          this.progresoFase.educativa.documentos = [
             { tipo: "InformePsicologicoFinal", estado: "Pendiente" },
           ];
         }
-        //this.progresoFase.documentotransicion.firma.urlfirma = "https://siscarfileserver2.blob.core.windows.net/firmas/19f70067-5c30-444f-a83b-2f456f6a27bd.jpg";
         this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z";
         this.progresoResidente.fechafinalizacion = this.calculoFin() + "T05:00:00Z";
         this.progresoResidente.estado = "inicio";
+
         //Actualizando en Residente
-        this.residente.progreso[
-          this.residente.progreso.length - 1
-        ].fechafinalizacion = this.progresoResidente.fechaingreso;
-        let faseAnterior = this.residente.progreso[
-          this.residente.progreso.length - 1
-        ].fase;
+        this.residente.progreso[ this.residente.progreso.length - 1 ].fechafinalizacion = this.progresoResidente.fechaingreso;
+        let faseAnterior = this.residente.progreso[ this.residente.progreso.length - 1 ].fase;
         this.residente.progreso.push(this.progresoResidente);
-        console.log(this.residente);
-        console.log(this.progresoFase);
+        
         var residenteFase = {
           residente: this.residente,
           progresoFase: this.progresoFase,
           promocion: true,
           faseAnterior,
         };
-        await axios
+
+        console.log(residenteFase);
+
+        /* await axios
           .put("/Residente", residenteFase)
           .then((res) => {
             console.log(res.data);
@@ -632,13 +562,7 @@ export default {
           })
           .catch((err) => {
             console.log(err);
-            // await this.mensaje(
-            // "error",
-            // "Oops...",
-            // "Hubo un problema al realizar la promoción, intentelo nuevamente",
-            // "<strong>Se redirigira a la interfaz de Gestión<strong>"
-            // );
-          });
+          }); */
         await this.mensaje(
           "success",
           "Listo",

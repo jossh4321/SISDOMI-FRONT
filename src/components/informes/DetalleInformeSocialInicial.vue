@@ -35,13 +35,13 @@
                 readonly
                 color="#009900"
               ></v-text-field>
-              <v-text-field
+              <!-- <v-text-field
                 v-model="evaluador"
                 label="Evaluador"
                 outlined
                 readonly
                 color="#009900"
-              ></v-text-field>
+              ></v-text-field> -->
               <v-textarea
                 v-model="informe.contenido.antecedentes"
                 label="Antecedentes"
@@ -482,7 +482,7 @@ export default {
     return {
       step: 1,
       residente: "",
-      evaluador: "",
+      //evaluador: "",
       motivoIngreso: "",
       usuario: "",
       cargo:"",
@@ -510,7 +510,7 @@ export default {
   },
   async created() {
     this.obtenerResidente();
-    this.obtenerEvaluador();
+    //this.obtenerEvaluador();
     this.obtenerCreador();
   },
   methods: {
@@ -533,7 +533,7 @@ export default {
           this.firma = x.data.datos.firma;
         })
         .catch((err) => console.log(err));
-    },
+    },/*
     async obtenerEvaluador() {
       await axios
         .get("/usuario/id?id=" + this.informe.contenido.evaluador)
@@ -541,7 +541,7 @@ export default {
           this.evaluador = res.data.datos.nombre + " " + res.data.datos.apellido;
         })
         .catch((err) => console.log(err));        
-    },
+    },*/
     resetInformeValidationState() {
       this.$refs.myVueDropzone.removeAllFiles();
       this.$v.informe.$reset();

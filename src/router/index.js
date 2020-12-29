@@ -31,7 +31,8 @@ import GestionarExpedientes from '@/views/ExpedienteMatriz/GestionarExpedientes.
 import ExpedienteResidente from '@/views/ExpedienteMatriz/ExpedienteResidente.vue';
 import ProgresoResidente from '@/views/Home/Progreso.vue'
 import ProgresoF2Residente from '@/views/Home/ProgresoFase2.vue'
-
+import ProgresoF1Residente from '@/views/Home/ProgresoFase1.vue'
+import ProgresoF3Residente from '@/views/Home/ProgresoFase3.vue'
 /* Importación del axios para la verificación del token */
 import axios from '../store/index.js';
 
@@ -189,7 +190,18 @@ const routes = [{
                 name:'ProgresoF2Residente',
                 component: ProgresoF2Residente,
                 params: true
-            }
+            },{
+                path:'ProgresoF1Residente/:id',
+                name:'ProgresoF1Residente',
+                component: ProgresoF1Residente,
+                params: true
+            },
+            {
+                path:'ProgresoF3Residente/:id',
+                name:'ProgresoF3Residente',
+                component: ProgresoF3Residente,
+                params: true
+            },
         ],
 
         component: () =>

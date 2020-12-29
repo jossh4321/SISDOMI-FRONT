@@ -39,9 +39,6 @@
               </template>
               <SeleccionarInforme
                 :listaresidentes="listaresidentes"
-                :listaeducadores="listaeducadores"
-                :listasociales="listasociales"
-                :listapsicologos="listapsicologos"
                 @close-dialog-save="closeDialogRegistrar()"
               ></SeleccionarInforme>
             </v-dialog>
@@ -74,7 +71,6 @@
           v-if="dialogoIEIactualizacion"
           :informe="informe"
           :listaresidentes="listaresidentes"
-          :listaeducadores="listaeducadores"
           @close-dialog-update="closeDialogActualizar()"
         >
         </ActualizarInformeEducativoInicial>
@@ -83,7 +79,6 @@
         <ActualizarInformeSocialInicial
           v-if="dialogoISIactualizacion"
           :listaresidentes="listaresidentes"
-          :listasociales="listasociales"
           :informe="informe"
           @close-dialog-update="closeDialogActualizar()"
         >
@@ -94,7 +89,6 @@
           v-if="dialogoIPIactualizacion"
           :informe="informe"
           :listaresidentes="listaresidentes"
-          :listapsicologos="listapsicologos"
           @close-dialog-update="closeDialogActualizar()"
         >
         </ActualizarInformePsicologicoInicial>
@@ -105,7 +99,6 @@
           :informe="informe"
           :titulo="titulo"
           :listaresidentes="listaresidentes"
-          :listaeducadores="listaeducadores"
           @close-dialog-update="closeDialogActualizar()"
         >
         </ActualizarInformeEducativoEvolutivo>
@@ -115,7 +108,6 @@
           v-if="dialogoISEactualizacion"
           :informe="informe"
           :titulo="titulo"
-          :listasociales="listasociales"
           :listaresidentes="listaresidentes"
           @close-dialog-update="closeDialogActualizar()"
         >
@@ -127,7 +119,6 @@
           :informe="informe"
           :titulo="titulo"
           :listaresidentes="listaresidentes"
-          :listapsicologos="listapsicologos"
           @close-dialog-update="closeDialogActualizar()"
         >
         </ActualizarInformePsicologicoEvolutivo>
@@ -239,9 +230,9 @@ export default {
       ],
       listaresidentes: [],
       titulo: "Titulo por defecto",
-      listaeducadores: [],
+      /*listaeducadores: [],
       listasociales: [],
-      listapsicologos: [],
+      listapsicologos: [],*/
       dialogoregistro: false,
       dialogoIEIactualizacion: false,
       dialogoIEEactualizacion: false,
@@ -267,9 +258,9 @@ export default {
   async created() {
     this.obtenerInformes();
     this.obtenerResidentes();
-    this.obtenerEducadores();
-    this.obtenerSociales();
-    this.obtenerPsicologos();    
+    //this.obtenerEducadores();
+    //this.obtenerSociales();
+    //this.obtenerPsicologos();    
   },
   methods: {
     ...mapMutations(["setInformes"]),
@@ -410,7 +401,7 @@ export default {
           console.log(this.listaresidentes);
         })
         .catch((err) => console.log(err));
-    },    
+    }, /*   
     async obtenerEducadores() {
       await axios
         .get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
@@ -434,7 +425,7 @@ export default {
           this.listapsicologos = res.data;          
         })
         .catch((err) => console.log(err));
-    },
+    },*/
   },
   computed: {
     ...mapState(["informes"]),

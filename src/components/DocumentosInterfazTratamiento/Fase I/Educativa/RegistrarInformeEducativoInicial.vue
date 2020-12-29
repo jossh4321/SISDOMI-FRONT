@@ -1,5 +1,4 @@
 <template>
-  <v-dialog v-model="show" max-width="50%">
     <v-card>
       <v-card-title class="justify-center"
         >Registro de Informe Educativo Inicial</v-card-title
@@ -18,103 +17,18 @@
           <v-stepper-content step="1">
             <div class="container-user">
               <form>
-                <v-autocomplete
-                  :items="listaresidentes"
-                  v-model="informe.idresidente"
-                  filled
-                  chips
-                  dense
-                  outlined
-                  color="#009900"
-                  label="Usuaria CAR"
-                  item-text="nombre"
-                  item-value="id"
-                  @input="$v.informe.idresidente.$touch()"
-                  @blur="$v.informe.idresidente.$touch()"
-                  :error-messages="errorResidente"
-                >
-                  <template v-slot:selection="data">
-                    <v-chip
-                      v-bind="data.attrs"
-                      :input-value="data.selected"
-                      style="margin-top:5px"
-                    >
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size:12px">RT</span>
-                      </v-avatar>
-                      {{ data.item.nombre }} {{ data.item.apellido }}
-                    </v-chip>
-                  </template>
-                  <template v-slot:item="data">
-                    <template>
-                      <v-list-item-avatar>
-                        <v-avatar left color="#b3b3ff" size="24">
-                          <span style="font-size:12px">UC</span>
-                        </v-avatar>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          >Nombre completo: {{ data.item.nombre }}
-                          {{ data.item.apellido }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle
-                          >Nro. Documento:
-                          {{ data.item.numeroDocumento }}</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </template>
-                  </template>
-                </v-autocomplete>
-
-                <!-- <v-autocomplete
-                  :items="listaeducadores"
-                  filled
-                  chips
-                  dense
-                  outlined
-                  v-model="informe.contenido.evaluador"
-                  color="#009900"
-                  label="Educador responsable"
-                  item-text="usuario"
-                  item-value="id"
-                  :error-messages="errorCreador"
-                >
-                  <template v-slot:selection="data">
-                    <v-chip
-                      v-bind="data.attrs"
-                      :input-value="data.selected"
-                      style="margin-top:5px"
-                    >
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size:12px">RT</span>
-                      </v-avatar>
-                      {{ data.item.datos.nombre }}
-                      {{ data.item.datos.apellido }}
-                    </v-chip>
-                  </template>
-                  <template v-slot:item="data">
-                    <template>
-                      <v-list-item-avatar>
-                        <v-avatar left color="#b3b3ff" size="24">
-                          <span style="font-size:12px">UC</span>
-                        </v-avatar>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          >Nombre completo: {{ data.item.datos.nombre }}
-                          {{ data.item.datos.apellido }}
-                        </v-list-item-title>
-                        <v-list-item-subtitle
-                          >Nro. Documento:
-                          {{
-                            data.item.datos.numerodocumento
-                          }}</v-list-item-subtitle
-                        >
-                      </v-list-item-content>
-                    </template>
-                  </template>
-                </v-autocomplete> -->
-
+                  <v-card class="subcard card-padre">
+                          <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
+                              <span>
+                                Residente: {{this.residente.nombre}} {{this.residente.apellido}}
+                              </span>
+                          </v-card >
+                          <v-card class="subcard" color="#e6f3ff">
+                            <span>
+                              Fecha de Ingreso: {{ this.residente.fechaingreso | fomatoFecha}}
+                            </span>
+                          </v-card>
+                  </v-card>
                 <v-textarea
                   label="Lugar de Evaluación"
                   v-model="informe.contenido.lugarevaluacion"
@@ -193,7 +107,7 @@
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block @click="show = false" color="primary">
+                    <v-btn block @click="cerrarDialogo" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
                     </v-btn>
@@ -334,7 +248,7 @@
                     </v-btn>
                   </v-col>
                   <v-col>
-                    <v-btn block @click="show = false" color="primary">
+                    <v-btn block @click="cerrarDialogo" color="primary">
                       <v-icon left>mdi-close-outline</v-icon>
                       <span>Cerrar</span>
                     </v-btn>
@@ -345,8 +259,22 @@
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
+      <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Registrando del Informe Educativo Inicial</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>    
     </v-card>
-  </v-dialog>
 </template>
 <script>
 import axios from "axios";
@@ -356,14 +284,16 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 import { mapGetters } from "vuex";
+
 function esTexto(value) {
   return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value);
 }
+
 function esParrafo(value) {
   return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value);
 }
 export default {
-  props: ["listaresidentes", "visible"],
+  props:["residente"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -393,7 +323,7 @@ export default {
         fechacreacion: null,
         area: "educativa",
         fase: "1",
-        idresidente: "",
+        idresidente: this.residente.id,
         estado: "creado",
         contenido: {
           situacionacademica: "",
@@ -402,11 +332,11 @@ export default {
           anexos: [],
           codigodocumento: "",
           lugarevaluacion: "",
-          //evaluador: "",
           fechaevaluacion: "",
         },
       },
       imagen: "",
+      cargaRegistro:false,
     };
   },
   async created() {
@@ -451,10 +381,11 @@ export default {
       } else {
         console.log("no hay errores");
         console.log(this.informe);
+        this.cargaRegistro = true;
         await axios
           .post("/informe/informeei", this.informe)
           .then((res) => {
-            this.informe = res.data;
+            /*this.informe = res.data;
             var resi = this.listaresidentes.filter(function(residente) {
               return residente.id == res.data.idresidente;
             });
@@ -465,7 +396,9 @@ export default {
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
             };
-            this.addInforme(info);
+            this.addInforme(info);*/
+            this.$emit("actualizar-progreso-fase1");
+            this.cargaRegistro = false;
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -476,7 +409,6 @@ export default {
           "<strong>Se redirigira a la interfaz de gestión<strong>"
         );
       }
-      this.$v.urlfirma.$reset();
       this.$v.conclusion.$reset();
     },
     resetInformeValidationState() {
@@ -495,7 +427,7 @@ export default {
     cerrarDialogo() {
       this.informe = this.limpiarInforme();
       this.step = 1;
-      this.$emit("close");
+      this.$emit("cerrar-modal-docf1");
     },
     agregarConclusion() {
       this.$v.conclusion.$touch();
@@ -548,33 +480,14 @@ export default {
         },
       };
     },
-  },
-  computed: {
-    show: {
-      get() {
-        return this.visible;
-      },
-      set(value) {
-        if (!value) {
-          this.$emit("close");
+  },filters:{
+        fomatoFecha: (fecha) =>{
+            var formato = moment(fecha);
+            return formato.format("llll");
         }
-      },
     },
+  computed: {
     ...mapGetters(["user"]),
-    errorResidente() {
-      const errors = [];
-      if (!this.$v.informe.idresidente.$dirty) return errors;
-      !this.$v.informe.idresidente.required &&
-        errors.push("Debe seleccionar un residente obligatoriamente");
-      return errors;
-    },/*
-    errorCreador() {
-      const errors = [];
-      if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
-      !this.$v.informe.contenido.evaluador.required &&
-        errors.push("Debe seleccionar un educador obligatoriamente");
-      return errors;
-    },*/
     errorLugarEvaluacion() {
       const errors = [];
       if (!this.$v.informe.contenido.lugarevaluacion.$dirty) return errors;
@@ -594,6 +507,7 @@ export default {
       var maxdate = new Date();
       !(dateselected.getTime() <= maxdate.getTime()) &&
         errors.push("La fecha no debe ser mayor a la actual");
+
       return errors;
     },
     errorSituacionAcademica() {
@@ -639,9 +553,6 @@ export default {
   validations() {
     return {
       informe: {
-        idresidente: {
-          required,
-        },        
         contenido: {
           lugarevaluacion: {
             required,
@@ -656,10 +567,7 @@ export default {
             required,
             minLength: minLength(100),
             esParrafo,
-          },/*
-          evaluador: {
-            required,
-          },*/
+          },
           fechaevaluacion: {
           required,
          },
@@ -681,8 +589,15 @@ export default {
   transform: translate(-50%, -50%);
   text-align: center;
 }
+
 .dropzone-custom-title {
   margin-top: 0;
   color: #00b782;
+}
+
+.card-padre{
+   border: 2px solid #EAEAEA;
+   margin-bottom:25px;
+   border-radius: 5px;
 }
 </style>

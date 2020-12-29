@@ -432,7 +432,7 @@ export default {
       this.$store.commit("toggleDrawer");
     },
     abrirProgresoFase3(id) {
-      var rutacompleta = "/dashboard/ProgresoResidente/" + id;
+      var rutacompleta = "/dashboard/ProgresoF3Residente/" + id;
       this.$router.push(rutacompleta);
     },
     navegarto(ruta){

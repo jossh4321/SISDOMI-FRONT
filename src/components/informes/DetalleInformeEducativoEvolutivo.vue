@@ -23,13 +23,6 @@
                     color="#009900"
                 ></v-text-field>
                 <v-text-field
-                    v-model="educador"
-                    label="Educador Responsable"
-                    outlined
-                    readonly
-                    color="#009900"
-                ></v-text-field>  
-                <v-text-field
                     v-model="informe.contenido.iereinsersion.nombre"
                     label="Instirución Educativa"
                     outlined
@@ -343,7 +336,6 @@ export default {
         datemenu: false,
         step:1,
         residente:"",
-        educador:"",
         logro:"",
         recomendacion:"",
         pdf: "",
@@ -355,7 +347,6 @@ export default {
     },
     async created() {
       this.obtenerResidente();
-      this.obtenerEducador();
       this.obtenerCreador();
     },
     methods:{
@@ -368,12 +359,6 @@ export default {
                             this.residente = x.data.nombre + " " +x.data.apellido;
                   }).catch(err => console.log(err));
         },
-        async obtenerEducador(){
-          await axios.get("/usuario/id?id="+this.informe.creadordocumento)
-            .then(res => {
-                    this.educador = res.data.datos.nombre + " "+res.data.datos.apellido;
-            }).catch(err => console.log(err));
-       },
        async obtenerCreador() {
         await axios
         .get("/usuario/rol/permiso?id=" + this.informe.creadordocumento)

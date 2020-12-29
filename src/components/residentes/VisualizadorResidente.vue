@@ -5,7 +5,7 @@
                 <v-row>
                   <v-col xs="12" sm="6"   md="6" lg="3" xl="3">
                     <v-card class="card-item">
-                      <span>residente: {{residente.nombre}} {{residente.apellido}}</span>
+                      <span>Residente: {{residente.nombre}} {{residente.apellido}}</span>
                     </v-card>
                   </v-col>
                   <v-col xs="12" sm="6"   md="6" lg="3" xl="3">

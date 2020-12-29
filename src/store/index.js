@@ -26,6 +26,13 @@ export default new Vuex.Store({
         incidencias:[],
         fichaEvaluacionEduativa:[],
         talleres:[],
+        nombreCar:'DOMI',
+        fase:""
+    },
+    getters :{
+        nombreCar: (state) => {
+            return state.nombreCar;
+        }
     },
     mutations: {
         toggleDrawer(state) {
@@ -127,7 +134,11 @@ export default new Vuex.Store({
         replaceTaller(state, value) {
             var index = state.talleres.findIndex(x => x.id == value.id);
             state.talleres.splice(index, 1, value);
-        },
+        },setNombreCar(state, value){
+            state.nombreCar = value;
+        },setFase(state,value){
+            state.fase = value;
+        }
     },
     modules: {
         authentication
