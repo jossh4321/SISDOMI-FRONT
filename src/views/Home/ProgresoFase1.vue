@@ -131,16 +131,23 @@
                       style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
                     >{{titulosDoc[documento.tipo].titulo}}</v-card-title>
                     <template v-if="documento.indice == 'anterior'">
-                      <v-col cols="6" style="padding:2%">
-                        <v-btn color="warning" rounded block>
-                          <v-icon left>mdi-Edit</v-icon>Modificar
-                        </v-btn>
+                      <v-row>
+                        <v-col cols="12" xs="12" sm="6" md="6">
+                        <div style="padding:5px">
+                            <v-btn color="warning" rounded block>
+                              <v-icon left>mdi-folder-edit</v-icon>Modificar
+                            </v-btn>
+                        </div>
                       </v-col>
-                      <v-col cols="6" style="padding:2%">
-                        <v-btn color="info" rounded block>
-                          <v-icon left>mdi-information</v-icon>Ver
+                      <v-col cols="12" xs="12" sm="6" md="6">
+                         <div style="padding:5px">
+                            <v-btn color="info" rounded block>
+                          <v-icon left>mdi-information</v-icon>Ver Detalle
                         </v-btn>
+                         </div>
                       </v-col>
+                      </v-row>
+                      
                     </template>
                     <template v-else-if="documento.indice == 'actual'">
                       <v-col cols="12">
@@ -164,26 +171,6 @@
                     </template>
                   </v-card>
                 </v-timeline-item>
-                <!--Timeline final para registro de documento de transicion
-                <v-timeline-item
-                        color="success"
-                        icon="mdi-buffer"
-                    >
-                        <v-card class="warning" dark>
-                        <v-card-title
-                        class="justify-center"
-                        style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
-                        >{{titulosDoc["DocumentoTransicion"].titulo}}</v-card-title>
-                          <v-col cols="12">
-                            <v-btn color="success" block rounded 
-                            @click="abrirDialogoRegistroDocumento(titulosDoc['DocumentoTransicion'].registrar)">
-                              <v-icon left> mdi-book-plus </v-icon>
-                                <span>Registrar</span>
-                              </v-btn
-                            >
-                          </v-col>
-                        </v-card>
-                </v-timeline-item>-->
               </v-timeline>
             </v-card>
           </v-card>
@@ -218,6 +205,7 @@
           :is="selectorRegistro"
           :residente="residente"
           @cerrar-modal-docf1="cerrarDialogoRegistroDocF1"
+          @actualizar-progreso-fase1="actualizarProgreso"
         ></v-component>
       </v-dialog>
       <!--Dialogo de Fase-->
@@ -237,7 +225,7 @@ import RegistrarInformeEducativoInicial from "@/components/DocumentosInterfazTra
 import RegistrarPlanIntervencionEducativoIndividual from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarPlanIntervencionIndividualEducativo.vue";
 import RegistrarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarInformeSeguimientoEducativo.vue";
 import RegistrarPromocionFase2 from "@/components/DocumentosInterfazTratamiento/Fase I/RegistrarPromocionFase2.vue";
-
+import {mapMutations, mapState} from "vuex";
 import axios from "axios";
 export default {
   name: "ProgresoResidenteF1",
@@ -255,7 +243,6 @@ export default {
       residente: "",
       residenteProm: {},
       residentesFase: [],
-      fase: [],
       cargaProgreso: false,
       selectorRegistro: "",
       dialogoRegistroDocumentos: false,
@@ -291,7 +278,7 @@ export default {
   async created() {
     var miruta = "/residente/progreso/" + this.$route.params.id;
     await axios
-      .get("/residente/all/fase/2")
+      .get("/residente/all/fase/1")
       .then(res => {
         this.residentesFase = res.data;
         //console.log(res.data);
@@ -302,14 +289,16 @@ export default {
       .then(res => {
         this.residente = res.data;
         this.residente.id = this.$route.params.id;
+        console.log(res.data);
       })
       .catch(err => console.log(err));
-    this.fase = this.obtenerSecuenciaDocumentos()[0];
+    this.setFase(this.obtenerSecuenciaDocumentos()[0]);
     this.cargaProgreso = true;
-    console.log("LSITA FASES");
+    console.log("LISTA FASES");
     console.log(this.fase);
   },
   methods: {
+    ...mapMutations(["setFase"]),
     obtenerSecuenciaDocumentos() {
       var residenteFaseDoc = this.residente;
       var listaFases = residenteFaseDoc.fases.progreso;
@@ -336,8 +325,18 @@ export default {
         return fase;
       });
       return listaFases;
-    },
-    obtenerEstadoDocumentosFaseArea(listaDocumentos) {
+    },async actualizarProgreso(){
+       var miruta = "/residente/progreso/" + this.residente.id;
+       await axios
+        .get(miruta)
+        .then(res => {
+          this.residente = res.data;
+          this.residente.id = this.$route.params.id;
+          console.log(res.data);
+        })
+        .catch(err => console.log(err));
+        this.setFase(this.obtenerSecuenciaDocumentos()[0]);
+    },obtenerEstadoDocumentosFaseArea(listaDocumentos) {
       var flag = false;
       listaDocumentos = listaDocumentos.map(val => {
         if (val.estado.toLowerCase() == "pendiente" && flag == false) {
@@ -401,6 +400,7 @@ export default {
     },
   },
   computed: {
+    ...mapState(['fase']),
     obtenerDocumentosCompletos () {
       var numero = this.fase.educativa.documentos.filter(documento => documento.estado !== "Pendiente" ).length;
       return numero;

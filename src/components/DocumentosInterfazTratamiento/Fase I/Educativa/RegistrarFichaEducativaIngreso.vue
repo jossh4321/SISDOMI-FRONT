@@ -496,7 +496,22 @@
           </div>
         </v-stepper-content>
       </v-stepper-items>
-      </v-stepper>        
+      </v-stepper>
+      <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Registrando la Ficha Educativa de Ingreso</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>        
     </v-card>
 </template>
 <script> 
@@ -586,7 +601,7 @@ export default {
                 documentosEscolares: [],
                 situacionEscolar: ""
               },
-              //responsableTurno: "",
+              responsableTurno: this.residente.id,
               observaciones:[],
               /*firma:{
                   urlfirma:"",
@@ -602,6 +617,7 @@ export default {
          },dialogoDocumentoEscolar:false,
          observacionAux:"",
          step:1,
+         cargaRegistro:false,
         }
       },
     async created() {
@@ -660,10 +676,13 @@ export default {
             this.fichaIngreso.creadordocumento = this.user.id;            
             this.fichaIngreso.contenido.ieprocedencia.documentosEscolares = await this.registrarDocumentosEscolares();
             //fichaeducativaingreso
+            console.log(this.fichaIngreso);
+            this.cargaRegistro = true;
             await axios
               .post("/documento/fichaeducativaingreso", this.fichaIngreso)
               .then((res) => {
-                this.addFichaIngreso(res.data);
+                this.$emit("actualizar-progreso-fase1");
+                this.cargaRegistro = false;
                 this.cerrarDialogo();
               })
               .catch((err) => console.log(err));
@@ -673,6 +692,8 @@ export default {
                   "Ficha de Ingreso Educativo registrado Satisfactoriamente",
                   "<strong>Se redirigira a la Interfaz de Gestion<strong>"
                 );
+              
+
               }
         },async registrarDocumentosEscolares(){
           const promises = this.fichaIngreso.contenido.ieprocedencia.documentosEscolares
