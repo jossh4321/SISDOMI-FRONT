@@ -66,7 +66,7 @@
                   </template>
                 </v-autocomplete>
 
-                <v-autocomplete
+                <!-- <v-autocomplete
                   :items="listaeducadores"
                   filled
                   chips
@@ -113,7 +113,7 @@
                       </v-list-item-content>
                     </template>
                   </template>
-                </v-autocomplete>
+                </v-autocomplete> -->
 
                 <v-textarea
                   label="Lugar de Evaluación"
@@ -363,7 +363,7 @@ function esParrafo(value) {
   return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value);
 }
 export default {
-  props: ["listaresidentes", "listaeducadores", "visible"],
+  props: ["listaresidentes", "visible"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -402,7 +402,7 @@ export default {
           anexos: [],
           codigodocumento: "",
           lugarevaluacion: "",
-          evaluador: "",
+          //evaluador: "",
           fechaevaluacion: "",
         },
       },
@@ -567,14 +567,14 @@ export default {
       !this.$v.informe.idresidente.required &&
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
-    },
+    },/*
     errorCreador() {
       const errors = [];
       if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
       !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un educador obligatoriamente");
       return errors;
-    },
+    },*/
     errorLugarEvaluacion() {
       const errors = [];
       if (!this.$v.informe.contenido.lugarevaluacion.$dirty) return errors;
@@ -656,10 +656,10 @@ export default {
             required,
             minLength: minLength(100),
             esParrafo,
-          },
+          },/*
           evaluador: {
             required,
-          },
+          },*/
           fechaevaluacion: {
           required,
          },

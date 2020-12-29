@@ -64,7 +64,7 @@
                     </template>
                   </template>
                 </v-autocomplete>
-                <v-autocomplete
+                <!-- <v-autocomplete
                   :items="listaeducadores"
                   filled
                   chips
@@ -112,7 +112,7 @@
                       </v-list-item-content>
                     </template>
                   </template>
-                </v-autocomplete>
+                </v-autocomplete> -->
                 <v-text-field
                   v-model="informe.contenido.iereinsersion.nombre"
                   label="Institución Educativa"
@@ -462,7 +462,7 @@ function esParrafo(value) {
   return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ-]+$/.test(value); 
 }
 export default {
-  props: ["listaresidentes", "visible", "titulo", "listaeducadores"],
+  props: ["listaresidentes", "visible", "titulo"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -518,7 +518,7 @@ export default {
           },
           anexos: [],
           codigodocumento: "",
-          evaluador: "",
+          //evaluador: "",
           fechaevaluacion: "",
         },
       },
@@ -769,14 +769,14 @@ export default {
       !this.$v.informe.idresidente.required &&
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
-    },    
+    }, /*   
     errorEvaluador() {
       const errors = [];
       if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
       !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un educador obligatoriamente");
       return errors;
-    },
+    },*/
     errorFechaEvaluacion() {
       const errors = [];
       if (!this.$v.informe.contenido.fechaevaluacion.$dirty) return errors;
@@ -837,10 +837,10 @@ export default {
           situacionactual: {
             required,
             esParrafo,
-          },
+          },/*
           evaluador: {
             required,            
-          },
+          },*/
           iereinsersion: {
             nombre: {
               required,

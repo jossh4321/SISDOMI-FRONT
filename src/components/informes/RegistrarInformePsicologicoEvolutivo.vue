@@ -64,7 +64,7 @@
                     </template>
                   </template>
                 </v-autocomplete>
-                <v-autocomplete
+                <!-- <v-autocomplete
                   :items="listapsicologos"
                   filled
                   chips
@@ -111,7 +111,7 @@
                       </v-list-item-content>
                     </template>
                   </template>
-                </v-autocomplete>
+                </v-autocomplete> -->
                 <v-menu
                   v-model="datemenu"
                   :close-on-content-click="false"
@@ -495,7 +495,7 @@ function esParrafo(value) {
   return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
 }
 export default {
-  props: ["listaresidentes", "visible", "titulo", "listapsicologos"],
+  props: ["listaresidentes", "visible", "titulo"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -540,7 +540,7 @@ export default {
           recomendaciones: [],
           anexos: [],
           codigodocumento: "",
-          evaluador: "",
+          //evaluador: "",
           fechaevaluacion: ""
         },
       },
@@ -731,7 +731,7 @@ export default {
           recomendaciones: [],
           anexos: [],
           codigodocumento: "",
-          evaluador: "",
+          //evaluador: "",
           fechaevaluacion: ""
         },
       };
@@ -805,14 +805,14 @@ export default {
           "La prueba no debe contener caracteres especiales"
         );
       return errors;
-    },
+    },/*
     errorEvaluador() {
       const errors = [];
       if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
       !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un evaluador obligatoriamente");
       return errors;
-    },
+    },*/
     errorConclusion() {
       const errors = [];
       if (!this.$v.conclusion.$dirty) return errors;
@@ -867,10 +867,10 @@ export default {
           },
           fechaevaluacion: {
           required,
-        },
+        },/*
           evaluador: {
               required,
-          },
+          },*/
         },
       },
       recomendacion: {
