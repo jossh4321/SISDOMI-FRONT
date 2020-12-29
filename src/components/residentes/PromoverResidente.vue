@@ -581,10 +581,11 @@ export default {
             { tipo: "InformeSocialFinal", estado: "Pendiente" },
             { tipo: "ActaExternamiento", estado: "Pendiente" },
           ];
-          this.progresoFase.educativa.documentos = [
+          this.progresoFase.psicologica.documentos = [
             { tipo: "InformePsicologicoFinal", estado: "Pendiente" },
           ];
         }
+        //this.progresoFase.documentotransicion.firma.urlfirma = "https://siscarfileserver2.blob.core.windows.net/firmas/19f70067-5c30-444f-a83b-2f456f6a27bd.jpg";
         this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z";
         this.progresoResidente.fechafinalizacion = this.calculoFin() + "T05:00:00Z";
         this.progresoResidente.estado = "inicio";
