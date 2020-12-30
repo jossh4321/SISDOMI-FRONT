@@ -384,13 +384,6 @@ export default {
           indicadores: [],
           metas: [],
           titulo: "",
-          /*firmas: [
-            {
-              urlfirma: "",
-              nombre: "",
-              cargo: "",
-            },
-          ],*/
           codigoDocumento: "",
         },
       },
@@ -414,12 +407,6 @@ export default {
       metaAux: "",
       listResidentes: [],
       firmaAux: [],
-      /*residente: {
-        residente: "",
-        id: "",
-        faseActual: "",
-        numeroDocumento: "",
-      },*/
       searchResidente: null,
       loadingSearch: false,
       fasesPlanIntervencion: {

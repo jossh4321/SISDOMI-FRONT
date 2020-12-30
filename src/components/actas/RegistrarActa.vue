@@ -203,8 +203,7 @@ export default {
           numerooficio: "",
           observaciones: "",
 
-          firmas: [
-            
+          firmas: [         
           ],
         },
       },

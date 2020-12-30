@@ -170,7 +170,10 @@ export default {
       step:1
     };
   },async created(){
+    console.log(this.actaexternamiento);
+    this.actaexternamiento.fechacreacion = this.actaexternamiento.fechacreacion.split( "T" )
   },
+  
   mounted(){
   },
   methods:{

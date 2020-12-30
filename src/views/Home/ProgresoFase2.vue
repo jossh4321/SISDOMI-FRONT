@@ -295,6 +295,7 @@
           :is="selectorRegistro"
           :residente="residente"
           @cerrar-modal-docf1="cerrarDialogoRegistroDocF1"
+          @actualizar-progreso-fase1="actualizarProgreso"
         ></v-component>
       </v-dialog>
       <!--Dialogo de Fase-->
@@ -314,6 +315,7 @@ import RegistrarInformeEducativoEvolutivo from "@/components/DocumentosInterfazT
 import RegistrarPromocionFase3 from "@/components/DocumentosInterfazTratamiento/Fase 2/RegistrarPromocionFase3.vue";
 
 import axios from "axios";
+import {mapMutations, mapState} from "vuex";
 export default {
   name: "ProgresoResidente",
   components: {
@@ -331,7 +333,6 @@ export default {
       residente: "",
       residenteProm: {},
       residentesFase: [],
-      fase: [],
       cargaProgreso: false,
       selectorRegistro: "",
       dialogoRegistroDocumentos: false,
@@ -370,13 +371,14 @@ export default {
         console.log(this.residente);
       })
       .catch(err => console.log(err));
-    var quees = this.obtenerSecuenciaDocumentos();
-    this.fase = quees[1];
+    //this.fase = this.obtenerSecuenciaDocumentos()[1];
+    this.setFase(this.obtenerSecuenciaDocumentos()[1]);
     this.cargaProgreso = true;
     console.log("LISTA FASES");
-    console.log(quees);
+    console.log(this.fase);
   },
   methods: {
+    ...mapMutations(["setFase"]),
     obtenerSecuenciaDocumentos() {
       var residenteFaseDoc = this.residente;
       var listaFases = residenteFaseDoc.fases.progreso;
@@ -465,8 +467,20 @@ export default {
       console.log(user);
       return user;
     },
+    async actualizarProgreso(){
+       var miruta = "/residente/progreso/" + this.residente.id;
+       await axios
+        .get(miruta)
+        .then(res => {
+          this.residente = res.data;
+          this.residente.id = this.$route.params.id;
+        })
+        .catch(err => console.log(err));
+        this.setFase(this.obtenerSecuenciaDocumentos()[1]);
+    },
   },
   computed: {
+    ...mapState(['fase']),
     obtenerDocumentosCompletos () {
       var numero = this.fase.educativa.documentos.filter(documento => documento.estado !== "Pendiente" ).length;
       return numero;

@@ -140,6 +140,15 @@
                         <v-btn color="info" rounded block>
                           <v-icon left>mdi-information</v-icon>Ver
                         </v-btn>
+                        <v-btn
+                          color="success"
+                          block
+                          rounded
+                          @click="abrirDialogoRegistroDocumento(titulosDoc[documento.tipo].registrar)"
+                        >
+                          <v-icon left>mdi-book-plus</v-icon>
+                          <span>Registrar</span>
+                        </v-btn>
                       </v-col>
                     </template>
                     <template v-else-if="documento.indice == 'actual'">
@@ -193,14 +202,14 @@
         </v-list>
       </v-navigation-drawer>
       
-      <!-- <v-dialog v-model="dialogoRegistroDocumentos" persistent max-width="850px">
+      <v-dialog v-model="dialogoRegistroDocumentos" persistent max-width="850px">
         <v-component
           :is="selectorRegistro"
           :residente="residente"
           @cerrar-modal-docf1="cerrarDialogoRegistroDocF1"
         ></v-component>
       </v-dialog>
-      
+      <!-- 
       <v-dialog persistent v-model="dialogopromocion" max-width="1000px">
         <RegistrarPromocionFase3
           :residente="residenteProm"
@@ -212,12 +221,15 @@
 </template>
 <script>
 import VisualizadorResidente from "@/components/residentes/VisualizadorResidente.vue";
+import RegistrarInformeEducativoFinal from "@/components/DocumentosInterfazTratamiento/Fase 3/Educativa/RegistrarInformeEducativoFinal.vue";
+
 
 import axios from "axios";
 export default {
   name: "ProgresoResidente",
   components: {
     VisualizadorResidente,
+    RegistrarInformeEducativoFinal
   },
   data() {
     return {

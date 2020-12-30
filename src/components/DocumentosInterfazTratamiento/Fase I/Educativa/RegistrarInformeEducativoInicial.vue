@@ -367,8 +367,6 @@ export default {
       }
     },
     async registrarInforme() {
-      await this.sendPDFFiles();
-      this.informe.creadordocumento = this.user.id;
       this.$v.informe.$touch();
       if (this.$v.informe.$invalid) {
         console.log("hay errores");
@@ -382,21 +380,11 @@ export default {
         console.log("no hay errores");
         console.log(this.informe);
         this.cargaRegistro = true;
+        await this.sendPDFFiles();
+        this.informe.creadordocumento = this.user.id;
         await axios
           .post("/informe/informeei", this.informe)
           .then((res) => {
-            /*this.informe = res.data;
-            var resi = this.listaresidentes.filter(function(residente) {
-              return residente.id == res.data.idresidente;
-            });
-            var info = {
-              id: res.data.id,
-              tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-              fechaevaluacion: res.data.contenido.fechaevaluacion.split("T")[0],
-              codigodocumento: res.data.contenido.codigodocumento,
-              nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
-            };
-            this.addInforme(info);*/
             this.$emit("actualizar-progreso-fase1");
             this.cargaRegistro = false;
             this.cerrarDialogo();
