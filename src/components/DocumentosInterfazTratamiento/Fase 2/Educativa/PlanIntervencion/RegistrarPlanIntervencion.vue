@@ -407,10 +407,6 @@ export default {
         title: titulo,
         text: texto,
         footer: footer
-      }).then(res => {
-        if (valid) {
-          this.$emit("register-complete");
-        }
       });
     },
     addObjEspecifico() {

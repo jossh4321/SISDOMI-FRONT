@@ -336,6 +336,21 @@
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
+      <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Registrando el informe educativo final</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="red"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
@@ -387,6 +402,7 @@ export default {
       logros: [],
       recomendacion: "",
       recomendaciones: [],
+      cargaRegistro: false,
       informe: {
         id: "",
         tipo: "InformeEducativoFinal",
@@ -410,7 +426,6 @@ export default {
           },
           anexos: [],
           codigodocumento: "",
-          evaluador: "",
           fechaevaluacion: ""
         }
       }
@@ -438,6 +453,7 @@ export default {
     this.recomendacion = "";
   },
   methods: {
+    
     async sendPDFFiles() {
       let listaTitulos = [];
       let listaanexos = this.fileList;
@@ -461,11 +477,12 @@ export default {
       console.log(this.informe.contenido.anexos);
     },
     async registrarInforme() {
-      //await this.sendPDFFiles();
+      this.cargaRegistro = true;
+
+      await this.sendPDFFiles();
       this.informe.creadordocumento = this.user.id;
 
       this.informe.idresidente = this.residente.id;
-      //this.informe.contenido.evaluador = this.user.id;
 
       this.$v.informe.$touch();
       if (this.$v.informe.$invalid) {
@@ -477,17 +494,16 @@ export default {
         );
       } else {
 
-          console.log(this.informe);
+        console.log(this.informe);
         
-        /*await axios
+        await axios
           .post("/informe/informeee", this.informe)
           .then(res => {
-
-            this.informe = res.data;
-
+            this.$emit("actualizar-progreso-fase1");
+            this.cargaRegistro = false;
             this.cerrarDialogo();
           })
-          .catch(err => console.log(err));*/
+          .catch(err => console.log(err));
 
         await this.mensaje(
           "success",
@@ -563,7 +579,7 @@ export default {
         creadordocumento: "",
         fechacreacion: null,
         area: "educativa",
-        fase: "2",
+        fase: "3",
         idresidente: "",
         estado: "creado",
         contenido: {
