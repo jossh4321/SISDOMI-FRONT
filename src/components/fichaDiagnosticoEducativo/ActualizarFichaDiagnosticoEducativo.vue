@@ -677,7 +677,7 @@ components:{
           "Ficha Diagnostico Evaluacion Educativa modificado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
-        location.reload();
+        this.$emit("cargarSeguimiento");
       },
        ///metodo para agregar firma residente
     guardarFirma(){
