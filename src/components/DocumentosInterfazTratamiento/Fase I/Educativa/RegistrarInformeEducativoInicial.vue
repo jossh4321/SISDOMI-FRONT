@@ -259,6 +259,21 @@
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
+      <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Registrando del Informe Educativo Inicial</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>    
     </v-card>
 </template>
 <script>
@@ -321,6 +336,7 @@ export default {
         },
       },
       imagen: "",
+      cargaRegistro:false,
     };
   },
   async created() {
@@ -351,8 +367,6 @@ export default {
       }
     },
     async registrarInforme() {
-      await this.sendPDFFiles();
-      this.informe.creadordocumento = this.user.id;
       this.$v.informe.$touch();
       if (this.$v.informe.$invalid) {
         console.log("hay errores");
@@ -365,21 +379,14 @@ export default {
       } else {
         console.log("no hay errores");
         console.log(this.informe);
+        this.cargaRegistro = true;
+        await this.sendPDFFiles();
+        this.informe.creadordocumento = this.user.id;
         await axios
           .post("/informe/informeei", this.informe)
           .then((res) => {
-            /*this.informe = res.data;
-            var resi = this.listaresidentes.filter(function(residente) {
-              return residente.id == res.data.idresidente;
-            });
-            var info = {
-              id: res.data.id,
-              tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-              fechaevaluacion: res.data.contenido.fechaevaluacion.split("T")[0],
-              codigodocumento: res.data.contenido.codigodocumento,
-              nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
-            };
-            this.addInforme(info);*/
+            this.$emit("actualizar-progreso-fase1");
+            this.cargaRegistro = false;
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -390,7 +397,6 @@ export default {
           "<strong>Se redirigira a la interfaz de gestión<strong>"
         );
       }
-      this.$v.urlfirma.$reset();
       this.$v.conclusion.$reset();
     },
     resetInformeValidationState() {

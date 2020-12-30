@@ -342,6 +342,9 @@ export default {
     ...mapMutations(["replaceResidente"]),
     moment: function() {
       return moment();
+    }, abrirProgresoFase2(id) {
+      var rutacompleta = "/dashboard/ProgresoF2Residente/" + id;
+      this.$router.push(rutacompleta);
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -534,7 +537,7 @@ export default {
         };
 
         console.log(residenteFase);
-
+        this.abrirProgresoFase2(this.residente.id);
         /* await axios
           .put("/Residente", residenteFase)
           .then((res) => {
