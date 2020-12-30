@@ -472,7 +472,7 @@ export default {
           { tipo: "InformeSocialFinal", estado: "Pendiente" },
           { tipo: "ActaExternamiento", estado: "Pendiente" },
         ];
-        this.progresoFase.educativa.documentos = [ { tipo: "InformePsicologicoFinal", estado: "Pendiente" }, ];
+        this.progresoFase.psicologica.documentos = [ { tipo: "InformePsicologicoFinal", estado: "Pendiente" }, ];
 
         this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z";
         this.progresoResidente.fechafinalizacion = this.calculoFin() + "T05:00:00Z";
