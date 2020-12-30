@@ -82,17 +82,17 @@
       <v-stepper-content step="2">
         <div  class="container-user">
       <form>
-        <v-text-field
-          v-model="actaexternamiento.residente"
+      <!--  <v-text-field
+          v-model="actaexternamiento.contenido.responsable"
           label="Ingrese el nombre de residente"
           outlined
           readonly
           class="inputTextField"
           color="#009900"
-        ></v-text-field>
+        ></v-text-field>-->
         
         <v-text-field
-          v-model="actaexternamiento.entidaddisposicion"
+          v-model="actaexternamiento.contenido.entidaddisposicion"
           label="Ingrese nueva entidad disposicion"
           outlined
           readonly
@@ -101,7 +101,7 @@
         ></v-text-field>
 
         <v-text-field
-         v-model="actaexternamiento.numeroresolucion"
+         v-model="actaexternamiento.contenido.numeroresolucion"
           label="Ingrese nuevo numero resolucion"
           outlined
           readonly
@@ -110,7 +110,7 @@
         ></v-text-field>
 
         <v-text-field
-           v-model="actaexternamiento.numerooficio"
+           v-model="actaexternamiento.contenido.numerooficio"
           label="Ingrese nuevo numero oficio"
           outlined
           readonly
@@ -119,7 +119,7 @@
         ></v-text-field>
           
        <v-text-field
-          v-model="actaexternamiento.observaciones"
+          v-model="actaexternamiento.contenido.observaciones"
           label="Ingrese nuevas observaciones"
           outlined
           readonly

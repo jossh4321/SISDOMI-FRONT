@@ -187,6 +187,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
+  
 export default {
   //  props:["listaActas","actaexternamiento","usuario"],
   props: ["listaActas", "actaexternamiento"],
@@ -202,12 +203,14 @@ export default {
         thumbnailWidth: 250,
         maxFilesize: 3.0,
         maxFiles: 1,
-        acceptedFiles: ".jpg",
+        acceptedFiles:".jpg, .png, jpeg",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
+     
         dictDefaultMessage:
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
       },
+          imagen: { tipo: "url", modificado: "no" },
       //imagen:{tipo:"url",modificado:"no"},
       /*  //actaexternamiento: {
         
@@ -238,12 +241,13 @@ export default {
   methods: {
     ...mapMutations(["setUsuarios", "addUsuario", "replaceUsuario"]),
     mounteddropzone() {
-      var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg" };
+      var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg"};
       this.$refs.myVueDropzone.manuallyAddFile(
         file,
         this.actaexternamiento.contenido.firmas,
         null,
         null,
+        
         true
       );
     },
@@ -430,11 +434,13 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+  
 }
 
 .dropzone-custom-title {
   margin-top: 0;
   color: #00b782;
+  
 }
 
 .subtitle {
