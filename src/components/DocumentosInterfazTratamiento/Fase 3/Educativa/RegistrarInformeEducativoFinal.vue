@@ -336,21 +336,6 @@
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
-      <v-dialog width="450px" v-model="cargaRegistro" persistent>
-        <v-card height="300px">
-          <v-card-title class="justify-center">Registrando el informe educativo evolutivo</v-card-title>
-          <div>
-              <v-progress-circular
-              style="display: block;margin:40px auto;"
-              :size="90"
-              :width="9"
-              color="red"
-              indeterminate
-            ></v-progress-circular>
-          </div>
-           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
-        </v-card>
-      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
@@ -402,15 +387,14 @@ export default {
       logros: [],
       recomendacion: "",
       recomendaciones: [],
-      cargaRegistro: false,
       informe: {
         id: "",
-        tipo: "InformeEducativoEvolutivo",
+        tipo: "InformeEducativoFinal",
         historialcontenido: [],
         creadordocumento: "",
         fechacreacion: null,
         area: "educativa",
-        fase: "2",
+        fase: "3",
         idresidente: "",
         estado: "creado",
         contenido: {
@@ -426,6 +410,7 @@ export default {
           },
           anexos: [],
           codigodocumento: "",
+          evaluador: "",
           fechaevaluacion: ""
         }
       }
@@ -476,9 +461,7 @@ export default {
       console.log(this.informe.contenido.anexos);
     },
     async registrarInforme() {
-      this.cargaRegistro = true;
-
-      await this.sendPDFFiles();
+      //await this.sendPDFFiles();
       this.informe.creadordocumento = this.user.id;
 
       this.informe.idresidente = this.residente.id;
@@ -493,24 +476,25 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+
           console.log(this.informe);
         
-          await axios
+        /*await axios
           .post("/informe/informeee", this.informe)
           .then(res => {
-            this.$emit("actualizar-progreso-fase1");
-            this.cargaRegistro = false;
+
+            this.informe = res.data;
+
             this.cerrarDialogo();
           })
-          .catch(err => console.log(err));
+          .catch(err => console.log(err));*/
 
-          await this.mensaje(
-                "success",
-                "Listo",
-                "Plan registrado Satisfactoriamente",
-                "<strong>Volviendo al progreso<strong>",
-                true
-              );
+        await this.mensaje(
+          "success",
+          "Listo",
+          "Informe registrado Satisfactoriamente",
+          "<strong>Se redirigira a la interfaz de gestión<strong>"
+        );
       }
     },
     agregarLogros() {
