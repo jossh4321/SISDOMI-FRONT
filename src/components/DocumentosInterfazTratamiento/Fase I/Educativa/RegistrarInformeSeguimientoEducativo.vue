@@ -602,7 +602,6 @@ export default {
           grado: "1",
           añoescolar: new Date().getFullYear().toString(),
           trimestre: [],
-          //firmas: [],
           codigodocumento: "",
         },
       },
@@ -663,17 +662,8 @@ export default {
           "<strong>Se redirigira a la Interfaz de Progreso<strong>"
         );
       }
-    },/*
-    guardarSeguimientoFirma() {
-      this.$v.seguimiento.contenido.firmas.$touch();
-      if (!this.$v.seguimiento.contenido.firmas.$invalid) {
-        this.$v.firma.$reset();
-        this.dialog = false;
-      }
-    },*/
+    },
     cerrarSeguimientoFirma() {
-      //this.$v.seguimiento.contenido.firmas.$reset();
-      //this.$v.firma.$reset();
       this.dialog = false;
     },
     guardarSeguimientoNotas() {
@@ -681,35 +671,6 @@ export default {
       this.$v.trimestre.$reset();
       this.dialog1 = false;
     },
-
-    ///metodo para agregar firma residente
-    /*guardarFirma() {
-      this.$v.firma.$touch();
-      if (!this.$v.firma.$invalid) {
-        let firmad = {
-          urlfirma: this.firma.urlfirma,
-          nombre: this.firma.nombre,
-          cargo: this.firma.cargo,
-        };
-
-        this.seguimiento.contenido.firmas.push(firmad);
-        console.log(this.seguimiento.contenido.firmad);
-        this.$refs.myVueDropzone.removeAllFiles();
-
-        this.firma.urlfirma = "";
-        this.firma.nombre = "";
-        this.firma.cargo = "";
-        !this.$v.firma.$reset();
-      }
-    },
-    eliminarFirma(index) {
-      this.seguimiento.contenido.firmas.splice(index, 1);
-    },
-    verFirma(index) {
-      console.log(this.seguimiento.contenido.firmas[index].urlfirma);
-      this.imagen = this.seguimiento.contenido.firmas[index].urlfirma;
-      this.dialogVistaPreviaFirma = true;
-    },*/
     guardarTrimestre() {
       this.$v.trimestre.$touch();
       if (!this.$v.trimestre.$invalid) {
@@ -744,9 +705,7 @@ export default {
         this.seguimiento.contenido.trimestre[this.index].puntajes.push(
           puntajesd
         );
-
         console.log(this.trimestre.puntajes);
-
         this.puntajes.area = "";
         this.puntajes.promedio = "";
         !this.$v.puntajes.$reset();
