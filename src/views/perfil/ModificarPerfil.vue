@@ -211,17 +211,17 @@ export default {
   
  
    DialogloadUsuarioModificacion(){
-      
-     /* await axios.get("/usuario/id?id="+this.user.id)
+    /* async loadUsuarioModificacion(){
+      var user = {};
+      await axios.get("/usuario/id?id="+this.usuario)
       .then(res => {
-         this.usuario=res.data;
-
-         this.usuario.datos.fechanacimiento =this.usuario.datos
+         user = res.data; 
+         user.datos.fechanacimiento = res.data.datos
                   .fechanacimiento.split("T")[0];
-                 
       })
-      .catch(err => console.log(err));*/
-      
+      .catch(err => console.log(err));
+      return user;
+    }*/
 this.usuario.id = this.user.id;
 this.usuario.usuario=this.user.usuario;
 this.usuario.datos.nombre=this.user.datos.nombre;
@@ -233,15 +233,15 @@ this.usuario.datos.direccion=this.user.datos.direccion;
 this.usuario.datos.email=this.user.datos.email;
 this.usuario.datos.imagen=this.user.datos.imagen;
 
-
-     this.usuario.datos.fechanacimiento =this.usuario.datos
+this.usuario.datos.fechanacimiento =this.usuario.datos
                   .fechanacimiento.split("T")[0];
     },
-     async actualizarUsuarioPerfil(){     
+async actualizarUsuarioPerfil(){     
        this.$v.$touch();
       if (this.$v.$invalid) {
+           console.log("hay errores");
         this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
-      } else {      
+       }else {      
         //console.log(this.usuario);
         await  axios.put("/Perfil/modificarperfil",this.usuario)  
         .then((res) => {
