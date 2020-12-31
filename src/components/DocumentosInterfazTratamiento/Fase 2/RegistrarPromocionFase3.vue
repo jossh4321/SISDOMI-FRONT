@@ -142,7 +142,7 @@
             <v-text-field
               v-model="progresoFase.fase"
               style="margin-top:2%"
-              label="Observaciones"
+              label="Fase a promover"
               color="#009900"
               readonly
             ></v-text-field>
