@@ -188,7 +188,10 @@
             </v-list-item>
 
             <v-divider></v-divider>
-            <v-list-item v-for="residente in residentesFase" :key="residente.id" link>
+            <v-list-item 
+              v-for="residente in residentesFase" :key="residente.id" link
+               @click="abrirProgresoFase1(residente.id)"
+              >
               <v-list-item-icon>
                 <v-icon>mdi-account-multiple</v-icon>
               </v-list-item-icon>
@@ -380,6 +383,11 @@ export default {
     },
     navegarto(ruta) {
       this.$router.push(ruta);
+    },
+    abrirProgresoFase1(id) {
+      var rutacompleta = "/dashboard/ProgresoF1Residente/" + id;
+      this.$router.push(rutacompleta);
+      window.location.reload(true);
     },
     async registrarDocumentoTransicionFase() {
       this.residenteProm = await this.loadResidenteDetalle(this.residente.id);
