@@ -140,7 +140,7 @@
               :error-messages="errorObservaciones"
             ></v-text-field>
             <v-text-field
-              v-model.number="progresoFase.fase"
+              v-model="progresoFase.fase"
               style="margin-top:2%"
               label="Fase a promover"
               color="#009900"
@@ -230,6 +230,21 @@
         </div>
       </v-card>
     </v-dialog>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Realizando la promoción del residente</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="red"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>
   </v-card>
 </template>
 
@@ -315,6 +330,7 @@ export default {
       datemenu2: false, ///MODAL fecha ingreso
       datemenu3: false, ///MODAL fecha finalizacion
       step: 1,
+      cargaRegistro: false,
     };
   },
   async created() {
@@ -325,6 +341,10 @@ export default {
   methods: {
     moment: function() {
       return moment();
+    },
+    abrirProgresoFase3(id) {
+      var rutacompleta = "/dashboard/ProgresoF3Residente/" + id;
+      this.$router.push(rutacompleta);
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -403,7 +423,7 @@ export default {
             documentos: [],
             estado: "incompleto",
           },
-          fase: 3,
+          fase: "",
           documentotransicion: {
             fecha: moment().format("L"),
             idcreador: "",
@@ -437,20 +457,22 @@ export default {
         );
       } 
       else {
+        this.cargaRegistro = true;
+
         this.progresoFase.documentotransicion.fecha = this.convertDateFormat(this.progresoFase.documentotransicion.fecha);
 
         this.progresoFase.documentotransicion.firma.nombre =
           this.user.datos.nombre + " " + this.user.datos.apellido;
         this.progresoFase.documentotransicion.firma.cargo = this.user.rol.nombre;
         this.progresoFase.documentotransicion.idcreador = this.user.id;
-
+        this.progresoResidente.fase = 3;
         this.progresoResidente.nombre = "reinserción";
         this.progresoFase.educativa.documentos = [ { tipo: "InformeEducativoFinal", estado: "Pendiente" }, ];
         this.progresoFase.social.documentos = [
           { tipo: "InformeSocialFinal", estado: "Pendiente" },
           { tipo: "ActaExternamiento", estado: "Pendiente" },
         ];
-        this.progresoFase.educativa.documentos = [ { tipo: "InformePsicologicoFinal", estado: "Pendiente" }, ];
+        this.progresoFase.psicologica.documentos = [ { tipo: "InformePsicologicoFinal", estado: "Pendiente" }, ];
 
         this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z";
         this.progresoResidente.fechafinalizacion = this.calculoFin() + "T05:00:00Z";
@@ -467,44 +489,26 @@ export default {
           promocion: true,
           faseAnterior,
         };
-        console.log("EL PROGRESO A MANDAR AL API");
+
         console.log(residenteFase);
 
-        /* await axios
+        await axios
           .put("/Residente", residenteFase)
           .then((res) => {
-            console.log(res.data);
-            var info = {
-              apellido: res.data.apellido,
-              estado: res.data.estado,
-              fechaIngreso: res.data.fechaIngreso.split("T")[0],
-              fechaNacimiento: res.data.fechaNacimiento.split("T")[0],
-              id: res.data.id,
-              juzgadoProcedencia: res.data.juzgadoProcedencia,
-              lugarNacimiento: res.data.lugarNacimiento,
-              motivoIngreso: res.data.motivoIngreso,
-              nombre: res.data.nombre,
-              numeroDocumento: res.data.numeroDocumento,
-              progreso: res.data.progreso,
-              sexo: res.data.sexo,
-              telefonosReferencia: res.data.telefonosReferencia,
-              tipoDocumento: res.data.tipoDocumento,
-              ubigeo: res.data.ubigeo,
-            };
-            this.replaceResidente(info);
-            this.progresoResidente = {};
-            this.cerrarDialogo();
+            this.cargaRegistro = false;
           })
           .catch((err) => {
             console.log(err);
-          }); */
+          });
 
         await this.mensaje(
-          "success",
-          "Listo",
-          "Residente promovido satisfactoriamente",
-          "<strong>Se redirigira a la interfaz de Gestión<strong>"
-        );
+              "success",
+              "Listo",
+              "Residente promovido satisfactoriamente",
+              "<strong>Se redirigira a la interfaz de Progreso en fase 3<strong>"
+            );
+
+            this.abrirProgresoFase3(this.residente.id);
 
         this.$v.progresoFase.$reset();
       }

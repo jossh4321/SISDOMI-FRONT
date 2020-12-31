@@ -135,24 +135,17 @@
               style="margin-top:2%"
               label="Observaciones"
               color="#009900"
-              @input="
-                $v.progresoFase.documentotransicion.observaciones.$touch()
-              "
+              @input="$v.progresoFase.documentotransicion.observaciones.$touch()"
               @blur="$v.progresoFase.documentotransicion.observaciones.$touch()"
               :error-messages="errorObservaciones"
             ></v-text-field>
-            <v-select
+            <v-text-field
               v-model="progresoFase.fase"
-              :items="seleccionItems()"
-              item-text="text"
-              item-value="value"
-              label="Seleccionar la fase a promover"
-              dense
+              style="margin-top:2%"
+              label="Observaciones"
               color="#009900"
-              @input="$v.progresoFase.fase.$touch()"
-              @blur="$v.progresoFase.fase.$touch()"
-              :error-messages="errorSeleccionFase"
-            ></v-select>
+              readonly
+            ></v-text-field>
             <v-card
               style="margin-top:10px;padding:5px 5px;background-color:#EAEAEA"
             >
@@ -296,7 +289,7 @@ export default {
           documentos: [],
           estado: "incompleto",
         },
-        fase: "",
+        fase: 3,
         documentotransicion: {
           fecha: moment().format("L"),
           idcreador: "",
@@ -340,26 +333,17 @@ export default {
       cargaRegistro: false,
     };
   },
-  watch: {
-    dialogopromover: async function(dialogopromover) {
-      if (dialogopromover) {
-        this.datosfase = await this.obtenerFase(this.residente.id);
-        console.log("datos fase obtenidos al volver a entrar");
-        console.log(this.datosfase);
-      }
-    },
-  },
   async created() {
     this.datosfase = await this.obtenerFase(this.residente.id);
     console.log("datos fase obtenidos al crear");
     console.log(this.datosfase);
   },
   methods: {
-    ...mapMutations(["replaceResidente"]),
     moment: function() {
       return moment();
-    }, abrirProgresoFase2(id) {
-      var rutacompleta = "/dashboard/ProgresoF2Residente/" + id;
+    },
+    abrirProgresoFase3(id) {
+      var rutacompleta = "/dashboard/ProgresoF3Residente/" + id;
       this.$router.push(rutacompleta);
     },
     async mensaje(icono, titulo, texto, footer) {
@@ -379,7 +363,6 @@ export default {
       this.$v.$reset();
     },
     convertDateFormat(string) {
-      console.log(string);
       var date = string.split("/");
       return date[2] + "-" + date[1] + "-" + date[0];
     },
@@ -400,32 +383,20 @@ export default {
       this.dialogVistaPreviaFirma = false;
     },
     afterSuccess2(file, response) {
-      // this.urlfirma = file.dataURL.split(",")[1];
-      // console.log(this.urlfirma);
       this.progresoFase.documentotransicion.firma.urlfirma = file.dataURL.split(
         ","
       )[1];
-      console.log("urlfirma llenada");
-      //this.botonCambiarFirma = false;
     },
     afterRemoved2(file, error, xhr) {
-      // this.urlfirma = "";
       this.progresoFase.documentotransicion.firma.urlfirma = "";
     },
     calculoFin() {
       var fecha = "";
-      console.log(this.residente.progreso);
       this.residente.progreso[this.residente.progreso.length - 1].estado =
         "finalizado";
-      if (this.progresoFase.fase === 2) {
-        fecha = moment()
-          .add(1, "year")
-          .calendar();
-      } else if (this.progresoFase.fase === 3) {
-        fecha = moment()
+      fecha = moment()
           .add(6, "months")
           .calendar();
-      }
       var date = fecha.split("/");
       return date[2].toString() + "-" + date[1] + "-" + date[0];
     },
@@ -470,11 +441,9 @@ export default {
       await axios
         .get("/fase/id?id=" + idresidente)
         .then((res) => {
-          console.log(res);
           fase = res.data;
         })
         .catch((err) => console.log(err));
-      console.log(fase);
       return fase;
     },
     async registrarDocumentoTransicionFase() {
@@ -489,54 +458,22 @@ export default {
       } 
       else {
         this.cargaRegistro = true;
-        console.log(this.progresoFase.documentotransicion.fecha);
+
         this.progresoFase.documentotransicion.fecha = this.convertDateFormat(this.progresoFase.documentotransicion.fecha);
-        console.log( "primero fecha de documentotransicion: " +
-            this.progresoFase.documentotransicion.fecha );
 
         this.progresoFase.documentotransicion.firma.nombre =
           this.user.datos.nombre + " " + this.user.datos.apellido;
         this.progresoFase.documentotransicion.firma.cargo = this.user.rol.nombre;
         this.progresoFase.documentotransicion.idcreador = this.user.id;
+        this.progresoResidente.fase = 3;
+        this.progresoResidente.nombre = "reinserción";
+        this.progresoFase.educativa.documentos = [ { tipo: "InformeEducativoFinal", estado: "Pendiente" }, ];
+        this.progresoFase.social.documentos = [
+          { tipo: "InformeSocialFinal", estado: "Pendiente" },
+          { tipo: "ActaExternamiento", estado: "Pendiente" },
+        ];
+        this.progresoFase.psicologica.documentos = [ { tipo: "InformePsicologicoFinal", estado: "Pendiente" }, ];
 
-        if (this.progresoFase.fase === 2) {
-          this.progresoResidente.fase = 2;
-          this.progresoResidente.nombre = "desarrollo";
-          this.progresoFase.educativa.documentos = [
-            {
-              tipo: "PlanIntervencionIndividualEducativo",
-              estado: "Pendiente",
-            },
-            { tipo: "InformeEducativoEvolutivo", estado: "Pendiente" },
-          ];
-          this.progresoFase.social.documentos = [
-            {
-              tipo: "PlanIntervencionIndividualSocial",
-              estado: "Pendiente",
-            },
-            { tipo: "InformeSocialEvolutivo", estado: "Pendiente" },
-          ];
-          this.progresoFase.psicologica.documentos = [
-            {
-              tipo: "PlanIntervencionIndividualPsicologico",
-              estado: "Pendiente",
-            },
-            { tipo: "InformePsicologicoEvolutivo", estado: "Pendiente" },
-          ];
-        } else if (this.progresoFase.fase === 3) {
-          this.progresoResidente.fase = 3;
-          this.progresoResidente.nombre = "reinserción";
-          this.progresoFase.educativa.documentos = [
-            { tipo: "InformeEducativoFinal", estado: "Pendiente" },
-          ];
-          this.progresoFase.social.documentos = [
-            { tipo: "InformeSocialFinal", estado: "Pendiente" },
-            { tipo: "ActaExternamiento", estado: "Pendiente" },
-          ];
-          this.progresoFase.educativa.documentos = [
-            { tipo: "InformePsicologicoFinal", estado: "Pendiente" },
-          ];
-        }
         this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z";
         this.progresoResidente.fechafinalizacion = this.calculoFin() + "T05:00:00Z";
         this.progresoResidente.estado = "inicio";
@@ -552,7 +489,9 @@ export default {
           promocion: true,
           faseAnterior,
         };
-        
+
+        console.log(residenteFase);
+
         await axios
           .put("/Residente", residenteFase)
           .then((res) => {
@@ -563,13 +502,13 @@ export default {
           });
 
         await this.mensaje(
-          "success",
-          "Listo",
-          "Residente promovido satisfactoriamente",
-          "<strong>Se redirigira a la interfaz de Progreso en fase 2<strong>"
-        );
+              "success",
+              "Listo",
+              "Residente promovido satisfactoriamente",
+              "<strong>Se redirigira a la interfaz de Progreso en fase 3<strong>"
+            );
 
-        this.abrirProgresoFase2(this.residente.id);
+            this.abrirProgresoFase3(this.residente.id);
 
         this.$v.progresoFase.$reset();
       }
@@ -577,16 +516,6 @@ export default {
   },
   computed: {
     ...mapGetters(["user"]),
-
-    errorSeleccionFase() {
-      const errors = [];
-      if (!this.$v.progresoFase.fase.$dirty) return errors;
-      !this.$v.progresoFase.fase.required &&
-        errors.push(
-          "Debe ingresar la fase a la que será promovido el residente"
-        );
-      return errors;
-    },
     errorObservaciones() {
       const errors = [];
       if (!this.$v.progresoFase.documentotransicion.observaciones.$dirty)
@@ -616,9 +545,6 @@ export default {
   validations() {
     return {
       progresoFase: {
-        fase: {
-          required,
-        },
         documentotransicion: {
           observaciones: {
             required,
@@ -626,7 +552,6 @@ export default {
             minLength,
           },
           firma: {
-            //Falta validar esto y hacer los metodos de error
             urlfirma: {
               required,
             },

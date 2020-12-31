@@ -140,15 +140,6 @@
                         <v-btn color="info" rounded block>
                           <v-icon left>mdi-information</v-icon>Ver
                         </v-btn>
-                        <v-btn
-                          color="success"
-                          block
-                          rounded
-                          @click="abrirDialogoRegistroDocumento(titulosDoc[documento.tipo].registrar)"
-                        >
-                          <v-icon left>mdi-book-plus</v-icon>
-                          <span>Registrar</span>
-                        </v-btn>
                       </v-col>
                     </template>
                     <template v-else-if="documento.indice == 'actual'">
@@ -207,6 +198,7 @@
           :is="selectorRegistro"
           :residente="residente"
           @cerrar-modal-docf1="cerrarDialogoRegistroDocF1"
+          @actualizar-progreso-fase1="actualizarProgreso"
         ></v-component>
       </v-dialog>
       <!-- 
@@ -222,7 +214,7 @@
 <script>
 import VisualizadorResidente from "@/components/residentes/VisualizadorResidente.vue";
 import RegistrarInformeEducativoFinal from "@/components/DocumentosInterfazTratamiento/Fase 3/Educativa/RegistrarInformeEducativoFinal.vue";
-
+import {mapMutations, mapState} from "vuex";
 
 import axios from "axios";
 export default {
@@ -237,7 +229,6 @@ export default {
       residente: "",
       residenteProm: {},
       residentesFase: [],
-      fase: [],
       cargaProgreso: false,
       selectorRegistro: "",
       dialogoRegistroDocumentos: false,
@@ -269,13 +260,13 @@ export default {
         console.log(this.residente);
       })
       .catch(err => console.log(err));
-    var quees = this.obtenerSecuenciaDocumentos();
-    this.fase = quees[2];
+    this.setFase(this.obtenerSecuenciaDocumentos()[2]);
     this.cargaProgreso = true;
     console.log("LISTA FASES");
-    console.log(quees);
+    console.log(this.fase);
   },
   methods: {
+    ...mapMutations(["setFase"]),
     obtenerSecuenciaDocumentos() {
       var residenteFaseDoc = this.residente;
       var listaFases = residenteFaseDoc.fases.progreso;
@@ -364,8 +355,20 @@ export default {
       console.log(user);
       return user;
     },
+    async actualizarProgreso(){
+       var miruta = "/residente/progreso/" + this.residente.id;
+       await axios
+        .get(miruta)
+        .then(res => {
+          this.residente = res.data;
+          this.residente.id = this.$route.params.id;
+        })
+        .catch(err => console.log(err));
+        this.setFase(this.obtenerSecuenciaDocumentos()[2]);
+    },
   },
   computed: {
+    ...mapState(['fase']),
     obtenerDocumentosCompletos () {
       var numero = this.fase.educativa.documentos.filter(documento => documento.estado !== "Pendiente" ).length;
       return numero;

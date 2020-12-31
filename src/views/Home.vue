@@ -65,7 +65,7 @@ export default {
       listaOpciones: [
         {
           id: 1,
-          imagenUrl: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+          imagenUrl: "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/completed_task__monochromatic.png",
           titulo: "Tratamiento Integral",
           descripcion:
             "Interfaz de Gestión especializada en el control, seguimineto , investigacion y registro de datos relacionados con los usuarios del CAR",
@@ -74,7 +74,7 @@ export default {
         },
         {
           id: 2,
-          imagenUrl: "https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png",
+          imagenUrl: "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/user_group_monochromatic.png",
           titulo: "Residentes",
           descripcion:
             "Interfaz de Gestión de los residentes del CAR",
@@ -83,7 +83,7 @@ export default {
         },
         {
           id: 3,
-          imagenUrl: "https://image.freepik.com/vector-gratis/documentos-confirmados-o-documentos-aprobados_149152-439.jpg",
+          imagenUrl: "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/personal_data__monochromatic.png",
           titulo: "Documentos",
           descripcion:
             "Interfaz de Gestión de los documentos relacionados a los residentes del CAR",
@@ -92,7 +92,7 @@ export default {
         },
         {
           id: 4,
-          imagenUrl: "https://icatafalla.com/wp-content/uploads/2017/03/estadisticas-1030x689.jpg",
+          imagenUrl: "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/data_analytics__monochromatic.png",
           titulo: "Consultar estadísticas",
           descripcion:
             "Interfaz consultar el progreso de los residentes mediante gráficos estadísticos",

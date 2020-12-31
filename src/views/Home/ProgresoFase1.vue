@@ -134,7 +134,8 @@
                       <v-row>
                         <v-col cols="12" xs="12" sm="6" md="6">
                         <div style="padding:5px">
-                            <v-btn color="warning" rounded block>
+                            <v-btn color="warning" rounded block
+                            @click="abrirDialogoModificarDocumento(titulosDoc[documento.tipo].modificar)">
                               <v-icon left>mdi-folder-edit</v-icon>Modificar
                             </v-btn>
                         </div>
@@ -187,7 +188,10 @@
             </v-list-item>
 
             <v-divider></v-divider>
-            <v-list-item v-for="residente in residentesFase" :key="residente.id" link>
+            <v-list-item 
+              v-for="residente in residentesFase" :key="residente.id" link
+               @click="abrirProgresoFase1(residente.id)"
+              >
               <v-list-item-icon>
                 <v-icon>mdi-account-multiple</v-icon>
               </v-list-item-icon>
@@ -245,14 +249,15 @@ export default {
       residentesFase: [],
       cargaProgreso: false,
       selectorRegistro: "",
+      modificarRegistro: "",
       dialogoRegistroDocumentos: false,
       dialogopromocion: false,
       titulosDoc: {
         FichaEducativaIngreso: {
           titulo: "Ficha Educativa de Ingreso",
           registrar: "RegistrarFichaIngresoEducativa",
-          modificar: "",
-          visualizar: ""
+          modificar: "ModificarFichaIngresoEducativa",
+          visualizar: "VisualizarFichaIngresoEducativa"
         },
         InformeEducativoInicial: {
           titulo: "Informe Educativo Inicial",
@@ -379,6 +384,11 @@ export default {
     navegarto(ruta) {
       this.$router.push(ruta);
     },
+    abrirProgresoFase1(id) {
+      var rutacompleta = "/dashboard/ProgresoF1Residente/" + id;
+      this.$router.push(rutacompleta);
+      window.location.reload(true);
+    },
     async registrarDocumentoTransicionFase() {
       this.residenteProm = await this.loadResidenteDetalle(this.residente.id);
       this.dialogopromocion = true;
@@ -397,6 +407,11 @@ export default {
         .catch((err) => console.log(err));
       console.log(user);
       return user;
+    },
+    abrirDialogoModificarDocumento(componente) {
+      console.log(componente);
+      //this.selectorRegistro = componente;
+      //this.dialogoRegistroDocumentos = true;
     },
   },
   computed: {

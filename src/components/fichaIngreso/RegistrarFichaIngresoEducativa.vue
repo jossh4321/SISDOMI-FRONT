@@ -1,8 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center"
-      >Resgistrar Ficha de Ingreso Educativa</v-card-title
-    >
+    <v-card-title class="justify-center">Registrar Ficha de Ingreso Educativa</v-card-title>
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step editable step="1">
