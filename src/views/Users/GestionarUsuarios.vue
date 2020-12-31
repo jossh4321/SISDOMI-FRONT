@@ -86,7 +86,8 @@
                 max-width="880px">
         <ActualizarUsuario
         v-if="dialogoactualizacion" 
-        :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()">
+        :usuario="usuario" :listaroles="listaroles" 
+        @close-dialog-update="closeDialogActualizar()">
         </ActualizarUsuario>
 
       </v-dialog>

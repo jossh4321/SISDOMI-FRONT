@@ -134,7 +134,8 @@
                       <v-row>
                         <v-col cols="12" xs="12" sm="6" md="6">
                         <div style="padding:5px">
-                            <v-btn color="warning" rounded block>
+                            <v-btn color="warning" rounded block
+                            @click="abrirDialogoModificarDocumento(titulosDoc[documento.tipo].modificar)">
                               <v-icon left>mdi-folder-edit</v-icon>Modificar
                             </v-btn>
                         </div>
@@ -248,14 +249,15 @@ export default {
       residentesFase: [],
       cargaProgreso: false,
       selectorRegistro: "",
+      modificarRegistro: "",
       dialogoRegistroDocumentos: false,
       dialogopromocion: false,
       titulosDoc: {
         FichaEducativaIngreso: {
           titulo: "Ficha Educativa de Ingreso",
           registrar: "RegistrarFichaIngresoEducativa",
-          modificar: "",
-          visualizar: ""
+          modificar: "ModificarFichaIngresoEducativa",
+          visualizar: "VisualizarFichaIngresoEducativa"
         },
         InformeEducativoInicial: {
           titulo: "Informe Educativo Inicial",
@@ -405,6 +407,11 @@ export default {
         .catch((err) => console.log(err));
       console.log(user);
       return user;
+    },
+    abrirDialogoModificarDocumento(componente) {
+      console.log(componente);
+      //this.selectorRegistro = componente;
+      //this.dialogoRegistroDocumentos = true;
     },
   },
   computed: {
