@@ -13,7 +13,7 @@
           <v-stepper-content step="1">
             <div class="container-planI">
               <form>
-                <v-card class="subcard card-padre">
+                <v-card class="subcard card-padre" style="margin-bottom:20px">
                   <v-card class="subcard" style="margin-bottom:7px" color="#e6f3ff">
                     <span>Residente: {{this.residente.nombre}} {{this.residente.apellido}}</span>
                   </v-card>
