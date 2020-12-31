@@ -623,11 +623,12 @@ export default {
                 "<strong>Verifique los campos Ingresados<strong>"
               );
           }else{
+            this.cargaRegistro = true;
             this.fichaIngreso.creadordocumento = this.user.id;            
             this.fichaIngreso.contenido.ieprocedencia.documentosEscolares = await this.registrarDocumentosEscolares();
             //fichaeducativaingreso
             console.log(this.fichaIngreso);
-            this.cargaRegistro = true;
+            
             await axios
               .post("/documento/fichaeducativaingreso", this.fichaIngreso)
               .then((res) => {

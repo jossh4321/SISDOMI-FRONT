@@ -338,7 +338,7 @@
       </v-stepper>
       <v-dialog width="450px" v-model="cargaRegistro" persistent>
         <v-card height="300px">
-          <v-card-title class="justify-center">Registrando el informe educativo evolutivo</v-card-title>
+          <v-card-title class="justify-center">Registrando el informe educativo final</v-card-title>
           <div>
               <v-progress-circular
               style="display: block;margin:40px auto;"
@@ -405,12 +405,12 @@ export default {
       cargaRegistro: false,
       informe: {
         id: "",
-        tipo: "InformeEducativoEvolutivo",
+        tipo: "InformeEducativoFinal",
         historialcontenido: [],
         creadordocumento: "",
         fechacreacion: null,
         area: "educativa",
-        fase: "2",
+        fase: "3",
         idresidente: "",
         estado: "creado",
         contenido: {
@@ -453,6 +453,7 @@ export default {
     this.recomendacion = "";
   },
   methods: {
+    
     async sendPDFFiles() {
       let listaTitulos = [];
       let listaanexos = this.fileList;
@@ -482,7 +483,6 @@ export default {
       this.informe.creadordocumento = this.user.id;
 
       this.informe.idresidente = this.residente.id;
-      //this.informe.contenido.evaluador = this.user.id;
 
       this.$v.informe.$touch();
       if (this.$v.informe.$invalid) {
@@ -493,9 +493,10 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-          console.log(this.informe);
+
+        console.log(this.informe);
         
-          await axios
+        await axios
           .post("/informe/informeee", this.informe)
           .then(res => {
             this.$emit("actualizar-progreso-fase1");
@@ -504,13 +505,12 @@ export default {
           })
           .catch(err => console.log(err));
 
-          await this.mensaje(
-                "success",
-                "Listo",
-                "Plan registrado Satisfactoriamente",
-                "<strong>Volviendo al progreso<strong>",
-                true
-              );
+        await this.mensaje(
+          "success",
+          "Listo",
+          "Informe registrado Satisfactoriamente",
+          "<strong>Se redirigira a la interfaz de gestión<strong>"
+        );
       }
     },
     agregarLogros() {
@@ -579,7 +579,7 @@ export default {
         creadordocumento: "",
         fechacreacion: null,
         area: "educativa",
-        fase: "2",
+        fase: "3",
         idresidente: "",
         estado: "creado",
         contenido: {

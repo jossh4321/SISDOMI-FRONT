@@ -65,7 +65,7 @@
                 </template>
               </v-autocomplete>
 
-              <v-menu
+              <!-- <v-menu
                 v-model="datemenu"
                 :close-on-content-click="false"
                 :nudge-right="40"
@@ -97,7 +97,7 @@
                   @input="datemenu = false"
                   locale="es-es"
                 ></v-date-picker>
-              </v-menu>
+              </v-menu> -->
 
               <v-text-field
                 v-model="actaexternamiento.contenido.entidaddisposicion"
@@ -149,14 +149,14 @@
                 color="#009900"
               ></v-text-field>
 
-              <!-- <div>
+             <div>
               <vue-dropzone ref="myVueDropzone"
             @vdropzone-success="afterSuccess"
             @vdropzone-removed-file="afterRemoved"
             @vdropzone-mounted="mounteddropzone"
             id="dropzone" :options="dropzoneOptions">
             </vue-dropzone>
-          </div> -->
+          </div>  
 
               <v-divider class="divider-custom"></v-divider>
               <v-row>
@@ -187,6 +187,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
+  
 export default {
   //  props:["listaActas","actaexternamiento","usuario"],
   props: ["listaActas", "actaexternamiento"],
@@ -202,12 +203,14 @@ export default {
         thumbnailWidth: 250,
         maxFilesize: 3.0,
         maxFiles: 1,
-        acceptedFiles: ".jpg",
+        acceptedFiles:".jpg, .png, jpeg",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
+     
         dictDefaultMessage:
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
       },
+          imagen: { tipo: "url", modificado: "no" },
       //imagen:{tipo:"url",modificado:"no"},
       /*  //actaexternamiento: {
         
@@ -232,18 +235,19 @@ export default {
   },
   created() {
     console.log(this.actaexternamiento);
-    this.actaexternamiento.fechacreacion = this.actaexternamiento.fechacreacion.split( "T" )
+    
   },
   mounted() {},
   methods: {
     ...mapMutations(["setUsuarios", "addUsuario", "replaceUsuario"]),
     mounteddropzone() {
-      var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg" };
+      var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg"};
       this.$refs.myVueDropzone.manuallyAddFile(
         file,
         this.actaexternamiento.contenido.firmas,
         null,
         null,
+        
         true
       );
     },
@@ -397,9 +401,7 @@ export default {
         idresidente: {
           required,
         },
-        fechacreacion: {
-          required,
-        },
+        
         contenido: {
           entidaddisposicion: {
             required,
@@ -432,11 +434,13 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+  
 }
 
 .dropzone-custom-title {
   margin-top: 0;
   color: #00b782;
+  
 }
 
 .subtitle {

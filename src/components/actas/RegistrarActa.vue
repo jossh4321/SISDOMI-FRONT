@@ -193,7 +193,7 @@ export default {
         area: "social",
         fase: "3",
         idresidente: "",
-        estado: "",
+        estado: "creado",
 
         contenido: {
           responsable: "",
@@ -203,8 +203,7 @@ export default {
           numerooficio: "",
           observaciones: "",
 
-          firmas: [
-            
+          firmas: [         
           ],
         },
       },

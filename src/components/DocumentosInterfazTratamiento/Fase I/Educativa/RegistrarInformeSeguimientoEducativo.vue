@@ -644,6 +644,7 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+        this.cargaRegistro = true;
         console.log("no hay errores");
         console.log(this.seguimiento);
         this.seguimiento.creadordocumento = this.user.id;

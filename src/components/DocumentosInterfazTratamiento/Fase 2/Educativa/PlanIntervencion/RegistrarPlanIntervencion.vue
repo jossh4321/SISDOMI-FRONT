@@ -234,6 +234,21 @@
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
+      <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Registrando el plan de intervención</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="red"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
@@ -282,6 +297,7 @@ export default {
       actividadAux: "",
       indicadorAux: "",
       metaAux: "",
+      cargaRegistro: false,
     };
   },
   validations() {
@@ -354,16 +370,27 @@ export default {
           false
         );
       } else {
+        this.cargaRegistro = true;
         this.planI.creadordocumento = this.user.id;
 
         this.planI.idresidente = this.residente.id;
 
         let planIntervencionIndividual = {
           idresidente: this.residente.id,
-          planintervencionindividual: this.planI
+          planintervencionindividual: this.planI,
         };
 
         console.log(planIntervencionIndividual);
+        //this.cargaRegistro = false;
+
+        await axios
+          .post("/PlanIntervencion/educativo", planIntervencionIndividual)
+          .then(res => {
+            this.$emit("actualizar-progreso-fase1");
+            this.cargaRegistro = false;
+            this.cerrarDialogo();
+          })
+          .catch(err => console.log(err));
 
         this.mensaje(
                 "success",
@@ -372,22 +399,6 @@ export default {
                 "<strong>Volviendo al progreso<strong>",
                 true
               );
-
-        /* await axios
-          .post("/PlanIntervencion/educativo", planIntervencionIndividual)
-          .then(res => {
-            this.planI = res.data;
-            if (this.planI.id !== "") {
-              this.mensaje(
-                "success",
-                "Listo",
-                "Plan registrado Satisfactoriamente",
-                "<strong>Volviendo al progreso<strong>",
-                true
-              );
-            }
-          })
-          .catch(err => console.log(err)); */
       }
     },
     mensaje(icono, titulo, texto, footer, valid) {
@@ -396,10 +407,6 @@ export default {
         title: titulo,
         text: texto,
         footer: footer
-      }).then(res => {
-        if (valid) {
-          this.$emit("register-complete");
-        }
       });
     },
     addObjEspecifico() {
