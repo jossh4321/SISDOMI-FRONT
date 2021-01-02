@@ -24,12 +24,12 @@
               <v-card class="subcard card-padre">
                           <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
                               <span>
-                                Residente: {{this.residente.nombre}} {{this.residente.apellido}}
+                                Residente: {{this.residenteDocumento.nombre}} {{this.residenteDocumento.apellido}}
                               </span>
                           </v-card >
                           <v-card class="subcard" color="#e6f3ff">
                             <span>
-                              Fecha de Ingreso: {{ this.residente.fechaingreso | fomatoFecha}}
+                              Fecha de Ingreso: {{ this.residenteDocumento.fechaingreso | fomatoFecha}}
                             </span>
                           </v-card>
               </v-card>
@@ -541,7 +541,7 @@ import Vuelidate from "vuelidate";
 import moment from "moment";
 
 export default {
-  props: ["residente"],
+  props: ["residenteDocumento"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -556,7 +556,7 @@ export default {
         fechacreacion: null,
         area: "",
         fase: "",
-        idresidente: this.residente.id,
+        idresidente: this.residenteDocumento.id,
         estado: "",
         contenido: {
           ieprocedencia:{
@@ -658,7 +658,7 @@ export default {
     ...mapMutations(["replaceFichaIngreso"]),
     async obtenerFichaIngresoId() {
       await axios
-        .get("/documento/FichaEducativaIngreso/residente/"+this.residente.id)
+        .get("/documento/FichaEducativaIngreso/residente/"+this.residenteDocumento.id)
         .then((x) => {
           this.fichaIngresoid = x.data[0].id;
         })
