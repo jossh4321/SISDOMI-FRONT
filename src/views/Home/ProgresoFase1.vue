@@ -142,7 +142,8 @@
                       </v-col>
                       <v-col cols="12" xs="12" sm="6" md="6">
                          <div style="padding:5px">
-                            <v-btn color="info" rounded block>
+                            <v-btn color="info" rounded block
+                            @click="abrirDialogoVisualizarDocumento(titulosDoc[documento.tipo].visualizar)">
                           <v-icon left>mdi-information</v-icon>Ver Detalle
                         </v-btn>
                          </div>
@@ -212,6 +213,22 @@
           @actualizar-progreso-fase1="actualizarProgreso"
         ></v-component>
       </v-dialog>
+      <!--Dialogo de Modificacion de Documentos-->
+      <v-dialog v-model="dialogoModificarDocumentos" persistent max-width="850px">
+        <v-component
+          :is="modificarRegistro"
+          :residente="residente"
+          @cerrar-modal-docf1="cerrarDialogoModificarDocF1"
+        ></v-component>
+      </v-dialog>
+      <!--Dialogo de Visualizar de Documentos-->
+      <v-dialog v-model="dialogoDetalleDocumentos" persistent max-width="850px">
+        <v-component
+          :is="visualizarRegistro"
+          :residente="residente"
+          @cerrar-modal-docf1="cerrarDialogoVisualizarDocF1"
+        ></v-component>
+      </v-dialog>
       <!--Dialogo de Fase-->
       <v-dialog persistent v-model="dialogopromocion" max-width="1000px">
         <RegistrarPromocionFase2
@@ -225,6 +242,8 @@
 <script>
 import VisualizadorResidente from "@/components/residentes/VisualizadorResidente.vue";
 import RegistrarFichaIngresoEducativa from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarFichaEducativaIngreso.vue";
+import ModificarFichaIngresoEducativa from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/ModificarFichaEducativaIngreso.vue";
+import VisualizarFichaIngresoEducativa from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarFichaIngresoEducativa.vue";
 import RegistrarInformeEducativoInicial from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarInformeEducativoInicial.vue";
 import RegistrarPlanIntervencionEducativoIndividual from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarPlanIntervencionIndividualEducativo.vue";
 import RegistrarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarInformeSeguimientoEducativo.vue";
@@ -236,6 +255,8 @@ export default {
   components: {
     VisualizadorResidente,
     RegistrarFichaIngresoEducativa,
+    ModificarFichaIngresoEducativa,
+    VisualizarFichaIngresoEducativa,
     RegistrarInformeEducativoInicial,
     RegistrarPlanIntervencionEducativoIndividual,
     RegistrarInformeSeguimientoEducativo,
@@ -250,7 +271,10 @@ export default {
       cargaProgreso: false,
       selectorRegistro: "",
       modificarRegistro: "",
+      visualizarRegistro:"",
       dialogoRegistroDocumentos: false,
+      dialogoModificarDocumentos: false,
+      dialogoDetalleDocumentos : false,
       dialogopromocion: false,
       titulosDoc: {
         FichaEducativaIngreso: {
@@ -378,6 +402,14 @@ export default {
       this.dialogoRegistroDocumentos = false;
       this.selectorRegistro = "";
     },
+    cerrarDialogoModificarDocF1() {
+      this.dialogoModificarDocumentos = false;
+      this.modificarRegistro = "";
+    },
+    cerrarDialogoVisualizarDocF1() {
+      this.dialogoDetalleDocumentos = false;
+      this.visualizarRegistro = "";
+    },
     cerrarDialogoPromocion() {
       this.dialogopromocion = false;
     },
@@ -410,8 +442,12 @@ export default {
     },
     abrirDialogoModificarDocumento(componente) {
       console.log(componente);
-      //this.selectorRegistro = componente;
-      //this.dialogoRegistroDocumentos = true;
+      this.modificarRegistro = componente;
+      this.dialogoModificarDocumentos = true;
+    },
+    abrirDialogoVisualizarDocumento(componente) {
+      this.visualizarRegistro = componente;
+      this.dialogoDetalleDocumentos = true;
     },
   },
   computed: {
