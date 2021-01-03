@@ -161,6 +161,7 @@ export default {
       .get("/residente/all")
       .then((x) => {
         this.listaActas = x.data;
+        
         console.log(this.listaActas);
        })
        .catch((err)=> console.log(err));
@@ -175,8 +176,8 @@ export default {
       await axios.get("/actaexternamiento/id?id="+id)
       .then(res => {
          user = res.data; 
-         user.datos.fechanacimiento = res.data.datos
-                  .fechanacimiento.split("T")[0];
+         user.fechacreacion = res.data
+                  .fechacreacion.split("T")[0];
       })
       .catch(err => console.log(err));
       return user;
@@ -185,7 +186,7 @@ export default {
       await axios.get("/actaexternamiento/id?id="+id)
       .then(res => {
          user = res.data; // devuelve
-         user.datos.fechacreacion = res.data.tipo
+         user.fechacreacion = res.data
                   .fechacreacion.split("T")[0];
       })
       .catch(err => console.log(err));
@@ -195,7 +196,8 @@ export default {
     }, async obtenerUsuarios(){
            await axios.get("/actaexternamiento/all") ////////OBTENER ACTA EXTERNAMIENTO
             .then(res => {
-                   this.setUsuarios(res.data);
+                
+                  this.setUsuarios(res.data);
             }).catch(err => console.log(err));
     }, async cambiarEstadoUsuario(actaexternamiento){
        await this.$swal({
