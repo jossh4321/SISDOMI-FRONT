@@ -179,14 +179,12 @@ export default {
         dictDefaultMessage:
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
       },imagen:{},
-
-
       usuario: {
         id:"",
         usuario: "",
         clave: "",
         estado:"",
-        rol:"",
+        rol:"", 
         datos: {
           nombre: "",
           apellido: "",
@@ -196,34 +194,29 @@ export default {
           direccion: "",
           email: "",
           imagen: "",
-        },
-       
+          firma:"",
+         },  
       },
     };
   },
   created() {
+       console.log(this.user)
   this.DialogloadUsuarioModificacion(); 
       console.log(this.usuario)
-      console.log(this.user)
+   
+     
   },
   methods: {
-    ...mapMutations([]),
+    ...mapMutations(["setUser"]),
   
  
-   DialogloadUsuarioModificacion(){
-    /* async loadUsuarioModificacion(){
-      var user = {};
-      await axios.get("/usuario/id?id="+this.usuario)
-      .then(res => {
-         user = res.data; 
-         user.datos.fechanacimiento = res.data.datos
-                  .fechanacimiento.split("T")[0];
-      })
-      .catch(err => console.log(err));
-      return user;
-    }*/
+DialogloadUsuarioModificacion(){
 this.usuario.id = this.user.id;
 this.usuario.usuario=this.user.usuario;
+this.usuario.clave=this.user.clave;
+this.usuario.estado=this.user.estado;
+this.usuario.rol=this.user.rol;
+
 this.usuario.datos.nombre=this.user.datos.nombre;
 this.usuario.datos.apellido=this.user.datos.apellido;
 this.usuario.datos.fechanacimiento=this.user.datos.fechanacimiento;
@@ -232,40 +225,52 @@ this.usuario.datos.numerodocumento=this.user.datos.numerodocumento;
 this.usuario.datos.direccion=this.user.datos.direccion;
 this.usuario.datos.email=this.user.datos.email;
 this.usuario.datos.imagen=this.user.datos.imagen;
+this.usuario.datos.firma=this.user.datos.firma;
 
 this.usuario.datos.fechanacimiento =this.usuario.datos
                   .fechanacimiento.split("T")[0];
-    },
+  },
+  
 async actualizarUsuarioPerfil(){     
        this.$v.$touch();
       if (this.$v.$invalid) {
            console.log("hay errores");
         this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
        }else {      
-        //console.log(this.usuario);
-        await  axios.put("/Perfil/modificarperfil",this.usuario)  
+        console.log(this.usuario);
+        let usuarioA={
+           id: this.usuario.id,
+           usuario: this.usuario.usuario,
+           clave:  "",
+           datos: this.usuario.datos,
+           estado: "",
+           rol: "",       
+        }; 
+        console.log(usuarioA);      
+     await axios.put("/Perfil/modificarperfil",usuarioA)            
         .then((res) => {
+               // res.data;
+               this.setUser(this.usuario);
+                 this.cerrarDialogo();
                   })
                   .catch((err) => {
                     console.error(err);
-                  });
-         this.mensaje('success','listo','Perfil Actualizado Satisfactoriamente');  
-         this.$router.push('/dashboard/home')     
+                  });          
+        this.mensaje('success','listo','Perfil Actualizado Satisfactoriamente',"<strong>Se redigira al home <strong>");  
+         
       }
     },
-
+  
      resetUsuarioValidationState() {
      this.$refs.myVueDropzone.removeAllFiles();
         this.$v.usuario.$reset();
     },  
     cerrarDialogo() {
       this.resetUsuarioValidationState();
-
-      this.$router.push('/dashboard/home')
-    
+      this.$router.push('/dashboard/home');
     },
   
-afterSuccess(file,response){
+   afterSuccess(file,response){
        this.usuario.datos.imagen = file.dataURL.split(",")[1];
        this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
        this.imagen ={ tipo: "base64", modificado:"si"};
@@ -275,15 +280,13 @@ afterSuccess(file,response){
        this.$v.usuario.datos.imagen.$model = "";
     },
    mensaje(icono, titulo, texto, footer) {
-    
      this.$swal({
         icon: icono,
         title: titulo,
         text: texto,
         footer: footer,
-        
-      });
-      
+      });    
+   
     },
 mounteddropzone(){
      console.log(this.usuario.datos.imagen)
@@ -294,7 +297,7 @@ mounteddropzone(){
 
   },
   computed: {
-    ...mapState(["usuarios"]),
+   
     ...mapGetters(["user"]),
 
     verifyColor() {
