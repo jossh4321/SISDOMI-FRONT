@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Registrar informe educativo evolutivo</v-card-title>
+    <v-card-title class="justify-center">Registrar informe educativo final</v-card-title>
     <v-card-text>
       <v-stepper v-model="step">
         <v-stepper-header>
