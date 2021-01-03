@@ -71,7 +71,7 @@
       <!--Dialogo de Modificacion-->
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
         <ModificarResidente
-          :residente="residente"
+          :residente="residente"               
           @close-dialog-edit="closeDialogModificar()"
         >
         </ModificarResidente>
@@ -130,37 +130,20 @@ export default {
         { text: "Fecha de Ingreso", value: "fechaIngreso" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-      /*planesI: [
-        {
-          nombre: "Manuel stafno",
-          apellido: "Paredes Guerra",
-          tipdocumento: "Dni",
-          numdocumento:"72498627",
-          fechingreso:"28/05/2019"
-        },
-        {
-          nombre: "PlanI_Psico_Xiomara_1",
-          apellido: "Xiomara Paredes Guerra",
-          tipdocumento: "Dni",
-          numdocumento:"72498627",
-          fechingreso:"28/05/2019"
-        },
-        {
-          nombre: "PlanI_Edu_Marlyn_1",
-          apellido: "Marlyn Candela Peña",
-          tipdocumento: "Dni",
-          numdocumento:"72498627",
-          fechingreso:"28/05/2019"
-        }
-      ],*/
       dialogoregistro: false,
       dialogoactualizacion: false,
       dialogodetalle: false,
-      dialogopromover:false
+      dialogopromover:false,
+      departamentos: [],
+      provincias: [],
+      distritos: [],
+      idDepartamento: "",
+      idProvincia: "",
+      idDistrito: "",
     };
   },
   async created() {
-    this.obtenerResidentes();
+    this.obtenerResidentes();    
   },
   methods: {
     ...mapMutations(["setResidentes"]),
@@ -220,6 +203,7 @@ export default {
       console.log(user);
       return user;
     },
+    
     ///////////////////Consumo de  apis
     async obtenerResidentes() {
       await axios
@@ -235,7 +219,7 @@ export default {
           this.setResidentes(info);
         })
         .catch((err) => console.log(err));
-    },
+    },    
   },
   computed: {
     ...mapState(["residentes"]),

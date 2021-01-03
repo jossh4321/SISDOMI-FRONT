@@ -437,7 +437,6 @@ export default {
       this.residenteProm = await this.loadResidenteDetalle(this.residente.id);
       this.dialogopromocion = true;
     },
-
     async loadResidenteDetalle(idresidente) {
       var user = {};
       await axios

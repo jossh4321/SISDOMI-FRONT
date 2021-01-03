@@ -426,7 +426,7 @@ export default {
     this.informe = await this.loadInformeModificacion(this.informeid);
     this.cargarConclusiones();
     this.cargarAnexos();
-    await this.obtenerCreador()
+    this.obtenerCreador()
   },
   methods: {    
     ...mapMutations(["replaceInforme"]),

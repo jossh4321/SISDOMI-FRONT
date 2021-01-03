@@ -767,7 +767,7 @@ export default {
         { text: "Seguimiento", value: { nombre: "Desarrollo", fase: 4 } },
       ],
       itemParentesco: ["Madre", "Padre", "Tio(a)", "Hermano(a)"],
-      departamentos: [],
+     // departamentos: [],
       provincias: [],
       distritos: [],
       idDepartamento: "",
@@ -775,9 +775,12 @@ export default {
       idDistrito: "",
     };
   },
-  async created() {
-    this.obtenerDistrito();
-    this.obtenerDepartamentos();
+  async created() {   
+    this.obtenerTodosLosDistritos(); 
+    //console.log(this.residente);
+    //console.log(this.residente.ubigeo);
+    //await this.obtenerDistrito();
+   // this.obtenerDepartamentos();
   },
   methods: {
     ...mapMutations(["replaceResidente"]),
@@ -958,6 +961,8 @@ export default {
       console.log("fechafinalizacion: " + fechafinalizacion[0]);
       console.log("fechaActual: " + fechaActual[0]);
       console.log(booleano);
+     // this.obtenerDistrito();
+    //  this.obtenerDepartamentos();
       return booleano;
     },
     async obtenerDepartamentos() {
@@ -993,7 +998,20 @@ export default {
         })
         .catch((err) => console.log(err));
     },
+    async obtenerTodosLosDistritos() {
+      await axios
+        .get(`/ubigeo/allDistritos`)
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          this.distritos = res.data;
+          //obtenerDistrito();
+        })
+        .catch((err) => console.log(err));
+    },
     async obtenerDistrito() {
+      console.log("distrito");
+      console.log(this.residente.ubigeo);
       await axios
         .get(`/ubigeo/idDistrito?idDistrito=${this.residente.ubigeo}`)
         .then((res) => {
