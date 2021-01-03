@@ -171,7 +171,8 @@
                             </v-row>
                             <v-row>
                               <v-col>
-                                <v-btn block class="my-button" color="success">
+                                <v-btn block class="my-button" color="success"
+                                  @click="abrirProgresoRes(residente.id)">
                                   <v-icon left dark>mdi-cloud-upload</v-icon>Ver Progreso
                                 </v-btn>
                               </v-col>
@@ -405,6 +406,10 @@ export default {
     },
     abrirExpedienteRes(id) {
       var rutacompleta = "/dashboard/expediente/" + id;
+      this.$router.push(rutacompleta);
+    },
+    abrirProgresoRes(id) {
+      var rutacompleta = "/dashboard/progresoEducativo/" + id;
       this.$router.push(rutacompleta);
     },
   },
