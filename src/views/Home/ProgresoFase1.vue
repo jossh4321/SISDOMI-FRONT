@@ -251,6 +251,8 @@ import RegistrarPlanIntervencionEducativoIndividual from "@/components/Documento
 import ModificarPlanIntervencionEducativoIndividual from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/ModificarPlanIntervencionEducativoIndividual.vue";
 import VisualizarPlanIntervencionEducativoIndividual from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarPlanIntervencionEducativoIndividual.vue";
 import RegistrarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarInformeSeguimientoEducativo.vue";
+import ModificarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/ModificarInformeSeguimientoEducativo.vue";
+import VisualizarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarInformeSeguimientoEducativo.vue";
 import RegistrarPromocionFase2 from "@/components/DocumentosInterfazTratamiento/Fase I/RegistrarPromocionFase2.vue";
 import {mapMutations, mapState} from "vuex";
 import axios from "axios";
@@ -268,6 +270,8 @@ export default {
     ModificarPlanIntervencionEducativoIndividual,
     VisualizarPlanIntervencionEducativoIndividual,
     RegistrarInformeSeguimientoEducativo,
+    ModificarInformeSeguimientoEducativo,
+    VisualizarInformeSeguimientoEducativo,
     RegistrarPromocionFase2
   },
   data() {
