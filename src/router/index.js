@@ -18,6 +18,7 @@ import GestionActa from '../views/Acta/GestionarActa.vue';
 import ModificarPerfil from '../views/perfil/ModificarPerfil.vue';
 import GestionarFichaEvaluacionEducativa from  '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
 import GestionResidentes from '../views/Residentes/GestionResidentes.vue';
+import ProgresoEducativoResidente from '../views/Residentes/ProgresoEducativoResidente.vue';
 
 //Prueba
 import PruebaActa from '../views/Acta/PruebaActa.vue';
@@ -131,6 +132,12 @@ const routes = [{
                 path: 'expediente/:idresidente',
                 name: 'ExpedienteResidente',
                 component: ExpedienteResidente,
+                props: true
+            },
+            {
+                path: 'progresoEducativo/:idresidente',
+                name: 'ProgresoEducativoResidente',
+                component: ProgresoEducativoResidente,
                 props: true
             },
             {

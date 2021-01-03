@@ -461,26 +461,16 @@
                         <v-col :cols="3">
                           <article>
                             <span style="font-size:16px">
-                              {{
-                              convertDateFormat(item.fechaingreso)
-                              }}
+                              {{ item.fechaingreso }}
                             </span>
                           </article>
                         </v-col>
                         <v-col :cols="3">
                           <article>
                             <span style="font-size:16px">
-                              {{
-                              convertDateFormat(
-                              item.fechafinalizacion
-                              )
-                              }}
+                              {{ item.fechafinalizacion }}
                               <span
-                                v-if="
-                                            comprobarPrevicion(
-                                              item.fechafinalizacion
-                                            )
-                                          "
+                                v-if=" comprobarPrevicion( item.fechafinalizacion ) "
                                 style="margin-left:5px"
                               >(previsto)</span>
                             </span>
@@ -494,19 +484,6 @@
                               }}
                             </span>
                           </article>
-                        </v-col>
-                        <v-col align="right">
-                          <div style="margin-right:20px">
-                            <v-btn
-                              @click="eliminarProgreso(item.index)"
-                              fab
-                              x-small
-                              dark
-                              color="red"
-                            >
-                              <v-icon dark>mdi-minus</v-icon>
-                            </v-btn>
-                          </div>
                         </v-col>
                       </v-row>
                     </v-card>
@@ -635,156 +612,115 @@ export default {
   },
   methods: {
     ...mapMutations(["setResidentes", "addResidente"]),
-    obtenerFechaIniFin: function(prog) {
-      var miprogreso = prog;
-      var fechaingreso = miprogreso.fechaingreso;
-      var fecha = "";
-      if (miprogreso.fase.fase === 2) {
-        fecha = moment(fechaingreso).add(1, "year").calendar();
-      } else if (miprogreso.fase.fase === 3) {
-        fecha = moment(fechaingreso).add(6, "month").calendar();
-      } else {
-        fecha = moment(fechaingreso).add(1, "year").calendar();
-      }
-      var date = fecha.split("/");
-      miprogreso.fechafinalizacion = date[2] + "-" + date[1] + "-" + date[0];
-      return miprogreso;
-    },
+    //moment: function() {
+    //  return moment();
+    //},
     RefrescarProgreso(item) {
+      var fechaingreso = new Date();
+      var actualDate = moment(fechaingreso).format("YYYY-MM-DD");
       if (item === 1) {
         this.residente.progreso = [];
-
-        var fechaingreso = new Date();
-        var fecha = "";
-        if (miprogreso.fase.fase === 2) {
-          fecha = moment(fechaingreso).add(1, "year").calendar();
-        } else if (miprogreso.fase.fase === 3) {
-          fecha = moment(fechaingreso).add(6, "month").calendar();
-        } else {
-          fecha = moment(fechaingreso).add(1, "year").calendar();
-        }
-        var date = fecha.split("/");
-        miprogreso.fechafinalizacion = date[2] + "-" + date[1] + "-" + date[0];
-
+        
         var prog1 = {
-          fase: { nombre: "acogida", fase: 1 },
-          fechaingreso: new Date(),
+          fechaingreso: actualDate,
           fechafinalizacion: "",
-          estado: "inicio"
         };
+
+        var fecha = moment(prog1.fechaingreso).add(1, "year").calendar();
+        var date = fecha.split("/");
+        prog1.fechafinalizacion = date[2] + "-" + date[1] + "-" + date[0];
         
         let progreso = {
           fase: 1,
           nombre: "acogida",
           fechaingreso: prog1.fechaingreso,
-          fechafinalizacion: this.prog1.fechafinalizacion,
-          estado: this.prog1.estado.nombre.toLowerCase()
+          fechafinalizacion: prog1.fechafinalizacion,
+          estado: "inicio"
         };
-        console.log(progreso);
 
         this.residente.progreso.push(progreso);
-        console.log(this.residente.progreso);
       } else if (item === 2) {
         this.residente.progreso = [];
         //fase 1
-        var prog1 = {
-          fase: { nombre: "acogida", fase: 1 },
-          fechaingreso: new Date(),
-          fechafinalizacion: new Date(),
-          estado: "omitido"
-        };
         let progreso = {
-          fase: prog1.fase.fase,
-          nombre: prog1.fase.nombre.toLowerCase(),
-          fechaingreso: prog1.fechaingreso,
-          fechafinalizacion: prog1.fechafinalizacion,
-          estado: prog1.estado.nombre.toLowerCase()
+          fase: 1,
+          nombre: "acogida",
+          fechaingreso: actualDate,
+          fechafinalizacion: actualDate,
+          estado: "omitido"
         };
         this.residente.progreso.push(progreso);
 
         //fase 2
         var prog2 = {
-          fase: { nombre: "desarrollo", fase: 2 },
-          fechaingreso: new Date(),
+          fechaingreso: actualDate,
           fechafinalizacion: "",
-          estado: "inicio"
         };
-        prog2 = this.obtenerFechaIniFin(prog2);
+        
+        var fecha = moment(prog2.fechaingreso).add(1, "year").calendar();
+        var date = fecha.split("/");
+        prog2.fechafinalizacion = date[2] + "-" + date[1] + "-" + date[0];
+
         let progreso2 = {
-          fase: prog2.fase.fase,
-          nombre: prog2.fase.nombre.toLowerCase(),
+          fase: 2,
+          nombre: "desarrollo",
           fechaingreso: prog2.fechaingreso,
           fechafinalizacion: prog2.fechafinalizacion,
-          estado: prog2.estado.nombre.toLowerCase()
+          estado: "inicio"
         };
         this.residente.progreso.push(progreso2);
         
       } else if (item === 3) {
         this.residente.progreso = [];
 
-        //fase 1
-        var prog1 = {
-          fase: { nombre: "acogida", fase: 1 },
-          fechaingreso: new Date(),
-          fechafinalizacion: new Date(),
-          estado: "omitido"
-        };
+         //fase 1
         let progreso = {
-          fase: prog1.fase.fase,
-          nombre: prog1.fase.nombre.toLowerCase(),
-          fechaingreso: prog1.fechaingreso,
-          fechafinalizacion: prog1.fechafinalizacion,
-          estado: prog1.estado.nombre.toLowerCase()
+          fase: 1,
+          nombre: "acogida",
+          fechaingreso: actualDate,
+          fechafinalizacion: actualDate,
+          estado: "omitido"
         };
         this.residente.progreso.push(progreso);
         
-        //fase 2
-        var prog2 = {
-          fase: { nombre: "desarrollo", fase: 2 },
-          fechaingreso: new Date(),
-          fechafinalizacion: new Date(),
-          estado: "omitido"
-        };
+         //fase 2
         let progreso2 = {
-          fase: prog2.fase.fase,
-          nombre: prog2.fase.nombre.toLowerCase(),
-          fechaingreso: prog2.fechaingreso,
-          fechafinalizacion: prog2.fechafinalizacion,
-          estado: prog2.estado.nombre.toLowerCase()
+          fase: 2,
+          nombre: "desarrollo",
+          fechaingreso: actualDate,
+          fechafinalizacion: actualDate,
+          estado: "omitido"
         };
         this.residente.progreso.push(progreso2);
 
         //fase 3
         var prog3 = {
-          fase: { nombre: "reinsercion", fase: 3 },
-          fechaingreso: new Date(),
+          fechaingreso: actualDate,
           fechafinalizacion: "",
-          estado: "inicio"
         };
-        prog3 = this.obtenerFechaIniFin(prog3);
+        
+        var fecha = moment(prog3.fechaingreso).add(6, "month").calendar();
+        var date = fecha.split("/");
+        prog3.fechafinalizacion = date[2] + "-" + date[1] + "-" + date[0];
+
         let progreso3 = {
-          fase: prog3.fase.fase,
-          nombre: prog3.fase.nombre.toLowerCase(),
+          fase: 3,
+          nombre: "reinsercion",
           fechaingreso: prog3.fechaingreso,
           fechafinalizacion: prog3.fechafinalizacion,
-          estado: prog3.estado.nombre.toLowerCase()
+          estado: "inicio"
         };
         this.residente.progreso.push(progreso3);
       }
     },
-    moment: function() {
-      return moment();
-    },
-    comprobarPrevicion(string) {
-      var fechafinalizacion = string.split("T");
+    comprobarPrevicion(fechafinalizacion) {
+      //var fechafinalizacion = string.split("T");
 
       var fechaActual = moment().format();
       fechaActual = fechaActual.split("T");
 
-      var booleano = moment(fechafinalizacion[0]).isAfter(fechaActual[0]);
-      // console.log("fechafinalizacion: "+ fechafinalizacion[0]);
-      // console.log("fechaActual: "+fechaActual[0]);
-      // console.log(booleano);
+      //var booleano = moment(fechafinalizacion[0]).isAfter(fechaActual[0]);
+      var booleano = moment(fechafinalizacion).isAfter(fechaActual[0]);
       return booleano;
     },
     testing3() {
@@ -792,7 +728,7 @@ export default {
     },
     ///CERRAR DIALOGO
     cerrarDialogo() {
-      this.usuario = this.limpiarResidente();
+      this.residente = this.limpiarResidente();
       this.$v.residente.$reset();
       this.step = 1;
       this.$emit("close-dialog-save");
