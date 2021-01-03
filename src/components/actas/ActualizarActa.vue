@@ -158,6 +158,47 @@
             </vue-dropzone>
           </div>  
 
+          <v-card
+                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                >
+                <v-card class="subcard">
+                          <v-card-title>Datos del Usuario</v-card-title>
+                          <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
+                              <v-text-field
+                                  v-model="this.user.actaexternamiento"
+                                  label="Autor del Informe de Incidencia"
+                                  outlined
+                                  color="info"
+                                  readonly
+                                ></v-text-field>
+                          </v-card >
+                               <v-card class="subcard" color="#e6f3ff">
+                                   <v-text-field
+                                    v-model="this.user.rol.nombre"
+                                    label="Cargo del Autor"
+                                    outlined
+                                    color="info"
+                                    readonly
+                                  ></v-text-field>
+                               </v-card>
+                        </v-card>
+                  <v-row>
+                    <v-col :cols="12" align="center">
+                      <div>
+
+                        <v-card-text>
+                              <img
+                                width="240"
+                                height="170"
+                                :src="this.user.datos.firma"
+                                alt=""
+                              />
+                        </v-card-text>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-card>
+
               <v-divider class="divider-custom"></v-divider>
               <v-row>
                 <v-col>
