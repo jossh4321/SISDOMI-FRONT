@@ -117,16 +117,7 @@
                 color="#009900"
               ></v-text-field>
 
-              <div>
-                <vue-dropzone
-                  ref="myVueDropzone"
-                  @vdropzone-success="afterSuccess"
-                  @vdropzone-removed-file="afterRemoved"
-                  id="dropzone"
-                  :options="dropzoneOptions"
-                >
-                </vue-dropzone>
-              </div>
+              
 
 
 
@@ -137,7 +128,7 @@
                           <v-card-title>Datos del Usuario</v-card-title>
                           <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
                               <v-text-field
-                                  v-model="this.user.actaexternamiento"
+                                  v-model="this.user.usuario"
                                   label="Autor del Informe de Incidencia"
                                   outlined
                                   color="info"
@@ -288,7 +279,7 @@ export default {
       }
     },
     resetUsuarioValidationState() {
-      this.$refs.myVueDropzone.removeAllFiles();
+     
       this.$v.actaexternamiento.$reset();
     },
     cerrarDialogo() {
@@ -303,7 +294,7 @@ export default {
 
       //console.log(file.dataURL.split(",")[1]);
     },
-    afterRemoved(file, error, xhr) {
+    afterRemoved(file, error, xhr) { this.firma.urlfirma = "";
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -420,9 +411,7 @@ idresidente: {
             required,
           },
 
-          firmas: {
-            required,
-          },
+         
         },
       },
     };
