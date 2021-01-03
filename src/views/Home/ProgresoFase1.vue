@@ -217,7 +217,7 @@
       <v-dialog v-model="dialogoModificarDocumentos" persistent max-width="850px">
         <v-component
           :is="modificarRegistro"
-          :residente="residente"
+          :residenteDocumento="residente"
           @cerrar-modal-docf1="cerrarDialogoModificarDocF1"
         ></v-component>
       </v-dialog>
@@ -245,8 +245,14 @@ import RegistrarFichaIngresoEducativa from "@/components/DocumentosInterfazTrata
 import ModificarFichaIngresoEducativa from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/ModificarFichaEducativaIngreso.vue";
 import VisualizarFichaIngresoEducativa from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarFichaIngresoEducativa.vue";
 import RegistrarInformeEducativoInicial from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarInformeEducativoInicial.vue";
+import ModificarInformeEducativoInicial from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/ModificarInformeEducativoInicial.vue";
+import VisualizarInformeEducativoInicial from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarInformeEducativoInicial.vue";
 import RegistrarPlanIntervencionEducativoIndividual from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarPlanIntervencionIndividualEducativo.vue";
+import ModificarPlanIntervencionEducativoIndividual from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/ModificarPlanIntervencionEducativoIndividual.vue";
+import VisualizarPlanIntervencionEducativoIndividual from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarPlanIntervencionEducativoIndividual.vue";
 import RegistrarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarInformeSeguimientoEducativo.vue";
+import ModificarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/ModificarInformeSeguimientoEducativo.vue";
+import VisualizarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarInformeSeguimientoEducativo.vue";
 import RegistrarPromocionFase2 from "@/components/DocumentosInterfazTratamiento/Fase I/RegistrarPromocionFase2.vue";
 import {mapMutations, mapState} from "vuex";
 import axios from "axios";
@@ -258,8 +264,14 @@ export default {
     ModificarFichaIngresoEducativa,
     VisualizarFichaIngresoEducativa,
     RegistrarInformeEducativoInicial,
+    ModificarInformeEducativoInicial,
+    VisualizarInformeEducativoInicial,
     RegistrarPlanIntervencionEducativoIndividual,
+    ModificarPlanIntervencionEducativoIndividual,
+    VisualizarPlanIntervencionEducativoIndividual,
     RegistrarInformeSeguimientoEducativo,
+    ModificarInformeSeguimientoEducativo,
+    VisualizarInformeSeguimientoEducativo,
     RegistrarPromocionFase2
   },
   data() {
@@ -286,20 +298,20 @@ export default {
         InformeEducativoInicial: {
           titulo: "Informe Educativo Inicial",
           registrar: "RegistrarInformeEducativoInicial",
-          modificar: "",
-          visualizar: ""
+          modificar: "ModificarInformeEducativoInicial",
+          visualizar: "VisualizarInformeEducativoInicial"
         },
         PlanIntervencionIndividualEducativo: {
           titulo: "Plan de Intervencion Educativo Individual",
           registrar: "RegistrarPlanIntervencionEducativoIndividual",
-          modificar: "",
-          visualizar: ""
+          modificar: "ModificarPlanIntervencionEducativoIndividual",
+          visualizar: "VisualizarPlanIntervencionEducativoIndividual"
         },
         InformeSeguimientoEducativo: {
           titulo: "Informe de Seguimiento Educativo",
           registrar: "RegistrarInformeSeguimientoEducativo",
-          modificar: "",
-          visualizar: ""
+          modificar: "ModificarInformeSeguimientoEducativo",
+          visualizar: "VisualizarInformeSeguimientoEducativo"
         }
       }
     };
@@ -425,7 +437,6 @@ export default {
       this.residenteProm = await this.loadResidenteDetalle(this.residente.id);
       this.dialogopromocion = true;
     },
-
     async loadResidenteDetalle(idresidente) {
       var user = {};
       await axios

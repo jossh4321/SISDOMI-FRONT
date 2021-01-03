@@ -44,8 +44,6 @@
 
         <template v-slot:[`item.actions`]="{ item }"
           ><!--Abrir dialogo detalle -->
-
-
           <v-row align="center" justify="space-around">
             <!--BOTONES-->
             <v-btn color="warning" dark @click="abrirDialogoModificar(item.id)">
@@ -71,15 +69,17 @@
       <!--Dialogo de Modificacion-->
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
         <ModificarResidente
-          :residente="residente"
-          @close-dialog-edit="closeDialogModificar()"
+          v-if="dialogoactualizacion"
+          :residente="residente"                   
+          @close-dialog-update="closeDialogModificar()"
         >
         </ModificarResidente>
       </v-dialog>
       <!--Dialogo de Detalle-->
       <v-dialog persistent v-model="dialogodetalle" max-width="880px">
         <ConsultarResidente
-          :residente="residente"
+          v-if="dialogodetalle"
+          :residente="residente"         
           @close-dialog-detail="closeDialogDetalle()"
         >
         </ConsultarResidente>
@@ -130,42 +130,26 @@ export default {
         { text: "Fecha de Ingreso", value: "fechaIngreso" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-      /*planesI: [
-        {
-          nombre: "Manuel stafno",
-          apellido: "Paredes Guerra",
-          tipdocumento: "Dni",
-          numdocumento:"72498627",
-          fechingreso:"28/05/2019"
-        },
-        {
-          nombre: "PlanI_Psico_Xiomara_1",
-          apellido: "Xiomara Paredes Guerra",
-          tipdocumento: "Dni",
-          numdocumento:"72498627",
-          fechingreso:"28/05/2019"
-        },
-        {
-          nombre: "PlanI_Edu_Marlyn_1",
-          apellido: "Marlyn Candela Peña",
-          tipdocumento: "Dni",
-          numdocumento:"72498627",
-          fechingreso:"28/05/2019"
-        }
-      ],*/
       dialogoregistro: false,
       dialogoactualizacion: false,
       dialogodetalle: false,
-      dialogopromover:false
+      dialogopromover:false,
+      departamentos: [],
+      provincias: [],
+      distritos: [],
+      idDepartamento: "",
+      idProvincia: "",
+      idDistrito: "",
+      ubigeo:"",
     };
   },
   async created() {
-    this.obtenerResidentes();
+    this.obtenerResidentes();    
   },
   methods: {
     ...mapMutations(["setResidentes"]),
     editItem(item) {
-      console.log(item);
+      console.log(item);     
     },
     faseActual(array){
       var ultimoProgreso = array[array.length - 1].fase
@@ -217,9 +201,9 @@ export default {
           user.fechaIngreso = user.fechaIngreso.split("T")[0];
         })
         .catch((err) => console.log(err));
-      console.log(user);
+      console.log(user);     
       return user;
-    },
+    },    
     ///////////////////Consumo de  apis
     async obtenerResidentes() {
       await axios
@@ -235,7 +219,7 @@ export default {
           this.setResidentes(info);
         })
         .catch((err) => console.log(err));
-    },
+    },    
   },
   computed: {
     ...mapState(["residentes"]),
