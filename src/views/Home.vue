@@ -78,7 +78,7 @@ export default {
           titulo: "Residentes",
           descripcion:
             "Interfaz de Gestión de los residentes del CAR",
-          interfazUrl: "/dashboard/residentes",
+          interfazUrl: "/dashboard/home/residentes",
           boton: { texto: "Ver residentes", icono: "mdi-cloud-upload" },
         },
         {

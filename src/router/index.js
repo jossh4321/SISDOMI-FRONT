@@ -17,6 +17,8 @@ import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 import GestionActa from '../views/Acta/GestionarActa.vue';
 import ModificarPerfil from '../views/perfil/ModificarPerfil.vue';
 import GestionarFichaEvaluacionEducativa from  '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
+import GestionResidentes from '../views/Residentes/GestionResidentes.vue';
+
 //Prueba
 import PruebaActa from '../views/Acta/PruebaActa.vue';
 
@@ -55,7 +57,11 @@ const routes = [{
         children: [{
                 path: 'home',
                 name: 'Home',
-                component: Home
+                component: Home,
+            },{
+                path: 'home/residentes',
+                    name: 'GestionResidentes',
+                    component: GestionResidentes
             }, {
                 path: 'usuarios',
                 name: 'GestionarUsuarios',
@@ -216,7 +222,7 @@ const routes = [{
     {
         path: '',
         redirect: '/dashboard'
-    }
+    },
 ]
 
 const router = new VueRouter({
