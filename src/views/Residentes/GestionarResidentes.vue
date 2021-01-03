@@ -44,8 +44,6 @@
 
         <template v-slot:[`item.actions`]="{ item }"
           ><!--Abrir dialogo detalle -->
-
-
           <v-row align="center" justify="space-around">
             <!--BOTONES-->
             <v-btn color="warning" dark @click="abrirDialogoModificar(item.id)">
@@ -71,15 +69,17 @@
       <!--Dialogo de Modificacion-->
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
         <ModificarResidente
-          :residente="residente"               
-          @close-dialog-edit="closeDialogModificar()"
+          v-if="dialogoactualizacion"
+          :residente="residente"                   
+          @close-dialog-update="closeDialogModificar()"
         >
         </ModificarResidente>
       </v-dialog>
       <!--Dialogo de Detalle-->
       <v-dialog persistent v-model="dialogodetalle" max-width="880px">
         <ConsultarResidente
-          :residente="residente"
+          v-if="dialogodetalle"
+          :residente="residente"         
           @close-dialog-detail="closeDialogDetalle()"
         >
         </ConsultarResidente>
@@ -140,6 +140,7 @@ export default {
       idDepartamento: "",
       idProvincia: "",
       idDistrito: "",
+      ubigeo:"",
     };
   },
   async created() {
@@ -148,7 +149,7 @@ export default {
   methods: {
     ...mapMutations(["setResidentes"]),
     editItem(item) {
-      console.log(item);
+      console.log(item);     
     },
     faseActual(array){
       var ultimoProgreso = array[array.length - 1].fase
@@ -200,10 +201,9 @@ export default {
           user.fechaIngreso = user.fechaIngreso.split("T")[0];
         })
         .catch((err) => console.log(err));
-      console.log(user);
+      console.log(user);     
       return user;
-    },
-    
+    },    
     ///////////////////Consumo de  apis
     async obtenerResidentes() {
       await axios

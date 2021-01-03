@@ -1,6 +1,8 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Actualizar de Residente</v-card-title>
+    <v-card-title class="justify-center"
+      >Actualizar de Residente {{ idDepartamento }}</v-card-title
+    >
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step editable step="1">
@@ -767,20 +769,18 @@ export default {
         { text: "Seguimiento", value: { nombre: "Desarrollo", fase: 4 } },
       ],
       itemParentesco: ["Madre", "Padre", "Tio(a)", "Hermano(a)"],
-     // departamentos: [],
+      departamentos: [],
       provincias: [],
       distritos: [],
-      idDepartamento: "",
-      idProvincia: "",
       idDistrito: "",
+      idDepartamento: "",   
+      idProvincia:""   
     };
   },
-  async created() {   
-    this.obtenerTodosLosDistritos(); 
-    //console.log(this.residente);
-    //console.log(this.residente.ubigeo);
-    //await this.obtenerDistrito();
-   // this.obtenerDepartamentos();
+  async created() {
+    console.log("que esta pasando la csmr");
+    await this.obtenerUbigeo();    
+    await this.obtenerDepartamentos();
   },
   methods: {
     ...mapMutations(["replaceResidente"]),
@@ -945,6 +945,7 @@ export default {
       this.$v.residente.$reset();
       this.step = 1;
       this.$emit("close-dialog-edit");
+      this.$emit("close-dialog-update");
     },
     convertDateFormat(string) {
       var dateMongo = string.split("T");
@@ -958,11 +959,9 @@ export default {
       fechaActual = fechaActual.split("T");
 
       var booleano = moment(fechafinalizacion[0]).isAfter(fechaActual[0]);
-      console.log("fechafinalizacion: " + fechafinalizacion[0]);
-      console.log("fechaActual: " + fechaActual[0]);
-      console.log(booleano);
-     // this.obtenerDistrito();
-    //  this.obtenerDepartamentos();
+      // console.log("fechafinalizacion: " + fechafinalizacion[0]);
+      // console.log("fechaActual: " + fechaActual[0]);
+      // console.log(booleano);
       return booleano;
     },
     async obtenerDepartamentos() {
@@ -971,7 +970,9 @@ export default {
         .then((res) => {
           var info = {};
           info = res.data;
-          this.departamentos = res.data;          
+          this.departamentos = res.data;
+          console.log("departamentos");
+          console.log(this.departamentos);
           this.obtenerProvincias();
         })
         .catch((err) => console.log(err));
@@ -997,19 +998,8 @@ export default {
           this.distritos = res.data;
         })
         .catch((err) => console.log(err));
-    },
-    async obtenerTodosLosDistritos() {
-      await axios
-        .get(`/ubigeo/allDistritos`)
-        .then((res) => {
-          var info = {};
-          info = res.data;
-          this.distritos = res.data;
-          //obtenerDistrito();
-        })
-        .catch((err) => console.log(err));
-    },
-    async obtenerDistrito() {
+    },    
+    async obtenerUbigeo() {
       console.log("distrito");
       console.log(this.residente.ubigeo);
       await axios
@@ -1025,6 +1015,7 @@ export default {
           this.obtenerProvincia();
         })
         .catch((err) => console.log(err));
+      return true;
     },
     async obtenerProvincia() {
       await axios
@@ -1352,11 +1343,11 @@ export default {
         estado: { required },
       },
       idDepartamento: {
-        required,
-      },
-      idProvincia: {
-        required,
-      },
+          required,
+        },
+        idProvincia: {
+          required,
+        },      
     };
   },
 };

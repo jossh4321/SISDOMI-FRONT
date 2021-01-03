@@ -443,6 +443,7 @@ export default {
     };
   },
   async created() {
+    console.log("creo aqui owo");
     this.cargarConclusiones();
     this.cargarAnexos();
     this.obtenerResidente();
