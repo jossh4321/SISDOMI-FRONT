@@ -31,6 +31,9 @@
                             label="Usuaria CAR"
                             item-text="nombre"
                             item-value="id"
+                            @input="$v.fichaEvaluacion.idresidente.$touch()"
+                            @blur="$v.fichaEvaluacion.idresidente.$touch()"
+                            :error-messages="errorResidente"
                            
                           >
                             <template v-slot:selection="data">
@@ -65,52 +68,7 @@
                               </template>
                             </template>
                           </v-autocomplete>
-                          <v-autocomplete
-                              :items="listaeducadores"
-                              filled
-                              chips
-                              dense
-                              outlined
-                              v-model="fichaEvaluacion.contenido.evaluador"
-                              color="#009900"
-                              label="Educador responsable"
-                              item-text="usuario"
-                              item-value="id"
-                            >
-                              <template v-slot:selection="data">
-                                <v-chip
-                                  v-bind="data.attrs"
-                                  :input-value="data.selected"
-                                  style="margin-top:5px"
-                                >
-                                  <v-avatar left color="#b3b3ff" size="24">
-                                    <span style="font-size:12px">RT</span>
-                                  </v-avatar>
-                                  {{ data.item.datos.nombre + " " +  data.item.datos.apellido  }}
-                                </v-chip>
-                              </template>
-                              <template v-slot:item="data">
-                                <template>
-                                  <v-list-item-avatar>
-                                    <v-avatar left color="#b3b3ff" size="24">
-                                      <span style="font-size:12px">UC</span>
-                                    </v-avatar>
-                                  </v-list-item-avatar>
-                                  <v-list-item-content>
-                                    <v-list-item-title
-                                      >Nombre completo: {{ data.item.datos.nombre }}
-                                      {{ data.item.datos.apellido }}
-                                    </v-list-item-title>
-                                    <v-list-item-subtitle
-                                      >Nro. Documento:
-                                      {{
-                                        data.item.datos.numerodocumento
-                                      }}</v-list-item-subtitle
-                                    >
-                                  </v-list-item-content>
-                                </template>
-                              </template>
-                            </v-autocomplete>                            
+                                            
                              <v-text-field
                               v-model="fichaEvaluacion.contenido.ultimaie"
                               label="Ultima Institucion Educacion"
@@ -118,34 +76,54 @@
                               
                               color="#009900"
                             ></v-text-field>
-                             <v-text-field
-                              v-model="fichaEvaluacion.contenido.tipoie"
+                             <v-select
                               label="Tipo de Institucion Educacion"
-                              outlined
-                              
+                              v-model="fichaEvaluacion.contenido.tipoie"
+                              :items="itemTipoIE"
                               color="#009900"
-                            ></v-text-field>
-                            <v-text-field
-                              v-model="fichaEvaluacion.contenido.modalidad"
+                              :item-text="itemTipoIE.text"
+                              :item-value="itemTipoIE.value"
+                              @input="$v.fichaEvaluacion.contenido.tipoie.$touch()"
+                              @blur="$v.fichaEvaluacion.contenido.tipoie.$touch()"
+                              :error-messages="errorTipoIE"
+                              outlined
+                            ></v-select>
+                            <v-select
                               label="Modalidad"
-                              outlined
-                              
+                              v-model="fichaEvaluacion.contenido.modalidad"
+                              :items="itemsModalidad"
                               color="#009900"
-                            ></v-text-field>
-                            <v-text-field
-                              v-model="fichaEvaluacion.contenido.nivel"
-                              label="Nivel"
+                              :item-text="itemsModalidad.text"
+                              :item-value="itemsModalidad.value"
+                              @input="$v.fichaEvaluacion.contenido.modalidad.$touch()"
+                              @blur="$v.fichaEvaluacion.contenido.modalidad.$touch()"
+                              :error-messages="errorModalidad"
                               outlined
-                              
-                              color="#009900"
-                            ></v-text-field>
-                            <v-text-field
-                              v-model="fichaEvaluacion.contenido.grado"
-                              label="Grado"
-                              outlined
-                              
-                              color="#009900"
-                            ></v-text-field>
+                            ></v-select>
+                            <v-select
+                            label="Nivel"
+                            v-model="fichaEvaluacion.contenido.nivel"
+                            :items="itemsNivel"
+                            color="#009900"
+                            :item-text="itemsNivel.text"
+                            :item-value="itemsNivel.value"
+                            @input="$v.fichaEvaluacion.contenido.nivel.$touch()"
+                            @blur="$v.fichaEvaluacion.contenido.nivel.$touch()"
+                            :error-messages="errorNivel"
+                            outlined
+                          ></v-select>
+                            <v-select
+                            label="Grado"
+                            v-model="fichaEvaluacion.contenido.grado"
+                            :items="itemsGrado"
+                            color="#009900"
+                            :item-text="itemsGrado.text"
+                            :item-value="itemsGrado.value"
+                            @input="$v.fichaEvaluacion.contenido.grado.$touch()"
+                            @blur="$v.fichaEvaluacion.contenido.grado.$touch()"
+                            :error-messages="errorGrado"
+                            outlined
+                          ></v-select>
 
                      <!--Botones de card -->
                       <v-row>
@@ -182,21 +160,32 @@
                                     <span class="headline"> Firma</span>
                                   </v-card-title>
                                   <v-card-text>
-                            <!-- cuadros de texto para añadir firma-->
-                              <v-text-field
-                               v-model="firma.cargo"
-                                label="Cargo"
-                                outlined  
-                                color="#009900"
-                                ></v-text-field>
-                                <v-text-field
-                               v-model="firma.nombre"
-                                label="Nombre"
-                                outlined  
-                                
-                                color="#009900" 
-                                ></v-text-field>
-                        <div>
+                             <!-- cuadros de texto para añadir firma-->
+                      <v-text-field
+                        v-model="this.user.rol.nombre"
+                        label="Cargo"
+                        outlined
+                        readonly
+                        color="#009900"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="this.user.usuario"
+                        label="Nombre"
+                        outlined
+                        readonly
+                        color="#009900"
+                      ></v-text-field>
+                      <div align="center">
+                        <v-card-text>
+                          <img
+                            width="240"
+                            height="170"
+                            :src="this.user.datos.firma"
+                            alt=""
+                          />
+                        </v-card-text>
+                      </div>
+                   <!--     <div>
                                 <vue-dropzone
                                   ref="myVueDropzone"
                                   @vdropzone-success="afterSuccess"
@@ -211,17 +200,17 @@
                                       añadir
                               </v-btn>
                              
-                              <v-divider class="divider-custom"></v-divider>
+                              <v-divider class="divider-custom"></v-divider> -->
                               <!-- cuadros de textofin -->
 
-                          <v-card
+                    <!--    <v-card
                               style="margin-top:30px;left-top:30px;padding:5px 5px;background-color:#EAEAEA"
                             >
                               <v-card-title style="font-size:22px;padding: 10px 10px;"
                                 >Firma de creador(es) de documento</v-card-title
-                              >
+                              > -->
                               <!-- Cabecera -->
-                              <v-card
+         <!--                 <v-card
                               elevation="0"
                               color="#EAEAEA"
                               style="margin-top:5px; margin-bottom:15px"
@@ -247,9 +236,9 @@
                                   <v-col align="right">
                                   </v-col>
                                 </v-row>
-                              </v-card>
-                              <!-- Cuerpo -->
-                              <v-card
+                              </v-card>  -->
+                              <!-- Cuerpo -->  
+                       <!--    <v-card
                                 tile
                                 elevation="0"
                                 color="#FAFAFA"
@@ -301,7 +290,7 @@
                             </v-icon>
                           </v-btn>
                         </div>
-                      </v-col>
+                      </v-col> -->
                                   
                                  <!--  <v-col align="right">
                                     <div style="margin-right:20px">
@@ -317,11 +306,11 @@
                                         </v-icon>
                                       </v-btn>  
                                       
-                                    </div>
+                                    </div> 
                                   </v-col>-->
-                                </v-row>
+                          <!--      </v-row>
                               </v-card>
-                            </v-card>
+                            </v-card>  -->
               <!--fin-->
                     <!-- -->
 
@@ -383,6 +372,9 @@
                         <v-text-field
                           v-model="estudio.nivel"
                           label="Nivel"
+                          @input="$v.estudio.nivel.$touch()"
+                          @blur="$v.estudio.nivel.$touch()"
+                          :error-messages="errorEstudioNivel"
                           color="#009900"
                           
                         ></v-text-field>
@@ -390,6 +382,9 @@
                       <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="estudio.observaciones"
+                           @input="$v.estudio.observaciones.$touch()"
+                          @blur="$v.estudio.observaciones.$touch()"
+                          :error-messages="errorEstudioObservaciones"
                           label="Observaciones"
                           color="#009900"
                           
@@ -473,16 +468,24 @@
                       <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="aspectos.tipo"
+                          @input="$v.aspectos.tipo.$touch()"
+                          @blur="$v.aspectos.tipo.$touch()"
+                          :error-messages="errorAspectoTipo"
                           label="Tipo"
                           color="#009900"
+                          
                           
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="aspectos.descripcion"
+                          @input="$v.aspectos.descripcion.$touch()"
+                          @blur="$v.aspectos.descripcion.$touch()"
+                          :error-messages="errorAspectoDescripcion"
                           label="Descripcion"
                           color="#009900"
+                          
                           
                         ></v-text-field>
                       </v-col>
@@ -582,6 +585,12 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength,maxLength, email, helpers,numeric } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import moment from "moment";
+function esTexto(value) {
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value);
+}
+function esParrafo(value) {
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value);
+}
 export default {
   name:"RegistrarFichaDiagnosticoEducativo",
   props:["listaresidentes","listaeducadores"],
@@ -619,7 +628,28 @@ components:{
       imagen:"",
       estudio:{nivel:"",observaciones:""},
       aspectos:{tipo:"",descripcion:""},
+      itemsModalidad: [
+        { value: "EBA", text: "Educacion Basica Alternativa" },
+        { value: "EBE", text: "Educacion Basica Especial" },
+        { value: "EBR", text: "Educacion Basica Regular" },
+      ],
+      itemsNivel: [
+        { value: "PRIMARIA", text: "Nivel Primaria" },
+        { value: "SECUNDARIA", text: "Nivel Secundaria" },
+        //{ value: 'SUPERIOR', text: 'Estudio Superior'}
+      ],
+      itemGrado: [
+        { value: "1", text: "1" },
+        { value: "2", text: "2" },
+        { value: "3", text: "3" },
+        { value: "4", text: "4" },
+        { value: "5", text: "5" },
+      ],
+      itemTipoIE:[
+        {value:"Estatal",text:"Estatal"},
+        {value:"Particular",text:"Particular"},
 
+      ],
      fichaEvaluacion:{
         id:"",
         tipo:"FichaEvaluacionDiagnosticoEducativo",
@@ -637,9 +667,8 @@ components:{
           grado:"",
           estudios:[],
           aspectos:[],
-          firmas:[],
           codigodocumento:"",
-          evaluador:""
+          
         },
         idresidente:""
      }
@@ -678,6 +707,16 @@ components:{
         async registrarFichaEvaluacion(){
         this.fichaEvaluacion.creadordocumento = this.user.id;
         console.log(this.fichaEvaluacion);
+        this.$v.fichaEvaluacion.$touch();
+      if (this.$v.fichaEvaluacion.$invalid) {
+        console.log("hay errores");
+        this.mensaje(
+          "error",
+          "..Oops",
+          "Se encontraron errores en el formulario",
+          "<strong>Verifique los campos Ingresados<strong>"
+        );
+      } else {
         await axios
           .post("/EvaluacionDiagnosticoEducativo/fichaEvaluacionDE", this.fichaEvaluacion)
           .then((res) => {
@@ -692,7 +731,8 @@ components:{
           "<strong>Se redirigira a la Interfaz de Gestion<strong>",      
         );
        this.$emit("cargarSeguimiento");
-      },
+      }
+  },  
        ///metodo para agregar firma residente
     guardarFirma(){
      
@@ -717,7 +757,8 @@ components:{
       this.dialogVistaPreviaFirma = true;
     }, 
     guardarEstudios(){
-     
+     this.$v.estudio.$touch();
+      if (!this.$v.estudio.$invalid) {
    let estudio = {nivel:this.estudio.nivel,observaciones:this.estudio.observaciones};
 
    this.fichaEvaluacion.contenido.estudios.push(estudio);
@@ -727,13 +768,15 @@ components:{
    this.estudio.nivel="";
    this.estudio.observaciones="";
  
-   
-   
+      }
+   this.$v.estudio.$reset();
     },
     eliminarEstudio(index) {
       this.fichaEvaluacion.contenido.estudios.splice(index, 1);
     },
      guardarAspecto(){
+       this.$v.aspectos.$touch();
+      if (!this.$v.aspectos.$invalid) {
      
    let aspecto = {tipo:this.aspectos.tipo,descripcion:this.aspectos.descripcion};
 
@@ -744,8 +787,8 @@ components:{
    this.aspectos.tipo="";
    this.aspectos.descripcion="";
  
-   
-   
+      }
+    this.$v.aspectos.$reset();
     },
     eliminarAspecto(index) {
       this.fichaEvaluacion.contenido.aspectos.splice(index, 1);
@@ -753,6 +796,154 @@ components:{
   },
   computed:{
     ...mapGetters(["user"]),
+     itemsGrado() {
+      const listaGrados = [
+        { value: "1", text: "Primero" },
+        { value: "2", text: "Segundo" },
+        { value: "3", text: "Tercero" },
+        { value: "4", text: "Cuarto" },
+        { value: "5", text: "Quinto" },
+      ];
+      if (this.fichaEvaluacion.contenido.nivel == "PRIMARIA") {
+        listaGrados.push({ value: "6", text: "Sexto" });
+      }
+      this.fichaEvaluacion.contenido.grado = "1";
+      return listaGrados;
+    },
+     errorModalidad() {
+      const errors = [];
+      if (!this.$v.fichaEvaluacion.contenido.modalidad.$dirty) return errors;
+      !this.$v.fichaEvaluacion.contenido.modalidad.required &&
+        errors.push("Debe Ingresar una modalidad Obligatoriamente");
+      return errors;
+    },
+    errorGrado() {
+      const errors = [];
+      if (!this.$v.fichaEvaluacion.contenido.grado.$dirty) return errors;
+      !this.$v.fichaEvaluacion.contenido.grado.required &&
+        errors.push("Debe Seleccionar un Grado Obligatoriamente");
+      return errors;
+    },
+    errorTipoIE() {
+      const errors = [];
+      if (!this.$v.fichaEvaluacion.contenido.tipoie.$dirty) return errors;
+      !this.$v.fichaEvaluacion.contenido.tipoie.required &&
+        errors.push("Debe Ingresar una Tipo de Institucion Educativa Obligatoriamente");
+      return errors;
+    },
+    errorNivel() {
+      const errors = [];
+      if (!this.$v.fichaEvaluacion.contenido.nivel.$dirty) return errors;
+      !this.$v.fichaEvaluacion.contenido.nivel.required &&
+        errors.push("Debe Seleccionar un Nivel Obligatoriamente");
+      return errors;
+    },
+    errorResidente() {
+      const errors = [];
+      if (!this.$v.fichaEvaluacion.idresidente.$dirty) return errors;
+      !this.$v.fichaEvaluacion.idresidente.required &&
+        errors.push("Debe seleccionar un residente obligatoriamente");
+      return errors;
+    },
+    errorEstudioNivel() {
+      const errors = [];
+      if (!this.$v.estudio.nivel.$dirty) return errors;
+      !this.$v.estudio.nivel.required &&
+        errors.push("Debe registrar un nivel obligatoriamente");
+      !this.$v.estudio.nivel.esParrafo &&
+        errors.push(
+          "el nivel no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorEstudioObservaciones() {
+      const errors = [];
+      if (!this.$v.estudio.observaciones.$dirty) return errors;
+      !this.$v.estudio.observaciones.required &&
+        errors.push("Debe ingresar una observacion obligatoriamente");
+      !this.$v.estudio.observaciones.esParrafo &&
+        errors.push(
+          "La observacion no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorAspectoTipo() {
+      const errors = [];
+      if (!this.$v.aspectos.tipo.$dirty) return errors;
+      !this.$v.aspectos.tipo.required &&
+        errors.push("Debe registrar un tipo obligatoriamente");
+      !this.$v.aspectos.tipo.esParrafo &&
+        errors.push(
+          "El tipo no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorAspectoDescripcion() {
+      const errors = [];
+      if (!this.$v.aspectos.descripcion.$dirty) return errors;
+      !this.$v.aspectos.descripcion.required &&
+        errors.push("Debe ingresar una descripcion obligatoriamente");
+      !this.$v.aspectos.descripcion.esParrafo &&
+        errors.push(
+          "La descripcion no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+  
+  },
+  validations(){
+    return{
+    fichaEvaluacion:{
+        historialcontenido:[],
+        creadordocumento:{
+          //required
+        },
+        fechacreacion:null,
+        contenido:{
+          ultimaie:{
+            required,
+          },
+          tipoie:{
+            required,
+          },
+          modalidad:
+          {
+            required,
+          },
+          nivel:{
+            required,
+          },
+          grado:{
+            required,
+          },
+        
+          
+        },
+        idresidente:{
+          required,
+        },
+     },
+     estudio:{
+       nivel:{
+        required,
+        esParrafo,
+       },
+       observaciones:{
+         required,
+        esParrafo,
+       }
+     },
+     aspectos:{
+       tipo:{
+         required,
+        esParrafo,
+        },
+       descripcion:{
+         required,
+        esParrafo,
+       }
+     }
+    }
   }
 
 }
