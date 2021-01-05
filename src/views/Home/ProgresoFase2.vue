@@ -131,16 +131,25 @@
                       style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
                     >{{titulosDoc[documento.tipo].titulo}}</v-card-title>
                     <template v-if="documento.indice == 'anterior'">
-                      <v-col cols="6" style="padding:2%">
-                        <v-btn color="warning" rounded block>
-                          <v-icon left>mdi-Edit</v-icon>Modificar
-                        </v-btn>
+                      <v-row>
+                        <v-col cols="12" xs="12" sm="6" md="6">
+                        <div style="padding:5px">
+                            <v-btn color="warning" rounded block
+                            @click="abrirDialogoModificarDocumento(titulosDoc[documento.tipo].modificar)">
+                              <v-icon left>mdi-folder-edit</v-icon>Modificar
+                            </v-btn>
+                        </div>
                       </v-col>
-                      <v-col cols="6" style="padding:2%">
-                        <v-btn color="info" rounded block>
-                          <v-icon left>mdi-information</v-icon>Ver
+                      <v-col cols="12" xs="12" sm="6" md="6">
+                         <div style="padding:5px">
+                            <v-btn color="info" rounded block
+                            @click="abrirDialogoVisualizarDocumento(titulosDoc[documento.tipo].visualizar)">
+                          <v-icon left>mdi-information</v-icon>Ver Detalle
                         </v-btn>
+                         </div>
                       </v-col>
+                      </v-row>
+                      
                     </template>
                     <template v-else-if="documento.indice == 'actual'">
                       <v-col cols="12">
@@ -303,6 +312,22 @@
           @actualizar-progreso-fase1="actualizarProgreso"
         ></v-component>
       </v-dialog>
+      <!--Dialogo de Modificacion de Documentos-->
+      <v-dialog v-model="dialogoModificarDocumentos" persistent max-width="850px">
+        <v-component
+          :is="modificarRegistro"
+          :residenteDocumento="residente"
+          @cerrar-modal-docf1="cerrarDialogoModificarDocF1"
+        ></v-component>
+      </v-dialog>
+      <!--Dialogo de Visualizar de Documentos-->
+      <v-dialog v-model="dialogoDetalleDocumentos" persistent max-width="850px">
+        <v-component
+          :is="visualizarRegistro"
+          :residente="residente"
+          @cerrar-modal-docf1="cerrarDialogoVisualizarDocF1"
+        ></v-component>
+      </v-dialog>
       <!--Dialogo de Fase-->
       <v-dialog persistent v-model="dialogopromocion" max-width="1000px">
         <RegistrarPromocionFase3
@@ -316,7 +341,11 @@
 <script>
 import VisualizadorResidente from "@/components/residentes/VisualizadorResidente.vue";
 import RegistrarPlanIntervencion from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/PlanIntervencion/RegistrarPlanIntervencion.vue";
+import ModificarPlanIntervencion from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/PlanIntervencion/ModificarPlanIntervencion.vue";
+import VisualizarPlanIntervencion from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/PlanIntervencion/VisualizarPlanIntervencion.vue";
 import RegistrarInformeEducativoEvolutivo from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/InformeEvolutivo/RegistrarInformeEducativoEvolutivo.vue";
+import ModificarInformeEducativoEvolutivo from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/InformeEvolutivo/ModificarInformeEducativoEvolutivo.vue";
+import VisualizarInformeEducativoEvolutivo from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/InformeEvolutivo/VisualizarInformeEducativoEvolutivo.vue";
 import RegistrarPromocionFase3 from "@/components/DocumentosInterfazTratamiento/Fase 2/RegistrarPromocionFase3.vue";
 import moment from "moment";
 import axios from "axios";
@@ -327,8 +356,12 @@ export default {
     VisualizadorResidente,
     //Plan
     RegistrarPlanIntervencion,
+    ModificarPlanIntervencion,
+    VisualizarPlanIntervencion,
     //Informe
     RegistrarInformeEducativoEvolutivo,
+    ModificarInformeEducativoEvolutivo,
+    VisualizarInformeEducativoEvolutivo,
     //Doc Trans
     RegistrarPromocionFase3
   },
@@ -340,20 +373,24 @@ export default {
       residentesFase: [],
       cargaProgreso: false,
       selectorRegistro: "",
+      modificarRegistro: "",
+      visualizarRegistro:"",      
+      dialogoModificarDocumentos: false,
+      dialogoDetalleDocumentos : false,
       dialogoRegistroDocumentos: false,
       dialogopromocion: false,
       titulosDoc: {
         PlanIntervencionIndividualEducativo: {
           titulo: "Plan Intervencion Individual Educativo",
           registrar: "RegistrarPlanIntervencion",
-          modificar: "",
-          visualizar: ""
+          modificar: "ModificarPlanIntervencion",
+          visualizar: "VisualizarPlanIntervencion"
         },
         InformeEducativoEvolutivo: {
           titulo: "Informe Educativo Evolutivo",
           registrar: "RegistrarInformeEducativoEvolutivo",
-          modificar: "",
-          visualizar: ""
+          modificar: "ModificarInformeEducativoEvolutivo",
+          visualizar: "VisualizarInformeEducativoEvolutivo"
         },
       }
     };
@@ -448,6 +485,14 @@ export default {
       this.dialogoRegistroDocumentos = false;
       this.selectorRegistro = "";
     },
+    cerrarDialogoModificarDocF1() {
+      this.dialogoModificarDocumentos = false;
+      this.modificarRegistro = "";
+    },
+    cerrarDialogoVisualizarDocF1() {
+      this.dialogoDetalleDocumentos = false;
+      this.visualizarRegistro = "";
+    },
     cerrarDialogoPromocion() {
       this.dialogopromocion = false;
     },
@@ -488,6 +533,15 @@ export default {
         : documento.indice == "actual"
         ? "#664d00"
         : "#064579";
+    },
+    abrirDialogoModificarDocumento(componente) {
+      console.log(componente);
+      this.modificarRegistro = componente;
+      this.dialogoModificarDocumentos = true;
+    },
+    abrirDialogoVisualizarDocumento(componente) {
+      this.visualizarRegistro = componente;
+      this.dialogoDetalleDocumentos = true;
     },
   },
   computed: {

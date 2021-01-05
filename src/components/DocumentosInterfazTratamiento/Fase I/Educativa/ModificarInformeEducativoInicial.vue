@@ -15,64 +15,18 @@
         <v-stepper-content step="1">
           <div class="container-user">
             <form>
-               <v-text-field
-                v-model="residente"
-                label="Usuaria CAR"
-                outlined
-                readonly
-                color="#009900"
-              ></v-text-field>
-
-              <!-- <v-autocomplete
-                :items="listaeducadores"
-                filled
-                chips
-                dense
-                outlined
-                v-model="informe.contenido.evaluador"
-                color="#009900"
-                label="Educador responsable"
-                item-text="usuario"
-                item-value="id"
-                @input="$v.informe.contenido.evaluador.$touch()"
-                @blur="$v.informe.contenido.evaluador.$touch()"
-                :error-messages="errorCreador"
-              >
-                <template v-slot:selection="data">
-                  <v-chip
-                    v-bind="data.attrs"
-                    :input-value="data.selected"
-                    style="margin-top: 5px"
-                  >
-                    <v-avatar left color="#b3b3ff" size="24">
-                      <span style="font-size: 12px">RT</span>
-                    </v-avatar>
-                    {{ data.item.datos.nombre }} {{ data.item.datos.apellido }}
-                  </v-chip>
-                </template>
-                <template v-slot:item="data">
-                  <template>
-                    <v-list-item-avatar>
-                      <v-avatar left color="#b3b3ff" size="24">
-                        <span style="font-size: 12px">UC</span>
-                      </v-avatar>
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title
-                        >Nombre completo: {{ data.item.datos.nombre }}
-                        {{ data.item.datos.apellido }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle
-                        >Nro. Documento:
-                        {{
-                          data.item.datos.numerodocumento
-                        }}</v-list-item-subtitle
-                      >
-                    </v-list-item-content>
-                  </template>
-                </template>
-              </v-autocomplete> -->
-
+               <v-card class="subcard card-padre" style="margin-bottom:20px">
+                          <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
+                              <span>
+                                Residente: {{this.residenteDocumento.nombre}} {{this.residenteDocumento.apellido}}
+                              </span>
+                          </v-card >
+                          <v-card class="subcard" color="#e6f3ff">
+                            <span>
+                              Fecha de Ingreso: {{ this.residenteDocumento.fechaingreso | fomatoFecha}}
+                            </span>
+                          </v-card>
+                  </v-card>
               <v-textarea
                 label="Lugar de Evaluación"
                 v-model="informe.contenido.lugarevaluacion"
@@ -398,7 +352,6 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
-import ActualizarInformeEducativoEvolutivoVue from "./ActualizarInformeEducativoEvolutivo.vue";
 
 function esTexto(value) {
   return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
@@ -409,12 +362,33 @@ function esParrafo(value) {
 }
 
 export default {
-  props: ["informe", "listaresidentes"],
+  props:["residenteDocumento"],
   components: {
     vueDropzone: vue2Dropzone,
   },
   data() {
     return {
+      informeid: "",
+      informe: {
+        id: "",
+        tipo: "",
+        historialcontenido: [],
+        creadordocumento: "",
+        fechacreacion: "",
+        area: "",
+        fase: "",
+        idresidente: "",
+        estado: "",
+        contenido: {
+          situacionacademica: "",
+          analisisacademico: "",
+          conclusiones: [],
+          anexos: [],
+          codigodocumento: "",
+          lugarevaluacion: "",
+          fechaevaluacion: "",
+        },
+      },
       datemenu: false,
       step: 1,
       dropzoneOptions: {
@@ -436,21 +410,45 @@ export default {
       imagen: "",
       fileList: [],
       dialogVistaPreviaAnexos : false,
-      residente: "",
       usuario: "",
       cargo:"",
       firma:"",
     };
   },
+  filters: {
+    fomatoFecha: (fecha) =>{
+            var formato = moment(fecha);
+            return formato.format("llll");
+    }
+  },
   async created() {
-    console.log("creo aqui owo");
+    await this.obtenerInformeId();
+    this.informe = await this.loadInformeModificacion(this.informeid);
     this.cargarConclusiones();
     this.cargarAnexos();
-    this.obtenerResidente();
     this.obtenerCreador()
   },
   methods: {    
     ...mapMutations(["replaceInforme"]),
+    async obtenerInformeId() {
+      await axios
+        .get("/documento/InformeEducativoInicial/residente/"+this.residenteDocumento.id)
+        .then((x) => {
+          this.informeid = x.data[0].id;
+        })
+        .catch((err) => console.log(err));
+    },
+    async loadInformeModificacion(idinforme) {
+      var info = {};
+      await axios
+        .get("/informe/id?id=" + idinforme)
+        .then((res) => {
+          info = res.data;
+          info.contenido.fechaevaluacion = res.data.contenido.fechaevaluacion.split("T")[0];
+        })
+        .catch((err) => console.log(err));
+      return info;
+    },
     async sendPDFFiles() {
       let listaTitulos = [];
       let listaanexos = this.fileList;
@@ -471,14 +469,6 @@ export default {
           titulo: listaTitulos[index],
         });
       }      
-    },
-    async obtenerResidente() {
-      await axios
-        .get("/residente/id?id=" + this.informe.idresidente)
-        .then((x) => {
-          this.residente = x.data.nombre + " " + x.data.apellido;
-        })
-        .catch((err) => console.log(err));
     },
     async obtenerCreador() {
         await axios
@@ -507,15 +497,13 @@ export default {
           .put("/informe/informeei", this.informe)
           .then((res) => {
             this.informe = res.data;            
-            var resi = this.listaresidentes.filter(function(residente) {
-              return residente.id == res.data.idresidente;
-            });            
+            var resi = this.residenteDocumento;         
             var info = {
               id: res.data.id,
               tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
               fechaevaluacion: res.data.contenido.fechaevaluacion.split("T")[0],
               codigodocumento: res.data.contenido.codigodocumento,
-              nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
+              nombrecompleto: resi.nombre + " " + resi.apellido,
             };
             this.replaceInforme(info);
             this.cerrarDialogo();
@@ -531,7 +519,7 @@ export default {
     },
     cerrarDialogo() {
       //this.resetUsuarioValidationState();
-      this.$emit("close-dialog-update");
+      this.$emit("cerrar-modal-docf1");
     },
     agregarConclusion() {
       this.$v.conclusion.$touch();

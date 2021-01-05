@@ -419,6 +419,7 @@
 </template>
 
 <script>
+import axios from "axios";
 const m = moment();
 import moment from "moment";
 export default {
@@ -435,6 +436,9 @@ export default {
       datemenu3: false, ///MODAL fecha finalizacion
       step: 1,
     };
+  },
+  async created(){
+    await this.obtenerUbigeo();
   },
   methods: {
     moment: function () {
@@ -455,11 +459,26 @@ export default {
       fechaActual = fechaActual.split('T');
 
       var booleano = moment(fechafinalizacion[0]).isAfter(fechaActual[0]);
-      console.log("fechafinalizacion: "+ fechafinalizacion[0]);
-      console.log("fechaActual: "+fechaActual[0]);
-      console.log(booleano);
+      // console.log("fechafinalizacion: "+ fechafinalizacion[0]);
+      // console.log("fechaActual: "+fechaActual[0]);
+      // console.log(booleano);
       return booleano
-    }
+    },
+    async obtenerUbigeo() {
+      console.log("distrito");
+      console.log(this.residente.ubigeo);
+      await axios
+        .get(`/ubigeo/idDistrito?idDistrito=${this.residente.ubigeo}`)
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          this.distrito = res.data;
+          console.log(this.distrito);
+          this.residente.ubigeo = res.data.nombreDistrito;
+        })
+        .catch((err) => console.log(err));
+      return true;
+    },
   },
   
   computed: {},

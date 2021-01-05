@@ -115,6 +115,7 @@ export default new Vuex.Store({
             var index = state.incidencias.findIndex(x => x.id == value.id);
             state.incidencias.splice(index, 1, value);
         },
+        
         // Ficha Evaluacion Diagnostico Eductiva
         setEvaluacion(state,value){
             state.fichaEvaluacionEduativa=value;
