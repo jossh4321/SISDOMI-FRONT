@@ -447,6 +447,27 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+      <v-card height="300px">
+        <v-card-title class="justify-center"
+          >Actualizando el Informe Educativo Final</v-card-title
+        >
+        <div>
+          <v-progress-circular
+            style="display: block;margin:40px auto;"
+            :size="90"
+            :width="9"
+            color="purple"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+        <v-card-subtitle
+          class="justify-center"
+          style="font-weight:bold;text-align:center"
+          >En unos momentos finalizaremos...</v-card-subtitle
+        >
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -530,6 +551,7 @@ export default {
           fechaevaluacion: ""
         }
       },
+      cargaRegistro: false,
       
     };
   },
@@ -637,6 +659,7 @@ export default {
         );
       } else {
         console.log("no hay errores");
+        this.cargaRegistro = true;
         await axios
           .put("/informe/informeee", this.informe)
           .then((res) => {
@@ -650,6 +673,7 @@ export default {
               nombrecompleto: resi.nombre + " " + resi.apellido,
             };
             this.replaceInforme(info);
+            this.cargaRegistro = false;
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));

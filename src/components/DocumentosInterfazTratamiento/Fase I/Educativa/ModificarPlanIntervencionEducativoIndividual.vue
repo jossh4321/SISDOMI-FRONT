@@ -315,6 +315,21 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+     <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Actualizando el Plan de Intervención Educativo Individual</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>   
   </v-card>
 </template>
 <script>
@@ -411,6 +426,7 @@ export default {
         ],
       },
       firma:"",
+      cargaRegistro: false,
     };
   },
   filters: {
@@ -635,10 +651,11 @@ export default {
           contenido: this.planI.contenido,
           idresidente: this.residente.id,
         };
-
+        this.cargaRegistro = true;
         axios
           .put("/planIntervencion/educativo", planI)
           .then((res) => {
+            this.cargaRegistro = false;
             this.mensaje(
               "success",
               "Actualización del Plan de Intervención",

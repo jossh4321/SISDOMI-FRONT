@@ -261,7 +261,7 @@
       </v-stepper>
       <v-dialog width="450px" v-model="cargaRegistro" persistent>
         <v-card height="300px">
-          <v-card-title class="justify-center">Registrando del Informe Educativo Inicial</v-card-title>
+          <v-card-title class="justify-center">Registrando el Informe Educativo Inicial</v-card-title>
           <div>
               <v-progress-circular
               style="display: block;margin:40px auto;"

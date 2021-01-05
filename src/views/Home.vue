@@ -87,7 +87,7 @@ export default {
           titulo: "Documentos",
           descripcion:
             "Interfaz de Gestión de los documentos relacionados a los residentes del CAR",
-          interfazUrl: "/dashboard/Tratamiento",
+          interfazUrl: "/dashboard/documentos",
           boton: { texto: "Ver documentos", icono: "mdi-cloud-upload" },
         },
         {

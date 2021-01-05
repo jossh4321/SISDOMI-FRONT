@@ -522,6 +522,27 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+      <v-card height="300px">
+        <v-card-title class="justify-center"
+          >Actualizando la Ficha Educativa de Ingreso</v-card-title
+        >
+        <div>
+          <v-progress-circular
+            style="display: block;margin:40px auto;"
+            :size="90"
+            :width="9"
+            color="purple"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+        <v-card-subtitle
+          class="justify-center"
+          style="font-weight:bold;text-align:center"
+          >En unos momentos finalizaremos...</v-card-subtitle
+        >
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -574,6 +595,7 @@ export default {
           },
           observaciones:[],
           codigoDocumento: "",
+          cargaRegistro: false,
         },
       },
       itemsModalidad: [
@@ -828,6 +850,8 @@ export default {
         );
       } else {
         console.log(this.fichaIngreso);
+        this.cargaRegistro = true;
+
         //var url = await this.registrarFirma(this.fichaIngreso.contenido.firma.urlfirma);
         var fichaIngresoPUT = this.fichaIngreso;
         /*fichaIngresoPUT.contenido.firma.urlfirma =
@@ -843,6 +867,7 @@ export default {
           .put("/documento/fichaingresoeducativa", fichaIngresoPUT)
           .then((res) => {
             this.replaceFichaIngreso(res.data);
+            this.cargaRegistro = false;
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));

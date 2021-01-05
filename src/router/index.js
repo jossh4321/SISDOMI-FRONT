@@ -16,7 +16,7 @@ import GestionarIncidencias from "../views/Incidencias/GestionarIncidencias.vue"
 import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 import GestionActa from '../views/Acta/GestionarActa.vue';
 import ModificarPerfil from '../views/perfil/ModificarPerfil.vue';
-import GestionarFichaEvaluacionEducativa from  '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
+import GestionarFichaEvaluacionEducativa from '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
 import GestionResidentes from '../views/Residentes/GestionResidentes.vue';
 import ProgresoEducativoResidente from '../views/Residentes/ProgresoEducativoResidente.vue';
 
@@ -42,10 +42,17 @@ import axios from '../store/index.js';
 
 import ConsultaEstadisticas from '@/views/Estadisticas/ConsultaEstadisticas.vue';
 import Tratamiento from '@/views/Home/Tratamiento.vue';
+import Documentos from '@/views/Home/Documentos.vue';
 import Fase1 from '@/views/Home/Fase1.vue';
 import Fase2 from '@/views/Home/Fase2.vue';
 import Fase3 from '@/views/Home/Fase3.vue';
 import Fase4 from '@/views/Home/Fase4.vue';
+import DocumentoGeneral from '@/views/Home/DocumentoGeneral.vue';
+import DocumentoSocial from '@/views/Home/DocumentoSocial.vue';
+import DocumentoPsicologico from '@/views/Home/DocumentoPsicologico.vue';
+import DocumentoEducativo from '@/views/Home/DocumentoEducativo.vue';
+
+
 
 Vue.use(VueRouter);
 
@@ -59,10 +66,10 @@ const routes = [{
                 path: 'home',
                 name: 'Home',
                 component: Home,
-            },{
+            }, {
                 path: 'home/residentes',
-                    name: 'GestionResidentes',
-                    component: GestionResidentes
+                name: 'GestionResidentes',
+                component: GestionResidentes
             }, {
                 path: 'usuarios',
                 name: 'GestionarUsuarios',
@@ -152,9 +159,9 @@ const routes = [{
             },
             {
 
-                path:'evaluacionEducativa',
-                name:'GestionarFichaEvaluacionEducativa',
-                component:GestionarFichaEvaluacionEducativa,
+                path: 'evaluacionEducativa',
+                name: 'GestionarFichaEvaluacionEducativa',
+                component: GestionarFichaEvaluacionEducativa,
             },
             {
                 path: 'estadisticas',
@@ -166,6 +173,11 @@ const routes = [{
                 path: 'tratamiento',
                 name: 'Tratamiento',
                 component: Tratamiento
+            },
+            {
+                path: 'documentos',
+                name: 'Documentos',
+                component: Documentos
             },
             {
                 path: 'fase1',
@@ -188,30 +200,50 @@ const routes = [{
                 component: Fase4
             },
             {
-                   path: 'CambiarContrasena',
+                path: 'documentogeneral',
+                name: 'DocumentoGeneral',
+                component: DocumentoGeneral
+            },
+            {
+                path: 'documentopsicologico',
+                name: 'DocumentoPsicologico',
+                component: DocumentoPsicologico
+            },
+            {
+                path: 'documentoeducativo',
+                name: 'DocumentoEducativo',
+                component: DocumentoEducativo
+            },
+            {
+                path: 'documentosocial',
+                name: 'Documentosocial',
+                component: DocumentoSocial
+            },
+            {
+                path: 'CambiarContrasena',
                 name: 'cambiarContrasena',
                 component: CambiarContrasena
             },
             {
-                path:'ProgresoResidente/:id',
-                name:'ProgresoResidente',
+                path: 'ProgresoResidente/:id',
+                name: 'ProgresoResidente',
                 component: ProgresoResidente,
                 params: true
             },
             {
-                path:'ProgresoF2Residente/:id',
-                name:'ProgresoF2Residente',
+                path: 'ProgresoF2Residente/:id',
+                name: 'ProgresoF2Residente',
                 component: ProgresoF2Residente,
                 params: true
-            },{
-                path:'ProgresoF1Residente/:id',
-                name:'ProgresoF1Residente',
+            }, {
+                path: 'ProgresoF1Residente/:id',
+                name: 'ProgresoF1Residente',
                 component: ProgresoF1Residente,
                 params: true
             },
             {
-                path:'ProgresoF3Residente/:id',
-                name:'ProgresoF3Residente',
+                path: 'ProgresoF3Residente/:id',
+                name: 'ProgresoF3Residente',
                 component: ProgresoF3Residente,
                 params: true
             },

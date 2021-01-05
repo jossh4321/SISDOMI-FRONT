@@ -1,6 +1,8 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Modificar Informe Educativo Evolutivo</v-card-title>
+    <v-card-title class="justify-center"
+      >Modificar Informe Educativo Evolutivo</v-card-title
+    >
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step editable step="1">
@@ -17,17 +19,23 @@
           <div class="container-user">
             <form>
               <v-card class="subcard card-padre" style="margin-bottom:20px">
-                          <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
-                              <span>
-                                Residente: {{this.residenteDocumento.nombre}} {{this.residenteDocumento.apellido}}
-                              </span>
-                          </v-card >
-                          <v-card class="subcard" color="#e6f3ff">
-                            <span>
-                              Fecha de Ingreso: {{ this.residenteDocumento.fechaingreso | formatoFecha}}
-                            </span>
-                          </v-card>
-                  </v-card>        
+                <v-card
+                  class="subcard"
+                  style="margin-bottom:7px"
+                  color="#e6f3ff"
+                >
+                  <span>
+                    Residente: {{ this.residenteDocumento.nombre }}
+                    {{ this.residenteDocumento.apellido }}
+                  </span>
+                </v-card>
+                <v-card class="subcard" color="#e6f3ff">
+                  <span>
+                    Fecha de Ingreso:
+                    {{ this.residenteDocumento.fechaingreso | formatoFecha }}
+                  </span>
+                </v-card>
+              </v-card>
               <v-text-field
                 v-model="informe.contenido.iereinsersion.nombre"
                 label="Instirución Educativa"
@@ -38,77 +46,81 @@
                 color="#009900"
               ></v-text-field>
               <v-row>
-                  <v-col cols="12" md="4">
-                    <v-select
-                          label="Modalidad"
-                          v-model="informe.contenido.iereinsersion.modalidad"
-                          :items="itemsModalidad"
-                          color="#009900"
-                          :item-text="itemsModalidad.text"
-                          :item-value="itemsModalidad.value"
-                          @input="$v.informe.contenido.iereinsersion.modalidad.$touch()"
-                          @blur="$v.informe.contenido.iereinsersion.modalidad.$touch()"
-                          :error-messages="errorModalidadIE"
-                          outlined
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="4">
-                    <v-select     
-                        label="Nivel Educativo"
-                        v-model="informe.contenido.iereinsersion.nivel"
-                        :items="itemsNivel"
-                        color="#009900"
-                        :item-text="itemsNivel.text"
-                        :item-value="itemsNivel.value"
-                        @input="$v.informe.contenido.iereinsersion.nivel.$touch()"
-                        @blur="$v.informe.contenido.iereinsersion.nivel.$touch()"
-                        :error-messages="errorNivelIE"
-                        outlined
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="4">
-                    <v-select
-                      label="Grado"
-                      v-model="informe.contenido.iereinsersion.grado"
-                      :items="itemsGrado"
-                      color="#009900"
-                      :item-text="itemsGrado.text"
-                      :item-value="itemsGrado.value"
-                      @input="$v.informe.contenido.iereinsersion.grado.$touch()"
-                      @blur="$v.informe.contenido.iereinsersion.grado.$touch()"
-                      :error-messages="errorGradoIE"
-                      outlined
-                    ></v-select>                   
-                  </v-col>
+                <v-col cols="12" md="4">
+                  <v-select
+                    label="Modalidad"
+                    v-model="informe.contenido.iereinsersion.modalidad"
+                    :items="itemsModalidad"
+                    color="#009900"
+                    :item-text="itemsModalidad.text"
+                    :item-value="itemsModalidad.value"
+                    @input="
+                      $v.informe.contenido.iereinsersion.modalidad.$touch()
+                    "
+                    @blur="
+                      $v.informe.contenido.iereinsersion.modalidad.$touch()
+                    "
+                    :error-messages="errorModalidadIE"
+                    outlined
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-select
+                    label="Nivel Educativo"
+                    v-model="informe.contenido.iereinsersion.nivel"
+                    :items="itemsNivel"
+                    color="#009900"
+                    :item-text="itemsNivel.text"
+                    :item-value="itemsNivel.value"
+                    @input="$v.informe.contenido.iereinsersion.nivel.$touch()"
+                    @blur="$v.informe.contenido.iereinsersion.nivel.$touch()"
+                    :error-messages="errorNivelIE"
+                    outlined
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-select
+                    label="Grado"
+                    v-model="informe.contenido.iereinsersion.grado"
+                    :items="itemsGrado"
+                    color="#009900"
+                    :item-text="itemsGrado.text"
+                    :item-value="itemsGrado.value"
+                    @input="$v.informe.contenido.iereinsersion.grado.$touch()"
+                    @blur="$v.informe.contenido.iereinsersion.grado.$touch()"
+                    :error-messages="errorGradoIE"
+                    outlined
+                  ></v-select>
+                </v-col>
               </v-row>
               <v-menu
-                  v-model="datemenu"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="informe.contenido.fechaevaluacion"
-                      label="Fecha de Evaluación"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      color="#009900"
-                      @input="$v.informe.contenido.fechaevaluacion.$touch()"
-                      @blur="$v.informe.contenido.fechaevaluacion.$touch()"
-                      :error-messages="errorFechaEvaluacion"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
+                v-model="datemenu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
                     v-model="informe.contenido.fechaevaluacion"
-                    @input="menu2 = false"
-                    locale="es-es"
-                  ></v-date-picker>
-                </v-menu>
+                    label="Fecha de Evaluación"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                    color="#009900"
+                    @input="$v.informe.contenido.fechaevaluacion.$touch()"
+                    @blur="$v.informe.contenido.fechaevaluacion.$touch()"
+                    :error-messages="errorFechaEvaluacion"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="informe.contenido.fechaevaluacion"
+                  @input="menu2 = false"
+                  locale="es-es"
+                ></v-date-picker>
+              </v-menu>
               <v-textarea
                 v-model="informe.contenido.antecedentes"
                 label="Antecedentes"
@@ -288,146 +300,141 @@
                 </v-card>
               </v-card>
               <v-card
-                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
-                >
-                      <div>
-                        <vue-dropzone
-                        ref="myVueDropzone2"
-                        @vdropzone-success="afterSuccess"
-                        @vdropzone-removed-file="afterRemoved"
-                        id="dropzone"
-                        :options="dropzoneOptions"
-                        >
-                        </vue-dropzone>
-                      </div>
-                    <v-card
-                      color="#FAFAFA"
-                      style="margin-top:5px"
-                      height="60"
-                      v-for="(item, index) in informe.contenido.anexos"
-                      :key="index"
-                    >
-                    <v-row style="margin-left:10px;heigh:100%" align="center">
-                      <v-col :cols="8">
-                        <article>
-                          <img
-                            style="margin-right:5px;width:6% "
-                            src="https://www.flaticon.es/svg/static/icons/svg/2991/2991112.svg"
-                            alt="imagen documento"
-                          />
-                          <span style="font-size:18px">
-                            {{ item.titulo }}</span
-                          >
-                        </article>
-                      </v-col>
-                      <v-col :cols="2" align="center">
-                        <template>
-                            <v-btn
-                              fab
-                              icon=""
-                              x-small
-                              dark
-                              color="#EAEAEA"
-                              @click="verAnexo(index)"
-                            >
-                              <img
-                                style="width:25% "
-                                src="https://www.flaticon.es/svg/static/icons/svg/709/709612.svg"
-                                alt="visualizar"
-                              />
-                            </v-btn>
-                          </template>
-                      </v-col>
-                      <v-col :cols="2" align="right">
-                        <div style="margin-right:20px">
-                          <v-btn
-                            fab
-                            x-small
-                            dark
-                            color="red"
-                            @click="eliminarAnexo(index)"
-                          >
-                            <v-icon dark>
-                              mdi-minus
-                            </v-icon>
-                          </v-btn>
-                        </div>
-                      </v-col>
-                    </v-row>
-                  </v-card>
-                </v-card>
-
-                <v-dialog
-                          v-model="dialogVistaPreviaAnexos"
-                          persistent
-                          max-width="600px"
-                        >
-                          <v-card align="center">
-                            <v-card-title>
-                              <span class="headline">Vista previa</span>
-                            </v-card-title>
-                            <v-card-text>
-                              <iframe
-                              :src= pdf
-                              width=100% height=600></iframe>
-                            </v-card-text>
-                            <v-card-actions>
-                              <v-spacer></v-spacer>
-                              <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="cerrarVistaPreviaAnexo()"
-                              >
-                                Cerrar
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
-                </v-dialog>
-
-               <v-card
-                  style="margin-top:30px;margin-bottom:10px;padding:5px 5px;background-color:#EAEAEA"
-                >
-                  <v-card
-                    elevation="0"
-                    style="background-color:#EAEAEA"
-                    height="70"
+                style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+              >
+                <div>
+                  <vue-dropzone
+                    ref="myVueDropzone2"
+                    @vdropzone-success="afterSuccess"
+                    @vdropzone-removed-file="afterRemoved"
+                    id="dropzone"
+                    :options="dropzoneOptions"
                   >
-                    <v-row style="margin:1%;heigh:100%" align="center">
-                      <v-col :cols="4" align="left">
-                        <v-text-field
-                          v-model="this.usuario"
-                          label="Nombre"
-                          color="#009900"
-                          readonly
-                        ></v-text-field>
-                      </v-col>
-                      <v-col :cols="4" align="left">
-                        <v-text-field
-                          v-model="this.cargo"
-                          label="Cargo"
-                          color="#009900"
-                          readonly
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-card>
-                  <v-row>
-                    <v-col :cols="12" align="center">
-                      <div>
-                        <v-card-text>
-                              <img
-                                width="240"
-                                height="170"
-                                :src="this.firma"
-                                alt=""
-                              />
-                        </v-card-text>
+                  </vue-dropzone>
+                </div>
+                <v-card
+                  color="#FAFAFA"
+                  style="margin-top:5px"
+                  height="60"
+                  v-for="(item, index) in informe.contenido.anexos"
+                  :key="index"
+                >
+                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                    <v-col :cols="8">
+                      <article>
+                        <img
+                          style="margin-right:5px;width:6% "
+                          src="https://www.flaticon.es/svg/static/icons/svg/2991/2991112.svg"
+                          alt="imagen documento"
+                        />
+                        <span style="font-size:18px"> {{ item.titulo }}</span>
+                      </article>
+                    </v-col>
+                    <v-col :cols="2" align="center">
+                      <template>
+                        <v-btn
+                          fab
+                          icon=""
+                          x-small
+                          dark
+                          color="#EAEAEA"
+                          @click="verAnexo(index)"
+                        >
+                          <img
+                            style="width:25% "
+                            src="https://www.flaticon.es/svg/static/icons/svg/709/709612.svg"
+                            alt="visualizar"
+                          />
+                        </v-btn>
+                      </template>
+                    </v-col>
+                    <v-col :cols="2" align="right">
+                      <div style="margin-right:20px">
+                        <v-btn
+                          fab
+                          x-small
+                          dark
+                          color="red"
+                          @click="eliminarAnexo(index)"
+                        >
+                          <v-icon dark>
+                            mdi-minus
+                          </v-icon>
+                        </v-btn>
                       </div>
                     </v-col>
                   </v-row>
                 </v-card>
-              
-              
+              </v-card>
+
+              <v-dialog
+                v-model="dialogVistaPreviaAnexos"
+                persistent
+                max-width="600px"
+              >
+                <v-card align="center">
+                  <v-card-title>
+                    <span class="headline">Vista previa</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <iframe :src="pdf" width="100%" height="600"></iframe>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="cerrarVistaPreviaAnexo()"
+                    >
+                      Cerrar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+
+              <v-card
+                style="margin-top:30px;margin-bottom:10px;padding:5px 5px;background-color:#EAEAEA"
+              >
+                <v-card
+                  elevation="0"
+                  style="background-color:#EAEAEA"
+                  height="70"
+                >
+                  <v-row style="margin:1%;heigh:100%" align="center">
+                    <v-col :cols="4" align="left">
+                      <v-text-field
+                        v-model="this.usuario"
+                        label="Nombre"
+                        color="#009900"
+                        readonly
+                      ></v-text-field>
+                    </v-col>
+                    <v-col :cols="4" align="left">
+                      <v-text-field
+                        v-model="this.cargo"
+                        label="Cargo"
+                        color="#009900"
+                        readonly
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-card>
+                <v-row>
+                  <v-col :cols="12" align="center">
+                    <div>
+                      <v-card-text>
+                        <img
+                          width="240"
+                          height="170"
+                          :src="this.firma"
+                          alt=""
+                        />
+                      </v-card-text>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-card>
+
               <v-row>
                 <v-col>
                   <v-btn color="warning" block @click="actualizarInforme()">
@@ -447,6 +454,27 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+      <v-card height="300px">
+        <v-card-title class="justify-center"
+          >Actualizando el Informe Educativo Evolutivo</v-card-title
+        >
+        <div>
+          <v-progress-circular
+            style="display: block;margin:40px auto;"
+            :size="90"
+            :width="9"
+            color="purple"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+        <v-card-subtitle
+          class="justify-center"
+          style="font-weight:bold;text-align:center"
+          >En unos momentos finalizaremos...</v-card-subtitle
+        >
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -457,26 +485,26 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
 function esTexto(value) {
-  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value);
 }
 function esParrafo(value) {
-  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value); 
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value);
 }
 export default {
-  props:["residenteDocumento"],
+  props: ["residenteDocumento"],
   components: {
     vueDropzone: vue2Dropzone,
   },
   data() {
     return {
       itemsModalidad: [
-        { value: 'EBA', text: 'Educacion Basica Alternativa'},
-        { value: 'EBE', text: 'Educacion Basica Especial'},
-        { value: 'EBR', text: 'Educacion Basica Regular'}
+        { value: "EBA", text: "Educacion Basica Alternativa" },
+        { value: "EBE", text: "Educacion Basica Especial" },
+        { value: "EBR", text: "Educacion Basica Regular" },
       ],
       itemsNivel: [
-        { value: 'PRIMARIA', text: 'Nivel Primaria'},
-        { value: 'SECUNDARIA', text: 'Nivel Secundaria'},
+        { value: "PRIMARIA", text: "Nivel Primaria" },
+        { value: "SECUNDARIA", text: "Nivel Secundaria" },
       ],
       fileList: [],
       datemenu: false,
@@ -501,9 +529,9 @@ export default {
       pdf: "",
       residente: "",
       usuario: "",
-      cargo:"",
-      firma:"",
-      informeid:"",
+      cargo: "",
+      firma: "",
+      informeid: "",
       informe: {
         id: "",
         tipo: "",
@@ -523,36 +551,39 @@ export default {
             nombre: "",
             modalidad: "",
             nivel: "",
-            grado: ""
+            grado: "",
           },
           anexos: [],
           codigodocumento: "",
-          fechaevaluacion: ""
-        }
+          fechaevaluacion: "",
+        },
       },
-      
+      cargaRegistro: false,
     };
   },
   filters: {
-    formatoFecha: (fecha) =>{
-            var formato = moment(fecha);
-            return formato.format("llll");
-    }
+    formatoFecha: (fecha) => {
+      var formato = moment(fecha);
+      return formato.format("llll");
+    },
   },
   async created() {
     await this.obtenerInformeId();
     this.informe = await this.loadInformeModificacion(this.informeid);
-    this.cargarLogros();    
+    this.cargarLogros();
     this.cargarRecomendaciones();
     this.obtenerResidente();
-    this.obtenerCreador()    
+    this.obtenerCreador();
   },
   methods: {
     ...mapMutations(["replaceInforme"]),
-    
+
     async obtenerInformeId() {
       await axios
-        .get("/documento/InformeEducativoEvolutivo/residente/"+this.residenteDocumento.id)
+        .get(
+          "/documento/InformeEducativoEvolutivo/residente/" +
+            this.residenteDocumento.id
+        )
         .then((x) => {
           this.informeid = x.data[0].id;
         })
@@ -564,7 +595,9 @@ export default {
         .get("/informe/id?id=" + idinforme)
         .then((res) => {
           info = res.data;
-          info.contenido.fechaevaluacion = res.data.contenido.fechaevaluacion.split("T")[0];
+          info.contenido.fechaevaluacion = res.data.contenido.fechaevaluacion.split(
+            "T"
+          )[0];
         })
         .catch((err) => console.log(err));
       return info;
@@ -588,10 +621,10 @@ export default {
           url: listaanexos[index],
           titulo: listaTitulos[index],
         });
-      }      
+      }
     },
     async obtenerCreador() {
-        await axios
+      await axios
         .get("/usuario/rol/permiso?id=" + this.informe.creadordocumento)
         .then((x) => {
           this.usuario = x.data.datos.nombre + " " + x.data.datos.apellido;
@@ -600,12 +633,12 @@ export default {
         })
         .catch((err) => console.log(err));
     },
-     async sendPDFFiles() {
+    async sendPDFFiles() {
       let listaTitulos = [];
       let listaanexos = this.fileList;
       for (let index = 0; index < this.fileList.length; index++) {
         let formData = new FormData();
-        listaTitulos.push(this.fileList[index].name)
+        listaTitulos.push(this.fileList[index].name);
         formData.append("file", this.fileList[index]);
         await axios
           .post("/Media/archivos/pdf", formData)
@@ -615,15 +648,13 @@ export default {
           .catch((err) => console.log(err));
       }
       for (let index = 0; index < this.fileList.length; index++) {
-        this.informe.contenido.anexos.push(
-          {
-            url: listaanexos[index],
-            titulo: listaTitulos[index],
-          }
-        )
+        this.informe.contenido.anexos.push({
+          url: listaanexos[index],
+          titulo: listaTitulos[index],
+        });
       }
       console.log(this.informe.contenido.anexos);
-    },   
+    },
     async actualizarInforme() {
       await this.sendPDFFiles();
       this.$v.informe.$touch();
@@ -637,11 +668,12 @@ export default {
         );
       } else {
         console.log("no hay errores");
+        this.cargaRegistro = true;
         await axios
           .put("/informe/informeee", this.informe)
           .then((res) => {
-            this.informe = res.data;            
-            var resi = this.residenteDocumento;               
+            this.informe = res.data;
+            var resi = this.residenteDocumento;
             var info = {
               id: res.data.id,
               tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
@@ -649,6 +681,7 @@ export default {
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi.nombre + " " + resi.apellido,
             };
+            this.cargaRegistro = false;
             this.replaceInforme(info);
             this.cerrarDialogo();
           })
@@ -692,7 +725,7 @@ export default {
     },
     cargarLogros() {
       this.logros = this.informe.contenido.logroalcanzado;
-    },    
+    },
     agregarRecomendaciones() {
       this.$v.recomendacion.$touch();
       if (!this.$v.recomendacion.$invalid) {
@@ -726,8 +759,7 @@ export default {
     },
     verAnexo(index) {
       this.pdf = this.informe.contenido.anexos[index].url;
-      console.log(this.pdf),
-      this.dialogVistaPreviaAnexos = true;
+      console.log(this.pdf), (this.dialogVistaPreviaAnexos = true);
     },
     cerrarVistaPreviaAnexo() {
       this.dialogVistaPreviaAnexos = false;
@@ -753,13 +785,19 @@ export default {
     verifyColor() {
       return "red";
     },
-    itemsGrado(){
-         const listaGrados = [{value:"1",text: "Primero"},{value:"2",text: "Segundo"},{value:"3",text: "Tercero"},
-           {value:"4",text: "Cuarto"},{value:"5",text: "Quinto"}];
-           if(this.informe.contenido.iereinsersion.nivel == 'PRIMARIA'){ 
-             listaGrados.push({value:"6",text: "Sexto"})}
-           this.informe.contenido.iereinsersion.grado = "1";
-          return listaGrados;
+    itemsGrado() {
+      const listaGrados = [
+        { value: "1", text: "Primero" },
+        { value: "2", text: "Segundo" },
+        { value: "3", text: "Tercero" },
+        { value: "4", text: "Cuarto" },
+        { value: "5", text: "Quinto" },
+      ];
+      if (this.informe.contenido.iereinsersion.nivel == "PRIMARIA") {
+        listaGrados.push({ value: "6", text: "Sexto" });
+      }
+      this.informe.contenido.iereinsersion.grado = "1";
+      return listaGrados;
     },
     errorNombreIE() {
       const errors = [];
@@ -767,7 +805,9 @@ export default {
       !this.$v.informe.contenido.iereinsersion.nombre.required &&
         errors.push("Debe ingresar el nombre de la Institución Educativa");
       !this.$v.informe.contenido.iereinsersion.nombre.esParrafo &&
-        errors.push("El nombre de la institucion educativa no debe contener caracteres especiales");
+        errors.push(
+          "El nombre de la institucion educativa no debe contener caracteres especiales"
+        );
       return errors;
     },
     errorModalidadIE() {
@@ -777,7 +817,9 @@ export default {
       !this.$v.informe.contenido.iereinsersion.modalidad.required &&
         errors.push("Debe ingresar la modalidad");
       !this.$v.informe.contenido.iereinsersion.modalidad.esTexto &&
-        errors.push("La modalidad de la institucion educativa no debe contener caracteres especiales");
+        errors.push(
+          "La modalidad de la institucion educativa no debe contener caracteres especiales"
+        );
       return errors;
     },
     errorNivelIE() {
@@ -786,7 +828,9 @@ export default {
       !this.$v.informe.contenido.iereinsersion.nivel.required &&
         errors.push("Debe ingresar el nivel");
       !this.$v.informe.contenido.iereinsersion.nivel.esParrafo &&
-        errors.push("El nivel de la institucion educativa no debe contener caracteres especiales");
+        errors.push(
+          "El nivel de la institucion educativa no debe contener caracteres especiales"
+        );
       return errors;
     },
     errorGradoIE() {
@@ -795,7 +839,9 @@ export default {
       !this.$v.informe.contenido.iereinsersion.grado.required &&
         errors.push("Debe ingresar el grado");
       !this.$v.informe.contenido.iereinsersion.grado.esParrafo &&
-        errors.push("El grado de la institucion educativa no debe contener caracteres especiales");
+        errors.push(
+          "El grado de la institucion educativa no debe contener caracteres especiales"
+        );
       return errors;
     },
     errorAntecedentes() {
@@ -813,7 +859,9 @@ export default {
       !this.$v.informe.contenido.situacionactual.required &&
         errors.push("Debe ingresar la situación actual");
       !this.$v.informe.contenido.situacionactual.esParrafo &&
-        errors.push("La situacion actual no debe contener caracteres especiales");
+        errors.push(
+          "La situacion actual no debe contener caracteres especiales"
+        );
       return errors;
     },
     errorResidente() {
@@ -822,14 +870,14 @@ export default {
       !this.$v.informe.idresidente.required &&
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
-    },/*
+    } /*
     errorEvaluador() {
       const errors = [];
       if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
       !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un educador obligatoriamente");
       return errors;
-    },*/
+    },*/,
     errorFechaEvaluacion() {
       const errors = [];
       if (!this.$v.informe.contenido.fechaevaluacion.$dirty) return errors;
@@ -849,9 +897,7 @@ export default {
       !this.$v.logro.required &&
         errors.push("Debe registrar el logro obligatoriamente");
       !this.$v.logro.esParrafo &&
-        errors.push(
-          "El logro no debe contener caracteres especiales"
-        );
+        errors.push("El logro no debe contener caracteres especiales");
       return errors;
     },
     errorRecomendacion() {
@@ -860,9 +906,7 @@ export default {
       !this.$v.recomendacion.required &&
         errors.push("Debe registrar la recomendacion obligatoriamente");
       !this.$v.recomendacion.esParrafo &&
-        errors.push(
-          "La recomendacion no debe contener caracteres especiales"
-        );
+        errors.push("La recomendacion no debe contener caracteres especiales");
       return errors;
     },
   },
@@ -874,7 +918,7 @@ export default {
         },
         creadordocumento: {
           required,
-        },        
+        },
         contenido: {
           antecedentes: {
             required,
@@ -883,10 +927,10 @@ export default {
           situacionactual: {
             required,
             esParrafo,
-          },/*
+          } /*
           evaluador:{
             required,
-          },*/
+          },*/,
           iereinsersion: {
             nombre: {
               required,
@@ -906,7 +950,7 @@ export default {
             },
           },
           fechaevaluacion: {
-              required,
+            required,
           },
         },
       },

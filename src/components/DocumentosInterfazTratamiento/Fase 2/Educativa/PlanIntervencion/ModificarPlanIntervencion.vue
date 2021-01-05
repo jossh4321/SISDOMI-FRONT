@@ -315,6 +315,27 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+      <v-card height="300px">
+        <v-card-title class="justify-center"
+          >Actualizando el Plan de Intervencion</v-card-title
+        >
+        <div>
+          <v-progress-circular
+            style="display: block;margin:40px auto;"
+            :size="90"
+            :width="9"
+            color="purple"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+        <v-card-subtitle
+          class="justify-center"
+          style="font-weight:bold;text-align:center"
+          >En unos momentos finalizaremos...</v-card-subtitle
+        >
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -411,6 +432,7 @@ export default {
         ],
       },
       firma:"",
+      cargaRegistro: false,
     };
   },
   filters: {
@@ -483,10 +505,7 @@ export default {
             minLength: minLength(4),
           },
         },
-      },/*
-      firmaAux: {
-        required,
-      },*/
+      },
     };
   },
   watch: {
@@ -582,7 +601,7 @@ export default {
       await axios
         .get("/PlanIntervencion/" + item)
         .then((res) => {
-          this.planI = res.data;
+          this.planI = res.data;         
         })
         .catch((err) => {
           console.error(err);
@@ -598,8 +617,7 @@ export default {
       },
     async editPlan() {
       this.$v.$touch();
-      if (this.$v.$invalid) {
-        
+      if (this.$v.$invalid) {      
         this.mensaje(
           "error",
           "..Oops",
@@ -608,26 +626,6 @@ export default {
           false
         );
       } else {
-        /*for (let index = 0; index < this.firmaAux.length; index++) {
-          if (
-            this.firmaAux[index] != null &&
-            this.firmaAux[index].dataURL != undefined
-          ) {
-            let formData = new FormData();
-
-            formData.append("file", this.firmaAux[index]);
-
-            await axios
-              .post("/media", formData)
-              .then((res) => {
-                this.planI.contenido.firmas[index].urlfirma = res.data;
-              })
-              .catch((err) => {
-                console.error(err);
-              });
-          }
-        }*/
-
         let planI = {
           id: this.planI.id,
           historialcontenido: [],
@@ -635,10 +633,11 @@ export default {
           contenido: this.planI.contenido,
           idresidente: this.residente.id,
         };
-
+        this.cargaRegistro = true;
         axios
           .put("/planIntervencion/educativo", planI)
           .then((res) => {
+            this.cargaRegistro = false;
             this.mensaje(
               "success",
               "Actualización del Plan de Intervención",
