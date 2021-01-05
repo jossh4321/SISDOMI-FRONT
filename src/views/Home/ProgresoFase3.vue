@@ -171,6 +171,11 @@
                         </div>
                       </v-col>
                     </template>
+                    <v-card style="padding:5px 8px" :color="obtenerColorFooterTimeLineItem(documento)">
+                      <span>Fecha Limite Estimada: {{documento.fechaestimada | fomatoFecha}}</span>
+                      <br>
+                      <span>{{documento.fechaestimada | diasRestantes}}</span>
+                    </v-card>
                   </v-card>
                 </v-timeline-item>
               </v-timeline>
@@ -244,7 +249,7 @@ import RegistrarInformeEducativoFinal from "@/components/DocumentosInterfazTrata
 import ModificarInformeEducativoFinal from "@/components/DocumentosInterfazTratamiento/Fase 3/Educativa/ModificarInformeEducativoFinal.vue";
 import VisualizarInformeEducativoFinal from "@/components/DocumentosInterfazTratamiento/Fase 3/Educativa/VisualizarInformeEducativoFinal.vue";
 import {mapMutations, mapState} from "vuex";
-
+import moment from "moment";
 import axios from "axios";
 export default {
   name: "ProgresoResidente",
@@ -343,6 +348,12 @@ export default {
         return val;
       });
       return listaDocumentos;
+    },obtenerColorFooterTimeLineItem(documento){
+        return documento.indice == "anterior"
+        ? "#2f6a31"
+        : documento.indice == "actual"
+        ? "#664d00"
+        : "#064579";
     },
     obtenerClaseTimeLineItem(documento) {
       return documento.indice == "anterior"
@@ -435,7 +446,19 @@ export default {
       return retorno
     },
   },
-  filters: {}
+  filters: {
+    fomatoFecha: (fecha) =>{
+      
+      var formato = moment(fecha.split('T')[0]);
+      return formato.format("ll");
+    },diasRestantes:(fecha)=>{
+        var fechaActual = moment(new Date());
+        var fechaEstimada = moment(fecha.split('T')[0]);
+        return fechaActual.isBefore(fechaEstimada)?
+         `Quedan ${fechaEstimada.diff(fechaActual, 'days')} dias restantes`:
+         `Se retraso ${-fechaEstimada.diff(fechaActual, 'days')} dias`
+    }
+  }
 };
 </script>
 <style scoped>

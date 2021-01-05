@@ -78,7 +78,7 @@
                                     :key="j"
                                     :color="obtenerColorTimeLineItem(documento)"
                                     icon="mdi-buffer"
-                                  >
+                                  > 
                                 <v-card :class="obtenerClaseTimeLineItem(documento)" dark>
                                 <v-card-title
                                   class="justify-center"
@@ -87,23 +87,30 @@
                                 <template v-if="documento.indice == 'anterior'">
                                   <v-row>
                                     <v-col cols="12" xs="12" sm="6" md="6">
-                                      <div style="margin-left: 60%" >
+                                      <div style="padding:5px" >
                                         <v-btn color="info" rounded block
                                           @click="abrirDialogoVisualizarDocumento(titulosDoc[documento.tipo].visualizar)">
                                           <v-icon left>mdi-information</v-icon>Ver Detalle
                                         </v-btn>
                                       </div>
                                     </v-col>
+                                    <v-col cols="12" xs="12" sm="6" md="6">
+                                       <div style="padding:5px">
+                                          <v-btn color="warning" rounded block>
+                                              <v-icon left>mdi-folder-edit</v-icon>Generar pdf
+                                          </v-btn>
+                                        </div>
+                                    </v-col>
                                   </v-row>
                                 </template>
-                                <template v-else-if="documento.indice == 'actual'">
+                                <template v-else>
                                   <v-col cols="12">
                                     <div class="docs-siguiente">
                                       <span>Proximo a Registrar</span>
                                     </div>
                                   </v-col>
                                 </template>
-                              </v-card>
+                                </v-card>
                               </v-timeline-item>
                             </v-timeline>
                             </v-card>

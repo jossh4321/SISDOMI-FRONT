@@ -159,12 +159,14 @@
 
                             <v-row>
                               <v-col>
-                                <v-btn block class="my-button" color="warning">
+                                <v-btn block class="my-button" color="warning"
+                                  @click="abrirModificarRes(residente.id)">
                                   <v-icon left dark>mdi-cloud-upload</v-icon>Editar
                                 </v-btn>
                               </v-col>
                               <v-col>
-                                <v-btn block class="my-button" color="info">
+                                <v-btn block class="my-button" color="info"
+                                  @click="abrirVerRes(residente.id)">
                                   <v-icon left dark>mdi-cloud-upload</v-icon>Ver
                                 </v-btn>
                               </v-col>
@@ -231,20 +233,44 @@
           </v-card>
         </v-container>
       </v-sheet>
+      <!--Dialogo de Modificar Residente-->
+      <v-dialog persistent v-model="dialogoModificarResidente" max-width="1000px">
+        <ActualizarResidente
+          v-if="dialogoModificarResidente"
+          :idresidente="idresidente"
+          @close-dialog-save="cerrarDialogoModificarResidente"
+        ></ActualizarResidente>
+      </v-dialog>
+      <!--Dialogo de Detalle Residente-->
+      <v-dialog persistent v-model="dialogoVerResidente" max-width="1000px">
+        <VerResidente
+          v-if="dialogoVerResidente"
+          :idresidente="idresidente"
+          @close-dialog-save="cerrarDialogoVerResidente"
+        ></VerResidente>
+      </v-dialog>
     </template>
   </div>
 </template>
 
 <script>
+import ActualizarResidente from "@/components/ResidentesInterfaz/ActualizarResidente.vue";
+import VerResidente from "@/components/ResidentesInterfaz/VerResidente.vue";
 import axios from "axios";
 import moment from "moment";
 
 export default {
-  components: {},
+  components: {
+    ActualizarResidente,
+    VerResidente,
+  },
   data() {
     return {
       itemsPerPageArray: [6, 12, 18],
+      idresidente:"",
       search: "",
+      dialogoModificarResidente: false,
+      dialogoVerResidente:false,
       page: 1,
       itemsPerPage: 6,
       showInfo: true,
@@ -380,6 +406,12 @@ export default {
     toogleDrawer() {
       this.$store.commit("toggleDrawer");
     },
+    cerrarDialogoModificarResidente() {
+      this.dialogoModificarResidente = false;
+    },
+    cerrarDialogoVerResidente() {
+      this.dialogoVerResidente = false;
+    },
     abrirProgresoFase1(id) {
       var rutacompleta = "/dashboard/ProgresoF1Residente/" + id;
       this.$router.push(rutacompleta);
@@ -411,6 +443,14 @@ export default {
     abrirProgresoRes(id) {
       var rutacompleta = "/dashboard/progresoEducativo/" + id;
       this.$router.push(rutacompleta);
+    },
+    abrirModificarRes(id) {
+      this.idresidente = id;
+      this.dialogoModificarResidente = true;
+    },
+    abrirVerRes(id) {
+      this.idresidente = id;
+      this.dialogoVerResidente = true;
     },
   },
 
