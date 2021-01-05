@@ -477,6 +477,15 @@ export default {
       console.log(fase);
       return fase;
     },
+    generarFechaDocumentos(meses){
+      
+        var fecha = new Date();
+            fecha.setMonth(fecha.getMonth()+meses);
+            fecha.setHours(0);
+            fecha.setMinutes(0);
+            fecha.setSeconds(0);
+            return fecha.toISOString();
+    },
     async registrarDocumentoTransicionFase() {
       this.activado = true;
       if (this.$v.progresoFase.$invalid) {
@@ -506,35 +515,37 @@ export default {
             {
               tipo: "PlanIntervencionIndividualEducativo",
               estado: "Pendiente",
+              fechaestimada: this.generarFechaDocumentos(0)
             },
-            { tipo: "InformeEducativoEvolutivo", estado: "Pendiente" },
+            { tipo: "InformeEducativoEvolutivo", estado: "Pendiente" ,fechaestimada: this.generarFechaDocumentos(1)},
           ];
           this.progresoFase.social.documentos = [
             {
               tipo: "PlanIntervencionIndividualSocial",
-              estado: "Pendiente",
+              estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(0)
             },
-            { tipo: "InformeSocialEvolutivo", estado: "Pendiente" },
+            { tipo: "InformeSocialEvolutivo", estado: "Pendiente" ,fechaestimada: this.generarFechaDocumentos(1)},
           ];
           this.progresoFase.psicologica.documentos = [
             {
               tipo: "PlanIntervencionIndividualPsicologico",
               estado: "Pendiente",
+              fechaestimada: this.generarFechaDocumentos(0)
             },
-            { tipo: "InformePsicologicoEvolutivo", estado: "Pendiente" },
+            { tipo: "InformePsicologicoEvolutivo", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(1)},
           ];
         } else if (this.progresoFase.fase === 3) {
           this.progresoResidente.fase = 3;
           this.progresoResidente.nombre = "reinserción";
           this.progresoFase.educativa.documentos = [
-            { tipo: "InformeEducativoFinal", estado: "Pendiente" },
+            { tipo: "InformeEducativoFinal", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(0) },
           ];
           this.progresoFase.social.documentos = [
-            { tipo: "InformeSocialFinal", estado: "Pendiente" },
-            { tipo: "ActaExternamiento", estado: "Pendiente" },
+            { tipo: "InformeSocialFinal", estado: "Pendiente", fechaestimada: this.generarFechaDocumentos(0) },
+            { tipo: "ActaExternamiento", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(1) },
           ];
           this.progresoFase.educativa.documentos = [
-            { tipo: "InformePsicologicoFinal", estado: "Pendiente" },
+            { tipo: "InformePsicologicoFinal", estado: "Pendiente", fechaestimada: this.generarFechaDocumentos(0) },
           ];
         }
         this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z";

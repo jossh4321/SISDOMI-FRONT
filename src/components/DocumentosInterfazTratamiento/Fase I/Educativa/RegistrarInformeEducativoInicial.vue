@@ -439,16 +439,15 @@ export default {
       this.fileList.push(file);
     },
     afterComplete(file) {
-      if (file.status == "error") {
+      /*if (file.status == "error") {
         this.$refs.myVueDropzone.removeFile(file);
-      }
+      }*/
     },
     afterRemoved(file, error, xhr) {
-      this.informe.contenido.anexos = "";
+      this.informe.contenido.anexos = [];
     },
     limpiarInforme() {
       return {
-        informe: {
           id: "",
           tipo: "",
           historialcontenido: [],
@@ -465,8 +464,7 @@ export default {
             anexos: [],
             codigodocumento: "",
           },
-        },
-      };
+        }
     },
   },filters:{
         fomatoFecha: (fecha) =>{

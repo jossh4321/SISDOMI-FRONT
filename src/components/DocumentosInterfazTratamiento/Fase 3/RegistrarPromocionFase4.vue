@@ -445,6 +445,14 @@ export default {
         })
         .catch((err) => console.log(err));
       return fase;
+    },generarFechaDocumentos(meses){
+      
+        var fecha = new Date();
+            fecha.setMonth(fecha.getMonth()+meses);
+            fecha.setHours(0);
+            fecha.setMinutes(0);
+            fecha.setSeconds(0);
+            return fecha.toISOString();
     },
     async registrarDocumentoTransicionFase() {
       this.activado = true;
@@ -467,12 +475,12 @@ export default {
         this.progresoFase.documentotransicion.idcreador = this.user.id;
         this.progresoResidente.fase = 3;
         this.progresoResidente.nombre = "reinserción";
-        this.progresoFase.educativa.documentos = [ { tipo: "InformeEducativoFinal", estado: "Pendiente" }, ];
+        this.progresoFase.educativa.documentos = [ { tipo: "InformeEducativoFinal", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(0) }, ];
         this.progresoFase.social.documentos = [
-          { tipo: "InformeSocialFinal", estado: "Pendiente" },
-          { tipo: "ActaExternamiento", estado: "Pendiente" },
+          { tipo: "InformeSocialFinal", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(0) },
+          { tipo: "ActaExternamiento", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(0) },
         ];
-        this.progresoFase.psicologica.documentos = [ { tipo: "InformePsicologicoFinal", estado: "Pendiente" }, ];
+        this.progresoFase.psicologica.documentos = [ { tipo: "InformePsicologicoFinal", estado: "Pendiente", fechaestimada: this.generarFechaDocumentos(0) }, ];
 
         this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z";
         this.progresoResidente.fechafinalizacion = this.calculoFin() + "T05:00:00Z";

@@ -162,6 +162,11 @@
                         </div>
                       </v-col>
                     </template>
+                    <v-card style="padding:5px 8px" :color="obtenerColorFooterTimeLineItem(documento)">
+                      <span>Fecha Limite Estimada: {{documento.fechaestimada | fomatoFecha}}</span>
+                      <br>
+                      <span>{{documento.fechaestimada | diasRestantes}}</span>
+                    </v-card>
                   </v-card>
                 </v-timeline-item>
               </v-timeline>
@@ -313,7 +318,7 @@ import VisualizadorResidente from "@/components/residentes/VisualizadorResidente
 import RegistrarPlanIntervencion from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/PlanIntervencion/RegistrarPlanIntervencion.vue";
 import RegistrarInformeEducativoEvolutivo from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/InformeEvolutivo/RegistrarInformeEducativoEvolutivo.vue";
 import RegistrarPromocionFase3 from "@/components/DocumentosInterfazTratamiento/Fase 2/RegistrarPromocionFase3.vue";
-
+import moment from "moment";
 import axios from "axios";
 import {mapMutations, mapState} from "vuex";
 export default {
@@ -477,6 +482,12 @@ export default {
         })
         .catch(err => console.log(err));
         this.setFase(this.obtenerSecuenciaDocumentos()[1]);
+    },obtenerColorFooterTimeLineItem(documento){
+        return documento.indice == "anterior"
+        ? "#2f6a31"
+        : documento.indice == "actual"
+        ? "#664d00"
+        : "#064579";
     },
   },
   computed: {
@@ -489,13 +500,25 @@ export default {
       var numero = this.fase.educativa.documentos.filter(documento => documento.estado === "Pendiente" ).length;
       return numero;
     },
-
+    
     progressOne () {
       var retorno = Math.round(this.obtenerDocumentosCompletos/this.fase.educativa.documentos.length * 100)
       return retorno
     },
   },
-  filters: {}
+  filters: {
+    fomatoFecha: (fecha) =>{
+      
+      var formato = moment(fecha.split('T')[0]);
+      return formato.format("ll");
+    },diasRestantes:(fecha)=>{
+        var fechaActual = moment(new Date());
+        var fechaEstimada = moment(fecha.split('T')[0]);
+        return fechaActual.isBefore(fechaEstimada)?
+         `Quedan ${fechaEstimada.diff(fechaActual, 'days')} dias restantes`:
+         `Se retraso ${-fechaEstimada.diff(fechaActual, 'days')} dias`
+    }
+    }
 };
 </script>
 <style scoped>

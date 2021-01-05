@@ -125,7 +125,7 @@
                   :color="obtenerColorTimeLineItem(documento)"
                   icon="mdi-buffer"
                 >
-                  <v-card :class="obtenerClaseTimeLineItem(documento)" dark>
+                  <v-card  :color="obtenerClaseTimeLineItem(documento)" dark>
                     <v-card-title
                       class="justify-center"
                       style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
@@ -170,6 +170,11 @@
                         </div>
                       </v-col>
                     </template>
+                    <v-card style="padding:5px 8px" :color="obtenerColorFooterTimeLineItem(documento)">
+                      <span>Fecha Limite Estimada: {{documento.fechaestimada | fomatoFecha}}</span>
+                      <br>
+                      <span>{{documento.fechaestimada | diasRestantes}}</span>
+                    </v-card>
                   </v-card>
                 </v-timeline-item>
               </v-timeline>
@@ -231,6 +236,7 @@ import RegistrarInformeSeguimientoEducativo from "@/components/DocumentosInterfa
 import RegistrarPromocionFase2 from "@/components/DocumentosInterfazTratamiento/Fase I/RegistrarPromocionFase2.vue";
 import {mapMutations, mapState} from "vuex";
 import axios from "axios";
+import moment from "moment";
 export default {
   name: "ProgresoResidenteF1",
   components: {
@@ -358,10 +364,17 @@ export default {
     },
     obtenerClaseTimeLineItem(documento) {
       return documento.indice == "anterior"
-        ? "success"
+        ? "#71c174"
         : documento.indice == "actual"
-        ? "warning"
-        : "info";
+        ? "#ffc61a"
+        : "#3da2f5";
+    },
+    obtenerColorFooterTimeLineItem(documento){
+        return documento.indice == "anterior"
+        ? "#2f6a31"
+        : documento.indice == "actual"
+        ? "#664d00"
+        : "#064579";
     },
     obtenerColorTimeLineItem(documento) {
       return documento.indice == "anterior"
@@ -430,7 +443,20 @@ export default {
       return retorno
     },
   },
-  filters: {}
+  filters: {
+    fomatoFecha: (fecha) =>{
+      
+      var formato = moment(fecha.split('T')[0]);
+      return formato.format("ll");
+    },diasRestantes:(fecha)=>{
+        var fechaActual = moment(new Date());
+        var fechaEstimada = moment(fecha.split('T')[0]);
+        return fechaActual.isBefore(fechaEstimada)?
+         `Quedan ${fechaEstimada.diff(fechaActual, 'days')} dias restantes`:
+         `Se retraso ${-fechaEstimada.diff(fechaActual, 'days')} dias`
+    }
+
+  }
 };
 </script>
 <style scoped>
