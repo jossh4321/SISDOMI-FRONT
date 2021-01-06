@@ -19,6 +19,7 @@ import ModificarPerfil from '../views/perfil/ModificarPerfil.vue';
 import GestionarFichaEvaluacionEducativa from '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
 import GestionResidentes from '../views/Residentes/GestionResidentes.vue';
 import ProgresoEducativoResidente from '../views/Residentes/ProgresoEducativoResidente.vue';
+import GestionarActividades from '../views/Actividades/GestionarActividades.vue';
 
 //Prueba
 import PruebaActa from '../views/Acta/PruebaActa.vue';
@@ -245,6 +246,12 @@ const routes = [{
                 path: 'ProgresoF3Residente/:id',
                 name: 'ProgresoF3Residente',
                 component: ProgresoF3Residente,
+                params: true
+            },
+            {
+                path: 'gestionaractividades',
+                name: 'GestionarActividades',
+                component: GestionarActividades,
                 params: true
             },
         ],

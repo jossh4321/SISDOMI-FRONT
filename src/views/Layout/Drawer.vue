@@ -238,6 +238,13 @@ export default {
           icon: "dashboard",
           name: "ConsultaEstadisticas",
           href: "/dashboard/estadisticas"
+        },
+        {
+          title: "Gestión de Actividades",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarActividades",
+          href: "/dashboard/gestionaractividades"
         }
       ],
       scrollSettings: {
