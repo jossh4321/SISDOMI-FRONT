@@ -195,7 +195,7 @@
               <v-divider class="divider-custom"></v-divider>
               <v-row>
                 <v-col>
-                  <v-btn block @click="actualizarActa()" color="warning">
+                  <v-btn block @click="actualizarUsuario()" color="warning">
                     <v-icon left>mdi-content-save-all-outline</v-icon>
                     <span>Actualizar Acta</span>
                   </v-btn>
@@ -285,7 +285,7 @@ export default {
         true
       );
     },
-    async actualizarActa() {
+    async actualizarUsuario() {
       this.$v.$touch();
       if (this.$v.$invalid) {
         console.log("hay errores");
@@ -302,7 +302,12 @@ export default {
 
         await axios
           .put(
-            "/actaexternamiento/update", this.actaexternamiento) 
+            "/actaexternamiento/update?tipo=" +
+              this.firmas.tipo +
+              "&modificado=" +
+              this.firmas.modificado,
+            this.actaexternamiento
+          )
           .then((res) => {
             var resultado = res.data;
 
@@ -327,9 +332,12 @@ export default {
       this.$emit("close-dialog-update");
     },
     afterSuccess(file, response) {
-      console.log(file);
-      this.actaexternamiento.contenido.firmas.push(file.dataURL.split(",")[1]);
-},
+      this.actaexternamiento.contenido.firmas = file.dataURL.split(",")[1];
+      this.$v.actaexternamiento.contenido.firmas.$model = file.dataURL.split(
+        ","
+      )[1];
+      this.firmas = { tipo: "base64", modificado: "si" };
+    },
     afterRemoved(file, error, xhr) {
       this.actaexternamiento.contenido.firmas = "";
       this.$v.actaexternamiento.contenido.firmas.$model = "";
