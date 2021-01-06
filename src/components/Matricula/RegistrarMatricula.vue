@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="justify-center"
-      >Actualizar Acta de externamiento</v-card-title
+      >Registrar Acta de externamiento</v-card-title
     >
 
     <v-stepper v-model="step">
@@ -23,7 +23,7 @@
                 dense
                 outlined
                 color="#009900"
-                label="Seleccione un residente del Sistema"
+                label="Seleccione un idresidente del Sistema"
                 item-text="nombre"
                 item-value="id"
                 @input="$v.actaexternamiento.idresidente.$touch()"
@@ -39,7 +39,7 @@
                     <v-avatar left color="#b3b3ff" size="24">
                       <span style="font-size: 12px">RT</span>
                     </v-avatar>
-                    {{ data.item.nombre }}
+                    {{ data.item.nombre + " " + data.item.apellido }}
                   </v-chip>
                 </template>
                 <template v-slot:item="data">
@@ -51,7 +51,10 @@
                     </v-list-item-avatar>
                     <v-list-item-content>
                       <v-list-item-title
-                        >Rol: {{ data.item.nombre }}</v-list-item-title
+                        >Rol:
+                        {{
+                          data.item.nombre + " " + data.item.apellido
+                        }}</v-list-item-title
                       >
                       <v-list-item-subtitle
                         >Area: {{ data.item.area }}</v-list-item-subtitle
@@ -64,41 +67,6 @@
                   </template>
                 </template>
               </v-autocomplete>
-
-              <!-- <v-menu
-                v-model="datemenu"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="actaexternamiento.fechacreacion"
-                    label="Ingrese fecha creacion"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    @input="
-                      $v.actaexternamiento.contenido.fechacreacion.$touch()
-                    "
-                    @blur="
-                      $v.actaexternamiento.contenido.fechacreacion.$touch()
-                    "
-                    :error-messages="errorfechacreacion"
-                    color="#009900"
-                    outlined
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="actaexternamiento.fechacreacion"
-                  @input="datemenu = false"
-                  locale="es-es"
-                ></v-date-picker>
-              </v-menu> -->
-
               <v-text-field
                 v-model="actaexternamiento.contenido.entidaddisposicion"
                 label="Ingrese nueva entidad disposicion"
@@ -149,9 +117,11 @@
                 color="#009900"
               ></v-text-field>
 
-            
+              
 
-          <v-card
+
+
+              <v-card
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
                 <v-card class="subcard">
@@ -195,9 +165,9 @@
               <v-divider class="divider-custom"></v-divider>
               <v-row>
                 <v-col>
-                  <v-btn block @click="actualizarActa()" color="warning">
+                  <v-btn block @click="registrarUsuario" color="success">
                     <v-icon left>mdi-content-save-all-outline</v-icon>
-                    <span>Actualizar Acta</span>
+                    <span>Registrar Acta</span>
                   </v-btn>
                 </v-col>
                 <v-col>
@@ -216,15 +186,16 @@
 </template>
 <script>
 import axios from "axios";
+import Vue from "vue";
+import Vuelidate from "vuelidate";
+Vue.use(Vuelidate);
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
-  
 export default {
-  //  props:["listaActas","actaexternamiento","usuario"],
-  props: ["listaActas", "actaexternamiento"],
+  props: ["listaActas"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -237,55 +208,43 @@ export default {
         thumbnailWidth: 250,
         maxFilesize: 3.0,
         maxFiles: 1,
-        acceptedFiles:".jpg, .png, jpeg",
+        acceptedFiles: ".jpg, .png, jpeg",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
-     
         dictDefaultMessage:
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
-      },
-          imagen: { tipo: "url", modificado: "no" },
-      //imagen:{tipo:"url",modificado:"no"},
-      /*  //actaexternamiento: {
-        
-            id: "",
+      }, //utilizado en los formularios como un prop
+      actaexternamiento: {
+        id: "",
         tipo: "ActaExternamiento",
         historialcontenido: [],
         creadordocumento: "",
-        fechacreacion: new Date().toISOString(),
+        fechacreacion: null,
         area: "social",
         fase: "3",
         idresidente: "",
-        estado: "",
-        contenido: {
+        estado: "creado",
 
-        responsable:"",                           
-        entidaddisposicion:"",  
-        numeroresolucion:"",  
-        numerooficio:"",  
-        observaciones:"",        
-        firmas:[], */
+        contenido: {
+          responsable: "",
+
+          entidaddisposicion: "",
+          numeroresolucion: "",
+          numerooficio: "",
+          observaciones: "",
+
+          firmas: [         
+          ],
+        },
+      },
     };
   },
   created() {
-    console.log(this.actaexternamiento);
-    
+    console.log(this.user);
   },
-  mounted() {},
   methods: {
-    ...mapMutations(["setUsuarios", "addUsuario", "replaceUsuario"]),
-    mounteddropzone() {
-      var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg"};
-      this.$refs.myVueDropzone.manuallyAddFile(
-        file,
-        this.actaexternamiento.contenido.firmas,
-        null,
-        null,
-        
-        true
-      );
-    },
-    async actualizarActa() {
+    ...mapMutations(["setUsuarios", "addUsuario"]),
+    async registrarUsuario() {
       this.$v.$touch();
       if (this.$v.$invalid) {
         console.log("hay errores");
@@ -297,42 +256,45 @@ export default {
         );
       } else {
         console.log("no hay errores");
-
+        console.log(this.actaexternamiento.contenido.firmas)
         this.actaexternamiento.contenido.responsable = this.user.id;
-
-        await axios
-          .put(
-            "/actaexternamiento/update", this.actaexternamiento) 
-          .then((res) => {
-            var resultado = res.data;
-
-            this.replaceUsuario(resultado);
-            this.cerrarDialogo();
-          })
-          .catch((err) => console.log(err));
+          await axios
+            .post("/actaexternamiento/register", this.actaexternamiento)
+            .then((res) => {
+              console.log(this.actaexternamiento);
+             
+              this.actaexternamiento.contenido.firmas.urlfirma = res.data;
+              this.actaexternamiento.contenido.firmas.nombre = this.user.actaexternamiento;
+              this.actaexternamiento.contenido.firmas.cargo = this.user.rol.id;
+              this.addUsuario(this.actaexternamiento);
+              this.cerrarDialogo();
+            })
+            .catch((err) => console.log(err));
         await this.mensaje(
           "success",
           "listo",
-          "Acta Actualizada Satisfactoriamente",
+          "Acta registrada Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
       }
     },
     resetUsuarioValidationState() {
-      
+     
       this.$v.actaexternamiento.$reset();
     },
     cerrarDialogo() {
+      this.actaexternamiento = this.limpiarUsuario();
+      this.step = 1;
       this.resetUsuarioValidationState();
-      this.$emit("close-dialog-update");
+      this.$emit("close-dialog-save");
     },
     afterSuccess(file, response) {
       console.log(file);
       this.actaexternamiento.contenido.firmas.push(file.dataURL.split(",")[1]);
-},
-    afterRemoved(file, error, xhr) {
-      this.actaexternamiento.contenido.firmas = "";
-      this.$v.actaexternamiento.contenido.firmas.$model = "";
+
+      //console.log(file.dataURL.split(",")[1]);
+    },
+    afterRemoved(file, error, xhr) { this.firma.urlfirma = "";
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -342,8 +304,23 @@ export default {
         footer: footer,
       });
     },
+    limpiarUsuario() {
+      return {
+        contenido: {
+          responsable: "",
+
+          entidaddisposicion: "",
+          numeroresolucion: "",
+          numerooficio: "",
+          observaciones: "",
+
+          firmas: [
+            
+          ],
+        },
+      };
+    },
   },
-  watch: {},
   computed: {
     ...mapState(["usuarios"]),
     ...mapGetters(["user"]),
@@ -353,7 +330,8 @@ export default {
 
     erroridresidente() {
       const errors = [];
-      if (!this.$v.actaexternamiento.idresidente.$dirty) return errors;
+      if (!this.$v.actaexternamiento.idresidente.$dirty)
+        return errors;
       !this.$v.actaexternamiento.idresidente.required &&
         errors.push("Debe ingresar el idresidente Obligatoriamente");
 
@@ -367,22 +345,7 @@ export default {
         errors.push("Debe ingresar el responsable Obligatoriamente");
 
       return errors;
-    },
-    errorfechacreacion() {
-      const errors = [];
-      if (!this.$v.actaexternamiento.fechacreacion.$dirty)
-        return errors;
-      !this.$v.actaexternamiento.fechacreacion.required &&
-        errors.push("Debe Ingresar una Fecha de Creacion Obligatoriamente");
-
-      var dateselected = new Date(
-        this.actaexternamiento.fechacreacion
-      );
-      var maxdate = new Date();
-      maxdate.setFullYear(maxdate.getFullYear());
-
-      return errors;
-    },
+    },    
     errorentidaddisposicion() {
       const errors = [];
       if (!this.$v.actaexternamiento.contenido.entidaddisposicion.$dirty)
@@ -419,16 +382,22 @@ export default {
 
       return errors;
     },
-   
+    errorImagen() {
+      return this.$v.actaexternamiento.contenido.firmas.required == false &&
+        this.$v.actaexternamiento.contenido.firmas.$dirty == true
+        ? true
+        : false;
+    },
   },
-  validations() {//alt + shift + f
+  validations() {
     return {
       actaexternamiento: {
-        idresidente: {
-          required,
-        },
-        
-        contenido: {
+
+idresidente: {
+            required,
+          },
+
+        contenido: {        
           entidaddisposicion: {
             required,
           },
@@ -460,13 +429,11 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  
 }
 
 .dropzone-custom-title {
   margin-top: 0;
   color: #00b782;
-  
 }
 
 .subtitle {
