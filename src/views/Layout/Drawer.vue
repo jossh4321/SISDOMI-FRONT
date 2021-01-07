@@ -117,7 +117,7 @@ export default {
           group: "apps",
           icon: "dashboard",
           name: "Dashboard",
-          href: "/dashboard",
+          href: "/dashboard/Dashboard",
         },
         {
           title: "Home",
