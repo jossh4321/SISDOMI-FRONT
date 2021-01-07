@@ -51,7 +51,7 @@ import DocumentoGeneral from '@/views/Home/DocumentoGeneral.vue';
 import DocumentoSocial from '@/views/Home/DocumentoSocial.vue';
 import DocumentoPsicologico from '@/views/Home/DocumentoPsicologico.vue';
 import DocumentoEducativo from '@/views/Home/DocumentoEducativo.vue';
-
+import DashBoard from '@/views/Dashboard'
 
 
 Vue.use(VueRouter);
@@ -245,6 +245,11 @@ const routes = [{
                 path: 'ProgresoF3Residente/:id',
                 name: 'ProgresoF3Residente',
                 component: ProgresoF3Residente,
+                params: true
+            },{
+                path: 'Dashboard',
+                name: 'Dashboard',
+                component: DashBoard,
                 params: true
             },
         ],
