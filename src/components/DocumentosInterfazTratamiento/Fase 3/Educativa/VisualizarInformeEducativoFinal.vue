@@ -357,7 +357,6 @@ export default {
           },
           anexos: [],
           codigodocumento: "",
-          fechaevaluacion: "",
         },
       },
     };
@@ -391,7 +390,6 @@ export default {
         .get("/informe/id?id=" + idinforme)
         .then((res) => {
           info = res.data;
-          info.contenido.fechaevaluacion = res.data.contenido.fechaevaluacion.split("T")[0];
         })
         .catch((err) => console.log(err));
       return info;

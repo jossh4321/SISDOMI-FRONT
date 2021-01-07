@@ -41,35 +41,6 @@
                 :error-messages="errorLugarEvaluacion"
               ></v-textarea>
 
-              <v-menu
-                v-model="datemenu"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="informe.contenido.fechaevaluacion"
-                    label="Fecha de Evaluación"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    color="#009900"
-                    @input="$v.informe.contenido.fechaevaluacion.$touch()"
-                    @blur="$v.informe.contenido.fechaevaluacion.$touch()"
-                    :error-messages="errorFechaEvaluacion"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="informe.contenido.fechaevaluacion"
-                  @input="menu2 = false"
-                  locale="es-es"
-                ></v-date-picker>
-              </v-menu>
-
               <v-textarea
                 label="Situación Académica"
                 v-model="informe.contenido.situacionacademica"
@@ -407,7 +378,6 @@ export default {
           anexos: [],
           codigodocumento: "",
           lugarevaluacion: "",
-          fechaevaluacion: "",
         },
       },
       datemenu: false,
@@ -466,7 +436,6 @@ export default {
         .get("/informe/id?id=" + idinforme)
         .then((res) => {
           info = res.data;
-          info.contenido.fechaevaluacion = res.data.contenido.fechaevaluacion.split("T")[0];
         })
         .catch((err) => console.log(err));
       return info;
@@ -524,7 +493,6 @@ export default {
             var info = {
               id: res.data.id,
               tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
-              fechaevaluacion: res.data.contenido.fechaevaluacion.split("T")[0],
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi.nombre + " " + resi.apellido,
             };
@@ -627,19 +595,6 @@ export default {
         errors.push("El lugar de evaluación debe tener al menos 10 caracteres");
       return errors;
     },
-    errorFechaEvaluacion() {
-      const errors = [];
-      if (!this.$v.informe.contenido.fechaevaluacion.$dirty) return errors;
-      !this.$v.informe.contenido.fechaevaluacion.required &&
-        errors.push("Debe ingresar la fecha de evaluación obligatoriamente");
-      //validating whether the user are an adult
-      var dateselected = new Date(this.informe.contenido.fechaevaluacion);
-      var maxdate = new Date();
-      !(dateselected.getTime() < maxdate.getTime()) &&
-        errors.push("La fecha no debe ser mayor a la actual");
-
-      return errors;
-    },
     errorSituacionAcademica() {
       const errors = [];
       if (!this.$v.informe.contenido.situacionacademica.$dirty) return errors;
@@ -704,9 +659,6 @@ export default {
             minLength: minLength(100),
             esParrafo,
           },
-          fechaevaluacion: {
-          required,
-        },
         },
       },
       conclusion: {

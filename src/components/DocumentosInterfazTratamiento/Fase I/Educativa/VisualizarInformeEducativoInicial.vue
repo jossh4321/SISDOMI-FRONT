@@ -41,27 +41,6 @@
                 readonly
               ></v-textarea>
 
-              <v-menu
-                v-model="datemenu"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="informe.contenido.fechaevaluacion"
-                    label="Fecha de Evaluación"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    color="#009900"
-                  ></v-text-field>
-                </template>
-              </v-menu>
-
               <v-textarea
                 label="Situación Académica"
                 v-model="informe.contenido.situacionacademica"
@@ -284,7 +263,6 @@ export default {
           anexos: [],
           codigodocumento: "",
           lugarevaluacion: "",
-          fechaevaluacion: "",
         },
       },
       datemenu: false,
@@ -326,7 +304,6 @@ export default {
         .get("/informe/id?id=" + idinforme)
         .then((res) => {
           info = res.data;
-          info.contenido.fechaevaluacion = res.data.contenido.fechaevaluacion.split("T")[0];
         })
         .catch((err) => console.log(err));
       return info;

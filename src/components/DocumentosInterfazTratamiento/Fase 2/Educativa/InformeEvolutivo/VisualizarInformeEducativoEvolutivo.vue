@@ -63,26 +63,6 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-              <v-menu
-                v-model="datemenu"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="informe.fechacreacion"
-                    label="Fecha de Evaluación"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    color="#009900"
-                  ></v-text-field>
-                </template>
-              </v-menu>
               <v-textarea
                 v-model="informe.contenido.antecedentes"
                 label="Antecedentes"
@@ -357,7 +337,6 @@ export default {
           },
           anexos: [],
           codigodocumento: "",
-          fechaevaluacion: "",
         },
       },
     };
@@ -391,7 +370,6 @@ export default {
         .get("/informe/id?id=" + idinforme)
         .then((res) => {
           info = res.data;
-          info.contenido.fechaevaluacion = res.data.contenido.fechaevaluacion.split("T")[0];
         })
         .catch((err) => console.log(err));
       return info;
