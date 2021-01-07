@@ -66,7 +66,7 @@
                   </template>
                 </v-autocomplete>
 
-                <v-autocomplete
+                <!-- <v-autocomplete
                   :items="listapsicologos"
                   filled
                   chips
@@ -113,7 +113,7 @@
                       </v-list-item-content>
                     </template>
                   </template>
-                </v-autocomplete>
+                </v-autocomplete> -->
 
                 <v-menu
                   v-model="datemenu"
@@ -497,7 +497,7 @@ function esParrafo(value) {
 }
 
 export default {
-  props: ["listaresidentes", "visible", "listapsicologos"],
+  props: ["listaresidentes", "visible"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -528,7 +528,7 @@ export default {
           recomendaciones: [],
           conclusiones: [],
           codigodocumento: "",
-          evaluador: "",
+          //evaluador: "",
           fechaevaluacion: ""
         },
       },
@@ -660,14 +660,14 @@ export default {
       !this.$v.informe.idresidente.required &&
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
-    },
+    },/*
     errorEvaluador() {
       const errors = [];
       if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
       !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un evaluador obligatoriamente");
       return errors;
-    },
+    },*/
     errorAntecedentes() {
       const errors = [];
       if (!this.$v.informe.contenido.antecedentes.$dirty) return errors;
@@ -742,9 +742,9 @@ export default {
             required,
           },          
           contenido: {
-            evaluador: {
+            /*evaluador: {
               required,
-            },
+            },*/
             antecedentes: {
               required,
               esParrafo,

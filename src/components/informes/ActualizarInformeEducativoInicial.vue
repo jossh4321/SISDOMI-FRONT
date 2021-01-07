@@ -23,7 +23,7 @@
                 color="#009900"
               ></v-text-field>
 
-              <v-autocomplete
+              <!-- <v-autocomplete
                 :items="listaeducadores"
                 filled
                 chips
@@ -71,7 +71,7 @@
                     </v-list-item-content>
                   </template>
                 </template>
-              </v-autocomplete>
+              </v-autocomplete> -->
 
               <v-textarea
                 label="Lugar de Evaluación"
@@ -409,7 +409,7 @@ function esParrafo(value) {
 }
 
 export default {
-  props: ["informe", "listaresidentes", "listaeducadores"],
+  props: ["informe", "listaresidentes"],
   components: {
     vueDropzone: vue2Dropzone,
   },
@@ -443,6 +443,7 @@ export default {
     };
   },
   async created() {
+    console.log("creo aqui owo");
     this.cargarConclusiones();
     this.cargarAnexos();
     this.obtenerResidente();
@@ -597,14 +598,14 @@ export default {
       !this.$v.informe.idresidente.required &&
         errors.push("Debe seleccionar un residente obligatoriamente");
       return errors;
-    },
+    },/*
     errorCreador() {
       const errors = [];
       if (!this.$v.informe.contenido.evaluador.$dirty) return errors;
       !this.$v.informe.contenido.evaluador.required &&
         errors.push("Debe seleccionar un educador obligatoriamente");
       return errors;
-    },
+    },*/
     errorLugarEvaluacion() {
       const errors = [];
       if (!this.$v.informe.contenido.lugarevaluacion.$dirty) return errors;
@@ -677,10 +678,10 @@ export default {
           lugarevaluacion: {
             required,
             minLength: minLength(10),
-          },
+          },/*
           evaluador: {
             required,
-          },
+          },*/
           situacionacademica: {
             required,
             minLength: minLength(100),

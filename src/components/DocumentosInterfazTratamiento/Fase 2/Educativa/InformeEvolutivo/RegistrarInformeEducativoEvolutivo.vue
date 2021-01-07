@@ -12,7 +12,7 @@
           <v-stepper-content step="1">
             <div class="container-user">
               <form>
-                <v-card class="subcard card-padre">
+                <v-card class="subcard card-padre" style="margin-bottom:20px">
                   <v-card class="subcard" style="margin-bottom:7px" color="#e6f3ff">
                     <span>Residente: {{this.residente.nombre}} {{this.residente.apellido}}</span>
                   </v-card>
@@ -20,7 +20,7 @@
                     <span>Fecha de Ingreso: {{ this.residente.fechaingreso | fomatoFecha}}</span>
                   </v-card>
                 </v-card>
-                <v-card class="subcard card-padre">
+                <v-card class="subcard card-padre" style="margin-bottom:20px">
                   <v-card class="subcard" style="margin-bottom:7px" color="#e6f3ff">
                     <span>Educador: {{this.user.usuario}}</span>
                   </v-card>
@@ -336,6 +336,21 @@
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
+      <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Registrando el informe educativo evolutivo</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="red"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
@@ -387,6 +402,7 @@ export default {
       logros: [],
       recomendacion: "",
       recomendaciones: [],
+      cargaRegistro: false,
       informe: {
         id: "",
         tipo: "InformeEducativoEvolutivo",
@@ -410,7 +426,6 @@ export default {
           },
           anexos: [],
           codigodocumento: "",
-          evaluador: "",
           fechaevaluacion: ""
         }
       }
@@ -461,7 +476,9 @@ export default {
       console.log(this.informe.contenido.anexos);
     },
     async registrarInforme() {
-      //await this.sendPDFFiles();
+      this.cargaRegistro = true;
+
+      await this.sendPDFFiles();
       this.informe.creadordocumento = this.user.id;
 
       this.informe.idresidente = this.residente.id;
@@ -476,25 +493,24 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-
           console.log(this.informe);
         
-        /*await axios
+          await axios
           .post("/informe/informeee", this.informe)
           .then(res => {
-
-            this.informe = res.data;
-
+            this.$emit("actualizar-progreso-fase1");
+            this.cargaRegistro = false;
             this.cerrarDialogo();
           })
-          .catch(err => console.log(err));*/
+          .catch(err => console.log(err));
 
-        await this.mensaje(
-          "success",
-          "Listo",
-          "Informe registrado Satisfactoriamente",
-          "<strong>Se redirigira a la interfaz de gestión<strong>"
-        );
+          await this.mensaje(
+                "success",
+                "Listo",
+                "Plan registrado Satisfactoriamente",
+                "<strong>Volviendo al progreso<strong>",
+                true
+              );
       }
     },
     agregarLogros() {

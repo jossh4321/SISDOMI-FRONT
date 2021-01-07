@@ -62,7 +62,7 @@ export default {
                   color: '#4285F4'
               },
               {
-                  tipo: "Reinsercion",
+                  tipo: "Reinserción",
                   color: '#1b9e77'
               },
               {

@@ -1,7 +1,6 @@
 <template>
   <v-card>
     <v-card-title class="justify-center">Modificacion de Usuarios</v-card-title>
-
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step editable step="1">

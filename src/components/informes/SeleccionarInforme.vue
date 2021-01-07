@@ -25,40 +25,34 @@
                         </v-btn>
                         <RegistrarInformeEducativoEvolutivo 
                             v-if="showRegistrarInformeEE" 
-                            :listaresidentes="listaresidentesIEE" 
-                            :listaeducadores="listaeducadores" 
+                            :listaresidentes="listaresidentesIEE"  
                             :visible="showRegistrarInformeEE" 
                             :titulo="titulo" 
                             @close="showRegistrarInformeEE=false"/>                     
                         <RegistrarInformeEducativoInicial 
                             v-if="showRegistrarInformeEI"
-                            :listaresidentes="listaresidentesIEI"
-                            :listaeducadores="listaeducadores"           
+                            :listaresidentes="listaresidentesIEI"           
                             :visible="showRegistrarInformeEI"  
                             @close="showRegistrarInformeEI=false"/>
                         <RegistrarInformeSocialInicial                 
                             v-if="showRegistrarInformeSI"
                             :listaresidentes="listaresidentesISI" 
                             :visible="showRegistrarInformeSI"  
-                            :listasociales="listasociales"
                             @close="showRegistrarInformeSI=false"/>
                         <RegistrarInformeSocialEvolutivo                 
                             v-if="showRegistrarInformeSE"
-                            :listaresidentes="listaresidentes"
-                            :listasociales="listasociales" 
+                            :listaresidentes="listaresidentes" 
                             :visible="showRegistrarInformeSE"
                             :titulo="titulo"  
                             @close="showRegistrarInformeSE=false"/>
                         <RegistrarInformePsicologicoInicial        
                             :listaresidentes="listaresidentesIPI"    
-                            :listapsicologos="listapsicologos"
                             v-if="showRegistrarInformePI" 
                             :visible="showRegistrarInformePI"                                 
                             @close="showRegistrarInformePI=false"/>
                         <RegistrarInformePsicologicoEvolutivo                 
                             v-if="showRegistrarInformePE"
-                            :listaresidentes="listaresidentes"
-                            :listapsicologos="listapsicologos" 
+                            :listaresidentes="listaresidentes" 
                             :visible="showRegistrarInformePE"
                             :titulo="titulo"  
                             @close="showRegistrarInformePE=false"/>                       
@@ -79,7 +73,7 @@ import RegistrarInformePsicologicoInicial from '@/components/informes/RegistrarI
 import RegistrarInformePsicologicoEvolutivo from '@/components/informes/RegistrarInformePsicologicoEvolutivo.vue'
 import {mapMutations, mapState} from "vuex";
 export default {
-    props:["listaresidentes", "listaeducadores","listasociales", "listapsicologos"],
+    props:["listaresidentes"],
     components: {
         RegistrarInformeEducativoInicial,
         RegistrarInformeEducativoEvolutivo,

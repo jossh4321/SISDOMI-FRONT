@@ -15,7 +15,15 @@
            <v-stepper-content step="1">
           <div class="container-user">
             <form>
-              
+              <v-text-field
+                v-model="usuario.usuario"
+                label="Ingrese Usuario"
+                outlined
+                @input="$v.usuario.usuario.$touch()"
+                @blur="$v.usuario.usuario.$touch()"
+                :error-messages="errorNombreUsuario"
+                 color="#99FFCC"
+              ></v-text-field>
               <v-text-field
                 v-model="usuario.datos.nombre"
                 label="Ingrese los Nombres"
@@ -96,10 +104,10 @@
                   @blur="$v.usuario.datos.direccion.$touch()"
                   :error-messages="errorDireccion"
                   color="#009900"
-                  shaped
-              ></v-textarea>
-
-                 <v-text-field
+                  shaped> 
+               </v-textarea>
+                <v-text-field
+                 
                   v-model="usuario.datos.email"
                   label="Ingrese el Correo Electronico"
                   outlined
@@ -107,31 +115,53 @@
                   @blur="$v.usuario.datos.email.$touch()"
                   :error-messages="errorEmail"
                   color="#009900"
-                ></v-text-field>
-                
-                 <vue-dropzone ref="myVueDropzone"
-                    @vdropzone-success=" registerFile"
-                    @vdropzone-removed-file="removedFile"
+               ></v-text-field>
+
+                <div>
+                <vue-dropzone ref="myVueDropzone"
+                    @vdropzone-success=" afterSuccess"
+                    @vdropzone-removed-file="afterRemoved"
                     @vdropzone-mounted="mounteddropzone"
                     id="dropzone" :options="dropzoneOptions">
-                 </vue-dropzone>
-                 
+                </vue-dropzone>
+                 </div>
                   <v-card v-if="errorImagen" color="red">
                    <v-card-text class="text-center" style="color:white">Debe Subir una imagen del usuario Obligatoriamente</v-card-text>
                   </v-card>
+
+
+
+
+                    <div>
+                <vue-dropzone ref="myVueDropzoneFirma"
+                    @vdropzone-success=" afterSuccessFirma"
+                    @vdropzone-removed-file="afterRemovedFirma"
+                    @vdropzone-mounted="mounteddropzoneFirma"
+                    id="dropzone" :options="dropzoneOptions">
+                </vue-dropzone>
+                 </div>
+                  <v-card v-if="errorFirma" color="red">
+                   <v-card-text class="text-center" style="color:white">Debe Subir una Firma del usuario Obligatoriamente</v-card-text>
+                  </v-card>
+
+
+
                   <v-divider class="divider-custom"></v-divider>
-                    <v-row>
+                  <v-row>
                       <v-col>
                      <v-btn block @click="actualizarUsuarioPerfil()" color="success">
                       <v-icon left>mdi-content-save-all-outline</v-icon>
                       <span>Modificar Perfil</span>
                       </v-btn>
                      </v-col>
+                     <v-col>
                       <v-btn block @click="cerrarDialogo()" color="primary">
                      <v-icon left>mdi-close-outline</v-icon>
                      <span>Cerrar</span>
+                     
                      </v-btn>
-                    </v-row>
+                     </v-col>
+                   </v-row>
               </form>
           </div>
         </v-stepper-content>
@@ -168,11 +198,12 @@ export default {
         dictDefaultMessage:
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
       },imagen:{},
-
-
       usuario: {
+        id:"",
         usuario: "",
         clave: "",
+        estado:"",
+        rol:"", 
         datos: {
           nombre: "",
           apellido: "",
@@ -182,81 +213,132 @@ export default {
           direccion: "",
           email: "",
           imagen: "",
-        },
+          firma:"",
+         },  
       },
     };
   },
   created() {
-    this.DialogloadUsuarioModificacion();   
+       console.log(this.user)
+  this.DialogloadUsuarioModificacion(); 
+      console.log(this.usuario)
+   
+     
   },
   methods: {
-    ...mapMutations([]),
-  mounteddropzone(){
-      var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg" };
-      var url = this.usuario.datos.imagen;
-      this.$refs.myVueDropzone.manuallyAddFile(file, url);
-       this. this.usuario.datos.imagen.push(
-        this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[0]
-      );      
-    },
+    ...mapMutations(["setUser"]),
+  
  
-    async DialogloadUsuarioModificacion(){
-      var user = {};
-      await axios.get("/usuario/id?id="+this.user.id)
-      .then(res => {
-         user = res.data; 
-         user.datos.fechanacimiento = res.data.datos
+DialogloadUsuarioModificacion(){
+this.usuario.id = this.user.id;
+this.usuario.usuario=this.user.usuario;
+this.usuario.clave=this.user.clave;
+this.usuario.estado=this.user.estado;
+this.usuario.rol=this.user.rol;
+
+this.usuario.datos.nombre=this.user.datos.nombre;
+this.usuario.datos.apellido=this.user.datos.apellido;
+this.usuario.datos.fechanacimiento=this.user.datos.fechanacimiento;
+this.usuario.datos.tipodocumento=this.user.datos.tipodocumento;
+this.usuario.datos.numerodocumento=this.user.datos.numerodocumento;
+this.usuario.datos.direccion=this.user.datos.direccion;
+this.usuario.datos.email=this.user.datos.email;
+this.usuario.datos.imagen=this.user.datos.imagen;
+this.usuario.datos.firma=this.user.datos.firma;
+
+this.usuario.datos.fechanacimiento =this.usuario.datos
                   .fechanacimiento.split("T")[0];
-                   this.usuario=user;
-      })
-      .catch(err => console.log(err));
-      return user;  
-    },
-     async actualizarUsuarioPerfil(){
-       
+  },
+  
+async actualizarUsuarioPerfil(){     
        this.$v.$touch();
       if (this.$v.$invalid) {
-        await this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
-      } else {
-        
-        //console.log(this.usuario);
-        await axios.put("/Perfil/modificarperfil",this.usuario)
-          
-        await this.mensaje('success','listo','Perfil Actualizado Satisfactoriamente');
-            
+           console.log("hay errores");
+        this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
+       }else {      
+        console.log(this.usuario);
+        let usuarioA={
+           id: this.usuario.id,
+           usuario: this.usuario.usuario,
+           clave:  "",
+           datos: this.usuario.datos,
+           estado: "",
+           rol: "",       
+        }; 
+        console.log(usuarioA);      
+     await axios.put("/Perfil/modificarperfil",usuarioA)            
+        .then((res) => {
+               // res.data;
+               this.setUser(this.usuario);
+                 this.cerrarDialogo();
+                  })
+                  .catch((err) => {
+                    console.error(err);
+                  });          
+        this.mensaje('success','listo','Perfil Actualizado Satisfactoriamente',"<strong>Se redigira al home <strong>");  
+         
       }
     },
+  
      resetUsuarioValidationState() {
      this.$refs.myVueDropzone.removeAllFiles();
         this.$v.usuario.$reset();
     },  
     cerrarDialogo() {
       this.resetUsuarioValidationState();
-      this.$emit("close-dialog-update");
-    
+      this.$router.push('/dashboard/home');
+    },
+  
+   afterSuccess(file,response){
+       this.usuario.datos.imagen = file.dataURL.split(",")[1];
+       this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
+       this.imagen ={ tipo: "base64", modificado:"si"};
+    },
+    afterRemoved(file, error, xhr){
+      this.usuario.datos.imagen = "";
+       this.$v.usuario.datos.imagen.$model = "";
     },
 
-    registerFile(file, response) {
-  this.usuario.datos.imagen=file
-  consolo.log(this.usuario.datos.imagen)
-     
+///
+
+    afterSuccessFirma(file,response){
+       this.usuario.datos.firma = file.dataURL.split(",")[1];
+       this.$v.usuario.datos.firma.$model = file.dataURL.split(",")[1];
+       this.firma ={ tipo: "base64", modificado:"si"};
+    },
+    afterRemovedFirma(file, error, xhr){
+      this.usuario.datos.firma = "";
+       this.$v.usuario.datos.firma.$model = "";
     },
 
-  removedFile(file, error, xhr) {
-     this.usuario.datos.imagen={}
-     
-    },
-    async mensaje(icono, titulo, texto, footer) {
-      await this.$swal({
+///
+
+
+   mensaje(icono, titulo, texto, footer) {
+     this.$swal({
         icon: icono,
         title: titulo,
         text: texto,
         footer: footer,
-      });
+      });    
+   
     },
+mounteddropzone(){
+     console.log(this.usuario.datos.imagen)
+     var file = { size: 250, name: "Imagen de Perfil", type: "image/jpg" };
+      this.$refs.myVueDropzone.manuallyAddFile(file, this.usuario.datos.imagen,null,null,true);      
+      
+    },
+///
+  mounteddropzoneFirma(){
+     console.log(this.usuario.datos.firma)
+     var file = { size: 250, name: "Imagen de Firma", type: "image/jpg" };
+      this.$refs.myVueDropzoneFirma.manuallyAddFile(file, this.usuario.datos.firma,null,null,true);         
+    },
+////
   },
   computed: {
-    ...mapState(["usuarios"]),
+   
     ...mapGetters(["user"]),
 
     verifyColor() {

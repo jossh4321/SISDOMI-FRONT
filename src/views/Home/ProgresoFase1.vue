@@ -58,7 +58,7 @@
           <v-card class="card">
             <v-card-title
               class="justify-center"
-            >Datos generales del residente {{ residente.nombre }} {{ residente.nombre }}</v-card-title>
+            >Datos generales del residente {{ residente.nombre }} {{ residente.apellido }}</v-card-title>
 
             <VisualizadorResidente :residente="residente"></VisualizadorResidente>
 
@@ -125,22 +125,31 @@
                   :color="obtenerColorTimeLineItem(documento)"
                   icon="mdi-buffer"
                 >
-                  <v-card :class="obtenerClaseTimeLineItem(documento)" dark>
+                  <v-card  :color="obtenerClaseTimeLineItem(documento)" dark>
                     <v-card-title
                       class="justify-center"
                       style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
                     >{{titulosDoc[documento.tipo].titulo}}</v-card-title>
                     <template v-if="documento.indice == 'anterior'">
-                      <v-col cols="6" style="padding:2%">
-                        <v-btn color="warning" rounded block>
-                          <v-icon left>mdi-Edit</v-icon>Modificar
-                        </v-btn>
+                      <v-row>
+                        <v-col cols="12" xs="12" sm="6" md="6">
+                        <div style="padding:5px">
+                            <v-btn color="warning" rounded block
+                            @click="abrirDialogoModificarDocumento(titulosDoc[documento.tipo].modificar)">
+                              <v-icon left>mdi-folder-edit</v-icon>Modificar
+                            </v-btn>
+                        </div>
                       </v-col>
-                      <v-col cols="6" style="padding:2%">
-                        <v-btn color="info" rounded block>
-                          <v-icon left>mdi-information</v-icon>Ver
+                      <v-col cols="12" xs="12" sm="6" md="6">
+                         <div style="padding:5px">
+                            <v-btn color="info" rounded block
+                            @click="abrirDialogoVisualizarDocumento(titulosDoc[documento.tipo].visualizar)">
+                          <v-icon left>mdi-information</v-icon>Ver Detalle
                         </v-btn>
+                         </div>
                       </v-col>
+                      </v-row>
+                      
                     </template>
                     <template v-else-if="documento.indice == 'actual'">
                       <v-col cols="12">
@@ -162,28 +171,13 @@
                         </div>
                       </v-col>
                     </template>
+                    <v-card style="padding:5px 8px" :color="obtenerColorFooterTimeLineItem(documento)">
+                      <span>Fecha Limite Estimada: {{documento.fechaestimada | fomatoFecha}}</span>
+                      <br>
+                      <span>{{documento.fechaestimada | diasRestantes}}</span>
+                    </v-card>
                   </v-card>
                 </v-timeline-item>
-                <!--Timeline final para registro de documento de transicion
-                <v-timeline-item
-                        color="success"
-                        icon="mdi-buffer"
-                    >
-                        <v-card class="warning" dark>
-                        <v-card-title
-                        class="justify-center"
-                        style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
-                        >{{titulosDoc["DocumentoTransicion"].titulo}}</v-card-title>
-                          <v-col cols="12">
-                            <v-btn color="success" block rounded 
-                            @click="abrirDialogoRegistroDocumento(titulosDoc['DocumentoTransicion'].registrar)">
-                              <v-icon left> mdi-book-plus </v-icon>
-                                <span>Registrar</span>
-                              </v-btn
-                            >
-                          </v-col>
-                        </v-card>
-                </v-timeline-item>-->
               </v-timeline>
             </v-card>
           </v-card>
@@ -200,7 +194,10 @@
             </v-list-item>
 
             <v-divider></v-divider>
-            <v-list-item v-for="residente in residentesFase" :key="residente.id" link>
+            <v-list-item 
+              v-for="residente in residentesFase" :key="residente.id" link
+               @click="abrirProgresoFase1(residente.id)"
+              >
               <v-list-item-icon>
                 <v-icon>mdi-account-multiple</v-icon>
               </v-list-item-icon>
@@ -218,6 +215,23 @@
           :is="selectorRegistro"
           :residente="residente"
           @cerrar-modal-docf1="cerrarDialogoRegistroDocF1"
+          @actualizar-progreso-fase1="actualizarProgreso"
+        ></v-component>
+      </v-dialog>
+      <!--Dialogo de Modificacion de Documentos-->
+      <v-dialog v-model="dialogoModificarDocumentos" persistent max-width="850px">
+        <v-component
+          :is="modificarRegistro"
+          :residenteDocumento="residente"
+          @cerrar-modal-docf1="cerrarDialogoModificarDocF1"
+        ></v-component>
+      </v-dialog>
+      <!--Dialogo de Visualizar de Documentos-->
+      <v-dialog v-model="dialogoDetalleDocumentos" persistent max-width="850px">
+        <v-component
+          :is="visualizarRegistro"
+          :residente="residente"
+          @cerrar-modal-docf1="cerrarDialogoVisualizarDocF1"
         ></v-component>
       </v-dialog>
       <!--Dialogo de Fase-->
@@ -233,20 +247,37 @@
 <script>
 import VisualizadorResidente from "@/components/residentes/VisualizadorResidente.vue";
 import RegistrarFichaIngresoEducativa from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarFichaEducativaIngreso.vue";
+import ModificarFichaIngresoEducativa from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/ModificarFichaEducativaIngreso.vue";
+import VisualizarFichaIngresoEducativa from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarFichaIngresoEducativa.vue";
 import RegistrarInformeEducativoInicial from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarInformeEducativoInicial.vue";
+import ModificarInformeEducativoInicial from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/ModificarInformeEducativoInicial.vue";
+import VisualizarInformeEducativoInicial from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarInformeEducativoInicial.vue";
 import RegistrarPlanIntervencionEducativoIndividual from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarPlanIntervencionIndividualEducativo.vue";
+import ModificarPlanIntervencionEducativoIndividual from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/ModificarPlanIntervencionEducativoIndividual.vue";
+import VisualizarPlanIntervencionEducativoIndividual from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarPlanIntervencionEducativoIndividual.vue";
 import RegistrarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/RegistrarInformeSeguimientoEducativo.vue";
+import ModificarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/ModificarInformeSeguimientoEducativo.vue";
+import VisualizarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarInformeSeguimientoEducativo.vue";
 import RegistrarPromocionFase2 from "@/components/DocumentosInterfazTratamiento/Fase I/RegistrarPromocionFase2.vue";
-
+import {mapMutations, mapState} from "vuex";
 import axios from "axios";
+import moment from "moment";
 export default {
   name: "ProgresoResidenteF1",
   components: {
     VisualizadorResidente,
     RegistrarFichaIngresoEducativa,
+    ModificarFichaIngresoEducativa,
+    VisualizarFichaIngresoEducativa,
     RegistrarInformeEducativoInicial,
+    ModificarInformeEducativoInicial,
+    VisualizarInformeEducativoInicial,
     RegistrarPlanIntervencionEducativoIndividual,
+    ModificarPlanIntervencionEducativoIndividual,
+    VisualizarPlanIntervencionEducativoIndividual,
     RegistrarInformeSeguimientoEducativo,
+    ModificarInformeSeguimientoEducativo,
+    VisualizarInformeSeguimientoEducativo,
     RegistrarPromocionFase2
   },
   data() {
@@ -255,35 +286,38 @@ export default {
       residente: "",
       residenteProm: {},
       residentesFase: [],
-      fase: [],
       cargaProgreso: false,
       selectorRegistro: "",
+      modificarRegistro: "",
+      visualizarRegistro:"",
       dialogoRegistroDocumentos: false,
+      dialogoModificarDocumentos: false,
+      dialogoDetalleDocumentos : false,
       dialogopromocion: false,
       titulosDoc: {
         FichaEducativaIngreso: {
           titulo: "Ficha Educativa de Ingreso",
           registrar: "RegistrarFichaIngresoEducativa",
-          modificar: "",
-          visualizar: ""
+          modificar: "ModificarFichaIngresoEducativa",
+          visualizar: "VisualizarFichaIngresoEducativa"
         },
         InformeEducativoInicial: {
           titulo: "Informe Educativo Inicial",
           registrar: "RegistrarInformeEducativoInicial",
-          modificar: "",
-          visualizar: ""
+          modificar: "ModificarInformeEducativoInicial",
+          visualizar: "VisualizarInformeEducativoInicial"
         },
         PlanIntervencionIndividualEducativo: {
           titulo: "Plan de Intervencion Educativo Individual",
           registrar: "RegistrarPlanIntervencionEducativoIndividual",
-          modificar: "",
-          visualizar: ""
+          modificar: "ModificarPlanIntervencionEducativoIndividual",
+          visualizar: "VisualizarPlanIntervencionEducativoIndividual"
         },
         InformeSeguimientoEducativo: {
           titulo: "Informe de Seguimiento Educativo",
           registrar: "RegistrarInformeSeguimientoEducativo",
-          modificar: "",
-          visualizar: ""
+          modificar: "ModificarInformeSeguimientoEducativo",
+          visualizar: "VisualizarInformeSeguimientoEducativo"
         }
       }
     };
@@ -291,7 +325,7 @@ export default {
   async created() {
     var miruta = "/residente/progreso/" + this.$route.params.id;
     await axios
-      .get("/residente/all/fase/2")
+      .get("/residente/all/fase/1")
       .then(res => {
         this.residentesFase = res.data;
         //console.log(res.data);
@@ -302,14 +336,16 @@ export default {
       .then(res => {
         this.residente = res.data;
         this.residente.id = this.$route.params.id;
+        console.log(res.data);
       })
       .catch(err => console.log(err));
-    this.fase = this.obtenerSecuenciaDocumentos()[0];
+    this.setFase(this.obtenerSecuenciaDocumentos()[0]);
     this.cargaProgreso = true;
-    console.log("LSITA FASES");
+    console.log("LISTA FASES");
     console.log(this.fase);
   },
   methods: {
+    ...mapMutations(["setFase"]),
     obtenerSecuenciaDocumentos() {
       var residenteFaseDoc = this.residente;
       var listaFases = residenteFaseDoc.fases.progreso;
@@ -336,8 +372,18 @@ export default {
         return fase;
       });
       return listaFases;
-    },
-    obtenerEstadoDocumentosFaseArea(listaDocumentos) {
+    },async actualizarProgreso(){
+       var miruta = "/residente/progreso/" + this.residente.id;
+       await axios
+        .get(miruta)
+        .then(res => {
+          this.residente = res.data;
+          this.residente.id = this.$route.params.id;
+          console.log(res.data);
+        })
+        .catch(err => console.log(err));
+        this.setFase(this.obtenerSecuenciaDocumentos()[0]);
+    },obtenerEstadoDocumentosFaseArea(listaDocumentos) {
       var flag = false;
       listaDocumentos = listaDocumentos.map(val => {
         if (val.estado.toLowerCase() == "pendiente" && flag == false) {
@@ -354,10 +400,17 @@ export default {
     },
     obtenerClaseTimeLineItem(documento) {
       return documento.indice == "anterior"
-        ? "success"
+        ? "#71c174"
         : documento.indice == "actual"
-        ? "warning"
-        : "info";
+        ? "#ffc61a"
+        : "#3da2f5";
+    },
+    obtenerColorFooterTimeLineItem(documento){
+        return documento.indice == "anterior"
+        ? "#2f6a31"
+        : documento.indice == "actual"
+        ? "#664d00"
+        : "#064579";
     },
     obtenerColorTimeLineItem(documento) {
       return documento.indice == "anterior"
@@ -374,17 +427,29 @@ export default {
       this.dialogoRegistroDocumentos = false;
       this.selectorRegistro = "";
     },
+    cerrarDialogoModificarDocF1() {
+      this.dialogoModificarDocumentos = false;
+      this.modificarRegistro = "";
+    },
+    cerrarDialogoVisualizarDocF1() {
+      this.dialogoDetalleDocumentos = false;
+      this.visualizarRegistro = "";
+    },
     cerrarDialogoPromocion() {
       this.dialogopromocion = false;
     },
     navegarto(ruta) {
       this.$router.push(ruta);
     },
+    abrirProgresoFase1(id) {
+      var rutacompleta = "/dashboard/ProgresoF1Residente/" + id;
+      this.$router.push(rutacompleta);
+      window.location.reload(true);
+    },
     async registrarDocumentoTransicionFase() {
       this.residenteProm = await this.loadResidenteDetalle(this.residente.id);
       this.dialogopromocion = true;
     },
-
     async loadResidenteDetalle(idresidente) {
       var user = {};
       await axios
@@ -399,8 +464,18 @@ export default {
       console.log(user);
       return user;
     },
+    abrirDialogoModificarDocumento(componente) {
+      console.log(componente);
+      this.modificarRegistro = componente;
+      this.dialogoModificarDocumentos = true;
+    },
+    abrirDialogoVisualizarDocumento(componente) {
+      this.visualizarRegistro = componente;
+      this.dialogoDetalleDocumentos = true;
+    },
   },
   computed: {
+    ...mapState(['fase']),
     obtenerDocumentosCompletos () {
       var numero = this.fase.educativa.documentos.filter(documento => documento.estado !== "Pendiente" ).length;
       return numero;
@@ -415,7 +490,20 @@ export default {
       return retorno
     },
   },
-  filters: {}
+  filters: {
+    fomatoFecha: (fecha) =>{
+      
+      var formato = moment(fecha.split('T')[0]);
+      return formato.format("ll");
+    },diasRestantes:(fecha)=>{
+        var fechaActual = moment(new Date());
+        var fechaEstimada = moment(fecha.split('T')[0]);
+        return fechaActual.isBefore(fechaEstimada)?
+         `Quedan ${fechaEstimada.diff(fechaActual, 'days')} dias restantes`:
+         `Se retraso ${-fechaEstimada.diff(fechaActual, 'days')} dias`
+    }
+
+  }
 };
 </script>
 <style scoped>

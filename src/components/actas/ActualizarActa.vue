@@ -65,7 +65,7 @@
                 </template>
               </v-autocomplete>
 
-              <v-menu
+              <!-- <v-menu
                 v-model="datemenu"
                 :close-on-content-click="false"
                 :nudge-right="40"
@@ -97,7 +97,7 @@
                   @input="datemenu = false"
                   locale="es-es"
                 ></v-date-picker>
-              </v-menu>
+              </v-menu> -->
 
               <v-text-field
                 v-model="actaexternamiento.contenido.entidaddisposicion"
@@ -149,19 +149,53 @@
                 color="#009900"
               ></v-text-field>
 
-              <!-- <div>
-              <vue-dropzone ref="myVueDropzone"
-            @vdropzone-success="afterSuccess"
-            @vdropzone-removed-file="afterRemoved"
-            @vdropzone-mounted="mounteddropzone"
-            id="dropzone" :options="dropzoneOptions">
-            </vue-dropzone>
-          </div> -->
+            
+
+          <v-card
+                  style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
+                >
+                <v-card class="subcard">
+                          <v-card-title>Datos del Usuario</v-card-title>
+                          <v-card class="subcard"  style="margin-bottom:7px" color="#e6f3ff">
+                              <v-text-field
+                                  v-model="this.user.usuario"
+                                  label="Autor del Informe de Incidencia"
+                                  outlined
+                                  color="info"
+                                  readonly
+                                ></v-text-field>
+                          </v-card >
+                               <v-card class="subcard" color="#e6f3ff">
+                                   <v-text-field
+                                    v-model="this.user.rol.nombre"
+                                    label="Cargo del Autor"
+                                    outlined
+                                    color="info"
+                                    readonly
+                                  ></v-text-field>
+                               </v-card>
+                        </v-card>
+                  <v-row>
+                    <v-col :cols="12" align="center">
+                      <div>
+
+                        <v-card-text>
+                              <img
+                                width="240"
+                                height="170"
+                                :src="this.user.datos.firma"
+                                alt=""
+                              />
+                        </v-card-text>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-card>
 
               <v-divider class="divider-custom"></v-divider>
               <v-row>
                 <v-col>
-                  <v-btn block @click="actualizarUsuario()" color="warning">
+                  <v-btn block @click="actualizarActa()" color="warning">
                     <v-icon left>mdi-content-save-all-outline</v-icon>
                     <span>Actualizar Acta</span>
                   </v-btn>
@@ -187,6 +221,7 @@ import "vue2-dropzone/dist/vue2Dropzone.min.css";
 import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, email, helpers } from "vuelidate/lib/validators";
 import moment from "moment";
+  
 export default {
   //  props:["listaActas","actaexternamiento","usuario"],
   props: ["listaActas", "actaexternamiento"],
@@ -202,12 +237,14 @@ export default {
         thumbnailWidth: 250,
         maxFilesize: 3.0,
         maxFiles: 1,
-        acceptedFiles: ".jpg",
+        acceptedFiles:".jpg, .png, jpeg",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
+     
         dictDefaultMessage:
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
       },
+          imagen: { tipo: "url", modificado: "no" },
       //imagen:{tipo:"url",modificado:"no"},
       /*  //actaexternamiento: {
         
@@ -232,22 +269,23 @@ export default {
   },
   created() {
     console.log(this.actaexternamiento);
-    this.actaexternamiento.fechacreacion = this.actaexternamiento.fechacreacion.split( "T" )
+    
   },
   mounted() {},
   methods: {
     ...mapMutations(["setUsuarios", "addUsuario", "replaceUsuario"]),
     mounteddropzone() {
-      var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg" };
+      var file = { size: 123, name: "Imagen de Perfil", type: "image/jpg"};
       this.$refs.myVueDropzone.manuallyAddFile(
         file,
         this.actaexternamiento.contenido.firmas,
         null,
         null,
+        
         true
       );
     },
-    async actualizarUsuario() {
+    async actualizarActa() {
       this.$v.$touch();
       if (this.$v.$invalid) {
         console.log("hay errores");
@@ -264,12 +302,7 @@ export default {
 
         await axios
           .put(
-            "/actaexternamiento/update?tipo=" +
-              this.firmas.tipo +
-              "&modificado=" +
-              this.firmas.modificado,
-            this.actaexternamiento
-          )
+            "/actaexternamiento/update", this.actaexternamiento) 
           .then((res) => {
             var resultado = res.data;
 
@@ -286,7 +319,7 @@ export default {
       }
     },
     resetUsuarioValidationState() {
-      this.$refs.myVueDropzone.removeAllFiles();
+      
       this.$v.actaexternamiento.$reset();
     },
     cerrarDialogo() {
@@ -294,12 +327,9 @@ export default {
       this.$emit("close-dialog-update");
     },
     afterSuccess(file, response) {
-      this.actaexternamiento.contenido.firmas = file.dataURL.split(",")[1];
-      this.$v.actaexternamiento.contenido.firmas.$model = file.dataURL.split(
-        ","
-      )[1];
-      this.firmas = { tipo: "base64", modificado: "si" };
-    },
+      console.log(file);
+      this.actaexternamiento.contenido.firmas.push(file.dataURL.split(",")[1]);
+},
     afterRemoved(file, error, xhr) {
       this.actaexternamiento.contenido.firmas = "";
       this.$v.actaexternamiento.contenido.firmas.$model = "";
@@ -397,9 +427,7 @@ export default {
         idresidente: {
           required,
         },
-        fechacreacion: {
-          required,
-        },
+        
         contenido: {
           entidaddisposicion: {
             required,
@@ -432,11 +460,13 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+  
 }
 
 .dropzone-custom-title {
   margin-top: 0;
   color: #00b782;
+  
 }
 
 .subtitle {

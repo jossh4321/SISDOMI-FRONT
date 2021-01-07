@@ -77,6 +77,7 @@
                 :error-messages="errorAñoEscolar"
                 label="Año Escolar"
                 outlined
+                readonly
                 color="#009900"
               ></v-text-field>
               <!--Comienza el cuadro de Fima -->
@@ -481,6 +482,21 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="340px">
+          <v-card-title class="justify-center">Registrando Informe de Seguimento Educativo</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>
   </v-card>
 </template>
 
@@ -510,6 +526,7 @@ export default {
   },
   data() {
     return {
+      cargaRegistro:false,
       datemenu: false,
       dialog: false, // dialogo firma
       dialog1: false, //dialogo notas
@@ -577,15 +594,14 @@ export default {
         fechacreacion: null,
         area: "educativa",
         fase: "1",
-        idresidente: "",
+        idresidente: this.residente.id,
         estado: "creado",
         contenido: {
-          modalidad: "",
-          nivel: "",
-          grado: "",
-          añoescolar: "",
+          modalidad: "EBA",
+          nivel: "PRIMARIA",
+          grado: "1",
+          añoescolar: new Date().getFullYear().toString(),
           trimestre: [],
-          //firmas: [],
           codigodocumento: "",
         },
       },
@@ -595,7 +611,7 @@ export default {
     ...mapMutations(["addSeguimiento"]),
     cerrarDialogo() {
       this.step = 1;
-      this.$emit("close-dialog-save");
+      this.$emit("cerrar-modal-docf1");
     },
     cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
@@ -606,18 +622,6 @@ export default {
       this.dialog1 = true;
       console.log(this.notas, index);
     },
-    /*
-    afterSuccess(file, response) {
-      console.log(file);
-      this.firma.urlfirma = file.dataURL.split(",")[1];
-      //this.$v.firma.urlfirma.$model = file.dataURL.split(",")[1];
-      //console.log(file.dataURL.split(",")[1]);
-    },
-
-    afterRemoved(file, error, xhr) {
-      this.firma.urlfirma = "";
-    },*/
-
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
         icon: icono,
@@ -640,12 +644,15 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+        this.cargaRegistro = true;
         console.log("no hay errores");
         console.log(this.seguimiento);
+        this.seguimiento.creadordocumento = this.user.id;
         await axios
           .post("/SeguimientoEducativo/informese", this.seguimiento)
           .then((res) => {
-            this.addSeguimiento(res.data);
+            this.$emit("actualizar-progreso-fase1");
+            this.cargaRegistro = false;
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -653,21 +660,11 @@ export default {
           "success",
           "listo",
           "Informe Seguimiento educativo registrado Satisfactoriamente",
-          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+          "<strong>Se redirigira a la Interfaz de Progreso<strong>"
         );
-        this.$emit("cargarSeguimiento");
       }
-    },/*
-    guardarSeguimientoFirma() {
-      this.$v.seguimiento.contenido.firmas.$touch();
-      if (!this.$v.seguimiento.contenido.firmas.$invalid) {
-        this.$v.firma.$reset();
-        this.dialog = false;
-      }
-    },*/
+    },
     cerrarSeguimientoFirma() {
-      //this.$v.seguimiento.contenido.firmas.$reset();
-      //this.$v.firma.$reset();
       this.dialog = false;
     },
     guardarSeguimientoNotas() {
@@ -675,35 +672,6 @@ export default {
       this.$v.trimestre.$reset();
       this.dialog1 = false;
     },
-
-    ///metodo para agregar firma residente
-    /*guardarFirma() {
-      this.$v.firma.$touch();
-      if (!this.$v.firma.$invalid) {
-        let firmad = {
-          urlfirma: this.firma.urlfirma,
-          nombre: this.firma.nombre,
-          cargo: this.firma.cargo,
-        };
-
-        this.seguimiento.contenido.firmas.push(firmad);
-        console.log(this.seguimiento.contenido.firmad);
-        this.$refs.myVueDropzone.removeAllFiles();
-
-        this.firma.urlfirma = "";
-        this.firma.nombre = "";
-        this.firma.cargo = "";
-        !this.$v.firma.$reset();
-      }
-    },
-    eliminarFirma(index) {
-      this.seguimiento.contenido.firmas.splice(index, 1);
-    },
-    verFirma(index) {
-      console.log(this.seguimiento.contenido.firmas[index].urlfirma);
-      this.imagen = this.seguimiento.contenido.firmas[index].urlfirma;
-      this.dialogVistaPreviaFirma = true;
-    },*/
     guardarTrimestre() {
       this.$v.trimestre.$touch();
       if (!this.$v.trimestre.$invalid) {
@@ -738,9 +706,7 @@ export default {
         this.seguimiento.contenido.trimestre[this.index].puntajes.push(
           puntajesd
         );
-
         console.log(this.trimestre.puntajes);
-
         this.puntajes.area = "";
         this.puntajes.promedio = "";
         !this.$v.puntajes.$reset();
@@ -759,6 +725,7 @@ export default {
         }
   },
   computed: {
+    ...mapGetters(["user"]),
     verifyColor() {
       return "red";
     },
@@ -889,9 +856,6 @@ export default {
     return {
       seguimiento: {
         historialcontenido: [],
-        creadordocumento: {
-          //required
-        },
         idresidente: {
           required,
         },
