@@ -43,27 +43,6 @@
                 readonly
               ></v-textarea>
 
-              <v-menu
-                v-model="datemenu"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="informe.fechacreacion"
-                    label="Fecha de Evaluación"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                    color="#009900"
-                  ></v-text-field>
-                </template>
-              </v-menu>
-
               <v-textarea
                 label="Situación Académica"
                 v-model="informe.contenido.situacionacademica"

@@ -116,6 +116,7 @@
                   :error-messages="errorEmail"
                   color="#009900"
                ></v-text-field>
+
                 <div>
                 <vue-dropzone ref="myVueDropzone"
                     @vdropzone-success=" afterSuccess"
@@ -127,6 +128,24 @@
                   <v-card v-if="errorImagen" color="red">
                    <v-card-text class="text-center" style="color:white">Debe Subir una imagen del usuario Obligatoriamente</v-card-text>
                   </v-card>
+
+
+
+
+                    <div>
+                <vue-dropzone ref="myVueDropzoneFirma"
+                    @vdropzone-success=" afterSuccessFirma"
+                    @vdropzone-removed-file="afterRemovedFirma"
+                    @vdropzone-mounted="mounteddropzoneFirma"
+                    id="dropzone" :options="dropzoneOptions">
+                </vue-dropzone>
+                 </div>
+                  <v-card v-if="errorFirma" color="red">
+                   <v-card-text class="text-center" style="color:white">Debe Subir una Firma del usuario Obligatoriamente</v-card-text>
+                  </v-card>
+
+
+
                   <v-divider class="divider-custom"></v-divider>
                   <v-row>
                       <v-col>
@@ -279,6 +298,22 @@ async actualizarUsuarioPerfil(){
       this.usuario.datos.imagen = "";
        this.$v.usuario.datos.imagen.$model = "";
     },
+
+///
+
+    afterSuccessFirma(file,response){
+       this.usuario.datos.firma = file.dataURL.split(",")[1];
+       this.$v.usuario.datos.firma.$model = file.dataURL.split(",")[1];
+       this.firma ={ tipo: "base64", modificado:"si"};
+    },
+    afterRemovedFirma(file, error, xhr){
+      this.usuario.datos.firma = "";
+       this.$v.usuario.datos.firma.$model = "";
+    },
+
+///
+
+
    mensaje(icono, titulo, texto, footer) {
      this.$swal({
         icon: icono,
@@ -294,7 +329,13 @@ mounteddropzone(){
       this.$refs.myVueDropzone.manuallyAddFile(file, this.usuario.datos.imagen,null,null,true);      
       
     },
-
+///
+  mounteddropzoneFirma(){
+     console.log(this.usuario.datos.firma)
+     var file = { size: 250, name: "Imagen de Firma", type: "image/jpg" };
+      this.$refs.myVueDropzoneFirma.manuallyAddFile(file, this.usuario.datos.firma,null,null,true);         
+    },
+////
   },
   computed: {
    
