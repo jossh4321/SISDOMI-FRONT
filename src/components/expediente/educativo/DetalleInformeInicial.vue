@@ -35,7 +35,7 @@
                   <label class="font-weight-medium label-title"
                     >Educador responsable</label
                   >
-                  <p class="label-text">{{ documento.contenido.evaluador }}</p>
+                  <p class="label-text">{{ documento.creador.nombres }}</p>
                 </v-card-text>
               </v-col>
               <v-col cols="12" sm="6" md="6" lg="6" xl="6">
@@ -112,7 +112,7 @@
               </v-col>
               <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                 <datos-multiple-firma
-                  :firmas="documento.contenido.firmas"
+                  :firmas="firmas"
                 ></datos-multiple-firma>
               </v-col>
             </v-row>
@@ -145,30 +145,19 @@ export default {
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
     },
-    async obtainEvaluater() {
-      await axios
-        .get("/usuario/id?id=" + this.documento.contenido.evaluador)
-        .then((res) => {
-          this.documento.contenido.evaluador =
-            res.data.datos.nombre + " " + res.data.datos.apellido;
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    },
   },
   props: {
     documento: {
       type: Object,
     },
+    firmas: {
+      type: Array
+    }
   },
   components: {
     DatosMultipleSimple,
     DatosMultipleFirma,
     DatosMultipleAnexo,
-  },
-  async created() {
-    await this.obtainEvaluater();
   },
 };
 </script>
