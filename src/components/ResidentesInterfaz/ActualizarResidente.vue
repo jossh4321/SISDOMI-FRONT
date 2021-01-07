@@ -612,7 +612,11 @@ export default {
     this.residente = await this.loadResidenteDetalle(this.idresidente);
     await this.obtenerUbigeo();    
     await this.obtenerDepartamentos();
-    this.numerofase = this.residente.progreso[this.residente.progreso.length - 1].fase
+    this.numerofase = this.residente.progreso[this.residente.progreso.length - 1].fase;
+    for (var i = 0; i < this.residente.progreso.length; i++) {
+       this.residente.progreso[i].fechaingreso = this.residente.progreso[i].fechaingreso.split("T")[0];
+       this.residente.progreso[i].fechafinalizacion = this.residente.progreso[i].fechafinalizacion.split("T")[0];
+    }   
     console.log(this.numerofase);
   },
    watch: {
