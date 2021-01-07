@@ -519,6 +519,21 @@
       </v-stepper-items>
     </v-stepper>
     </v-card-text>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Actualizando el residente</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+    </v-dialog> 
   </v-card>
 </template>
 <script>
@@ -541,6 +556,7 @@ export default {
   props: ["idresidente"],
   data() {
     return {
+      cargaRegistro:false,
       numerofase: 1,
       dialogTelefonoReferencial: false, ///abrir modal de numeros
       dialogProgresoFase: false, ///abrir modal de progreso
@@ -796,6 +812,7 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+        this.cargaRegistro = true;
         var residenteFase = {
           residente: this.residente,
           contenidoFase: this.contenidoFase,
@@ -812,6 +829,7 @@ export default {
             var info = res.data;
             console.log(info);
             this.replaceResidente(info);
+            this.cargaRegistro = false;
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));

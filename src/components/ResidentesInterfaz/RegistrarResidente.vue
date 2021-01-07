@@ -514,8 +514,23 @@
             </div>
           </v-stepper-content>
         </v-stepper-items>
-      </v-stepper>
+      </v-stepper> 
     </v-card-text>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Registrando el residente</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog> 
   </v-card>
 </template>
 
@@ -538,6 +553,7 @@ import moment from "moment";
 export default {
   data() {
     return {
+      cargaRegistro:false,
       dialogTelefonoReferencial: false, ///abrir modal de numeros
       dialogProgresoFase: false, ///abrir modal de progreso
       datemenu: false, ///fecha de nacimiento
@@ -870,6 +886,7 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+        this.cargaRegistro = true;
         this.residente.idcreador = "";
         this.residente.observaciones = "";
         this.residente.firma = {
@@ -889,6 +906,7 @@ export default {
             var info = res.data;
             console.log(info);
             this.addResidente(info);
+            this.cargaRegistro = false;
             this.cerrarDialogo();
           })
           .catch(err => console.log(err));
