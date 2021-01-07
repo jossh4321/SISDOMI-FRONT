@@ -898,7 +898,6 @@ components:{
         creadordocumento:{
           //required
         },
-        fechacreacion:null,
         contenido:{
           ultimaie:{
             required,
