@@ -1,17 +1,20 @@
 <template>
   <v-card>
-    <v-card-title class="justify-center">Actualizar Residentes</v-card-title>
+    <v-card-title class="justify-center">Registrar Residente</v-card-title>
     <v-card-text>
-    <v-stepper v-model="step">
-      <v-stepper-header>
-        <v-stepper-step editable step="1"> Datos Generales </v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step editable step="2"> Datos Especificos </v-stepper-step>
-      </v-stepper-header>
-      <v-stepper-items>
-        <v-stepper-content step="1">
-          <div class="container-user">
-            <form style="margin-top: 15px">
+      <v-stepper v-model="step">
+        <v-stepper-header>
+          <v-stepper-step editable step="1">Datos Generales</v-stepper-step>
+
+          <v-divider></v-divider>
+          <v-stepper-step editable step="2">Datos Especificos</v-stepper-step>
+        </v-stepper-header>
+        <!--COMIENZA LA PLANTILLA DEL STEPER -->
+        <v-stepper-items>
+          <v-stepper-content step="1">
+            <div class="container-user">
+              <form style="margin-top: 15px">
+                <!--aQUI ESTARA LO Q  CONTENDRA -->
                 <v-text-field
                   v-model.trim="residente.nombre"
                   label="Ingrese el nombre"
@@ -30,7 +33,7 @@
                   @blur="$v.residente.apellido.$touch()"
                   :error-messages="errorApellido"
                 ></v-text-field>
-               <v-row>
+                <v-row>
                   <v-col>
                     <v-select
                       :items="['Masculino', 'Femenino']"
@@ -108,7 +111,7 @@
                   @blur="$v.residente.lugarNacimiento.$touch()"
                   :error-messages="errorLugarNacimiento"
                 ></v-text-field>
-              <!--NUMEROS TELEFONO -->
+
                 <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
                   <v-card-title>
                     <v-row>
@@ -241,8 +244,6 @@
                     </v-card>
                   </v-dialog>
                 </v-row>
-              <!--FIN NUMEROS TELEFONO -->
-              <!--PROGRESO RESIDENTE -->
                 <v-row>
                   <v-col>
                     <v-btn block @click="cerrarDialogo()" color="primary">
@@ -258,71 +259,68 @@
                     </v-btn>
                   </v-col>
                 </v-row>
-            </form>
-          </div>
-        </v-stepper-content>
-        <v-stepper-content step="2"
-          ><!--CONTIENE LOS STEPPERS 2 -->
-          <div class="container-user">
-            <form>
-              <h4>Ubigeo</h4>
-              <v-row>
-                <v-col>
-                  <v-autocomplete
-                    :items="this.departamentos"
-                    filled
-                    dense
-                    v-model="idDepartamento"
-                    outlined
-                    color="#009900"
-                    label="Departamento"
-                    item-text="nombreDepartamento"
-                    item-value="idDepartamento"
-                    @change="obtenerProvincias()"
-                    @input="$v.idDepartamento.$touch()"
-                    @blur="$v.idDepartamento.$touch()"
-                    :error-messages="errorDepartamento"
-                  >
-                  </v-autocomplete>
-                </v-col>
-                <v-col>
-                  <v-autocomplete
-                    :items="this.provincias"
-                    filled
-                    dense
-                    outlined
-                    color="#009900"
-                    label="Provincia"
-                    v-model="idProvincia"
-                    item-text="nombreProvincia"
-                    item-value="idProvincia"
-                    @change="obtenerDistritos()"
-                    @input="$v.idProvincia.$touch()"
-                    @blur="$v.idProvincia.$touch()"
-                    :error-messages="errorProvincia"
-                  >
-                  </v-autocomplete>
-                </v-col>
-                <v-col>
-                  <v-autocomplete
-                    :items="this.distritos"
-                    filled
-                    dense
-                    outlined
-                    color="#009900"
-                    label="Distrito"
-                    v-model="residente.ubigeo"
-                    @input="$v.residente.ubigeo.$touch()"
-                    @blur="$v.residente.ubigeo.$touch()"
-                    :error-messages="errorDistrito"
-                    item-text="nombreDistrito"
-                    item-value="idDistrito"
-                  >
-                  </v-autocomplete>
-                </v-col>
-              </v-row>
+              </form>
+            </div>
+          </v-stepper-content>
+          <v-stepper-content step="2">
+            <div class="container-user">
+              <form>
+                <!--aQUI ESTARA LO Q  CONTENDRA -->
+                <h4>Ubigeo</h4>
+                <v-row>
+                  <v-col>
+                    <v-autocomplete
+                      :items="this.departamentos"
+                      filled
+                      dense
+                      v-model="idDepartamento"
+                      outlined
+                      color="#009900"
+                      label="Departamento"
+                      item-text="nombreDepartamento"
+                      item-value="idDepartamento"
+                      @change="obtenerProvincias()"
+                      @input="$v.idDepartamento.$touch()"
+                      @blur="$v.idDepartamento.$touch()"
+                      :error-messages="errorDepartamento"
+                    ></v-autocomplete>
+                  </v-col>
+                  <v-col>
+                    <v-autocomplete
+                      :items="this.provincias"
+                      filled
+                      dense
+                      outlined
+                      color="#009900"
+                      label="Provincia"
+                      v-model="idProvincia"
+                      item-text="nombreProvincia"
+                      item-value="idProvincia"
+                      @change="obtenerDistritos()"
+                      @input="$v.idProvincia.$touch()"
+                      @blur="$v.idProvincia.$touch()"
+                      :error-messages="errorProvincia"
+                    ></v-autocomplete>
+                  </v-col>
+                  <v-col>
+                    <v-autocomplete
+                      :items="this.distritos"
+                      filled
+                      dense
+                      outlined
+                      color="#009900"
+                      label="Distrito"
+                      v-model="residente.ubigeo"
+                      @input="$v.residente.ubigeo.$touch()"
+                      @blur="$v.residente.ubigeo.$touch()"
+                      :error-messages="errorDistrito"
+                      item-text="nombreDistrito"
+                      item-value="idDistrito"
+                    ></v-autocomplete>
+                  </v-col>
+                </v-row>
 
-              <v-text-field
+                <v-text-field
                   v-model="residente.juzgadoProcedencia"
                   outlined
                   @input="$v.residente.juzgadoProcedencia.$touch()"
@@ -330,8 +328,8 @@
                   :error-messages="errorJuzgadoProcedencia"
                   label="Ingrese el Juzgado de Procedencia"
                   color="#009900"
-              ></v-text-field>
-              <!--FECHA INGRESO -->
+                ></v-text-field>
+
                 <v-row>
                   <v-col>
                     <v-menu
@@ -387,28 +385,28 @@
                     ></v-select>-->
                   </v-col>
                 </v-row>
-                <!--acabo  -->
 
-              <v-textarea
-                v-model="residente.motivoIngreso"
-                @input="$v.residente.motivoIngreso.$touch()"
-                @blur="$v.residente.motivoIngreso.$touch()"
-                label="Ingrese el Motivo de Ingreso"
-                color="#009900"
-              ></v-textarea>
-                <v-select
-                  v-model="numerofase"
-                  :items="itemsFaseInicial"
-                  label="Fase actual"
+                <v-textarea
+                  v-model="residente.motivoIngreso"
                   outlined
-                  readonly
+                  @input="$v.residente.motivoIngreso.$touch()"
+                  @blur="$v.residente.motivoIngreso.$touch()"
+                  label="Ingrese el Motivo de Ingreso"
+                  color="#009900"
+                ></v-textarea>
+
+                <v-select
+                  :items="itemsFaseInicial"
+                  label="Seleccione la fase inicial"
+                  outlined
+                  @change="RefrescarProgreso"
                   color="#009900" 
-                ></v-select>    
-              <!--------AQUI esta  EL cuadro de progreso -->
+                ></v-select>
+
                 <v-card style="margin-bottom: 20px;width:100%;padding:5px 5px;background-color:#EAEAEA">
                   <v-card-title
                     style="font-size:22px;padding: 10px 10px;"
-                  >Progreso de fase</v-card-title>
+                  >Progreso de fase inicial</v-card-title>
                   <!-- Cabecera -->
                   <v-card
                     elevation="0"
@@ -497,30 +495,30 @@
                     </v-card-text>
                   </v-card>
                 </v-card>
-              <!--Aqui acaba -->
-              <v-row>
-                <!-- termina le texto -->
-                <v-col>
-                  <v-btn block @click="modificarResidente()" color="success">
-                    <v-icon left>mdi-page-next-outline</v-icon>
-                    <span>Modificar Residente</span>
-                  </v-btn>
-                </v-col>
-                <v-col>
-                  <v-btn block @click="cerrarDialogo()" color="primary">
-                    <v-icon left>mdi-close-outline</v-icon>
-                    <span>Cerrar</span>
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </form>
-          </div>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
+
+                <v-row>
+                  <v-col>
+                    <v-btn block @click="cerrarDialogo()" color="primary">
+                      <v-icon left>mdi-close-outline</v-icon>
+                      <span>Cerrar</span>
+                    </v-btn>
+                  </v-col>
+                  <v-col>
+                    <v-btn block @click="registrarResidente()" color="success">
+                      <v-icon left>mdi-content-save-all-outline</v-icon>
+                      <span>Registrar Residente</span>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </form>
+            </div>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
     </v-card-text>
   </v-card>
 </template>
+
 <script>
 const m = moment();
 import axios from "axios";
@@ -538,10 +536,8 @@ import {
 } from "vuelidate/lib/validators";
 import moment from "moment";
 export default {
-  props: ["idresidente"],
   data() {
     return {
-      numerofase: 1,
       dialogTelefonoReferencial: false, ///abrir modal de numeros
       dialogProgresoFase: false, ///abrir modal de progreso
       datemenu: false, ///fecha de nacimiento
@@ -609,94 +605,113 @@ export default {
     };
   },
   async created() {
-    this.residente = await this.loadResidenteDetalle(this.idresidente);
-    await this.obtenerUbigeo();    
-    await this.obtenerDepartamentos();
-    this.numerofase = this.residente.progreso[this.residente.progreso.length - 1].fase
-    console.log(this.numerofase);
+    this.obtenerDepartamentos();
   },
-   watch: {
+  watch: {
     verificarPrevicion() {}
   },
   methods: {
-    ...mapMutations(["replaceResidente"]),
-    async loadResidenteDetalle(idresidente) {
-      var user = {};
-      await axios
-        .get("/residente/id?id=" + idresidente)
-        .then((res) => {
-          console.log(res);
-          user = res.data;
-          user.fechaNacimiento = user.fechaNacimiento.split("T")[0];
-          user.fechaIngreso = user.fechaIngreso.split("T")[0];
-        })
-        .catch((err) => console.log(err));
-      console.log(user);     
-      return user;
-    },
-    async obtenerDepartamentos() {
-      await axios
-        .get("/ubigeo/allDepartamentos")
-        .then((res) => {
-          var info = {};
-          info = res.data;
-          this.departamentos = res.data;
-          console.log("departamentos");
-          console.log(this.departamentos);
-          this.obtenerProvincias();
-        })
-        .catch((err) => console.log(err));
-    },
-    async obtenerProvincias() {
-      await axios
-        .get(`/ubigeo/provincias/departamento/${this.idDepartamento}`)
-        .then((res) => {
-          var info = {};
-          info = res.data;
-          console.log(res.data);
-          this.provincias = res.data;
-          this.obtenerDistritos();
-        })
-        .catch((err) => console.log(err));
-    },
-    async obtenerDistritos() {
-      await axios
-        .get(`/ubigeo/distritos/provincia/${this.idProvincia}`)
-        .then((res) => {
-          var info = {};
-          info = res.data;
-          this.distritos = res.data;
-        })
-        .catch((err) => console.log(err));
-    },    
-    async obtenerUbigeo() {
-      console.log("distrito");
-      console.log(this.residente.ubigeo);
-      await axios
-        .get(`/ubigeo/idDistrito?idDistrito=${this.residente.ubigeo}`)
-        .then((res) => {
-          var info = {};
-          info = res.data;
-          this.distrito = res.data;
-          console.log(this.distrito);
-          this.residente.ubigeo = res.data.idDistrito;
-          this.idDepartamento = res.data.idDepartamento;
-          this.idProvincia = res.data.idProvincia;
-          this.obtenerProvincia();
-        })
-        .catch((err) => console.log(err));
-      return true;
-    },
-    async obtenerProvincia() {
-      await axios
-        .get(`/ubigeo/idProvincia?idProvincia=${this.idProvincia}`)
-        .then((res) => {
-          var info = {};
-          info = res.data;
-          this.provincia = res.data;
-          console.log(this.provincia);
-        })
-        .catch((err) => console.log(err));
+    ...mapMutations(["setResidentes", "addResidente"]),
+    //moment: function() {
+    //  return moment();
+    //},
+    RefrescarProgreso(item) {
+      var fechaingreso = new Date();
+      var actualDate = moment(fechaingreso).format("YYYY-MM-DD");
+      if (item === 1) {
+        this.residente.progreso = [];
+        
+        var prog1 = {
+          fechaingreso: actualDate,
+          fechafinalizacion: "",
+        };
+
+        var fecha = moment(prog1.fechaingreso).add(1, "year").calendar();
+        var date = fecha.split("/");
+        prog1.fechafinalizacion = date[2] + "-" + date[1] + "-" + date[0];
+        
+        let progreso = {
+          fase: 1,
+          nombre: "acogida",
+          fechaingreso: prog1.fechaingreso,
+          fechafinalizacion: prog1.fechafinalizacion,
+          estado: "inicio"
+        };
+
+        this.residente.progreso.push(progreso);
+      } else if (item === 2) {
+        this.residente.progreso = [];
+        //fase 1
+        let progreso = {
+          fase: 1,
+          nombre: "acogida",
+          fechaingreso: actualDate,
+          fechafinalizacion: actualDate,
+          estado: "omitido"
+        };
+        this.residente.progreso.push(progreso);
+
+        //fase 2
+        var prog2 = {
+          fechaingreso: actualDate,
+          fechafinalizacion: "",
+        };
+        
+        var fecha = moment(prog2.fechaingreso).add(1, "year").calendar();
+        var date = fecha.split("/");
+        prog2.fechafinalizacion = date[2] + "-" + date[1] + "-" + date[0];
+
+        let progreso2 = {
+          fase: 2,
+          nombre: "desarrollo",
+          fechaingreso: prog2.fechaingreso,
+          fechafinalizacion: prog2.fechafinalizacion,
+          estado: "inicio"
+        };
+        this.residente.progreso.push(progreso2);
+        
+      } else if (item === 3) {
+        this.residente.progreso = [];
+
+         //fase 1
+        let progreso = {
+          fase: 1,
+          nombre: "acogida",
+          fechaingreso: actualDate,
+          fechafinalizacion: actualDate,
+          estado: "omitido"
+        };
+        this.residente.progreso.push(progreso);
+        
+         //fase 2
+        let progreso2 = {
+          fase: 2,
+          nombre: "desarrollo",
+          fechaingreso: actualDate,
+          fechafinalizacion: actualDate,
+          estado: "omitido"
+        };
+        this.residente.progreso.push(progreso2);
+
+        //fase 3
+        var prog3 = {
+          fechaingreso: actualDate,
+          fechafinalizacion: "",
+        };
+        
+        var fecha = moment(prog3.fechaingreso).add(6, "month").calendar();
+        var date = fecha.split("/");
+        prog3.fechafinalizacion = date[2] + "-" + date[1] + "-" + date[0];
+
+        let progreso3 = {
+          fase: 3,
+          nombre: "reinsercion",
+          fechaingreso: prog3.fechaingreso,
+          fechafinalizacion: prog3.fechafinalizacion,
+          estado: "inicio"
+        };
+        this.residente.progreso.push(progreso3);
+      }
     },
     comprobarPrevicion(fechafinalizacion) {
       //var fechafinalizacion = string.split("T");
@@ -708,15 +723,19 @@ export default {
       var booleano = moment(fechafinalizacion).isAfter(fechaActual[0]);
       return booleano;
     },
+    testing3() {
+      this.$v.$touch();
+    },
+    ///CERRAR DIALOGO
     cerrarDialogo() {
       this.$v.residente.$reset();
       this.step = 1;
+      this.residente = this.limpiarResidente();
       this.$emit("close-dialog-save");
     },
     //metodo limpiar residente
     limpiarResidente() {
       return {
-        residente: {
           id: "",
           nombre: "",
           apellido: "",
@@ -731,8 +750,7 @@ export default {
           fechaIngreso: "",
           motivoIngreso: "",
           progreso: [],
-          estado: ""
-        }
+          estado: "En tratamiento"
       };
       ///funcion mensaje para mostrar el mensaje de error
     },
@@ -781,25 +799,88 @@ export default {
     eliminarTelefono(index) {
       this.residente.telefonosReferencia.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
     }, ////GUARDAR PROGRESO DEL modal ///
-    async modificarResidente() {
-      console.log(this.residente);
+
+    guardarProgreso() {
+      if (!this.checkboxFechaFinalizacion) {
+        var fechaingreso = this.progreso.fechaingreso;
+        var fecha = "";
+        if (this.progreso.fase.fase === 2) {
+          fecha = moment(fechaingreso)
+            .add(1, "year")
+            .calendar();
+        } else if (this.progreso.fase.fase === 3) {
+          fecha = moment(fechaingreso)
+            .add(6, "month")
+            .calendar();
+        } else {
+          fecha = moment(fechaingreso)
+            .add(1, "year")
+            .calendar();
+        }
+        console.log("entra: " + fechaingreso);
+        console.log("sale: " + fecha);
+        var date = fecha.split("/");
+        this.progreso.fechafinalizacion =
+          date[2] + "-" + date[1] + "-" + date[0];
+      }
+      this.$v.progreso.$touch();
+      if (!this.$v.progreso.$invalid) {
+        let progreso = {
+          fase: this.progreso.fase.fase,
+          nombre: this.progreso.fase.nombre.toLowerCase(),
+          fechaingreso: this.progreso.fechaingreso,
+          fechafinalizacion: this.progreso.fechafinalizacion,
+          estado: this.progreso.estado.nombre.toLowerCase()
+        }; //creamos variables
+        this.residente.progreso.push(progreso); //añadimos al arreglo principal
+        ///LIMPIAMOS LOS CAMPOS//
+        this.progreso.fase = { nombre: "Acogida", fase: 1 };
+        this.progreso.estado = "";
+        this.progreso.fechafinalizacion = "";
+        this.progreso.fechaingreso = "";
+        //reiniciamos el estado de la validacion
+        this.$v.progreso.$reset();
+      } else {
+        console.log("algo  mal");
+      }
+    },
+    guardarFasesResidente() {
+      this.$v.residente.progreso.$touch();
+      if (!this.$v.residente.progreso.$invalid) {
+        this.$v.progreso.$reset();
+        this.dialogProgresoFase = false;
+      }
+    },
+    cerrarFaseResidente() {
+      this.$v.residente.progreso.$reset();
+      this.$v.progreso.$reset();
+      this.dialogProgresoFase = false;
+    },
+    eliminarProgreso(index) {
+      this.residente.progreso.splice(index, 1); ////eliminar elementos de un arreglo el primer numero es para que elimine la posicion  , el segundo es para ver la cantidad de elementos  a eliminar  en este caso 1
+    },
+    ////////////HACER LA CONSULTA CON LA API  REGISTRAR
+    async registrarResidente() {
       this.$v.residente.$touch();
       if (this.$v.residente.$invalid) {
-        await this.mensaje(
+        this.mensaje(
           "error",
           "..Oops",
           "Se encontraron errores en el formulario",
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        var residenteFase = {
-          residente: this.residente,
-          contenidoFase: this.contenidoFase,
-          promocion: false,
+        this.residente.idcreador = "";
+        this.residente.observaciones = "";
+        this.residente.firma = {
+          urlfirma: "",
+          nombre: "",
+          cargo: ""
         };
+        console.log(this.residente);
         await axios
-          .put("/Residente", residenteFase)
-          .then((res) => {
+          .post("/Residente", this.residente)
+          .then(res => {
             var fecha = moment(res.data.fechaIngreso);
             res.data.fechaIngreso = fecha.format("DD-MM-YYYY");
             res.data.nombreCompleto = res.data.nombre + " " + res.data.apellido;
@@ -807,21 +888,57 @@ export default {
             res.data.progreso[res.data.progreso.length - 1].nombre;
             var info = res.data;
             console.log(info);
-            this.replaceResidente(info);
+            this.addResidente(info);
             this.cerrarDialogo();
           })
-          .catch((err) => console.log(err));
+          .catch(err => console.log(err));
         await this.mensaje(
           "success",
           "listo",
-          "Usuario modificado Satisfactoriamente",
+          "Regidente registrado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
       }
     },
+    convertDateFormat(string) {
+      var dateMongo = string.split("T");
+      var date = dateMongo[0].split("-");
+      return date[2] + "/" + date[1] + "/" + date[0];
+    },
+    async obtenerDepartamentos() {
+      await axios
+        .get("/ubigeo/allDepartamentos")
+        .then(res => {
+          var info = {};
+          info = res.data;
+          this.departamentos = res.data;
+        })
+        .catch(err => console.log(err));
+    },
+    async obtenerProvincias() {
+      await axios
+        .get(`/ubigeo/provincias/departamento/${this.idDepartamento}`)
+        .then(res => {
+          var info = {};
+          info = res.data;
+          this.provincias = res.data;
+        })
+        .catch(err => console.log(err));
+    },
+    async obtenerDistritos() {
+      await axios
+        .get(`/ubigeo/distritos/provincia/${this.idProvincia}`)
+        .then(res => {
+          var info = {};
+          info = res.data;
+          this.distritos = res.data;
+        })
+        .catch(err => console.log(err));
+    }
   },
   computed: {
     ///validaciones
+    ...mapState(["residentes"]),
     verifyColor() {
       return "red";
     },
@@ -1148,8 +1265,9 @@ export default {
       }
     };
   }
-}
+};
 </script>
+
 <style>
 .swal2-container {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,

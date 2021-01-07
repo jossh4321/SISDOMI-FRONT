@@ -35,7 +35,26 @@
       <v-sheet class="overflow-hidden">
         <v-container class="fill-height">
           <v-card class="card">
-            <v-card-title>Residentes</v-card-title>
+            <v-card-title>Residentes
+              <v-spacer></v-spacer>
+              <v-dialog persistent v-model="dialogoregistro" max-width="880px">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="success"
+                  dark
+                  class="mb-2"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon left>mdi-account-multiple-plus-outline</v-icon>
+                  <span>Registrar nuevo Residente</span>
+                </v-btn>
+              </template>
+              <RegistrarResidente
+                @close-dialog-save="closeDialogRegistrar()"
+              ></RegistrarResidente>
+            </v-dialog>
+            </v-card-title>
             <v-container>
               <template v-if="!listaCompleta">
                 <v-card
@@ -70,8 +89,8 @@
                   hide-default-footer
                   :page="page"
                 >
-                  <template v-slot:header>
-                    <v-toolbar dark color="blue darken-3" class="mb-1">
+                  <template v-slot:header="props">
+                    <v-toolbar dark color="red darken-1" class="mb-1">
                       <v-text-field
                         v-model="search"
                         clearable
@@ -89,6 +108,8 @@
                           solo-inverted
                           hide-details
                           :items="keys"
+                          :item-text="keys.text"
+                          :item-value="keys.value"
                           prepend-inner-icon="mdi-magnify"
                           label="Filtrar por"
                         ></v-select>
@@ -100,7 +121,7 @@
                       <v-chip
                         color="success"
                         dark
-                      >Se han encontrado {{ listaResidentes.length }} residentes</v-chip>
+                      >Se han encontrado {{ props.pagination.itemsLength }} residentes</v-chip>
                       <v-spacer></v-spacer>
                     </v-row>
                   </template>
@@ -193,7 +214,7 @@
                       </v-col>
                     </v-row>
                   </template>
-                  <template v-slot:footer>
+                  <template v-slot:footer="props">
                     <v-row class="mt-2" align="center" justify="center" style="padding-left: 20px">
                       <span class="grey--text">Residentes por página</span>
                       <v-menu offset-y>
@@ -217,7 +238,7 @@
                       <v-spacer></v-spacer>
 
                       <div style="padding-right: 20px">
-                        <span class="mr-4 grey--text">Página {{ page }} de {{ numberOfPages }}</span>
+                        <span class="mr-4 grey--text">Página {{ page }} de {{ numeroPaginas(props.pagination.itemsLength) }}</span>
                         <v-btn fab dark color="green" class="mr-1" @click="formerPage">
                           <v-icon>mdi-chevron-left</v-icon>
                         </v-btn>
@@ -254,13 +275,16 @@
 </template>
 
 <script>
+import RegistrarResidente from "@/components/ResidentesInterfaz/RegistrarResidente.vue";
 import ActualizarResidente from "@/components/ResidentesInterfaz/ActualizarResidente.vue";
 import VerResidente from "@/components/ResidentesInterfaz/VerResidente.vue";
 import axios from "axios";
 import moment from "moment";
+import { mapMutations, mapState } from "vuex";
 
 export default {
   components: {
+    RegistrarResidente,
     ActualizarResidente,
     VerResidente,
   },
@@ -269,6 +293,7 @@ export default {
       itemsPerPageArray: [6, 12, 18],
       idresidente:"",
       search: "",
+      numeroPaginacion: 1,
       dialogoModificarResidente: false,
       dialogoVerResidente:false,
       page: 1,
@@ -284,8 +309,14 @@ export default {
       resi: {},
       filter: {},
       sortDesc: false,
+      dialogoregistro: false,
       sortBy: "nombreCompleto",
-      keys: ["nombreCompleto", "nroDocumento", "fechaIngreso", "faseActual"]
+      keys: [
+            { value: "nombreCompleto", text: 'Nombre completo'},
+            { value: "nroDocumento", text: 'Nro. documento'},
+            { value: "fechaIngreso", text: 'Fecha ingreso'},
+            { value: "faseActual", text: 'Fase actual'},
+      ],
     };
   },
   watch: {
@@ -385,6 +416,7 @@ export default {
             element.progreso[element.progreso.length - 1].nombre;
         });
         this.listaResidentes = res.data;
+        this.setResidentes(this.listaResidentes); 
         listado = this.listaResidentes;
         let residentesMap = listado.map(function(res) {
           return {
@@ -403,6 +435,10 @@ export default {
       });
   },
   methods: {
+    ...mapMutations(["setResidentes"]),
+    closeDialogRegistrar() {
+      this.dialogoregistro = false;
+    },
     toogleDrawer() {
       this.$store.commit("toggleDrawer");
     },
@@ -425,7 +461,7 @@ export default {
       this.$router.push(ruta);
     },
     nextPage() {
-      if (this.page + 1 <= this.numberOfPages) this.page += 1;
+      if (this.page + 1 <= this.numeroPaginacion) this.page += 1;
     },
     formerPage() {
       if (this.page - 1 >= 1) this.page -= 1;
@@ -452,11 +488,15 @@ export default {
       this.idresidente = id;
       this.dialogoVerResidente = true;
     },
+    numeroPaginas(numero) {
+      this.numeroPaginacion = Math.ceil(numero / this.itemsPerPage);
+      return this.numeroPaginacion;
+    }
   },
 
   computed: {
-    numberOfPages() {
-      return Math.ceil(this.listaResidentes.length / this.itemsPerPage);
+    numberOfPages(numero) {
+      return Math.ceil(numero / this.itemsPerPage);
     }
   }
 };
