@@ -27,7 +27,7 @@
                   readonly
                 ></v-text-field>
                <v-row>
-                  <v-col>
+                  <!-- <v-col>
                     <v-select
                       :items="['Masculino', 'Femenino']"
                       label="Ingrese el Sexo"
@@ -36,7 +36,7 @@
                       readonly
                       color="#009900"
                     ></v-select>
-                  </v-col>
+                  </v-col> -->
                   <v-col>
                     <v-menu
                       v-model="menu2"
