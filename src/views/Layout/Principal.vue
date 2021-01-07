@@ -3,7 +3,7 @@
      <template>
          <v-app id="inspire" class="app">
              <app-drawer class="app--drawer"></app-drawer>
-             <app-toolbar class="app--toolbar"></app-toolbar>
+             <app-toolbar v-if="this.user!=null" class="app--toolbar"></app-toolbar>
              <v-main>
 
                  <div class="page-wrapper">
