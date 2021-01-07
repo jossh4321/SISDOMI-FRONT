@@ -31,7 +31,7 @@
                   :error-messages="errorApellido"
                 ></v-text-field>
                <v-row>
-                  <v-col>
+                  <!-- <v-col>
                     <v-select
                       :items="['Masculino', 'Femenino']"
                       label="Ingrese el Sexo"
@@ -42,7 +42,7 @@
                       :error-messages="errorTipoSexo"
                       color="#009900"
                     ></v-select>
-                  </v-col>
+                  </v-col> -->
                   <v-col>
                     <v-menu
                       v-model="menu2"
@@ -612,7 +612,11 @@ export default {
     this.residente = await this.loadResidenteDetalle(this.idresidente);
     await this.obtenerUbigeo();    
     await this.obtenerDepartamentos();
-    this.numerofase = this.residente.progreso[this.residente.progreso.length - 1].fase
+    this.numerofase = this.residente.progreso[this.residente.progreso.length - 1].fase;
+    for (var i = 0; i < this.residente.progreso.length; i++) {
+       this.residente.progreso[i].fechaingreso = this.residente.progreso[i].fechaingreso.split("T")[0];
+       this.residente.progreso[i].fechafinalizacion = this.residente.progreso[i].fechafinalizacion.split("T")[0];
+    }   
     console.log(this.numerofase);
   },
    watch: {
@@ -939,13 +943,13 @@ export default {
 
       return errors;
     },
-    errorTipoSexo() {
-      const errors = [];
-      if (!this.$v.residente.sexo.$dirty) return errors;
-      !this.$v.residente.sexo.required &&
-        errors.push("Debe seleccionar un Sexo");
-      return errors;
-    },
+    // errorTipoSexo() {
+    //   const errors = [];
+    //   if (!this.$v.residente.sexo.$dirty) return errors;
+    //   !this.$v.residente.sexo.required &&
+    //     errors.push("Debe seleccionar un Sexo");
+    //   return errors;
+    // },
     errorEstado() {
       const errors = [];
       if (!this.$v.residente.estado.$dirty) return errors;
@@ -1072,9 +1076,9 @@ export default {
         fechaNacimiento: {
           required
         },
-        sexo: {
-          required
-        },
+        // sexo: {
+        //   required
+        // },
         telefonosReferencia: {
           required,
           //minLength: minLength(1),

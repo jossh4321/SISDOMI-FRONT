@@ -34,7 +34,7 @@
                   :error-messages="errorApellido"
                 ></v-text-field>
                 <v-row>
-                  <v-col>
+                  <!-- <v-col>                    
                     <v-select
                       :items="['Masculino', 'Femenino']"
                       label="Ingrese el Sexo"
@@ -45,7 +45,7 @@
                       :error-messages="errorTipoSexo"
                       color="#009900"
                     ></v-select>
-                  </v-col>
+                  </v-col> -->
                   <v-col>
                     <v-menu
                       v-model="menu2"
@@ -871,12 +871,13 @@ export default {
         );
       } else {
         this.residente.idcreador = "";
-        this.residente.observaciones = "";
+        this.residente.observaciones = "";        
         this.residente.firma = {
           urlfirma: "",
           nombre: "",
           cargo: ""
         };
+        this.residente.sexo = "Femenino"
         console.log(this.residente);
         await axios
           .post("/Residente", this.residente)
@@ -1056,13 +1057,13 @@ export default {
 
       return errors;
     },
-    errorTipoSexo() {
-      const errors = [];
-      if (!this.$v.residente.sexo.$dirty) return errors;
-      !this.$v.residente.sexo.required &&
-        errors.push("Debe seleccionar un Sexo");
-      return errors;
-    },
+    // errorTipoSexo() {
+    //   const errors = [];
+    //   if (!this.$v.residente.sexo.$dirty) return errors;
+    //   !this.$v.residente.sexo.required &&
+    //     errors.push("Debe seleccionar un Sexo");
+    //   return errors;
+    // },
     errorEstado() {
       const errors = [];
       if (!this.$v.residente.estado.$dirty) return errors;
@@ -1189,9 +1190,9 @@ export default {
         fechaNacimiento: {
           required
         },
-        sexo: {
-          required
-        },
+        // sexo: {
+        //   required
+        // },
         telefonosReferencia: {
           required,
           //minLength: minLength(1),
