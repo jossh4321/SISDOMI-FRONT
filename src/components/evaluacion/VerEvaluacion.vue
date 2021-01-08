@@ -70,62 +70,15 @@
                             </v-autocomplete>
                         </v-col>
                         <v-col>
-                            <v-autocomplete
-                              :items="listaeducadores"
-                              filled
-                              chips
-                              dense
-                              readonly
+                            <v-text-field
+                              v-model="fichaEvaluacion.contenido.ultimaie"
+                              label="Ultima Institucion Educacion"
                               outlined
-                              v-model="fichaEvaluacion.contenido.evaluador"
+                              readonly
                               color="#009900"
-                              label="Educador responsable"
-                              item-text="usuario"
-                              item-value="id"
-                            >
-                              <template v-slot:selection="data">
-                                <v-chip
-                                  v-bind="data.attrs"
-                                  :input-value="data.selected"
-                                  style="margin-top:5px"
-                                >
-                                  <v-avatar left color="#b3b3ff" size="24">
-                                    <span style="font-size:12px">RT</span>
-                                  </v-avatar>
-                                  {{ data.item.datos.nombre + " " +  data.item.datos.apellido  }}
-                                </v-chip>
-                              </template>
-                              <template v-slot:item="data">
-                                <template>
-                                  <v-list-item-avatar>
-                                    <v-avatar left color="#b3b3ff" size="24">
-                                      <span style="font-size:12px">UC</span>
-                                    </v-avatar>
-                                  </v-list-item-avatar>
-                                  <v-list-item-content>
-                                    <v-list-item-title
-                                      >Nombre completo: {{ data.item.datos.nombre }}
-                                      {{ data.item.datos.apellido }}
-                                    </v-list-item-title>
-                                    <v-list-item-subtitle
-                                      >Nro. Documento:
-                                      {{
-                                        data.item.datos.numerodocumento
-                                      }}</v-list-item-subtitle
-                                    >
-                                  </v-list-item-content>
-                                </template>
-                              </template>
-                            </v-autocomplete>
+                          ></v-text-field>
                         </v-col>
                     </v-row> 
-                    <v-text-field
-                        v-model="fichaEvaluacion.contenido.ultimaie"
-                        label="Ultima Institucion Educacion"
-                        outlined
-                        readonly
-                        color="#009900"
-                    ></v-text-field>
                     <v-row>
                         <v-col>
                             <v-text-field
@@ -527,6 +480,11 @@ data(){
   }
 }
 </script>
+
+<style>
+
+</style>
+
 
 <style>
 

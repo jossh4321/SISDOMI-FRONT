@@ -1,11 +1,13 @@
 <template>
   <div>
     <v-card class="card">
-      <v-card-title> Gestionar Evaluacion</v-card-title>
+      <v-card-title>Gestionar Evaluacion</v-card-title>
       <v-data-table
         :headers="headers"
         :items="fichaEvaluacionEduativa"
         :search="search"
+        :loading="loading"
+        loading-text="Cargando Fichas de Evaluación Educativas"
         class="elevation-1"
       >
         <template v-slot:top>
@@ -31,13 +33,13 @@
                   v-on="on"
                 >
                   <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Nueva Evaluacion Educativa</span>
+                  <span>NUEVA EVALUACIÓN EDUCATIVA</span>
                 </v-btn>
               </template>
              <RegistrarEvaluacion
              :listaresidentes ="listaresidentes"
              :listaeducadores="listaeducadores"
-             
+             @cargarSeguimiento="obtenerEvaluacionDiagnosticoEducativo()"
              @close-dialog-save="closeDialogRegistrar()"
              >
              </RegistrarEvaluacion>
@@ -61,20 +63,20 @@
         </template>
       </v-data-table>
        <!--Dialogo de Modificacion-->
-      <v-dialog persistent v-model="dialogoactualizacion" max-width="65%">
+      <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
         <ModificarEvaluacion
           
           :fichaEvaluacion="fichaEvaluacion"
           :listaresidentes ="listaresidentes"
           :listaeducadores="listaeducadores"
           :dialogodetalle ="dialogoactualizacion"
-          
+          @cargarSeguimiento="obtenerEvaluacionDiagnosticoEducativo()"
 
           @close-dialog-edit="closeDialogModificar()"
         >
         </ModificarEvaluacion>
       </v-dialog>
-    <v-dialog persistent v-model="dialogodetalle" max-width="65%">
+    <v-dialog persistent v-model="dialogodetalle" max-width="880px">
         <VerEvaluacion
           :fichaEvaluacion="fichaEvaluacion"
           :residente ="residente"
@@ -92,9 +94,11 @@
 
 <script>
 import axios from "axios";
+
 import VerEvaluacion from '@/components/evaluacion/VerEvaluacion.vue'
 import RegistrarEvaluacion from '@/components/evaluacion/RegistrarEvaluacion.vue'
 import ModificarEvaluacion from '@/components/evaluacion/ModificarEvaluacion.vue'
+
 import { mapMutations, mapState } from "vuex";
 
 export default {
@@ -103,6 +107,7 @@ export default {
     VerEvaluacion,
     RegistrarEvaluacion,
     ModificarEvaluacion
+    
   },
   data() {
     return {
@@ -128,6 +133,7 @@ export default {
       dialogoregistro: false,
       dialogoactualizacion: false,
       dialogodetalle: false,
+      loading:true
     };
   },
   async created(){
@@ -167,6 +173,7 @@ export default {
       await axios
         .get("EvaluacionDiagnosticoEducativo/all")
         .then((res) => {
+          this.loading = false;
           var info = {};
           info = res.data;
           console.log(res.data)
@@ -232,3 +239,7 @@ export default {
 </script>
 
 <style scoped>
+.card {
+  margin: 20px;
+}
+</style>
