@@ -227,50 +227,41 @@ export default {
           let chart = am4core.create(this.$refs.chartdivline, am4charts.XYChart);
         // Add data
         chart.data = [{
-        "date": "2012-03-01",
+        "date": "2020-01-01",
         "price": 20
         }, {
-        "date": "2012-03-02",
+        "date": "2020-02-01",
         "price": 75
         }, {
-        "date": "2012-03-03",
+        "date": "2020-03-01",
         "price": 15
         }, {
-        "date": "2012-03-04",
+        "date": "2020-04-01",
         "price": 75
         }, {
-        "date": "2012-03-05",
+        "date": "2020-05-01",
         "price": 158
         }, {
-        "date": "2012-03-06",
+        "date": "2020-06-01",
         "price": 57
         }, {
-        "date": "2012-03-07",
+        "date": "2020-07-01",
         "price": 107
         }, {
-        "date": "2012-03-08",
-        "price": 89
-        }, {
-        "date": "2012-03-09",
+        "date": "2020-08-01",
         "price": 75
         }, {
-        "date": "2012-03-10",
+        "date": "2020-09-01",
         "price": 132
         }, {
-        "date": "2012-03-11",
+        "date": "2020-10-01",
         "price": 380
         }, {
-        "date": "2012-03-12",
+        "date": "2020-11-01",
         "price": 56
         }, {
-        "date": "2012-03-13",
+        "date": "2020-12-01",
         "price": 169
-        }, {
-        "date": "2012-03-14",
-        "price": 24
-        }, {
-        "date": "2012-03-15",
-        "price": 147
         }];
 
         // Create axes
@@ -312,7 +303,7 @@ export default {
         range.grid.strokeOpacity = 1;
         range.grid.strokeDasharray = "3,3";
         range.label.inside = true;
-        range.label.text = "Average";
+        range.label.text = "Promedio";
         range.label.fill = range.grid.stroke;
         range.label.verticalCenter = "bottom";
       }

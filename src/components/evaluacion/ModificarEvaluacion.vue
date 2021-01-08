@@ -30,9 +30,12 @@
                             dense
                             outlined
                             color="#009900"
-                            label="Residente"
+                            label="Usuaria CAR"
                             item-text="nombre"
                             item-value="id"
+                            @input="$v.fichaEvaluacion.idresidente.$touch()"
+                            @blur="$v.fichaEvaluacion.idresidente.$touch()"
+                            :error-messages="errorResidente"
                            
                           >
                             <template v-slot:selection="data">
@@ -66,55 +69,16 @@
                                 </v-list-item-content>
                               </template>
                             </template>
-                            </v-autocomplete>
+                          </v-autocomplete>
                         </v-col>
                         <v-col>
-                            <v-autocomplete
-                              :items="listaeducadores"
-                              filled
-                              chips
-                              dense
+                            <v-text-field
+                              v-model="fichaEvaluacion.contenido.ultimaie"
+                              label="Ultima Institucion Educacion"
                               outlined
-                              v-model="fichaEvaluacion.contenido.evaluador"
+                              
                               color="#009900"
-                              label="Educador responsable"
-                              item-text="usuario"
-                              item-value="id"
-                            >
-                              <template v-slot:selection="data">
-                                <v-chip
-                                  v-bind="data.attrs"
-                                  :input-value="data.selected"
-                                  style="margin-top:5px"
-                                >
-                                  <v-avatar left color="#b3b3ff" size="24">
-                                    <span style="font-size:12px">RT</span>
-                                  </v-avatar>
-                                  {{ data.item.datos.nombre + " " +  data.item.datos.apellido  }}
-                                </v-chip>
-                              </template>
-                              <template v-slot:item="data">
-                                <template>
-                                  <v-list-item-avatar>
-                                    <v-avatar left color="#b3b3ff" size="24">
-                                      <span style="font-size:12px">UC</span>
-                                    </v-avatar>
-                                  </v-list-item-avatar>
-                                  <v-list-item-content>
-                                    <v-list-item-title
-                                      >Nombre completo: {{ data.item.datos.nombre }}
-                                      {{ data.item.datos.apellido }}
-                                    </v-list-item-title>
-                                    <v-list-item-subtitle
-                                      >Nro. Documento:
-                                      {{
-                                        data.item.datos.numerodocumento
-                                      }}</v-list-item-subtitle
-                                    >
-                                  </v-list-item-content>
-                                </template>
-                              </template>
-                            </v-autocomplete>
+                            ></v-text-field>
                         </v-col>
                   </v-row>
                   
@@ -127,38 +91,62 @@
 
                   <v-row>
                         <v-col>
-                          <v-text-field
-                              v-model="fichaEvaluacion.contenido.tipoie"
+                          <v-select
                               label="Tipo de Institucion Educacion"
-                              outlined
+                              v-model="fichaEvaluacion.contenido.tipoie"
+                              :items="itemTipoIE"
                               color="#009900"
-                          ></v-text-field>
+                              :item-text="itemTipoIE.text"
+                              :item-value="itemTipoIE.value"
+                              @input="$v.fichaEvaluacion.contenido.tipoie.$touch()"
+                              @blur="$v.fichaEvaluacion.contenido.tipoie.$touch()"
+                              :error-messages="errorTipoIE"
+                              outlined
+                            ></v-select>
                         </v-col>
                         <v-col>
-                          <v-text-field
-                              v-model="fichaEvaluacion.contenido.modalidad"
+                          <v-select
                               label="Modalidad"
-                              outlined
+                              v-model="fichaEvaluacion.contenido.modalidad"
+                              :items="itemsModalidad"
                               color="#009900"
-                          ></v-text-field>
+                              :item-text="itemsModalidad.text"
+                              :item-value="itemsModalidad.value"
+                              @input="$v.fichaEvaluacion.contenido.modalidad.$touch()"
+                              @blur="$v.fichaEvaluacion.contenido.modalidad.$touch()"
+                              :error-messages="errorModalidad"
+                              outlined
+                            ></v-select>
                         </v-col>
                   </v-row>
                   <v-row>
                         <v-col>
-                          <v-text-field
-                              v-model="fichaEvaluacion.contenido.nivel"
-                              label="Nivel"
-                              outlined
-                              color="#009900"
-                          ></v-text-field>
+                          <v-select
+                            label="Nivel"
+                            v-model="fichaEvaluacion.contenido.nivel"
+                            :items="itemsNivel"
+                            color="#009900"
+                            :item-text="itemsNivel.text"
+                            :item-value="itemsNivel.value"
+                            @input="$v.fichaEvaluacion.contenido.nivel.$touch()"
+                            @blur="$v.fichaEvaluacion.contenido.nivel.$touch()"
+                            :error-messages="errorNivel"
+                            outlined
+                          ></v-select>
                         </v-col>
                         <v-col>
-                          <v-text-field
-                              v-model="fichaEvaluacion.contenido.grado"
-                              label="Grado"
-                              outlined
-                              color="#009900"
-                          ></v-text-field>
+                          <v-select
+                            label="Grado"
+                            v-model="fichaEvaluacion.contenido.grado"
+                            :items="itemsGrado"
+                            color="#009900"
+                            :item-text="itemsGrado.text"
+                            :item-value="itemsGrado.value"
+                            @input="$v.fichaEvaluacion.contenido.grado.$touch()"
+                            @blur="$v.fichaEvaluacion.contenido.grado.$touch()"
+                            :error-messages="errorGrado"
+                            outlined
+                          ></v-select>
                         </v-col>
                   </v-row>
                           
@@ -198,147 +186,30 @@
                                   </v-card-title>
                                   <v-card-text>
                             <!-- cuadros de texto para añadir firma-->
-                              <v-text-field
-                               v-model="firma.cargo"
-                                label="Cargo"
-                                outlined  
-                                color="#009900"
-                                ></v-text-field>
                                 <v-text-field
-                               v-model="firma.nombre"
+                                v-model="this.user.rol.nombre"
+                                label="Cargo"
+                                outlined
+                                readonly
+                                color="#009900"
+                              ></v-text-field>
+                              <v-text-field
+                                v-model="this.user.usuario"
                                 label="Nombre"
-                                outlined  
-                                
-                                color="#009900" 
-                                ></v-text-field>
-                        <div>
-                                <vue-dropzone
-                                  ref="myVueDropzone"
-                                  @vdropzone-success="afterSuccess"
-                                  @vdropzone-removed-file="afterRemoved"
-                                  id="dropzone"
-                                  :options="dropzoneOptions"
-                                >
-                                </vue-dropzone>
-                       </div>
-                       
-                              <v-btn color="success" @click="guardarFirma">
-                                      añadir
-                              </v-btn>
-                             
-                              <v-divider class="divider-custom"></v-divider>
-                              <!-- cuadros de textofin -->
-
-                          <v-card
-                              style="margin-top:30px;left-top:30px;padding:5px 5px;background-color:#EAEAEA"
-                            >
-                              <v-card-title style="font-size:22px;padding: 10px 10px;"
-                                >Firma de creador(es) de documento</v-card-title
-                              >
-                              <!-- Cabecera -->
-                              <v-card
-                              elevation="0"
-                              color="#EAEAEA"
-                              style="margin-top:5px; margin-bottom:15px"
-                              height="30"
-                              >
-                              
-                                <v-row style="margin-left:10px;heigh:100%" align="center">
-                                  <v-col cols="4">
-                                    <article>
-                                      <span style="font-size:16px">Cargo</span>
-                                    </article>
-                                  </v-col>
-                                  <v-col cols="4">
-                                    <article>
-                                      <span style="font-size:16px">Nombre</span>
-                                    </article>
-                                  </v-col>
-                                  <v-col>
-                                    <article cols="4">
-                                      <span style="font-size:16px">Firma</span>
-                                    </article>
-                                  </v-col>
-                                  <v-col align="right">
-                                  </v-col>
-                                </v-row>
-                              </v-card>
-                              <!-- Cuerpo -->
-                              <v-card
-                                tile
-                                elevation="0"
-                                color="#FAFAFA"
-                                style="margin-top:5px"
-                                height="80"
-                                v-for="(item, index) in fichaEvaluacion.contenido.firmas"
-                                :key="index"
-                              >
-                                <v-row style="margin-left:10px;heigh:100%;" align="center">
-                                  <v-col :cols="4">
-                                    <article>
-                                      <span style="font-size:16px">{{item.cargo}}</span>
-                                    </article>
-                                  </v-col>
-                                  <v-col :cols="4">
-                                    <article>
-                                      <span style="font-size:16px">{{item.nombre}}</span>
-                                    </article>
-                                  </v-col>
-                    <v-col :cols="2" align="center">
-                        <template>
-                            <v-btn
-                              fab
-                              icon=""
-                              x-small
-                              dark
-                              color="#EAEAEA"
-                              @click="verFirma(index)"
-                            >
-                              <img
-                                style="width:25% "
-                                src="https://www.flaticon.es/svg/static/icons/svg/1/1180.svg"
-                                alt="firma"
-                              />
-                            </v-btn>
-                          </template>
-                      </v-col>
-                      <v-col :cols="2" align="right">
-                        <div style="margin-right:20px">
-                          <v-btn
-                            fab
-                            x-small
-                            dark
-                            color="red"
-                            @click="eliminarFirma(index)"
-                          >
-                            <v-icon dark>
-                              mdi-minus
-                            </v-icon>
-                          </v-btn>
-                        </div>
-                      </v-col>
-                                  
-                                 <!--  <v-col align="right">
-                                    <div style="margin-right:20px">
-                                  <v-btn
-                                        style="margin-right:10px"
-                                        fab
-                                        x-small
-                                        dark
-                                        color="#126BB5"
-                                      >
-                                        <v-icon dark>
-                                          mdi-pencil
-                                        </v-icon>
-                                      </v-btn>  
-                                      
-                                    </div>
-                                  </v-col>-->
-                                </v-row>
-                              </v-card>
-                            </v-card>
-              <!--fin-->
-                    <!-- -->
+                                outlined
+                                readonly
+                                color="#009900"
+                              ></v-text-field>
+                              <div align="center">
+                                <v-card-text>
+                                  <img
+                                    width="240"
+                                    height="170"
+                                    :src="this.user.datos.firma"
+                                    alt=""
+                                  />
+                                </v-card-text>
+                              </div>
 
                                   </v-card-text>
                                   <v-card-actions>
@@ -405,6 +276,9 @@
                       <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="estudio.nivel"
+                          @input="$v.estudio.nivel.$touch()"
+                          @blur="$v.estudio.nivel.$touch()"
+                          :error-messages="errorEstudioNivel"
                           label="Nivel"
                           color="#009900"
                           
@@ -413,6 +287,9 @@
                       <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="estudio.observaciones"
+                          @input="$v.estudio.observaciones.$touch()"
+                          @blur="$v.estudio.observaciones.$touch()"
+                          :error-messages="errorEstudioObservaciones"
                           label="Observaciones"
                           color="#009900"
                           
@@ -496,7 +373,10 @@
                       <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="aspectos.tipo"
-                          label="Aspecto"
+                          @input="$v.aspectos.tipo.$touch()"
+                          @blur="$v.aspectos.tipo.$touch()"
+                          :error-messages="errorAspectoTipo"
+                          label="Nivel"
                           color="#009900"
                           
                         ></v-text-field>
@@ -504,7 +384,11 @@
                       <v-col :cols="4" align="left">
                         <v-text-field
                           v-model="aspectos.descripcion"
-                          label="Descripción"
+                          
+                           @input="$v.aspectos.descripcion.$touch()"
+                          @blur="$v.aspectos.descripcion.$touch()"
+                          :error-messages="errorAspectoDescripcion"
+                          label="Observaciones"
                           color="#009900"
                           
                         ></v-text-field>
@@ -605,6 +489,12 @@ import { mapMutations, mapState } from "vuex";
 import { required, minLength,maxLength, email, helpers,numeric } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import moment from "moment";
+function esTexto(value) {
+  return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value);
+}
+function esParrafo(value) {
+  return /^[A-Za-z\d\s.,;°"“()áéíóúÁÉÍÓÚñÑ]+$/.test(value);
+}
 export default {
   name:"ActualizarFichaDiagnosticoEducativo",
   props:["listaresidentes","listaeducadores","fichaEvaluacion"],
@@ -613,6 +503,7 @@ components:{
 },
   data(){
     return{
+      datemenu: false,
      step:1,
      dialog:false, // dialogo firma
      dialogVistaPreviaFirma: false,
@@ -641,9 +532,31 @@ components:{
       imagen:"",
       estudio:{nivel:"",observaciones:""},
       aspectos:{tipo:"",descripcion:""},
+       itemsModalidad: [
+        { value: "EBA", text: "Educacion Basica Alternativa" },
+        { value: "EBE", text: "Educacion Basica Especial" },
+        { value: "EBR", text: "Educacion Basica Regular" },
+      ],
+      itemsNivel: [
+        { value: "PRIMARIA", text: "Nivel Primaria" },
+        { value: "SECUNDARIA", text: "Nivel Secundaria" },
+        //{ value: 'SUPERIOR', text: 'Estudio Superior'}
+      ],
+      itemGrado: [
+        { value: "1", text: "1" },
+        { value: "2", text: "2" },
+        { value: "3", text: "3" },
+        { value: "4", text: "4" },
+        { value: "5", text: "5" },
+      ],
+      itemTipoIE:[
+        {value:"Estatal",text:"Estatal"},
+        {value:"Particular",text:"Particular"},
 
-    
+      ],
+
     }
+    
   },
     methods:{
       ...mapMutations(["replaceEvaluacion"]),
@@ -691,7 +604,7 @@ components:{
           "Ficha Diagnostico Evaluacion Educativa modificado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
-        location.reload();//metodo de js para refrescar la pagina
+        this.$emit("cargarSeguimiento");
       },
        ///metodo para agregar firma residente
     guardarFirma(){
@@ -716,8 +629,9 @@ components:{
       this.imagen = this.fichaEvaluacion.contenido.firmas[index].urlfirma;
       this.dialogVistaPreviaFirma = true;
     }, 
-    guardarEstudios(){
-     
+     guardarEstudios(){
+     this.$v.estudio.$touch();
+      if (!this.$v.estudio.$invalid) {
    let estudio = {nivel:this.estudio.nivel,observaciones:this.estudio.observaciones};
 
    this.fichaEvaluacion.contenido.estudios.push(estudio);
@@ -727,13 +641,15 @@ components:{
    this.estudio.nivel="";
    this.estudio.observaciones="";
  
-   
-   
+      }
+   this.$v.estudio.$reset();
     },
     eliminarEstudio(index) {
       this.fichaEvaluacion.contenido.estudios.splice(index, 1);
     },
      guardarAspecto(){
+       this.$v.aspectos.$touch();
+      if (!this.$v.aspectos.$invalid) {
      
    let aspecto = {tipo:this.aspectos.tipo,descripcion:this.aspectos.descripcion};
 
@@ -744,16 +660,165 @@ components:{
    this.aspectos.tipo="";
    this.aspectos.descripcion="";
  
-   
-   
+      }
+    this.$v.aspectos.$reset();
     },
     eliminarAspecto(index) {
       this.fichaEvaluacion.contenido.aspectos.splice(index, 1);
     },
   },
-  computed:{
+ computed:{
     ...mapGetters(["user"]),
+     itemsGrado() {
+      const listaGrados = [
+        { value: "1", text: "Primero" },
+        { value: "2", text: "Segundo" },
+        { value: "3", text: "Tercero" },
+        { value: "4", text: "Cuarto" },
+        { value: "5", text: "Quinto" },
+      ];
+      if (this.fichaEvaluacion.contenido.nivel == "PRIMARIA") {
+        listaGrados.push({ value: "6", text: "Sexto" });
+      }
+      this.fichaEvaluacion.contenido.grado = "1";
+      return listaGrados;
+    },
+     errorModalidad() {
+      const errors = [];
+      if (!this.$v.fichaEvaluacion.contenido.modalidad.$dirty) return errors;
+      !this.$v.fichaEvaluacion.contenido.modalidad.required &&
+        errors.push("Debe Ingresar una modalidad Obligatoriamente");
+      return errors;
+    },
+    errorGrado() {
+      const errors = [];
+      if (!this.$v.fichaEvaluacion.contenido.grado.$dirty) return errors;
+      !this.$v.fichaEvaluacion.contenido.grado.required &&
+        errors.push("Debe Seleccionar un Grado Obligatoriamente");
+      return errors;
+    },
+    errorTipoIE() {
+      const errors = [];
+      if (!this.$v.fichaEvaluacion.contenido.tipoie.$dirty) return errors;
+      !this.$v.fichaEvaluacion.contenido.tipoie.required &&
+        errors.push("Debe Ingresar una Tipo de Institucion Educativa Obligatoriamente");
+      return errors;
+    },
+    errorNivel() {
+      const errors = [];
+      if (!this.$v.fichaEvaluacion.contenido.nivel.$dirty) return errors;
+      !this.$v.fichaEvaluacion.contenido.nivel.required &&
+        errors.push("Debe Seleccionar un Nivel Obligatoriamente");
+      return errors;
+    },
+    errorResidente() {
+      const errors = [];
+      if (!this.$v.fichaEvaluacion.idresidente.$dirty) return errors;
+      !this.$v.fichaEvaluacion.idresidente.required &&
+        errors.push("Debe seleccionar un residente obligatoriamente");
+      return errors;
+    },
+    errorEstudioNivel() {
+      const errors = [];
+      if (!this.$v.estudio.nivel.$dirty) return errors;
+      !this.$v.estudio.nivel.required &&
+        errors.push("Debe registrar un nivel obligatoriamente");
+      !this.$v.estudio.nivel.esParrafo &&
+        errors.push(
+          "el nivel no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorEstudioObservaciones() {
+      const errors = [];
+      if (!this.$v.estudio.observaciones.$dirty) return errors;
+      !this.$v.estudio.observaciones.required &&
+        errors.push("Debe ingresar una observacion obligatoriamente");
+      !this.$v.estudio.observaciones.esParrafo &&
+        errors.push(
+          "La observacion no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorAspectoTipo() {
+      const errors = [];
+      if (!this.$v.aspectos.tipo.$dirty) return errors;
+      !this.$v.aspectos.tipo.required &&
+        errors.push("Debe registrar un tipo obligatoriamente");
+      !this.$v.aspectos.tipo.esParrafo &&
+        errors.push(
+          "El tipo no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+    errorAspectoDescripcion() {
+      const errors = [];
+      if (!this.$v.aspectos.descripcion.$dirty) return errors;
+      !this.$v.aspectos.descripcion.required &&
+        errors.push("Debe ingresar una descripcion obligatoriamente");
+      !this.$v.aspectos.descripcion.esParrafo &&
+        errors.push(
+          "La descripcion no debe contener caracteres especiales"
+        );
+      return errors;
+    },
+  
+  },
+  validations(){
+    return{
+    fichaEvaluacion:{
+        historialcontenido:[],
+        creadordocumento:{
+          //required
+        },
+        fechacreacion:null,
+        contenido:{
+          ultimaie:{
+            required,
+          },
+          tipoie:{
+            required,
+          },
+          modalidad:
+          {
+            required,
+          },
+          nivel:{
+            required,
+          },
+          grado:{
+            required,
+          },
+        
+          
+        },
+        idresidente:{
+          required,
+        },
+     },
+     estudio:{
+       nivel:{
+        required,
+        esParrafo,
+       },
+       observaciones:{
+         required,
+        esParrafo,
+       }
+     },
+     aspectos:{
+       tipo:{
+         required,
+        esParrafo,
+        },
+       descripcion:{
+         required,
+        esParrafo,
+       }
+     }
+    }
   }
+
 
 }
 </script>
