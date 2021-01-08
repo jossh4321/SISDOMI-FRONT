@@ -133,7 +133,7 @@
                 ></datos-multiple-simple>
               </v-col>
               <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-                 <datos-multiple-firma :firmas="documento.contenido.firmas"></datos-multiple-firma>
+                 <datos-multiple-firma :firmas="firmas"></datos-multiple-firma>
               </v-col>
             </v-row>
             <v-btn block @click="cerrarDialogo" color="primary">
@@ -167,6 +167,9 @@ export default {
     documento: {
       type: Object,
     },
+    firmas: {
+      type: Array
+    }
   },
   components: {
     DatosMultipleSimple,

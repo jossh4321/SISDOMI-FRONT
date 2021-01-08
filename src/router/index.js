@@ -16,7 +16,7 @@ import GestionarIncidencias from "../views/Incidencias/GestionarIncidencias.vue"
 import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 import GestionActa from '../views/Acta/GestionarActa.vue';
 import ModificarPerfil from '../views/perfil/ModificarPerfil.vue';
-import GestionarFichaEvaluacionEducativa from '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
+import GestionarEvaluacionEducativa from '../views/Evaluacion/GestionarEvaluacion.vue';
 import GestionResidentes from '../views/Residentes/GestionResidentes.vue';
 import ProgresoEducativoResidente from '../views/Residentes/ProgresoEducativoResidente.vue';
 import GestionarActividades from '../views/Actividades/GestionarActividades.vue';
@@ -52,7 +52,7 @@ import DocumentoGeneral from '@/views/Home/DocumentoGeneral.vue';
 import DocumentoSocial from '@/views/Home/DocumentoSocial.vue';
 import DocumentoPsicologico from '@/views/Home/DocumentoPsicologico.vue';
 import DocumentoEducativo from '@/views/Home/DocumentoEducativo.vue';
-
+import DashBoard from '@/views/Dashboard'
 
 
 Vue.use(VueRouter);
@@ -159,10 +159,9 @@ const routes = [{
                 component: ModificarPerfil
             },
             {
-
                 path: 'evaluacionEducativa',
                 name: 'GestionarFichaEvaluacionEducativa',
-                component: GestionarFichaEvaluacionEducativa,
+                component: GestionarEvaluacionEducativa
             },
             {
                 path: 'estadisticas',
@@ -246,6 +245,11 @@ const routes = [{
                 path: 'ProgresoF3Residente/:id',
                 name: 'ProgresoF3Residente',
                 component: ProgresoF3Residente,
+                params: true
+            },{
+                path: 'Dashboard',
+                name: 'Dashboard',
+                component: DashBoard,
                 params: true
             },
             {

@@ -33,7 +33,7 @@
                     >Educador Responsable</label
                   >
                   <p class="label-text">
-                    {{ documento.contenido.evaluador }}
+                    {{ documento.creador.nombres }}
                   </p>
                 </v-card-text>
               </v-col>
@@ -135,7 +135,7 @@
               </v-col>
               <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                 <datos-multiple-firma
-                  :firmas="documento.contenido.firmas"
+                  :firmas="firmas"
                 ></datos-multiple-firma>
               </v-col>
             </v-row>
@@ -156,6 +156,7 @@ import DatosMultipleFirma from "@/components/expediente/general/DatosMultipleFir
 import DatosMultipleAnexo from "@/components/expediente/general/DatosMultipleAnexo.vue";
 
 import axios from "axios";
+import { object } from '@amcharts/amcharts4/core';
 
 export default {
   name: "app-detalle-informe-final",
@@ -168,31 +169,20 @@ export default {
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
     },
-    async obtainEvaluater() {
-      await axios
-        .get("/usuario/id?id=" + this.documento.contenido.evaluador)
-        .then((res) => {
-          this.documento.contenido.evaluador =
-            res.data.datos.nombre + " " + res.data.datos.apellido;
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    },
   },
   props: {
     documento: {
       type: Object,
     },
+    firmas: {
+      type: Object
+    }
   },
   components: {
     DatosMultipleSimple,
     DatosMultipleFirma,
     DatosMultipleAnexo,
-  },
-  async created() {
-    await this.obtainEvaluater();
-  },
+  }
 };
 </script>
 

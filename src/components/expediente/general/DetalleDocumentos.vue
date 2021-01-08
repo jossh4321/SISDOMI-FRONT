@@ -57,6 +57,7 @@
       <component
         :is="typeDocument"
         :documento="documento"
+        :firmas="firmas"
         @close-dialog-detail="closeDialogDetail"
       ></component>
     </v-dialog>
@@ -85,6 +86,7 @@ export default {
       showInfoDocument: false,
       typeDocument: "",
       documento: null,
+      firmas: []
     };
   },
   props: {
@@ -98,6 +100,7 @@ export default {
       axios
         .get("/documento/" + documentId)
         .then((res) => {
+          this.firmas = [];
           let area = "";
           let informe = "";
 
@@ -105,6 +108,7 @@ export default {
           informe = this.evaluateDocumento(res.data.tipo);
 
           this.documento = res.data;
+          this.firmas.push(this.documento.creador);
           this.typeDocument = "Detalle" + informe + area;
           this.showInfoDocument = true;
         })

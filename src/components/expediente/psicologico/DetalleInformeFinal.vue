@@ -119,7 +119,7 @@
               </v-col>
               <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                 <datos-multiple-firma
-                  :firmas="documento.contenido.firmas"
+                  :firmas="firmas"
                 ></datos-multiple-firma>
               </v-col>
             </v-row>
@@ -155,6 +155,9 @@ export default {
     documento: {
       type: Object,
     },
+    firmas: {
+      type: Array
+    }
   },
   components: {
     DatosMultipleSimple,
