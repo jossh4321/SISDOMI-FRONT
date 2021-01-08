@@ -1,50 +1,99 @@
 <template>
   <v-card>
     <v-card-title class="justify-center">Modificar Perfil</v-card-title>
-    <v-stepper v-model="step">
-       <v-stepper-header>
-      <v-stepper-step
-        editable
-        step="1"
-        >
-          Datos Generales
-         </v-stepper-step>
+    <v-stepper v-model="step">      
          <v-divider></v-divider>
-          </v-stepper-header>
-         <v-stepper-items >
-           <v-stepper-content step="1">
           <div class="container-user">
             <form>
-              <v-text-field
-                v-model="usuario.usuario"
-                label="Ingrese Usuario"
-                outlined
-                @input="$v.usuario.usuario.$touch()"
-                @blur="$v.usuario.usuario.$touch()"
-                :error-messages="errorNombreUsuario"
+              <v-row>
+               <div>
+                 <v-col>
+                 <vue-dropzone ref="myVueDropzone"
+                    @vdropzone-success=" afterSuccess"
+                    @vdropzone-removed-file="afterRemoved"
+                    @vdropzone-mounted="mounteddropzone"
+                    id="dropzone" :options="dropzoneOptions">
+                  </vue-dropzone>
+                  </v-col>
+                  </div>
+                  <v-card v-if="errorImagen" color="red">
+                  </v-card>
+                  <v-col>
+                  <v-text-field
+                  v-model="usuario.usuario"
+                 label="Ingrese Usuario"
+                 outlined
+                 @input="$v.usuario.usuario.$touch()"
+                 @blur="$v.usuario.usuario.$touch()"
+                 :error-messages="errorNombreUsuario"
                  color="#99FFCC"
-              ></v-text-field>
-              <v-text-field
-                v-model="usuario.datos.nombre"
-                label="Ingrese los Nombres"
-                outlined
-                @input="$v.usuario.datos.nombre.$touch()"
-                @blur="$v.usuario.datos.nombre.$touch()"
-                :error-messages="errorNombre"
-                color="#009900"
+                 ></v-text-field>
 
-                
-              ></v-text-field>
-              <v-text-field
-                v-model="usuario.datos.apellido"
-                label="Ingrese los Apellidos"
+                   <v-text-field
+                  v-model="usuario.datos.nombre"
+                  label="Ingrese los Nombres"
+                  outlined
+                  @input="$v.usuario.datos.nombre.$touch()"
+                  @blur="$v.usuario.datos.nombre.$touch()"
+                  :error-messages="errorNombre"
+                   color="#009900"
+                  ></v-text-field>
+                   
+                 
+                  <v-text-field
+                  v-model="usuario.datos.apellido"
+                   label="Ingrese los Apellidos"
                 outlined
                 @input="$v.usuario.datos.apellido.$touch()"
                 @blur="$v.usuario.datos.apellido.$touch()"
                 :error-messages="errorApellido"
                 color="#009900"
-              ></v-text-field>
-              <v-menu
+                ></v-text-field>
+                   
+                <v-row>
+                <v-col>  
+                <v-select
+                :items="['DNI', 'Pasaporte', 'Carnet Extranjeria']"
+                label="Ingrese el Tipo de Documento"
+                outlined
+                v-model="usuario.datos.tipodocumento"
+                @input="$v.usuario.datos.tipodocumento.$touch()"
+                @blur="$v.usuario.datos.tipodocumento.$touch()"
+                :error-messages="errorTipoDocumento"
+                color="#009900"
+               ></v-select>
+               </v-col>
+               <v-col>
+                 <v-text-field
+                v-model="usuario.datos.numerodocumento"
+                label="Ingrese el Numero de Documento"
+                outlined
+                @input="$v.usuario.datos.numerodocumento.$touch()"
+                @blur="$v.usuario.datos.numerodocumento.$touch()"
+                :error-messages="errorNumeroDocumento"
+                color="#009900"
+                  ></v-text-field>
+                  </v-col>
+                  </v-row> 
+                  </v-col>
+                   </v-row> 
+                 <v-textarea
+                  v-model="usuario.datos.direccion"
+                  label="Ingrese el la direccion"
+                  auto-grow
+                  outlined
+                  rows="2"
+                   row-height="25"
+                  @input="$v.usuario.datos.direccion.$touch()"
+                  @blur="$v.usuario.datos.direccion.$touch()"
+                  :error-messages="errorDireccion"
+                  color="#009900"
+                  shaped> 
+               </v-textarea>
+
+               <v-row>
+                <v-col>
+                 <v-menu
                 v-model="datemenu"
                 :close-on-content-click="false"
                 :nudge-right="40"
@@ -57,6 +106,7 @@
                     v-model="usuario.datos.fechanacimiento"
                     label="Fecha de Nacimiento"
                     prepend-icon="mdi-calendar"
+                    outlined
                     readonly
                     v-bind="attrs"
                     v-on="on"
@@ -72,42 +122,9 @@
                   locale="es-es"
                 ></v-date-picker>
               </v-menu>
-              <v-select
-                :items="['DNI', 'Pasaporte', 'Carnet Extranjeria']"
-                label="Ingrese el Tipo de Documento"
-                dense
-                outlined
-                v-model="usuario.datos.tipodocumento"
-                @input="$v.usuario.datos.tipodocumento.$touch()"
-                @blur="$v.usuario.datos.tipodocumento.$touch()"
-                :error-messages="errorTipoDocumento"
-                color="#009900"
-              ></v-select>
-              <v-text-field
-                v-model="usuario.datos.numerodocumento"
-                label="Ingrese el Numero de Documento"
-                outlined
-                @input="$v.usuario.datos.numerodocumento.$touch()"
-                @blur="$v.usuario.datos.numerodocumento.$touch()"
-                :error-messages="errorNumeroDocumento"
-                color="#009900"
-              ></v-text-field>
-
-               <v-textarea
-                  v-model="usuario.datos.direccion"
-                  label="Ingrese el la direccion"
-                  auto-grow
-                  outlined
-                  rows="2"
-                   row-height="25"
-                  @input="$v.usuario.datos.direccion.$touch()"
-                  @blur="$v.usuario.datos.direccion.$touch()"
-                  :error-messages="errorDireccion"
-                  color="#009900"
-                  shaped> 
-               </v-textarea>
+                </v-col>
+                 <v-col>
                 <v-text-field
-                 
                   v-model="usuario.datos.email"
                   label="Ingrese el Correo Electronico"
                   outlined
@@ -116,35 +133,23 @@
                   :error-messages="errorEmail"
                   color="#009900"
                ></v-text-field>
-
-                <div>
-                <vue-dropzone ref="myVueDropzone"
-                    @vdropzone-success=" afterSuccess"
-                    @vdropzone-removed-file="afterRemoved"
-                    @vdropzone-mounted="mounteddropzone"
-                    id="dropzone" :options="dropzoneOptions">
-                </vue-dropzone>
-                 </div>
-                  <v-card v-if="errorImagen" color="red">
-                   <v-card-text class="text-center" style="color:white">Debe Subir una imagen del usuario Obligatoriamente</v-card-text>
-                  </v-card>
-
-
-
-
-                    <div>
-                <vue-dropzone ref="myVueDropzoneFirma"
+                </v-col>
+                </v-row>
+                
+                   <v-row justify="center" align="center"> 
+                     <div>
+                    <vue-dropzone ref="myVueDropzoneFirma"
                     @vdropzone-success=" afterSuccessFirma"
                     @vdropzone-removed-file="afterRemovedFirma"
                     @vdropzone-mounted="mounteddropzoneFirma"
-                    id="dropzone" :options="dropzoneOptions">
-                </vue-dropzone>
+                    id="dropzone" :options="dropzoneOptionsFirma">
+                </vue-dropzone>           
                  </div>
+                 </v-row>
+
                   <v-card v-if="errorFirma" color="red">
                    <v-card-text class="text-center" style="color:white">Debe Subir una Firma del usuario Obligatoriamente</v-card-text>
                   </v-card>
-
-
 
                   <v-divider class="divider-custom"></v-divider>
                   <v-row>
@@ -164,8 +169,6 @@
                    </v-row>
               </form>
           </div>
-        </v-stepper-content>
-      </v-stepper-items>
     </v-stepper>
   </v-card>
 </template>
@@ -197,7 +200,20 @@ export default {
         addRemoveLinks: true,
         dictDefaultMessage:
           "Seleccione una Imagen de su Dispositivo o Arrastrela Aqui",
-      },imagen:{},
+      },
+      dropzoneOptionsFirma: {
+        url: "https://httpbin.org/post",
+        thumbnailWidth: 250,
+        maxFilesize: 3.0,
+        maxFiles: 1,
+        acceptedFiles: ".jpg, .png, jpeg",
+        headers: { "My-Awesome-Header": "header value" },
+        addRemoveLinks: true,
+        dictDefaultMessage:
+          "Seleccione la firma de su dispositivo o arrástrela aquí",
+      },
+      imagen:{},
+      firma:{},
       usuario: {
         id:"",
         usuario: "",
@@ -218,12 +234,8 @@ export default {
       },
     };
   },
-  created() {
-       console.log(this.user)
-  this.DialogloadUsuarioModificacion(); 
-      console.log(this.usuario)
-   
-     
+  created() { 
+  this.DialogloadUsuarioModificacion();      
   },
   methods: {
     ...mapMutations(["setUser"]),
@@ -256,7 +268,6 @@ async actualizarUsuarioPerfil(){
            console.log("hay errores");
         this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
        }else {      
-        console.log(this.usuario);
         let usuarioA={
            id: this.usuario.id,
            usuario: this.usuario.usuario,
@@ -265,11 +276,24 @@ async actualizarUsuarioPerfil(){
            estado: "",
            rol: "",       
         }; 
-        console.log(usuarioA);      
-     await axios.put("/Perfil/modificarperfil",usuarioA)            
+        await axios.put("/Perfil/modificarperfil",usuarioA)            
         .then((res) => {
-               // res.data;
-               this.setUser(this.usuario);
+               var miusuariomodificado = res.data;  
+             
+              this.user.datos.imagen = miusuariomodificado.datos.imagen;
+              this.user.datos.firma = miusuariomodificado.datos.firma;
+              
+              this.user.datos.direccion=miusuariomodificado.datos.direccion;
+             this.user.usuario=miusuariomodificado.usuario;
+             this.user.datos.nombre=miusuariomodificado.datos.nombre;
+             this.user.datos.apellido=miusuariomodificado.datos.apellido;
+             this.user.datos.fechanacimiento=miusuariomodificado.datos.fechanacimiento;
+             this.user.datos.tipodocumento=miusuariomodificado.datos.tipodocumento;
+             this.user.datos.numerodocumento=miusuariomodificado.datos.numerodocumento;
+             this.user.datos.direccion=miusuariomodificado.datos.direccion;
+             this.user.datos.email=miusuariomodificado.datos.email;
+               this.setUser(this.user);
+                
                  this.cerrarDialogo();
                   })
                   .catch((err) => {
@@ -292,7 +316,7 @@ async actualizarUsuarioPerfil(){
    afterSuccess(file,response){
        this.usuario.datos.imagen = file.dataURL.split(",")[1];
        this.$v.usuario.datos.imagen.$model = file.dataURL.split(",")[1];
-       this.imagen ={ tipo: "base64", modificado:"si"};
+      // this.imagen ={ tipo: "base64", modificado:"si"};
     },
     afterRemoved(file, error, xhr){
       this.usuario.datos.imagen = "";
@@ -304,7 +328,7 @@ async actualizarUsuarioPerfil(){
     afterSuccessFirma(file,response){
        this.usuario.datos.firma = file.dataURL.split(",")[1];
        this.$v.usuario.datos.firma.$model = file.dataURL.split(",")[1];
-       this.firma ={ tipo: "base64", modificado:"si"};
+      // this.firma ={ tipo: "base64", modificado:"si"};
     },
     afterRemovedFirma(file, error, xhr){
       this.usuario.datos.firma = "";
@@ -324,14 +348,14 @@ async actualizarUsuarioPerfil(){
    
     },
 mounteddropzone(){
-     console.log(this.usuario.datos.imagen)
+  
      var file = { size: 250, name: "Imagen de Perfil", type: "image/jpg" };
       this.$refs.myVueDropzone.manuallyAddFile(file, this.usuario.datos.imagen,null,null,true);      
       
     },
 ///
   mounteddropzoneFirma(){
-     console.log(this.usuario.datos.firma)
+    
      var file = { size: 250, name: "Imagen de Firma", type: "image/jpg" };
       this.$refs.myVueDropzoneFirma.manuallyAddFile(file, this.usuario.datos.firma,null,null,true);         
     },
@@ -450,6 +474,12 @@ mounteddropzone(){
         ? true
         : false;
     },
+    errorFirma() {
+      return this.$v.usuario.datos.firma.required == false &&
+        this.$v.usuario.datos.firma.$dirty == true
+        ? true
+        : false;
+    },
   },
   validations() {
     return {
@@ -493,6 +523,9 @@ mounteddropzone(){
             minLength: minLength(10),
           },
           imagen: {
+            required,
+          },
+          firma: {
             required,
           },
         },
