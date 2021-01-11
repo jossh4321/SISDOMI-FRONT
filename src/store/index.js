@@ -26,6 +26,7 @@ export default new Vuex.Store({
         incidencias:[],
         fichaEvaluacionEduativa:[],
         talleres:[],
+        entrevistasFamiliares:[],
         nombreCar:'DOMI',
         fase:""
     },
@@ -139,6 +140,17 @@ export default new Vuex.Store({
             state.nombreCar = value;
         },setFase(state,value){
             state.fase = value;
+        },
+        //Entrevistas Familiares
+        setEntrevistasFamiliares(state, value) {
+            state.entrevistasFamiliares = value;
+        },
+        addEntrevistaFamiliar(state, value) {
+            state.entrevistasFamiliares.push(value);
+        },
+        replaceEntrevistaFamiliar(state, value) {
+            var index = state.entrevistasFamiliares.findIndex(x => x.id == value.id);
+            state.entrevistasFamiliares.splice(index, 1, value);
         }
     },
     modules: {
