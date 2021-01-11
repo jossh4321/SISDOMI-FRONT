@@ -96,8 +96,9 @@
                                     </v-col>
                                     <v-col cols="12" xs="12" sm="6" md="6">
                                        <div style="padding:5px">
-                                          <v-btn color="warning" rounded block>
-                                              <v-icon left>mdi-folder-edit</v-icon>Generar pdf
+                                          <v-btn color="warning" rounded block
+                                              @click="verPDF(titulosDoc[documento.tipo].visualizar,fase.fase)">
+                                              <v-icon left>mdi-folder-edit</v-icon>Ver pdf
                                           </v-btn>
                                         </div>
                                     </v-col>
@@ -195,13 +196,39 @@
           @cerrar-modal-docf1="cerrarDialogoVisualizarDocF1"
         ></v-component>
       </v-dialog>
+      <v-dialog
+        v-model="dialogVistaPreviaAnexos"
+        persistent
+        max-width="600px"
+      >
+        <v-card align="center">
+          <v-card-title>
+            <span class="headline">Vista previa</span>
+              </v-card-title>
+                <v-card-text>
+                  <iframe
+                    :src= pdf
+                    width=100% height=600></iframe>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="cerrarVistaPreviaAnexo()"
+                    >
+                      Cerrar
+                    </v-btn>
+                </v-card-actions>
+          </v-card>
+       </v-dialog>
     </template>          
     </div>
 </template>
 <script>
-import VisualizarFichaIngresoEducativa from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarFichaIngresoEducativa.vue";
+import VisualizarFichaEducativaIngreso from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarFichaIngresoEducativa.vue";
 import VisualizarInformeEducativoInicial from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarInformeEducativoInicial.vue";
-import VisualizarPlanIntervencionEducativoIndividual from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarPlanIntervencionEducativoIndividual.vue";
+import VisualizarPlanIntervencionIndividualEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarPlanIntervencionEducativoIndividual.vue";
 import VisualizarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarInformeSeguimientoEducativo.vue";
 import VisualizarInformeEducativoEvolutivo from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/InformeEvolutivo/VisualizarInformeEducativoEvolutivo.vue";
 import VisualizarInformeEducativoFinal from "@/components/DocumentosInterfazTratamiento/Fase 3/Educativa/VisualizarInformeEducativoFinal.vue";
@@ -210,9 +237,9 @@ import VisualizadorResidente from "@/components/residentes/VisualizadorResidente
 export default {
     components: {
         VisualizadorResidente,
-        VisualizarFichaIngresoEducativa,
+        VisualizarFichaEducativaIngreso,
         VisualizarInformeEducativoInicial,
-        VisualizarPlanIntervencionEducativoIndividual,
+        VisualizarPlanIntervencionIndividualEducativo,
         VisualizarInformeSeguimientoEducativo,
         VisualizarInformeEducativoEvolutivo,
         VisualizarInformeEducativoFinal,
@@ -222,13 +249,15 @@ export default {
            showInfo: true,
            step:1,
            residente: "",
+           pdf:"",
            visualizarRegistro:"",
            dialogoDetalleDocumentos : false,
+           dialogVistaPreviaAnexos: false,
            listFases:"",
            titulosDoc: {
             FichaEducativaIngreso: {
               titulo: "Ficha Educativa de Ingreso",
-              visualizar: "VisualizarFichaIngresoEducativa"
+              visualizar: "VisualizarFichaEducativaIngreso"
             },
             InformeEducativoInicial: {
               titulo: "Informe Educativo Inicial",
@@ -236,7 +265,7 @@ export default {
             },
             PlanIntervencionIndividualEducativo: {
               titulo: "Plan de Intervencion Educativo Individual",
-              visualizar: "VisualizarPlanIntervencionEducativoIndividual"
+              visualizar: "VisualizarPlanIntervencionIndividualEducativo"
             },
             InformeSeguimientoEducativo: {
               titulo: "Informe de Seguimiento Educativo",
@@ -269,6 +298,25 @@ export default {
     methods:{
       navegarto(ruta) {
         this.$router.push(ruta);
+      },
+      async verPDF(documento, fase){
+        console.log(fase);
+        var nombreDocumento = documento.substring(10);
+        var stringFase = fase.toString();
+        await axios
+        .get("/documento/"+nombreDocumento+"/residente/"+this.residente.id)
+        .then((x) => {
+          for(var i = 0; i < x.data.length; i++){
+            if(stringFase = x.data[i].fase){
+              this.pdf = x.data[i].historialcontenido[x.data[i].historialcontenido.length - 1].url;
+            }
+          }
+        })
+        .catch((err) => console.log(err));
+        this.dialogVistaPreviaAnexos = true;
+      },
+      cerrarVistaPreviaAnexo() {
+        this.dialogVistaPreviaAnexos = false;
       },
       abrirDialogoVisualizarDocumento(componente) {
         this.visualizarRegistro = componente;

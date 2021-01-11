@@ -563,6 +563,7 @@ export default {
   data() {
     return {
       fichaIngresoid: "",
+      cargaRegistro: false,
       fichaIngreso: {
         id: "",
         tipo: "",
@@ -589,7 +590,6 @@ export default {
           },
           observaciones:[],
           codigoDocumento: "",
-          cargaRegistro: false,
         },
       },
       itemsModalidad: [
