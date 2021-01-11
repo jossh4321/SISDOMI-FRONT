@@ -69,55 +69,7 @@
                             </template>
                           </v-autocomplete>
                  <!-- autocomplete de  educadores-->
-                        <v-autocomplete
-                              :items="listaeducadores"
-                              filled
-                              chips
-                              dense
-                              disabled
-                              outlined
-                              v-model="seguimiento.creadordocumento"
-                              color="#009900"
-                              label="Educador responsable"
-                              item-text="usuario"
-                              item-value="id"
-                            
-                              
-                            >
-                              <template v-slot:selection="data">
-                                <v-chip
-                                  v-bind="data.attrs"
-                                  :input-value="data.selected"
-                                  style="margin-top:5px"
-                                >
-                                  <v-avatar left color="#b3b3ff" size="24">
-                                    <span style="font-size:12px">RT</span>
-                                  </v-avatar>
-                                  {{ data.item.datos.nombre  + " " +  data.item.datos.apellido }}
-                                </v-chip>
-                              </template>
-                              <template v-slot:item="data">
-                                <template>
-                                  <v-list-item-avatar>
-                                    <v-avatar left color="#b3b3ff" size="24">
-                                      <span style="font-size:12px">UC</span>
-                                    </v-avatar>
-                                  </v-list-item-avatar>
-                                  <v-list-item-content>
-                                    <v-list-item-title
-                                      >Nombre completo: {{ data.item.datos.nombre }}
-                                      {{ data.item.datos.apellido }}
-                                    </v-list-item-title>
-                                    <v-list-item-subtitle
-                                      >Nro. Documento:
-                                      {{
-                                        data.item.datos.numeroDocumento
-                                      }}</v-list-item-subtitle
-                                    >
-                                  </v-list-item-content>
-                                </template>
-                              </template>
-                          </v-autocomplete>
+                        
                  <v-menu
                   v-model="datemenu"
                   :close-on-content-click="false"

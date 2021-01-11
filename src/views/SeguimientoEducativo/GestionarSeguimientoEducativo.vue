@@ -119,7 +119,7 @@ export default {
           text: "Nombre Documento",
           align: "start",
           sortable: false,
-          value: "id",
+          value: "codigodocumento",
         },
         { text: "Nombre del residente", value: "nombrecompleto" },
         { text: "Fecha de creacion", value: "fechacreacion" },
