@@ -20,7 +20,7 @@ import GestionarEvaluacionEducativa from '../views/Evaluacion/GestionarEvaluacio
 import GestionResidentes from '../views/Residentes/GestionResidentes.vue';
 import ProgresoEducativoResidente from '../views/Residentes/ProgresoEducativoResidente.vue';
 import GestionarActividades from '../views/Actividades/GestionarActividades.vue';
-import GestionarEntrevistasFamiliares from '../views/entrevistasFamiliares/GestionarEntrevistasFamiliares.vue';
+import GestionarEntrevistasFamiliares from '../views/EntrevistasFamiliares/GestionarEntrevistasFamiliares.vue';
 
 //Prueba
 import PruebaActa from '../views/Acta/PruebaActa.vue';
@@ -247,7 +247,7 @@ const routes = [{
                 name: 'ProgresoF3Residente',
                 component: ProgresoF3Residente,
                 params: true
-            },{
+            }, {
                 path: 'Dashboard',
                 name: 'Dashboard',
                 component: DashBoard,

@@ -29,7 +29,7 @@
                 <v-row>
                   <v-col xs="12" sm="6"   md="6" lg="3" xl="3">
                     <v-card class="card-item">
-                      <span>Direccion: {{usuario.datos.direccion}} {{usuario.datos.apellido}}</span>
+                      <span>Direccion: {{usuario.datos.direccion}} </span>
                     </v-card>
                   </v-col>
                   <v-col xs="12" sm="6"   md="6" lg="3" xl="3">

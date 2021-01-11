@@ -62,7 +62,7 @@
         <v-container class="fill-height">
           <v-card class="card mx-auto" width="100%">
             <v-card-title class="justify-center" style="font-size: 35px"
-              >Fases del Tratamiento</v-card-title
+              >Documentos generales</v-card-title
             >
             <v-container>
               <v-row>
@@ -198,6 +198,13 @@ export default {
           descripcion:"Incidencias",
           imagenUrl: "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/data_organization_flatline.png",
           interfazUrl: "/dashboard/incidencias",
+          boton: { texto: "Acceder", icono: "mdi-cloud-upload" },
+        },{
+          id:10,
+          titulo: "Anexos",
+          descripcion:"Anexos",
+          imagenUrl: "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/data_organization_flatline.png",
+          interfazUrl: "/dashboard/anexos",
           boton: { texto: "Acceder", icono: "mdi-cloud-upload" },
         }
       ]
