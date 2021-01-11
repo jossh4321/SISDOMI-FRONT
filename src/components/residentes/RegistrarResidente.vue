@@ -907,7 +907,7 @@ export default {
         await this.mensaje(
           "success",
           "listo",
-          "Regidente registrado Satisfactoriamente",
+          "Residente registrado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
       }
