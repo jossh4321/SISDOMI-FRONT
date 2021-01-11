@@ -649,6 +649,21 @@
         </v-stepper-content>
         </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Registrando el seguimiento educativo</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>       
    </v-card>
 </template>
 <script>
@@ -677,6 +692,7 @@ export default {
       dialog:false, // dialogo firma
      dialog1:false,//dialogo notas
       dialogVistaPreviaFirma: false,
+      cargarRegistro:false,
 
       dropzoneOptions: {
         url: "https://httpbin.org/post",
@@ -775,11 +791,14 @@ export default {
         console.log('hay errores');
         this.mensaje('error','..Oops','Se encontraron errores en el formulario',"<strong>Verifique los campos Ingresados<strong>");
       } else {
+        this.cargaRegistro = true;
         console.log('no hay errores');
     await axios
           .put("/SeguimientoEducativo/informese", this.seguimiento)
           .then((res) => {
             this.replaceSeguimiento(res.data);
+              this.cargaRegistro = false;
+            this.$emit("cargarSeguimiento");
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -789,7 +808,6 @@ export default {
           "Seguimiento educativo modificado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
-        this.$emit("cargarSeguimiento");
       }
     },
      /*guardarSeguimientoFirma(){

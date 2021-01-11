@@ -132,10 +132,12 @@ export default {
       dialogodetalle: false,
       faseEducativaInicial: {            
             fase: "1",
-            area: "educativa",
-            documentoanterior: "PlanIntervencionIndividualEducativo",
-            documentoactual: "InformeSeguimientoEducativo",
-            estadodocumentoanterior: "Completo"
+  fasedocumentoanterior: "1",
+  area: "educativa",
+  documentoanterior: "PlanIntervencionIndividualEducativo",
+  documentoactual: "InformeSeguimientoEducativo",
+  estadodocumentoactual: "creado",
+  estadodocumentoanterior: "completo"
         }
     };
   },
