@@ -4,6 +4,72 @@
     <div class="container-user">
       <v-card style="padding:1% 3%">
         <form style="margin-top: 15px">
+          <v-row no-gutters>
+            <v-col cols="3">
+              <v-select
+                style="margin-top:6%;margin-right:6%"
+                v-model="select"
+                :items="items"
+                item-text="text"
+                item-value="value"
+                label="Filtrar por:"
+                return-object
+                outlined
+                dense
+              ></v-select>
+            </v-col>
+            <v-col cols="9">
+              <v-autocomplete
+                style="margin-top:2%"
+                :items="residentes"
+                v-model="documento.idresidente"
+                filled
+                chips
+                dense
+                outlined
+                color="#009900"
+                label="Seleccione un Residente"
+                :item-text="select.value"
+                item-value="id"
+                @input="$v.documento.idresidente.$touch()"
+                @blur="$v.documento.idresidente.$touch()"
+                :error-messages="errorResidente"
+              >
+                <template v-slot:selection="data">
+                  <v-chip
+                    v-bind="data.attrs"
+                    :input-value="data.selected"
+                    style="margin-top:5px"
+                  >
+                    <v-avatar left color="#b3b3ff" size="24">
+                      <span style="font-size:12px">RT</span>
+                    </v-avatar>
+                    {{ data.item.nombre }} {{ data.item.apellido }} 
+                  </v-chip>
+                </template>
+                <template v-slot:item="data">
+                  <template>
+                    <v-list-item-avatar>
+                      <v-avatar left color="#b3b3ff" size="24">
+                        <span style="font-size:12px">RE</span>
+                      </v-avatar>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        >Nombre completo: {{ data.item.nombre }}
+                        {{ data.item.apellido }}
+                      </v-list-item-title>
+                      <v-list-item-subtitle
+                        >Nro. Documento:
+                        {{ data.item.numeroDocumento }}</v-list-item-subtitle
+                      >
+                    </v-list-item-content>
+                  </template>
+                </template>
+              </v-autocomplete>
+            </v-col>
+          </v-row>
+          
           <v-text-field
             v-model.trim="contenidoEntrevistaFamiliar.nombreApoderado"
             label="Nombre del apoderado"
@@ -93,7 +159,7 @@ import axios from "axios"; //Para las llamadas a las apis
 import Vuelidate from "vuelidate"; //Para las validaciones
 import vue2Dropzone from "vue2-dropzone"; //Para las firmas
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapGetters } from "vuex";
 //Para una sola palabra o frase
 function esTexto(value) {
   return /^[A-Za-z\sáéíóúÁÉÍÓÚñÑ]+$/.test(value); 
@@ -113,11 +179,31 @@ import {
 } from "vuelidate/lib/validators";
 import moment from "moment";
 export default {
+  name:"RegistrarEntrevistasFamiliares",
+  props:["dialogoregistro"],
   data() {
     return {
+      select: { value: "1", text: "Nombre" },
+      items: [
+        { value: "nombre", text: 'Nombre'},
+        { value: "apellido", text: 'Apellido'},
+        { value: "numeroDocumento", text: 'Numero Documento'},
+      ],
       datemenu: false,
       step: 1,
       menu: false,
+      residenteArray:[],
+      documento:{
+        tipo:"EntrevistaFamiliar",
+        historialcontenido:[],
+        creadordocumento:"",
+        fechacreacion: "",
+        area:"social",
+        fase:"1",
+        idresidente:"",
+        estado:"creado",
+        contenido:{}
+      },
       contenidoEntrevistaFamiliar: {
         fechaEntrevista: "",
         nombreApoderado: "",
@@ -128,14 +214,14 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["addEntrevistaFamiliar"]),
+    ...mapMutations(["setResidentes","addEntrevistaFamiliar"]),
     //moment: function() {
     //  return moment();
     //},
 
     ///CERRAR DIALOGO
     cerrarDialogo() {
-      this.contenidoEntrevistaFamiliar = this.limpiarEntrevistaFamiliar();
+      this.contenidoEntrevistaFamiliar= this.limpiarEntrevistaFamiliar();
       this.$v.contenidoEntrevistaFamiliar.$reset();
       this.step = 1;
       this.$emit("close-dialog-save");
@@ -150,6 +236,19 @@ export default {
           observaciones: "",
       };
       ///funcion mensaje para mostrar el mensaje de error
+    },
+    async obtenerResidentes() {
+      await axios
+        .get("/residente/all")
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          for (var x=0;x<res.data.length;x++){
+              info[x].fechaIngreso = res.data[x].fechaIngreso.split("T")[0];
+          }    
+          this.setResidentes(info);
+        })
+        .catch((err) => console.log(err));
     },
     async mensaje(icono, titulo, texto, footer) {
       await this.$swal({
@@ -170,16 +269,25 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+
+        this.documento.contenido = this.contenidoEntrevistaFamiliar;
+        console.log("obj a enviar:");
+        console.log(this.documento);
         await axios
-          .post("/Documento/entrevistafamiliar", this.contenidoEntrevistaFamiliar)
-          .then(res => {
-            var info = {
-              nombreApoderado: res.data.nombreApoderado,
-              apellidoApoderado: res.data.apellidoApoderado,
-              dniApoderado: res.data.dniApoderado,
-              observaciones: res.data.observaciones,
-              fechaEntrevista: res.data.fechaEntrevista.split("T")[0],
-            };
+          .post("/Documento/entrevistafamiliar", this.documento)
+          .then((res)=> {
+            var info = {};
+            info = res.data;
+            for (var x=0;x<res.data.length;x++){
+                info[x].contenido.fechaEntrevista = res.data[x].contenido.fechaEntrevista.split("T")[0];
+                var nombreCompletoResidente = info[x].contenido.datosresidente.nombre + " " + info[x].contenido.datosresidente.apellido
+                const ResidenteCompleto = { nombrecompleto: nombreCompletoResidente};
+                info[x].contenido.datosresidente = Object.assign(info[x].contenido.datosresidente, ResidenteCompleto);
+                var nombreCompletoApoderado = info[x].contenido.nombreApoderado + " " + info[x].contenido.apellidoApoderado;
+                const ApoderadoCompleto = { nombrecompleto: nombreCompletoApoderado};
+                info[x].contenido = Object.assign(info[x].contenido, ApoderadoCompleto);
+            }
+
             this.addEntrevistaFamiliar(info);
             this.$v.contenidoEntrevistaFamiliar.$reset();
             this.cerrarDialogo();
@@ -194,12 +302,34 @@ export default {
       }
     },
   },
+  async created(){
+    await this.obtenerResidentes();
+    this.residenteArray = this.residentes;
+    this.documento.creadordocumento = this.user.id;
+  },
+  watch:{
+    dialogoregistro: async function(dialogoregistro){
+      if(dialogoregistro){
+        await this.obtenerResidentes();
+        this.residenteArray = this.residentes;
+        this.documento.creadordocumento = this.user.id;
+      }
+    }
+  },
   computed: {
     ///validaciones
     ...mapState(["residentes"]),
+    ...mapGetters(["user"]),
     // verifyColor() {
     //   return "red";
     // },
+    errorResidente() {
+      const errors = [];
+      if (!this.$v.documento.idresidente.$dirty) return errors;
+      !this.$v.documento.idresidente.required &&
+        errors.push("Debe seleccionar un residente obligatoriamente");
+      return errors;
+    },
     errorNombreApoderado() {
       const errors = [];
       if (!this.$v.contenidoEntrevistaFamiliar.nombreApoderado.$dirty) return errors;
@@ -238,7 +368,7 @@ export default {
         errors.push("Debe ingresar la fecha de creacion obligatoriamente");
       var dateselected = new Date(this.contenidoEntrevistaFamiliar.fechaEntrevista);
       var maxdate = new Date();
-      !(dateselected.getTime() > maxdate.getTime()) &&
+      !(dateselected.getTime() < maxdate.getTime()) &&
         errors.push("La fecha no debe ser mayor a la actual");
       return errors;
     },
@@ -256,9 +386,14 @@ export default {
     const validacionfecha = (value)=>{
       var dateselected = new Date(value);
       var maxdate = new Date();
-      return (dateselected.getTime() > maxdate.getTime()) 
+      return (dateselected.getTime() < maxdate.getTime()) 
     };
     return {
+      documento:{
+        idresidente:{
+          required
+        }
+      },
       contenidoEntrevistaFamiliar: {
         nombreApoderado: {
           esTexto,

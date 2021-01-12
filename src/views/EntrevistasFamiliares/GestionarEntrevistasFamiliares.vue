@@ -36,6 +36,7 @@
                 </v-btn>
               </template>
               <RegistrarEntrevistasFamiliares
+                :dialogoregistro="dialogoregistro"
                 @close-dialog-save="closeDialogRegistrar()"
               ></RegistrarEntrevistasFamiliares>
             </v-dialog>
@@ -100,14 +101,13 @@ export default {
 
       headers: [
         {
-          text: "Nombre del Residente ",
+          text: "Nombre Completo del Residente ",
           align: "start",
           sortable: false,
-          value: "contenido.nombreApoderado",
+          value: "contenido.datosresidente.nombrecompleto",
         },
-        { text: "N°documento del Residente", value: "contenido.nombreApoderado" },
-        { text: "Nombre del apoderado", value: "contenido.nombreApoderado" },
-        { text: "Apellido del apoderado", value: "contenido.apellidoApoderado" },      
+        { text: "N°documento del Residente", value: "contenido.datosresidente.numerodocumento" },
+        { text: "Nombre Completo del apoderado", value: "contenido.nombrecompleto" }, 
         { text: "Fecha de Entrevista", value: "contenido.fechaEntrevista" },
         { text: "Actions", value: "actions", sortable: false },
       ],
@@ -178,9 +178,14 @@ export default {
         .then((res) => {
           var info = {};
           info = res.data;
-          console.log(res.data)
           for (var x=0;x<res.data.length;x++){
               info[x].contenido.fechaEntrevista = res.data[x].contenido.fechaEntrevista.split("T")[0];
+              var nombreCompletoResidente = info[x].contenido.datosresidente.nombre + " " + info[x].contenido.datosresidente.apellido
+              const ResidenteCompleto = { nombrecompleto: nombreCompletoResidente};
+              info[x].contenido.datosresidente = Object.assign(info[x].contenido.datosresidente, ResidenteCompleto);
+              var nombreCompletoApoderado = info[x].contenido.nombreApoderado + " " + info[x].contenido.apellidoApoderado;
+              const ApoderadoCompleto = { nombrecompleto: nombreCompletoApoderado};
+              info[x].contenido = Object.assign(info[x].contenido, ApoderadoCompleto);
           }
           
           this.setEntrevistasFamiliares(info);
