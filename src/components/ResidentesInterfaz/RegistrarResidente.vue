@@ -913,9 +913,9 @@ export default {
           .catch(err => console.log(err));
         await this.mensaje(
           "success",
-          "listo",
-          "Regidente registrado Satisfactoriamente",
-          "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+          "Listo",
+          "Residente registrado Satisfactoriamente",
+          "<strong>Se redirigirá a la Interfaz de Gestion<strong>"
         );
       }
     },
