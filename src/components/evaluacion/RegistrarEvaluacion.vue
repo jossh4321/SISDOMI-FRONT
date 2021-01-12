@@ -246,7 +246,7 @@
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
-                                >Estudios |Nivel - Observaciones|</v-card-title
+                                >Estudios</v-card-title
                               >
                   <v-card
                     elevation="0"
@@ -298,7 +298,7 @@
                   <v-card
                     color="#FAFAFA"
                     style="margin-top:5px"
-                    height="60"
+                    height="100"
                     v-for="(item, index) in fichaEvaluacion.contenido.estudios"
                     :key="index"
                   >
@@ -311,7 +311,7 @@
                             alt="imagen usuario"
                           />
                           <span style="font-size:18px">
-                            {{ item.nivel }} -> {{ item.observaciones }}</span
+                            {{ item.nivel }}   ->   {{ item.observaciones }}</span
                           >
                         </article>
                       </v-col>
@@ -343,7 +343,7 @@
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
-                                >Aspectos |Tipo  - Descripcion|</v-card-title
+                                >Aspectos</v-card-title
                               >
                   <v-card
                     elevation="0"
@@ -397,7 +397,7 @@
                   <v-card
                     color="#FAFAFA"
                     style="margin-top:5px"
-                    height="60"
+                    height="100"
                     v-for="(item, index) in fichaEvaluacion.contenido.aspectos"
                     :key="index"
                   >
@@ -465,6 +465,21 @@
             </v-stepper-content>
         </v-stepper-items>
      </v-stepper>
+     <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Registrando el seguimiento educativo</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>       
   </v-card>
 </template>
 
@@ -497,6 +512,7 @@ components:{
      step:1,
      dialog:false, // dialogo firma
      dialogVistaPreviaFirma: false,
+     cargaRegistro:false,
      dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
@@ -611,10 +627,13 @@ components:{
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+         this.cargaRegistro = true;
         await axios
           .post("/EvaluacionDiagnosticoEducativo/fichaEvaluacionDE", this.fichaEvaluacion)
           .then((res) => {
             this.addEvaluacion(res.data);
+            this.cargaRegistro = false;
+            this.$emit("cargarSeguimiento");
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -624,7 +643,7 @@ components:{
           "Ficha Diagnostico Evaluacion Educativa registrado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>",      
         );
-       this.$emit("cargarSeguimiento");
+       
       }
   },  
        ///metodo para agregar firma residente

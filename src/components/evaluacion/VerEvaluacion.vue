@@ -142,79 +142,98 @@
               ><!--CONTIENE LOS STEPPERS 2 -->
               <div class="container-user">
                 <form>
-                  <!--Comienza el cuadro de Fima -->
-                            <v-row justify="center">
-                              <v-dialog v-model="dialog" persistent max-width="850px">
-                                <template v-slot:activator="{ on }">
-                                  <v-btn color="primary" v-on="on">
-                                    Ver Firma de creador(es) de documento
-                                  </v-btn>
-                                </template>
-                                <v-card>
-                                  <v-card-title>
-                                    <span class="headline"> Firma</span>
-                                  </v-card-title>
-                                  <v-card-text>
-                            <!-- cuadros de texto para añadir firma-->
-                           
-                              <v-divider class="divider-custom"></v-divider>
-                              <!-- cuadros de textofin -->
+                   <!--Comienza el cuadro de Fima -->
+            <v-row justify="center">
+                <v-dialog v-model="dialog" persistent max-width="850px">
+                  <template v-slot:activator="{ on }">
+                    <v-btn color="primary" v-on="on">
+                      Ver Firma del creador de documento
+                    </v-btn>
+                  </template>
+                  <v-card>
+                    <v-card-title>
+                      <span class="headline"> Firma</span>
+                    </v-card-title>
+                    <v-card-text>
+                    <v-text-field
+                        v-model="this.cargo"
+                        label="Cargo"
+                        outlined  
+                        readonly
+                        color="#009900"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="this.usuario"
+                        label="Nombre"
+                        outlined  
+                        readonly 
+                        color="#009900"
+                    ></v-text-field>
+                    <div align="center">
+                    <v-card-text>
+                        <img
+                          width="240"
+                          height="170"
+                          :src="this.firma"
+                          alt=""
+                        />
+                    </v-card-text>
+                    </div> 
 
-                          <v-card
-                              style="margin-top:30px;left-top:30px;padding:5px 5px;background-color:#EAEAEA"
-                            >
-                              <v-card-title style="font-size:22px;padding: 10px 10px;"
-                                >Firma de creador(es) de documento</v-card-title
-                              >
-                              <!-- Cabecera -->
-                              <v-card
-                              elevation="0"
-                              color="#EAEAEA"
-                              style="margin-top:5px; margin-bottom:15px"
-                              height="30"
-                              >
-                              
-                                <v-row style="margin-left:10px;heigh:100%" align="center">
-                                  <v-col cols="4">
-                                    <article>
-                                      <span style="font-size:16px">Cargo</span>
-                                    </article>
-                                  </v-col>
-                                  <v-col cols="4">
-                                    <article>
-                                      <span style="font-size:16px">Nombre</span>
-                                    </article>
-                                  </v-col>
-                                  <v-col>
-                                    <article cols="4">
-                                      <span style="font-size:16px">Firma</span>
-                                    </article>
-                                  </v-col>
-                                  <v-col align="right">
-                                  </v-col>
-                                </v-row>
-                              </v-card>
-                              <!-- Cuerpo -->
-                              <v-card
-                                tile
-                                elevation="0"
-                                color="#FAFAFA"
-                                style="margin-top:5px"
-                                height="80"
-                                v-for="(item, index) in fichaEvaluacion.contenido.firmas"
-                                :key="index"
-                              >
-                                <v-row style="margin-left:10px;heigh:100%;" align="center">
-                                  <v-col :cols="4">
-                                    <article>
-                                      <span style="font-size:16px">{{item.cargo}}</span>
-                                    </article>
-                                  </v-col>
-                                  <v-col :cols="4">
-                                    <article>
-                                      <span style="font-size:16px">{{item.nombre}}</span>
-                                    </article>
-                                  </v-col>
+            <!-- <v-card
+                style="margin-top:30px;left-top:30px;padding:5px 5px;background-color:#EAEAEA"
+              >
+                <v-card-title style="font-size:22px;padding: 10px 10px;"
+                  >Firma del creador de documento</v-card-title
+                > -->
+                <!-- Cabecera -->
+                <!-- <v-card
+                elevation="0"
+                color="#EAEAEA"
+                style="margin-top:5px; margin-bottom:15px"
+                height="30"
+                >
+                  <v-row style="margin-left:10px;heigh:100%" align="center">
+                    <v-col cols="4">
+                      <article>
+                        <span style="font-size:16px">Cargo</span>
+                      </article>
+                    </v-col>
+                    <v-col cols="4">
+                      <article>
+                        <span style="font-size:16px">Nombre</span>
+                      </article>
+                    </v-col>
+                    <v-col>
+                      <article cols="4">
+                        <span style="font-size:16px">Firma</span>
+                      </article>
+                    </v-col>
+                    <v-col align="right">
+                    </v-col>
+                  </v-row>
+                </v-card> -->
+                <!-- Cuerpo -->
+                <!--<v-card
+                  tile
+                  elevation="0"
+                  color="#FAFAFA"
+                  style="margin-top:5px"
+                  height="80"
+                  v-for="(item, index) in seguimiento.contenido.firmas"
+                  :key="index"
+                >
+                  <v-row style="margin-left:10px;heigh:100%;" align="center">
+                    <v-col :cols="4">
+                      <article>
+                        <span style="font-size:16px">{{item.cargo}}</span>
+                      </article>
+                    </v-col>
+                    <v-col :cols="4">
+                      <article>
+                        <span style="font-size:16px">{{item.nombre}}</span>
+                      </article>
+                    </v-col>
                     <v-col :cols="2" align="center">
                         <template>
                             <v-btn
@@ -232,76 +251,48 @@
                               />
                             </v-btn>
                           </template>
-                      </v-col>
-                      <v-col :cols="2" align="right">
-                        <div style="margin-right:20px">
-                          
-                        </div>
-                      </v-col>
-                                  
-                                 <!--  <v-col align="right">
-                                    <div style="margin-right:20px">
-                                  <v-btn
-                                        style="margin-right:10px"
-                                        fab
-                                        x-small
-                                        dark
-                                        color="#126BB5"
-                                      >
-                                        <v-icon dark>
-                                          mdi-pencil
-                                        </v-icon>
-                                      </v-btn>  
-                                      
-                                    </div>
-                                  </v-col>-->
-                                </v-row>
-                              </v-card>
-                            </v-card>
-              <!--fin-->
-                            <!-- -->
-
-                                  </v-card-text>
-                                  <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="blue darken-1" text @click="dialog = false">
-                                      Cerrar
-                                    </v-btn>
-
-                                
-                                  </v-card-actions>
-                                </v-card>
-                              </v-dialog>
-                            </v-row>
-                <v-dialog
-                          v-model="dialogVistaPreviaFirma"
-                          persistent
-                          max-width="600px"
+                      
+                    </v-col>
+                    <v-col align="right">
+                      <div style="margin-right:20px">-->
+                   <!--     <v-btn
+                          style="margin-right:10px"
+                          fab
+                          x-small
+                          dark
+                          color="#126BB5"
                         >
-                          <v-card align="center">
-                            <v-card-title>
-                              <span class="headline">Vista previa</span>
-                            </v-card-title>
-                            <v-card-text>
-                              <img
-                                width="100%"
-                                height="100%"
-                                :src="imagen"
-                                alt=""
-                              />
-                            </v-card-text>
-                            <v-card-actions>
-                              <v-spacer></v-spacer>
-                              <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="cerrarVistaPreviaFirma()"
-                              >
-                                Cerrar
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
+                          <v-icon dark>
+                            mdi-pencil
+                          </v-icon>
+                        </v-btn>  -->
+                        
+                    <!--  </div>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-card> -->
+<!--fin-->
+                          
+
+              <!-- -->
+                        
+                    
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="dialog = false"
+                      >
+                        Cerrar
+                      </v-btn>
+                  
+                    </v-card-actions>
+                  </v-card>
                 </v-dialog>
+              </v-row>
                 <!--Dialogo dse estudiso -->
               <v-card
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
@@ -312,7 +303,7 @@
                     height="70"
                   >
                   <v-card-title style="font-size:22px;padding: 10px 10px;"
-                  >Estudios |Nivel - Observaciones| </v-card-title
+                  >Estudios</v-card-title
                 >
                     <v-row style="margin:1%;heigh:100%" align="center">
                       <v-col :cols="4" align="left">
@@ -369,7 +360,7 @@
                     height="70"
                   >
                   <v-card-title style="font-size:22px;padding: 10px 10px;"
-                  >Aspectos |Tipo - Descripcion|</v-card-title
+                  >Aspectos</v-card-title
                 >
                     <v-row style="margin:1%;heigh:100%" align="center">
                       <v-col :cols="4" align="left">
@@ -464,6 +455,9 @@ data(){
       imagen: "",
     }
       },
+ async created() {
+      this.obtenerCreador();
+  },
     methods:{
       cerrarDialogo(){
          this.step = 1;
@@ -472,12 +466,24 @@ data(){
        cerrarVistaPreviaFirma() {
       this.dialogVistaPreviaFirma = false;
     },
+    async obtenerCreador() {
+        await axios
+        .get("/usuario/rol/permiso?id=" + this.fichaEvaluacion.creadordocumento)
+        .then((x) => {
+          this.usuario = x.data.datos.nombre + " " + x.data.datos.apellido;
+          this.cargo = x.data.rol.nombre;
+          this.firma = x.data.datos.firma;
+        })
+        .catch((err) => console.log(err));
+    },
     verFirma(index) {
       console.log(this.fichaEvaluacion.contenido.firmas[index].urlfirma);
       this.imagen = this.fichaEvaluacion.contenido.firmas[index].urlfirma;
       this.dialogVistaPreviaFirma = true;
     },
-  }
+   
+  },
+  computed:{}
 }
 </script>
 
