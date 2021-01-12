@@ -481,7 +481,7 @@ export default {
           await this.mensaje(
                 "success",
                 "Listo",
-                "Plan registrado Satisfactoriamente",
+                "Informe registrado Satisfactoriamente",
                 "<strong>Volviendo al progreso<strong>",
                 true
               );

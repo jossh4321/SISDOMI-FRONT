@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="showInfo">
+    <!-- <template v-if="showInfo">
       <v-card
         elevation="3"
         outlined
@@ -16,8 +16,8 @@
           ></v-progress-circular>
         </div>
       </v-card>
-    </template>
-    <template v-else>
+    </template> -->
+    <template>
       <v-app-bar color="primary accent-4" dense dark>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <span>
@@ -91,9 +91,9 @@
                       <v-card-title class="justify-center">
                         {{ fase.titulo }}
                       </v-card-title>
-                      <v-card-text style="text-align: justify">
+                      <!-- <v-card-text style="text-align: justify">
                         {{ fase.descripcion }}
-                      </v-card-text>
+                      </v-card-text> -->
                       <v-btn block class="my-button" color="success">
                         <v-icon left dark @click.native="imprimir()">
                           {{ fase.boton.icono }}
