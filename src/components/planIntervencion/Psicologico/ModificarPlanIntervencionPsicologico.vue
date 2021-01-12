@@ -23,19 +23,6 @@
             <form>
               <v-row>
                 <v-col cols="12" sm="6" md="6">
-                  <v-text-field
-                    label="Título"
-                    outlined
-                    v-model.trim="getTitleByFaseResident"
-                    required
-                    :error-messages="planTituloErrors"
-                    @input="$v.planI.contenido.titulo.$touch()"
-                    @blur="$v.planI.contenido.titulo.$touch()"
-                    readonly
-                    color="success"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="6">
                   <template v-if="planI.documentos.length > 0">
                     <v-text-field
                       :value="residente.residente"
@@ -58,6 +45,7 @@
                       label="Nombres y apellidos del residente"
                       return-object
                       outlined
+                      readonly
                       :error-messages="residenteIdErrors"
                       @input="$v.residente.id.$touch()"
                       @blur="$v.residente.id.$touch()"
@@ -84,6 +72,19 @@
                       </template>
                     </v-autocomplete>
                   </template>
+                </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field
+                    label="Título"
+                    outlined
+                    v-model.trim="getTitleByFaseResident"
+                    required
+                    :error-messages="planTituloErrors"
+                    @input="$v.planI.contenido.titulo.$touch()"
+                    @blur="$v.planI.contenido.titulo.$touch()"
+                    readonly
+                    color="success"
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
@@ -393,13 +394,8 @@
               <v-row>
                 <v-col cols="12" sm="12">
                   <v-card-text>
-                      <img
-                        width="240"
-                        height="170"
-                        :src="this.firma"
-                        alt=""
-                      />
-                    </v-card-text>
+                    <img width="240" height="170" :src="this.firma" alt="" />
+                  </v-card-text>
                   <!-- <vue-dropzone
                     ref="myVueDropzone"
                     :options="dropzoneOptions"
@@ -442,6 +438,28 @@
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
+      <v-dialog width="450px" v-model="cargaModificacion" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center"
+            >Modficando el Plan de Intervención Individual
+            Psicológico</v-card-title
+          >
+          <div>
+            <v-progress-circular
+              style="display: block; margin: 40px auto"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+          <v-card-subtitle
+            class="justify-center"
+            style="font-weight: bold; text-align: center"
+            >En unos momentos finalizaremos...</v-card-subtitle
+          >
+        </v-card>
+      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
@@ -493,7 +511,32 @@ export default {
         estado: "",
         faseActual: "",
       },
-      firma:"",
+      firma: "",
+      fasesPlanIntervencion: {
+        fases: [1, 2],
+        area: "psicologica",
+        documentoEstadosAnteriores: [
+          {
+            tipo: "InformePsicologicoInicial",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualPsicologico",
+            estado: "Pendiente",
+          },
+        ],
+        documentoEstadosActuales: [
+          {
+            tipo: "PlanIntervencionIndividualPsicologico",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualPsicologico",
+            estado: "Completo",
+          },
+        ],
+      },
+      cargaModificacion: false,
     };
   },
   props: {
@@ -592,7 +635,7 @@ export default {
       this.loadingSearch = true;
 
       axios
-        .get("/residente/planes/area/psicologica")
+        .post("/residente/all/fases/documentos", this.fasesPlanIntervencion)
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
             return {
@@ -637,13 +680,13 @@ export default {
       this.$emit("close-dialog");
     },
     async obtenerCreador() {
-        await axios
+      await axios
         .get("/usuario/rol/permiso?id=" + this.planI.creador)
         .then((x) => {
           this.firma = x.data.datos.firma;
         })
         .catch((err) => console.log(err));
-      },
+    },
     addStep(step) {
       this.startSttepper = step;
     },
@@ -679,7 +722,7 @@ export default {
         this.planI.contenido.requerimientos.push(this.requerimiento);
         this.requerimiento = "";
       }
-    },/*
+    } /*
     registerFile(file, response) {
       this.listImages.push(file);
     },
@@ -689,7 +732,7 @@ export default {
       if (indexFile != -1) {
         this.listImages.splice(indexFile, 1);
       }
-    },*/
+    },*/,
     messageSweet(icon, title, text, valid) {
       this.$swal({
         icon: icon,
@@ -733,6 +776,8 @@ export default {
           }
         }*/
 
+        this.cargaModificacion = true;
+
         let planI = {
           id: this.planI.id,
           historialcontenido: [],
@@ -744,6 +789,8 @@ export default {
         axios
           .put("/planIntervencion/psicologico", planI)
           .then((res) => {
+            this.cargaModificacion = false;
+
             this.messageSweet(
               "success",
               "Actualización del Plan de Intervención",
@@ -769,8 +816,7 @@ export default {
       if (this.residente != null) {
         if (this.residente.faseActual != "") {
           if (this.residente.faseActual == "1") {
-            this.planI.contenido.titulo =
-              "Plan de Intervención psicológica";
+            this.planI.contenido.titulo = "Plan de Intervención Psicológica";
           } else {
             this.planI.contenido.titulo =
               "Plan de Intervención Individual " + this.residente.residente;

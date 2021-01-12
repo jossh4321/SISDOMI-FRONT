@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="justify-center"
-      >Registrar Plan de Intervención</v-card-title
+      >Modificación del plan de intervención psicológico</v-card-title
     >
 
     <v-stepper v-model="step">
@@ -18,29 +18,6 @@
           <div class="container-planI">
             <form>
               <v-row>
-                <v-col cols="12" sm="6" md="6">
-                  <v-text-field
-                    v-model.trim="getTitleByFaseResident"
-                    label="Ingrese el nombre del plan"
-                    @input="$v.planI.contenido.titulo.$touch()"
-                    @blur="$v.planI.contenido.titulo.$touch()"
-                    :error-messages="errorTitulo"
-                    readonly
-                    outlined
-                    color="#009900"
-                  ></v-text-field
-                ></v-col>
-                <v-col cols="12" sm="6" md="6">
-                  <v-text-field
-                    v-model.trim="planI.contenido.car"
-                    label="Ingrese el nombre del CAR"
-                    @input="$v.planI.contenido.car.$touch()"
-                    @blur="$v.planI.contenido.car.$touch()"
-                    :error-messages="errorCar"
-                    outlined
-                    color="#009900"
-                  ></v-text-field>
-                </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <template v-if="planI.documentos.length > 0">
                     <v-text-field
@@ -87,6 +64,29 @@
                       </template>
                     </v-autocomplete>
                   </template>
+                </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field
+                    v-model.trim="getTitleByFaseResident"
+                    label="Ingrese el nombre del plan"
+                    @input="$v.planI.contenido.titulo.$touch()"
+                    @blur="$v.planI.contenido.titulo.$touch()"
+                    :error-messages="errorTitulo"
+                    readonly
+                    outlined
+                    color="#009900"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field
+                    v-model.trim="planI.contenido.car"
+                    label="Ingrese el nombre del CAR"
+                    @input="$v.planI.contenido.car.$touch()"
+                    @blur="$v.planI.contenido.car.$touch()"
+                    :error-messages="errorCar"
+                    outlined
+                    color="#009900"
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
@@ -306,12 +306,7 @@
                 <v-col cols="12" sm="12" md="12">
                   <div>
                     <v-card-text>
-                      <img
-                        width="240"
-                        height="170"
-                        :src="this.firma"
-                        alt=""
-                      />
+                      <img width="240" height="170" :src="this.firma" alt="" />
                     </v-card-text>
                     <!-- <vue-dropzone
                       ref="myVueDropzone"
@@ -348,6 +343,28 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaModificacion" persistent>
+      <v-card height="300px">
+        <v-card-title class="justify-center"
+          >Modificando el Plan de Intervención Individual
+          Educativo</v-card-title
+        >
+        <div>
+          <v-progress-circular
+            style="display: block; margin: 40px auto"
+            :size="90"
+            :width="9"
+            color="purple"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+        <v-card-subtitle
+          class="justify-center"
+          style="font-weight: bold; text-align: center"
+          >En unos momentos finalizaremos...</v-card-subtitle
+        >
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -417,7 +434,8 @@ export default {
           },
         ],
       },
-      firma:"",
+      firma: "",
+      cargaModificacion: false
     };
   },
   props: {
@@ -489,10 +507,10 @@ export default {
             minLength: minLength(4),
           },
         },
-      },/*
+      } /*
       firmaAux: {
         required,
-      },*/
+      },*/,
     };
   },
   watch: {
@@ -575,17 +593,16 @@ export default {
   methods: {
     ...mapMutations(["setResidentes"]),
     async obtenerCreador() {
-        await axios
+      await axios
         .get("/usuario/rol/permiso?id=" + this.planI.creador)
         .then((x) => {
           this.firma = x.data.datos.firma;
         })
         .catch((err) => console.log(err));
-      },
+    },
     async editPlan() {
       this.$v.$touch();
       if (this.$v.$invalid) {
-        
         this.mensaje(
           "error",
           "..Oops",
@@ -613,6 +630,7 @@ export default {
               });
           }
         }*/
+        this.cargaModificacion = true;
 
         let planI = {
           id: this.planI.id,
@@ -625,6 +643,9 @@ export default {
         axios
           .put("/planIntervencion/educativo", planI)
           .then((res) => {
+            
+            this.cargaModificacion = false;
+
             this.mensaje(
               "success",
               "Actualización del Plan de Intervención",
@@ -711,7 +732,7 @@ export default {
             this.planI.contenido.titulo = "Plan de Intervención Educativa";
           } else {
             this.planI.contenido.titulo =
-              "Plan de Intervención Individual" + this.residente.residente;
+              "Plan de Intervención Individual " + this.residente.residente;
           }
 
           return this.planI.contenido.titulo;
