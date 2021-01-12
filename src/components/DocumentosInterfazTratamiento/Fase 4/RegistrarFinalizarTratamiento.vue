@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="justify-center"
-      >Promover Residente:
+      >Finalizar Tratamiento:
       <span style="margin-left:5px;font-weight:bold">{{
         residente.nombre + " " + residente.apellido
       }}</span></v-card-title
@@ -139,13 +139,6 @@
               @blur="$v.progresoFase.documentotransicion.observaciones.$touch()"
               :error-messages="errorObservaciones"
             ></v-text-field>
-            <v-text-field
-              v-model="progresoFase.fase"
-              style="margin-top:2%"
-              label="Fase a promover"
-              color="#009900"
-              readonly
-            ></v-text-field>
             <v-card
               style="margin-top:10px;padding:5px 5px;background-color:#EAEAEA"
             >
@@ -269,16 +262,11 @@ export default {
   },
   data() {
     return {
-      items1: [
-        { value: 4, text: "Fase 4" },
-      ],
       activado: false,
       switchPromocion: false,
       progresoFase: {
         educativa: {
-          documentos: [
-
-          ],
+          documentos: [],
           estado: "incompleto",
         },
         social: {
@@ -465,27 +453,25 @@ export default {
         this.progresoFase.documentotransicion.firma.nombre = this.user.datos.nombre + " " + this.user.datos.apellido;
         this.progresoFase.documentotransicion.firma.cargo = this.user.rol.nombre;
         this.progresoFase.documentotransicion.idcreador = this.user.id;
-        this.progresoFase.educativa.documentos = [{ tipo: "AvanceSeguimiento", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(0) },];
-        this.progresoFase.social.documentos = [];
-        this.progresoFase.psicologica.documentos = [];
 
-        this.progresoResidente.fase = 4;
-        this.progresoResidente.nombre = "seguimiento";
-        this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z";
-        this.progresoResidente.fechafinalizacion = this.calculoFin() + "T05:00:00Z";
-        this.progresoResidente.estado = "inicio";
+        //actualizando la fase 4 en residente.progreso
+        var fechaact = moment().format("L");
+        var midate = fechaact.split("/");
+        var fechafinal = midate[2].toString() + "-" + midate[1] + "-" + midate[0];
+        this.residente.progreso[ this.residente.progreso.length - 1 ].fechafinalizacion = fechafinal;
+        this.residente.progreso[ this.residente.progreso.length - 1 ].estado = "finalizado";
+        this.residente.estado = "egresado";
 
-        //Actualizando en Residente
-        this.residente.progreso[ this.residente.progreso.length - 1 ].fechafinalizacion = this.progresoResidente.fechaingreso;
         let faseAnterior = this.residente.progreso[ this.residente.progreso.length - 1 ].fase;
-        this.residente.progreso.push(this.progresoResidente);
         
         var residenteFase = {
           residente: this.residente,
           progresoFase: this.progresoFase,
           promocion: true,
-          faseAnterior,
+          faseAnterior
         };
+
+        console.log(residenteFase);
 
         await axios
           .put("/Residente", residenteFase)
@@ -497,19 +483,19 @@ export default {
           });
 
         await this.mensaje(
-              "success",
-              "Listo",
-              "Residente promovido satisfactoriamente",
-              "<strong>Se redirigira a la interfaz de Progreso en fase 3<strong>"
-            );
+          "success",
+          "Listo",
+          "Tratamiento finalizado satisfactoriamente",
+          "<strong>Se redirigira a la interfaz de expediente<strong>"
+        );
 
-        this.abrirProgresoFase4(this.residente.id);
+        this.abrirExpediente(this.residente.id);
 
         this.$v.progresoFase.$reset();
       }
     },
-    abrirProgresoFase4(id) {
-      var rutacompleta = "/dashboard/ProgresoF4Residente/" + id;
+    abrirExpediente(id) {
+      var rutacompleta = "/dashboard/progresoEducativo/" + id;
       this.$router.push(rutacompleta);
     },
   },
