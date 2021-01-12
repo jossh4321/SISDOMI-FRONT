@@ -3,7 +3,6 @@
     <v-card-title class="justify-center"
       >Registrar Plan de Intervención Social</v-card-title
     >
-
     <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step editable step="1"> Datos Generales </v-stepper-step>
@@ -21,18 +20,6 @@
             <form>
               <v-row>
                 <v-col cols="12" sm="6" md="6">
-                  <v-text-field
-                    v-model.trim="getTitleByFaseResident"
-                    label="Ingrese el nombre del plan"
-                    @input="$v.planI.contenido.titulo.$touch()"
-                    @blur="$v.planI.contenido.titulo.$touch()"
-                    :error-messages="errorTitulo"
-                    outlined
-                    readonly
-                    color="#009900"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="6">
                   <v-autocomplete
                     label="Nombres y apellidos del residente"
                     outlined
@@ -47,6 +34,7 @@
                     return-object
                     @input="$v.residente.id.$touch()"
                     @blur="$v.residente.id.$touch()"
+                    @change="calculateAge"
                     :error-messages="errorResidente"
                   >
                     <template v-slot:item="item">
@@ -69,13 +57,26 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
+                    v-model.trim="getTitleByFaseResident"
+                    label="Ingrese el nombre del plan"
+                    @input="$v.planI.contenido.titulo.$touch()"
+                    @blur="$v.planI.contenido.titulo.$touch()"
+                    :error-messages="errorTitulo"
+                    outlined
+                    readonly
+                    color="#009900"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field
                     type="number"
-                    v-model.number="planI.contenido.edad"
-                    label="Ingrese la edad del residente"
+                    v-model.number="residente.edad"
+                    label="Edad del residente"
                     @input="$v.planI.contenido.edad.$touch()"
                     @blur="$v.planI.contenido.edad.$touch()"
                     :error-messages="errorEdad"
                     outlined
+                    readonly
                     color="#009900"
                   ></v-text-field>
                 </v-col>
@@ -272,13 +273,13 @@
                 <v-col cols="12" sm="12" md="12">
                   <div>
                     <v-card-text>
-                    <img
-                      width="240"
-                      height="170"
-                      :src="this.user.datos.firma"
-                      alt=""
-                    />
-                  </v-card-text>
+                      <img
+                        width="240"
+                        height="170"
+                        :src="this.user.datos.firma"
+                        alt=""
+                      />
+                    </v-card-text>
                     <!-- <vue-dropzone
                       ref="myVueDropzone"
                       @vdropzone-success="afterSuccess"
@@ -315,6 +316,27 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+      <v-card height="300px">
+        <v-card-title class="justify-center"
+          >Registrando el Plan de Intervención Individual Social</v-card-title
+        >
+        <div>
+          <v-progress-circular
+            style="display: block; margin: 40px auto"
+            :size="90"
+            :width="9"
+            color="purple"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+        <v-card-subtitle
+          class="justify-center"
+          style="font-weight: bold; text-align: center"
+          >En unos momentos finalizaremos...</v-card-subtitle
+        >
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -384,9 +406,36 @@ export default {
         residente: "",
         id: "",
         faseActual: "",
+        fechaNacimiento: null,
+        edad: 0
       },
       searchResidente: null,
       loadingSearch: false,
+      fasesPlanIntervencion: {
+        fases: [1, 2],
+        area: "social",
+        documentoEstadosAnteriores: [
+          {
+            tipo: "InformeSocialInicial",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualSocial",
+            estado: "Pendiente",
+          },
+        ],
+        documentoEstadosActuales: [
+          {
+            tipo: "PlanIntervencionIndividualSocial",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualSocial",
+            estado: "Completo",
+          },
+        ],
+      },
+      cargaRegistro: false
     };
   },
   validations() {
@@ -446,19 +495,21 @@ export default {
             minLength: minLength(4),
           },
         },
-      },/*
+      } /*
       firmaAux: {
         required,
-      },*/
+      },*/,
     };
   },
   watch: {
     searchResidente(value) {
-      if (value == null) {
+      if (value == null || value == "") {
         this.residente = {
           residente: "",
           id: "",
           faseActual: "",
+          fechaNacimiento: null,
+          edad: 0
         };
       }
 
@@ -473,7 +524,7 @@ export default {
       this.loadingSearch = true;
 
       axios
-        .get("/residente/planes/area/social")
+        .post("/residente/all/fases/documentos", this.fasesPlanIntervencion)
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
             return {
@@ -481,6 +532,8 @@ export default {
               id: res.id,
               numeroDocumento: res.numeroDocumento,
               faseActual: res.progreso[res.progreso.length - 1].fase.toString(),
+              fechaNacimiento: res.fechaNacimiento,
+              edad: 0
             };
           });
 
@@ -522,6 +575,7 @@ export default {
               console.error(err);
             });
         }*/
+        this.cargaRegistro = true;
 
         this.planI.creadordocumento = this.user.id;
         this.planI.idresidente = this.residente.id;
@@ -537,6 +591,9 @@ export default {
           .then((res) => {
             this.planI = res.data;
             if (this.planI.id !== "") {
+
+              this.cargaRegistro = false;
+
               this.mensaje(
                 "success",
                 "Listo",
@@ -548,7 +605,7 @@ export default {
           })
           .catch((err) => console.log(err));
       }
-    },/*
+    } /*
     afterSuccess(file, response) {
       this.firmaAux.push(file);
     },
@@ -558,7 +615,7 @@ export default {
       if (indexFile != -1) {
         this.firmaAux.splice(indexFile, 1);
       }
-    },*/
+    },*/,
     addObjetivos() {
       if (this.objetivosAux != "" && !this.$v.objetivosAux.$invalid) {
         this.planI.contenido.objetivos.push(this.objetivosAux);
@@ -604,6 +661,15 @@ export default {
         }
       });
     },
+    calculateAge($event) {
+      if ($event !== undefined) {
+        console.log($event);
+        let dateNow = new Date();
+        let dateBorn = new Date($event.fechaNacimiento);
+        this.residente.edad = dateNow.getFullYear() - dateBorn.getFullYear();
+        this.planI.contenido.edad = this.residente.edad;
+      }
+    }
   },
   computed: {
     ...mapState(["residentes"]),
@@ -618,7 +684,7 @@ export default {
             this.planI.contenido.titulo = "Plan de Intervención Social";
           } else {
             this.planI.contenido.titulo =
-              "Plan de Intervención Individual" + this.residente.residente;
+              "Plan de Intervención Individual " + this.residente.residente;
           }
 
           return this.planI.contenido.titulo;

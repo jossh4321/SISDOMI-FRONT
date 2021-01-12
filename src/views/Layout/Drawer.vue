@@ -245,6 +245,13 @@ export default {
           icon: "dashboard",
           name: "GestionarActividades",
           href: "/dashboard/gestionaractividades"
+        },
+        {
+          title: "Gestión de Entrevistas Familiares",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarEntrevistasFamiliares",
+          href: "/dashboard/gestionarentrevistasfamiliares"
         }
       ],
       scrollSettings: {

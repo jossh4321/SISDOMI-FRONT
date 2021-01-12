@@ -642,6 +642,7 @@ export default {
     var hoy = new Date();
     var cumpleanos = new Date(this.residente.fechanacimiento);
     this.planI.contenido.edad = hoy.getFullYear() - cumpleanos.getFullYear();
+    this.planI.contenido.titulo = this.planI.contenido.titulo + " " + this.residente.nombre + " " + this.residente.apellido;
 
     this.objetivoespecificoAux = "";
     this.aspectoAux = "";

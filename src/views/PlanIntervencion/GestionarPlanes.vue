@@ -100,7 +100,7 @@
       </div>
     </div>
 
-    <!-- Modal para seleccionar el tipo de informe -->
+    <!-- Modal para seleccionar el tipo de plan -->
     <v-dialog v-model="dialogRegister" persistent max-width="500">
       <v-card>
         <v-card-title>Selección del Plan</v-card-title>
@@ -110,7 +110,7 @@
         <v-card-text class="pr-2">
           <v-combobox
             filled
-            label="Tipo de informe"
+            label="Tipo de plan"
             :items="selectPlanRegister"
             v-model="selectedPlan"
             return-object
@@ -347,12 +347,13 @@ export default {
         .then((res) => {
           let title =
             planState.estado == "activo"
-              ? "Desactivación del plan de Intervención"
-              : "Activacion del plan de Intervención";
+              ? "Activacion del plan de Intervención"
+              : "Desactivación del plan de Intervención";
+
           let text =
             planState.estado == "activo"
-              ? "Se desactivo el plan de intervención de manera satisfactoria"
-              : "Se activo el plan de intervención de manera satisfactoria";
+              ? "Se activo el plan de intervención de manera satisfactoria"
+              : "Se desactivo el plan de intervención de manera satisfactoria";
 
           this.messageSweetUpdated("success", title, text);
         })

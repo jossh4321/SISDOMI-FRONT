@@ -104,6 +104,27 @@
         </v-card-actions>
       </form>
     </div>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+      <v-card height="300px">
+        <v-card-title class="justify-center"
+          >Registrando el anexo</v-card-title
+        >
+        <div>
+          <v-progress-circular
+            style="display: block; margin: 40px auto"
+            :size="90"
+            :width="9"
+            color="purple"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+        <v-card-subtitle
+          class="justify-center"
+          style="font-weight: bold; text-align: center"
+          >En unos momentos finalizaremos...</v-card-subtitle
+        >
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -123,7 +144,7 @@ export default {
       areas: [
         { text: "Psicológica", value: "psicologica" },
         { text: "Social", value: "social" },
-        { text: "Educativa", value: "educativa" }
+        { text: "Educativa", value: "educativa" },
       ],
       anexo: {
         id: "",
@@ -157,14 +178,15 @@ export default {
       },
       searchResidente: null,
       loadingSearch: false,
+      cargaRegistro: false
     };
   },
-  created () {
+  created() {
     this.fetchUser();
   },
   methods: {
     ...mapMutations(["setResidentes"]),
-    ...mapActions(['fetchUser']),
+    ...mapActions(["fetchUser"]),
     async registrarAnexo() {
       this.$v.$touch();
       if (this.$v.$invalid) {
@@ -176,6 +198,7 @@ export default {
           false
         );
       } else {
+        this.cargaRegistro = true;
         for (let index = 0; index < this.anexosAux.length; index++) {
           let formData = new FormData();
 
@@ -200,11 +223,12 @@ export default {
           .then((res) => {
             this.anexo = res.data;
             if (this.anexo.id !== "") {
+              this.cargaRegistro = false;
               this.mensaje(
                 "success",
                 "Listo",
                 "Anexo registrado satisfactoriamente",
-                "<strong>Se redirigiá a la Interfaz de Gestión<strong>",
+                "<strong>Se redirigirá a la Interfaz de Gestión<strong>",
                 true
               );
             }
@@ -257,7 +281,7 @@ export default {
   },
   computed: {
     ...mapState(["residentes"]),
-    ...mapGetters(['user']),
+    ...mapGetters(["user"]),
     verifyColor() {
       return "red";
     },

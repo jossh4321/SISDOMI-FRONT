@@ -105,6 +105,25 @@
         </v-card-actions>
       </form>
     </div>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+      <v-card height="300px">
+        <v-card-title class="justify-center">Modificando el anexo</v-card-title>
+        <div>
+          <v-progress-circular
+            style="display: block; margin: 40px auto"
+            :size="90"
+            :width="9"
+            color="purple"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+        <v-card-subtitle
+          class="justify-center"
+          style="font-weight: bold; text-align: center"
+          >En unos momentos finalizaremos...</v-card-subtitle
+        >
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -142,10 +161,10 @@ export default {
       anexosAux: [],
       searchResidente: null,
       loadingSearch: false,
+      cargaRegistro: false
     };
   },
   mounted() {
-    console.log('ptm help');
     this.$refs.myVueDropzone.removeAllFiles();
     for (let index = 0; index < this.anexo.enlaces.length; index++) {
       var file = {
@@ -204,10 +223,14 @@ export default {
           false
         );
       } else {
+        this.cargaRegistro = true;
         this.anexo.enlaces = [];
         for (let index = 0; index < this.anexosAux.length; index++) {
           if (this.anexosAux[index].url !== undefined) {
-            this.anexo.enlaces.push({link: this.anexosAux[index].url, descripcion: "Enlace " + (index + 1)})
+            this.anexo.enlaces.push({
+              link: this.anexosAux[index].url,
+              descripcion: "Enlace " + (index + 1),
+            });
             /*this.anexo.enlaces[index].link = this.anexosAux[index].url;
             this.anexo.enlaces[index].descripcion = "Enlace " + (index + 1);*/
           } else {
@@ -218,7 +241,10 @@ export default {
             await axios
               .post("/Media/archivos/pdf", formData)
               .then((res) => {
-                this.anexo.enlaces.push({link: res.data, descripcion: "Enlace " + (index + 1)})
+                this.anexo.enlaces.push({
+                  link: res.data,
+                  descripcion: "Enlace " + (index + 1),
+                });
                 /*this.anexo.enlaces[index].link = res.data;
                 this.anexo.enlaces[index].descripcion = "Enlace " + (index + 1);*/
               })
@@ -235,6 +261,7 @@ export default {
           .then((res) => {
             this.anexo = res.data;
             if (this.anexo.id !== "") {
+              this.cargaRegistro = false;
               this.mensaje(
                 "success",
                 "Listo",

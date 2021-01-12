@@ -119,7 +119,7 @@ export default {
           text: "Nombre Documento",
           align: "start",
           sortable: false,
-          value: "id",
+          value: "codigodocumento",
         },
         { text: "Nombre del residente", value: "nombrecompleto" },
         { text: "Fecha de creacion", value: "fechacreacion" },
@@ -132,10 +132,12 @@ export default {
       dialogodetalle: false,
       faseEducativaInicial: {            
             fase: "1",
-            area: "educativa",
-            documentoanterior: "PlanIntervencionIndividualEducativo",
-            documentoactual: "InformeSeguimientoEducativo",
-            estadodocumentoanterior: "Completo"
+  fasedocumentoanterior: "1",
+  area: "educativa",
+  documentoanterior: "PlanIntervencionIndividualEducativo",
+  documentoactual: "InformeSeguimientoEducativo",
+  estadodocumentoactual: "creado",
+  estadodocumentoanterior: "completo"
         }
     };
   },

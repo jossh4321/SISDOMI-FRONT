@@ -648,6 +648,21 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Registrando el seguimiento educativo</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>       
   </v-card>
 </template>
 
@@ -680,6 +695,7 @@ export default {
       datemenu: false,
       dialog: false, // dialogo firma
       dialog1: false, //dialogo notas
+      cargaRegistro:false,
 
       dialogVistaPreviaFirma: false,
       step: 1,
@@ -807,12 +823,15 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+        this.cargaRegistro = true;
         console.log("no hay errores");
         console.log(this.seguimiento);
         await axios
           .post("/SeguimientoEducativo/informese", this.seguimiento)
           .then((res) => {
             this.addSeguimiento(res.data);
+            this.cargaRegistro = false;
+            this.$emit("cargarSeguimiento");
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -822,7 +841,7 @@ export default {
           "Informe Seguimiento educativo registrado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
-        this.$emit("cargarSeguimiento");
+        
       }
     },/*
     guardarSeguimientoFirma() {

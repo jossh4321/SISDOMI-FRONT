@@ -16,10 +16,11 @@ import GestionarIncidencias from "../views/Incidencias/GestionarIncidencias.vue"
 import GestionarAnexos from '../views/Anexos/GestionarAnexos.vue';
 import GestionActa from '../views/Acta/GestionarActa.vue';
 import ModificarPerfil from '../views/perfil/ModificarPerfil.vue';
-import GestionarFichaEvaluacionEducativa from '../views/FichaEvaluacionEducativa/GestionarFichaEvaluacionEducativa.vue';
+import GestionarEvaluacionEducativa from '../views/Evaluacion/GestionarEvaluacion.vue';
 import GestionResidentes from '../views/Residentes/GestionResidentes.vue';
 import ProgresoEducativoResidente from '../views/Residentes/ProgresoEducativoResidente.vue';
 import GestionarActividades from '../views/Actividades/GestionarActividades.vue';
+import GestionarEntrevistasFamiliares from '../views/EntrevistasFamiliares/GestionarEntrevistasFamiliares.vue';
 
 //Prueba
 import PruebaActa from '../views/Acta/PruebaActa.vue';
@@ -159,10 +160,9 @@ const routes = [{
                 component: ModificarPerfil
             },
             {
-
                 path: 'evaluacionEducativa',
                 name: 'GestionarFichaEvaluacionEducativa',
-                component: GestionarFichaEvaluacionEducativa,
+                component: GestionarEvaluacionEducativa
             },
             {
                 path: 'estadisticas',
@@ -247,7 +247,7 @@ const routes = [{
                 name: 'ProgresoF3Residente',
                 component: ProgresoF3Residente,
                 params: true
-            },{
+            }, {
                 path: 'Dashboard',
                 name: 'Dashboard',
                 component: DashBoard,
@@ -257,6 +257,12 @@ const routes = [{
                 path: 'gestionaractividades',
                 name: 'GestionarActividades',
                 component: GestionarActividades,
+                params: true
+            },
+            {
+                path: 'gestionarentrevistasfamiliares',
+                name: 'GestionarEntrevistasFamiliares',
+                component: GestionarEntrevistasFamiliares,
                 params: true
             },
         ],

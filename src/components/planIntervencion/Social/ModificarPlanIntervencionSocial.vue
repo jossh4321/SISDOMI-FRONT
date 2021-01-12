@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="justify-center"
-      >Modificar Plan de Intervención Social</v-card-title
+      >Modificación del plan de intervención social</v-card-title
     >
 
     <v-stepper v-model="step">
@@ -20,18 +20,6 @@
           <div class="container-planI">
             <form>
               <v-row>
-                <v-col cols="12" sm="6" md="6">
-                  <v-text-field
-                    v-model.trim="getTitleByFaseResident"
-                    label="Ingrese el nombre del plan"
-                    @input="$v.planI.contenido.titulo.$touch()"
-                    @blur="$v.planI.contenido.titulo.$touch()"
-                    :error-messages="errorTitulo"
-                    outlined
-                    readonly
-                    color="#009900"
-                  ></v-text-field>
-                </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <template v-if="planI.documentos.length > 0">
                     <v-text-field
@@ -58,6 +46,7 @@
                       @input="$v.residente.id.$touch()"
                       @blur="$v.residente.id.$touch()"
                       :error-messages="errorResidente"
+                      readonly
                     >
                       <template v-slot:item="item">
                         <v-list-item-avatar
@@ -77,6 +66,18 @@
                       </template>
                     </v-autocomplete>
                   </template>
+                </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field
+                    v-model.trim="getTitleByFaseResident"
+                    label="Ingrese el nombre del plan"
+                    @input="$v.planI.contenido.titulo.$touch()"
+                    @blur="$v.planI.contenido.titulo.$touch()"
+                    :error-messages="errorTitulo"
+                    outlined
+                    readonly
+                    color="#009900"
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
@@ -283,12 +284,7 @@
                 <v-col cols="12" sm="12" md="12">
                   <div>
                     <v-card-text>
-                      <img
-                        width="240"
-                        height="170"
-                        :src="this.firma"
-                        alt=""
-                      />
+                      <img width="240" height="170" :src="this.firma" alt="" />
                     </v-card-text>
                     <!-- <vue-dropzone
                       ref="myVueDropzone"
@@ -321,6 +317,27 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaModificando" persistent>
+      <v-card height="300px">
+        <v-card-title class="justify-center"
+          >Modificando el Plan de Intervención Individual Social</v-card-title
+        >
+        <div>
+          <v-progress-circular
+            style="display: block; margin: 40px auto"
+            :size="90"
+            :width="9"
+            color="purple"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+        <v-card-subtitle
+          class="justify-center"
+          style="font-weight: bold; text-align: center"
+          >En unos momentos finalizaremos...</v-card-subtitle
+        >
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -365,7 +382,32 @@ export default {
       },
       searchResidente: null,
       loadingSearch: false,
-      firma:"",
+      firma: "",
+      fasesPlanIntervencion: {
+        fases: [1, 2],
+        area: "social",
+        documentoEstadosAnteriores: [
+          {
+            tipo: "InformeSocialInicial",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualSocial",
+            estado: "Pendiente",
+          },
+        ],
+        documentoEstadosActuales: [
+          {
+            tipo: "PlanIntervencionIndividualSocial",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualSocial",
+            estado: "Completo",
+          },
+        ],
+      },
+      cargaModificando: false,
     };
   },
   validations() {
@@ -425,10 +467,10 @@ export default {
             minLength: minLength(4),
           },
         },
-      },/*
+      } /*
       firmaAux: {
         required,
-      },*/
+      },*/,
     };
   },
   props: {
@@ -439,13 +481,13 @@ export default {
   methods: {
     ...mapMutations(["setResidentes"]),
     async obtenerCreador() {
-        await axios
+      await axios
         .get("/usuario/rol/permiso?id=" + this.planI.creador)
         .then((x) => {
           this.firma = x.data.datos.firma;
         })
         .catch((err) => console.log(err));
-      },
+    },
     async editPlan() {
       this.$v.$touch();
       if (this.$v.$invalid) {
@@ -475,7 +517,8 @@ export default {
               });
           }
         }*/
-
+        this.cargaModificando = true;
+        
         let planI = {
           id: this.planI.id,
           historialcontenido: [],
@@ -487,6 +530,9 @@ export default {
         axios
           .put("/planIntervencion/social", planI)
           .then((res) => {
+            
+            this.cargaModificando = false;
+
             this.mensaje(
               "success",
               "Actualización del Plan de Intervención",
@@ -499,7 +545,7 @@ export default {
             console.log(err);
           });
       }
-    },/*
+    } /*
     afterSuccess(file, response) {
       this.firmaAux.push(file);
     },
@@ -509,7 +555,7 @@ export default {
       if (indexFile != -1) {
         this.firmaAux.splice(indexFile, 1);
       }
-    },*/
+    },*/,
     mensaje(icono, titulo, texto, footer, valid) {
       this.$swal({
         icon: icono,
@@ -558,7 +604,7 @@ export default {
   },
   watch: {
     searchResidente(value) {
-      if (value == null) {
+      if (value == null || value == "") {
         this.residente = {
           residente: "",
           id: "",
@@ -578,7 +624,7 @@ export default {
       this.loadingSearch = true;
 
       axios
-        .get("/residente/planes/area/social")
+        .post("/residente/all/fases/documentos", this.fasesPlanIntervencion)
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
             return {
@@ -622,7 +668,7 @@ export default {
             this.planI.contenido.titulo = "Plan de Intervención Social";
           } else {
             this.planI.contenido.titulo =
-              "Plan de Intervención Individual" + this.residente.residente;
+              "Plan de Intervención Individual " + this.residente.residente;
           }
 
           return this.planI.contenido.titulo;
@@ -809,7 +855,7 @@ export default {
 
     this.listResidentes.push(this.residente);
     this.obtenerCreador();
-  },/*
+  } /*
   mounted() {
     var file = { size: 250, name: "firmatrabajador.jpg", type: "image/jpg" };
     var url = this.planI.contenido.firmas[0].urlfirma;
@@ -819,7 +865,7 @@ export default {
     this.firmaAux.push(
       this.$refs.myVueDropzone.$refs.dropzoneElement.dropzone.files[0]
     );
-  },*/
+  },*/,
 };
 </script>
 <style  scoped>
