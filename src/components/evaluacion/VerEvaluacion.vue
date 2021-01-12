@@ -338,7 +338,7 @@
                         <article>
                           
                           <span style="font-size:18px">
-                            {{ item.nivel }} -> {{ item.observaciones}}</span
+                            {{ item.nivel }} → {{ item.observaciones}}</span
                           >
                         </article>
                       </v-col>
@@ -395,7 +395,7 @@
                         <article>
                           
                           <span style="font-size:18px">
-                            {{ item.tipo }} -> {{ item.descripcion}}</span
+                            {{ item.tipo }} → {{ item.descripcion}}</span
                           >
                         </article>
                       </v-col>
