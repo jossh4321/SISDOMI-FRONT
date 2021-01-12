@@ -113,7 +113,7 @@
 
 <script>
 import axios from "axios";
-import RegistrarAnexo from "@/components/anexos/RegistrarAnexo.vue";
+import RegistrarActividad from "@/components/actividades/RegistrarActividad.vue";
 import ModificarAnexo from "@/components/anexos/ModificarAnexo.vue";
 import VisualizarAnexo from "@/components/anexos/VisualizarAnexo.vue";
 import moment from "moment";
@@ -121,14 +121,14 @@ moment.locale("es");
 
 export default {
   components: {
-    RegistrarAnexo,
+    RegistrarActividad,
     ModificarAnexo,
     VisualizarAnexo,
   },
   name: "app-gestion-actividades",
   data() {
     return {
-      isregister: "RegistrarAnexo",
+      isregister: "RegistrarActividad",
       ismodifier: "ModificarAnexo",
       isvisualizer: "VisualizarAnexo",
       selectedanexo: {},
@@ -245,7 +245,7 @@ export default {
   filters: {
     fomatoFecha: (fecha) => {
       var formato = moment(fecha);
-      return formato.format("llll");
+      return formato.format("ll");
     },
   },
 };
