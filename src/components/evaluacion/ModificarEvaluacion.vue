@@ -265,7 +265,7 @@
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
-                                >Estudios |Nivel - Observaciones|</v-card-title
+                                >Estudios</v-card-title
                               >
                   <v-card
                     elevation="0"
@@ -362,7 +362,7 @@
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
-                                >Aspectos |Tipo  - Descripcion|</v-card-title
+                                >Aspectos</v-card-title
                               >
                   <v-card
                     elevation="0"

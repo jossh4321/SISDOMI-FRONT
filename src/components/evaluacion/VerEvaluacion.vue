@@ -312,7 +312,7 @@
                     height="70"
                   >
                   <v-card-title style="font-size:22px;padding: 10px 10px;"
-                  >Estudios |Nivel - Observaciones| </v-card-title
+                  >Estudios</v-card-title
                 >
                     <v-row style="margin:1%;heigh:100%" align="center">
                       <v-col :cols="4" align="left">
@@ -369,7 +369,7 @@
                     height="70"
                   >
                   <v-card-title style="font-size:22px;padding: 10px 10px;"
-                  >Aspectos |Tipo - Descripcion|</v-card-title
+                  >Aspectos</v-card-title
                 >
                     <v-row style="margin:1%;heigh:100%" align="center">
                       <v-col :cols="4" align="left">
