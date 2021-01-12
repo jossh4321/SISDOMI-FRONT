@@ -331,7 +331,7 @@
     </v-card-text>
     <v-dialog width="450px" v-model="cargaRegistro" persistent>
         <v-card height="340px">
-          <v-card-title class="justify-center">Registrando Plan de Intervencion Educativo Individual</v-card-title>
+          <v-card-title class="justify-center">Registrando Plan de Intervención Educativo Individual</v-card-title>
           <div>
               <v-progress-circular
               style="display: block;margin:40px auto;"

@@ -311,7 +311,7 @@
                             alt="imagen usuario"
                           />
                           <span style="font-size:18px">
-                            {{ item.nivel }}   ->   {{ item.observaciones }}</span
+                            {{ item.nivel }}   →   {{ item.observaciones }}</span
                           >
                         </article>
                       </v-col>
@@ -369,7 +369,7 @@
                           @input="$v.aspectos.descripcion.$touch()"
                           @blur="$v.aspectos.descripcion.$touch()"
                           :error-messages="errorAspectoDescripcion"
-                          label="Descripcion"
+                          label="Descripción"
                           color="#009900"
                           
                           
@@ -410,7 +410,7 @@
                             alt="imagen usuario"
                           />
                           <span style="font-size:18px">
-                            {{ item.tipo }} -> {{ item.descripcion }}</span
+                            {{ item.tipo }} → {{ item.descripcion }}</span
                           >
                         </article>
                       </v-col>
@@ -795,7 +795,7 @@ components:{
       const errors = [];
       if (!this.$v.aspectos.descripcion.$dirty) return errors;
       !this.$v.aspectos.descripcion.required &&
-        errors.push("Debe ingresar una descripcion obligatoriamente");
+        errors.push("Debe ingresar una descripción obligatoriamente");
       !this.$v.aspectos.descripcion.esParrafo &&
         errors.push(
           "La descripcion no debe contener caracteres especiales"

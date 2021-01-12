@@ -233,13 +233,12 @@
         ></v-component>
       </v-dialog>
       
-      <!-- 
       <v-dialog persistent v-model="dialogopromocion" max-width="1000px">
-        <RegistrarPromocionFase3
+        <RegistrarPromocionFase4
           :residente="residenteProm"
           @close-dialog-promocion="cerrarDialogoPromocion"
-        ></RegistrarPromocionFase3>
-      </v-dialog> -->
+        ></RegistrarPromocionFase4>
+      </v-dialog>
     </template>
   </div>
 </template>
@@ -248,6 +247,7 @@ import VisualizadorResidente from "@/components/residentes/VisualizadorResidente
 import RegistrarInformeEducativoFinal from "@/components/DocumentosInterfazTratamiento/Fase 3/Educativa/RegistrarInformeEducativoFinal.vue";
 import ModificarInformeEducativoFinal from "@/components/DocumentosInterfazTratamiento/Fase 3/Educativa/ModificarInformeEducativoFinal.vue";
 import VisualizarInformeEducativoFinal from "@/components/DocumentosInterfazTratamiento/Fase 3/Educativa/VisualizarInformeEducativoFinal.vue";
+import RegistrarPromocionFase4 from "@/components/DocumentosInterfazTratamiento/Fase 3/RegistrarPromocionFase4.vue";
 import {mapMutations, mapState} from "vuex";
 import moment from "moment";
 import axios from "axios";
@@ -258,6 +258,7 @@ export default {
     RegistrarInformeEducativoFinal,
     ModificarInformeEducativoFinal,
     VisualizarInformeEducativoFinal,
+    RegistrarPromocionFase4,
   },
   data() {
     return {
@@ -455,8 +456,8 @@ export default {
         var fechaActual = moment(new Date());
         var fechaEstimada = moment(fecha.split('T')[0]);
         return fechaActual.isBefore(fechaEstimada)?
-         `Quedan ${fechaEstimada.diff(fechaActual, 'days')} dias restantes`:
-         `Se retraso ${-fechaEstimada.diff(fechaActual, 'days')} dias`
+         `Quedan ${fechaEstimada.diff(fechaActual, 'days')} días restantes`:
+         `Se retrasó ${-fechaEstimada.diff(fechaActual, 'days')} días`
     }
   }
 };

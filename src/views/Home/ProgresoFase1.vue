@@ -499,8 +499,8 @@ export default {
         var fechaActual = moment(new Date());
         var fechaEstimada = moment(fecha.split('T')[0]);
         return fechaActual.isBefore(fechaEstimada)?
-         `Quedan ${fechaEstimada.diff(fechaActual, 'days')} dias restantes`:
-         `Se retraso ${-fechaEstimada.diff(fechaActual, 'days')} dias`
+         `Quedan ${fechaEstimada.diff(fechaActual, 'days')} días restantes`:
+         `Se retrasó ${-fechaEstimada.diff(fechaActual, 'days')} días`
     }
 
   }
