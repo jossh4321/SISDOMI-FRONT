@@ -93,7 +93,7 @@
     <v-dialog v-model="dialogModify" persistent max-width="880">
       <component
         :is="ismodifier"
-        :anexo="selectedanexo"
+        :anexo="selectedactividad"
         @close-dialog="closeDialogModify"
         @modifier-complete="modifierComplete"
       ></component>
@@ -103,8 +103,8 @@
     <v-dialog v-model="dialogDetail" persistent max-width="880">
       <component
         :is="isvisualizer"
-        :anexo="selectedanexo"
-        @close-dialog-detail="closeDialogDetail"
+        :actividad="selectedactividad"
+        @close-dialog="closeDialogDetail"
       >
       </component>
     </v-dialog>
@@ -115,7 +115,7 @@
 import axios from "axios";
 import RegistrarActividad from "@/components/actividades/RegistrarActividad.vue";
 import ModificarAnexo from "@/components/anexos/ModificarAnexo.vue";
-import VisualizarAnexo from "@/components/anexos/VisualizarAnexo.vue";
+import VisualizarActividad from "@/components/actividades/VisualizarActividad.vue";
 import moment from "moment";
 moment.locale("es");
 
@@ -123,15 +123,15 @@ export default {
   components: {
     RegistrarActividad,
     ModificarAnexo,
-    VisualizarAnexo,
+    VisualizarActividad,
   },
   name: "app-gestion-actividades",
   data() {
     return {
       isregister: "RegistrarActividad",
       ismodifier: "ModificarAnexo",
-      isvisualizer: "VisualizarAnexo",
-      selectedanexo: {},
+      isvisualizer: "VisualizarActividad",
+      selectedactividad: {},
       selectedresidente: {},
       search: "",
       page: 1,
@@ -202,7 +202,7 @@ export default {
       await axios
         .get("/Anexo/" + item.id)
         .then((res) => {
-          this.selectedanexo = res.data;
+          this.selectedactividad = res.data;
           this.dialogModify = true;
         })
         .catch((err) => {
@@ -212,11 +212,11 @@ export default {
       this.dialogModify = true;
     },
     async detailAnexo(item) {
-      this.ismodifier = "RegistrarAnexo";
       await axios
-        .get("/Anexo/" + item.id)
+        .get("/Actividad/" + item.id)
         .then((res) => {
-          this.selectedanexo = res.data;
+          this.selectedactividad = res.data;
+          console.log(this.selectedactividad);
           this.dialogDetail = true;
         })
         .catch((err) => {

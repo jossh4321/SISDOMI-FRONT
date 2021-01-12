@@ -196,7 +196,6 @@ export default {
       this.dialogModify = true;
     },
     async detailAnexo(item) {
-      this.ismodifier="RegistrarAnexo";
       await axios
         .get("/Anexo/" + item.id)
         .then((res) => {
