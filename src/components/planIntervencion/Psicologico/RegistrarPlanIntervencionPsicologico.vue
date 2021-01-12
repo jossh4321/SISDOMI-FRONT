@@ -662,7 +662,7 @@ export default {
   },
   watch: {
     searchResidente(value) {
-      if (value == null) {
+      if (value == null || value == "") {
         this.residente = {
           residente: "",
           id: "",
