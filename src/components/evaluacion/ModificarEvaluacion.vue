@@ -317,7 +317,7 @@
                   <v-card
                     color="#FAFAFA"
                     style="margin-top:5px"
-                    height="60"
+                    height="100"
                     v-for="(item, index) in fichaEvaluacion.contenido.estudios"
                     :key="index"
                   >
@@ -415,7 +415,7 @@
                   <v-card
                     color="#FAFAFA"
                     style="margin-top:5px"
-                    height="60"
+                    height="100"
                     v-for="(item, index) in fichaEvaluacion.contenido.aspectos"
                     :key="index"
                   >
@@ -475,6 +475,21 @@
             </v-stepper-content>
         </v-stepper-items>
      </v-stepper>
+     <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Registrando el seguimiento educativo</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>       
   </v-card>
 </template>
 
@@ -507,6 +522,7 @@ components:{
      step:1,
      dialog:false, // dialogo firma
      dialogVistaPreviaFirma: false,
+     cargaRegistro:false,
      dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
@@ -589,12 +605,15 @@ components:{
       });
     },
       async  ModificarFichaEvaluacion(){
+        this.cargaRegistro = true;
         this.fichaEvaluacion.creadordocumento = this.user.id;
         console.log(this.fichaEvaluacion)
        await axios
           .put("/EvaluacionDiagnosticoEducativo/fichaEvaluacionDE", this.fichaEvaluacion)
           .then((res) => {
             this.replaceEvaluacion(res.data);
+            this.cargaRegistro = false;
+            this.$emit("cargarSeguimiento");
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -604,7 +623,7 @@ components:{
           "Ficha Diagnostico Evaluacion Educativa modificado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
-        this.$emit("cargarSeguimiento");
+        
       },
        ///metodo para agregar firma residente
     guardarFirma(){
