@@ -266,6 +266,7 @@ export default {
   },
   data() {
     return {
+      //Comentario chiquito
       planI: {
         id: "",
         tipo: "PlanIntervencionIndividualEducativo",
