@@ -23,23 +23,6 @@
             <form>
               <v-row>
                 <v-col cols="12" sm="6" md="6">
-                  <v-text-field
-                    label="Título"
-                    outlined
-                    v-model.trim="getTitleByFaseResident"
-                    required
-                    :error-messages="planTituloErrors"
-                    @input="
-                      $v.planResidentePsicologico.contenido.titulo.$touch()
-                    "
-                    @blur="
-                      $v.planResidentePsicologico.contenido.titulo.$touch()
-                    "
-                    readonly
-                    color="success"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="6">
                   <v-autocomplete
                     v-model="residente"
                     :loading="loadingSearch"
@@ -75,6 +58,23 @@
                       </v-list-item-content>
                     </template>
                   </v-autocomplete>
+                </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field
+                    label="Título"
+                    outlined
+                    v-model.trim="getTitleByFaseResident"
+                    required
+                    :error-messages="planTituloErrors"
+                    @input="
+                      $v.planResidentePsicologico.contenido.titulo.$touch()
+                    "
+                    @blur="
+                      $v.planResidentePsicologico.contenido.titulo.$touch()
+                    "
+                    readonly
+                    color="success"
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
@@ -463,6 +463,28 @@
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
+      <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center"
+            >Registrando el Plan de Intervención Individual
+            Psicológico</v-card-title
+          >
+          <div>
+            <v-progress-circular
+              style="display: block; margin: 40px auto"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+          <v-card-subtitle
+            class="justify-center"
+            style="font-weight: bold; text-align: center"
+            >En unos momentos finalizaremos...</v-card-subtitle
+          >
+        </v-card>
+      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
@@ -546,6 +568,31 @@ export default {
         estado: "",
         faseActual: "",
       },
+      fasesPlanIntervencion: {
+        fases: [1, 2],
+        area: "psicologica",
+        documentoEstadosAnteriores: [
+          {
+            tipo: "InformePsicologicoInicial",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualPsicologico",
+            estado: "Pendiente",
+          },
+        ],
+        documentoEstadosActuales: [
+          {
+            tipo: "PlanIntervencionIndividualPsicologico",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualPsicologico",
+            estado: "Completo",
+          },
+        ],
+      },
+      cargaRegistro: false
     };
   },
   validations: {
@@ -615,7 +662,7 @@ export default {
   },
   watch: {
     searchResidente(value) {
-      if (value == null) {
+      if (value == null || value == "") {
         this.residente = {
           residente: "",
           id: "",
@@ -638,7 +685,7 @@ export default {
       this.loadingSearch = true;
 
       axios
-        .get("/residente/planes/area/psicologica")
+        .post("/residente/all/fases/documentos", this.fasesPlanIntervencion)
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
             return {
@@ -657,8 +704,8 @@ export default {
 
           this.loadingSearch = false;
         })
-        .catch((err) => {
-          console.error(err);
+        .catch((error) => {
+          console.error(error);
         });
     },
   },
@@ -707,7 +754,7 @@ export default {
         );
         this.requerimiento = "";
       }
-    },/*
+    } /*
     registerFile(file, response) {
       this.listImages.push(file);
     },
@@ -717,7 +764,7 @@ export default {
       if (indexFile != -1) {
         this.listImages.splice(indexFile, 1);
       }
-    },*/
+    },*/,
     async sendPlan() {
       this.$v.$touch();
 
@@ -746,6 +793,8 @@ export default {
             });
         }*/
 
+        this.cargaRegistro = true;
+
         this.planResidentePsicologico.creadordocumento = this.user.id;
         this.planResidentePsicologico.idresidente = this.residente.id;
         this.planResidentePsicologico.fase = this.residente.faseActual;
@@ -756,6 +805,8 @@ export default {
         axios
           .post("/PlanIntervencion/psicologico", planResidentePsicologico)
           .then((res) => {
+            this.cargaRegistro = false;
+
             this.messageSweet(
               "success",
               "Registro del Plan de Intervencion",
@@ -794,7 +845,7 @@ export default {
         if (this.residente.faseActual != "") {
           if (this.residente.faseActual == "1") {
             this.planResidentePsicologico.contenido.titulo =
-              "Plan de Intervención psicológica";
+              "Plan de Intervención Psicológica";
           } else {
             this.planResidentePsicologico.contenido.titulo =
               "Plan de Intervención Individual " + this.residente.residente;

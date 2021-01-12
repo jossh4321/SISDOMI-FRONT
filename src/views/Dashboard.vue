@@ -1,6 +1,8 @@
 <template>
     <div>
-        <v-row style="width: 94%;margin: 0px 3%;">
+        <template v-if="cargaDashboard==true">
+        
+         <v-row style="width: 94%;margin: 0px 3%;"  v-if="cargaDashboard==true">
             <v-col col="4">
                 <v-card class="card-litle" color="#008000" >
                     <v-card color="#262626" outlined>
@@ -10,12 +12,13 @@
                         </v-card-title>
                     </v-card>
                     <v-divider  dark light></v-divider>
-                    <v-card-subtitle style="font-size:6rem;color:#f2f2f2;display:block;margin-top:23px;text-align:center">
-                        45% 
+                    <v-card-subtitle style="font-size:5rem;color:#f2f2f2;display:block;margin-top:23px;text-align:center">
+                        {{ (dashboard.residentesFase[0]["fase1"]/totalresidentes * 100).toFixed(1) }} %
                     </v-card-subtitle>
                     <v-card-subtitle style="text-align:right;color:#f2f2f2;font-weight:bold">de las residentes</v-card-subtitle>
                     <v-card color="#f2f2f2" elevation="0"  style="margin:10px">
-                        <v-card-subtitle style="font-size:16px;text-align:center;color:#0d0d0d;">45 residentes  de 100 en acogida</v-card-subtitle>
+                        <v-card-subtitle style="font-size:16px;text-align:center;color:#0d0d0d;"
+                        > {{ dashboard.residentesFase[0]["fase1"] }} residentes  de {{ totalresidentes }} en acogida</v-card-subtitle>
                     </v-card>
                 </v-card>
             </v-col>
@@ -28,12 +31,13 @@
                         </v-card-title>
                     </v-card>
                     <v-divider  dark light></v-divider>
-                    <v-card-subtitle style="font-size:6rem;color:#f2f2f2;display:block;margin-top:23px;text-align:center">
-                        25% 
+                    <v-card-subtitle style="font-size:5rem;color:#f2f2f2;display:block;margin-top:23px;text-align:center">
+                        {{ (dashboard.residentesFase[0]["fase2"] /totalresidentes * 100).toFixed(1)}} %
                     </v-card-subtitle>
                     <v-card-subtitle style="text-align:right;color:#f2f2f2;font-weight:bold">de las residentes</v-card-subtitle>
                     <v-card color="#f2f2f2" elevation="0"  style="margin:10px">
-                        <v-card-subtitle style="font-size:16px;text-align:center;color:#0d0d0d;">25 residentes  de 100 en desarrollo</v-card-subtitle>
+                        <v-card-subtitle style="font-size:16px;text-align:center;color:#0d0d0d;">
+                           {{ dashboard.residentesFase[0]["fase2"] }} residentes  de {{ totalresidentes }} en desarrollo</v-card-subtitle>
                     </v-card>
                 </v-card>
             </v-col>
@@ -46,22 +50,25 @@
                         </v-card-title>
                     </v-card>
                     <v-divider  dark light></v-divider>
-                    <v-card-subtitle style="font-size:6rem;color:#f2f2f2;display:block;margin-top:23px;text-align:center">
-                        30% 
+                    <v-card-subtitle style="font-size:5rem;color:#f2f2f2;display:block;margin-top:23px;text-align:center">
+                        {{ (dashboard.residentesFase[0]["fase3"] /totalresidentes * 100).toFixed(1)}} %
                     </v-card-subtitle>
                     <v-card-subtitle style="text-align:right;color:#f2f2f2;font-weight:bold">de las residentes</v-card-subtitle>
                     <v-card color="#f2f2f2" elevation="0"  style="margin:10px">
-                        <v-card-subtitle style="font-size:16px;text-align:center;color:#0d0d0d;">30 residentes  de 100 en acogida</v-card-subtitle>
+                        <v-card-subtitle style="font-size:16px;text-align:center;color:#0d0d0d;">
+                            {{ dashboard.residentesFase[0]["fase3"] }} residentes  de {{ totalresidentes }} en seguimiento</v-card-subtitle>
                     </v-card>
                 </v-card>
             </v-col>
         </v-row>
+        </template>
         <v-row style="width: 94%;margin: 0px 3%;">
+            <template v-if="cargaDashboard==true">
             <v-col cols="5">
                 <v-card>
                     <v-card color="#262626" outlined>
                         <v-card-title class="justify-center" style="color:#f2f2f2;">
-                         Documentos Pendientes Hoy
+                         Documentos Atrazados / Pendientes
                         </v-card-title>
                     </v-card>
                     <v-tabs
@@ -71,25 +78,28 @@
                         grow
                         >
                         <v-tab
-                            v-for="area in areas"
-                            :key="area.id"
+                            v-for="(fase,i) in dashboard.documentosAtrazados"
+                            :key="i"
                         >
-                            {{ area.titulo }}
+                           Fase {{ fase._id }}
+                        </v-tab>
+                        <v-tab>
+                            Para Hoy
                         </v-tab>
                         </v-tabs>
 
                         <v-tabs-items v-model="tab">
                         <v-tab-item
-                            v-for="area in areas"
-                            :key="area.id"
+                            v-for="(fase,i) in dashboard.documentosAtrazados"
+                            :key="i"
                         >
                             <v-card
                             color="basil"
                             flat
                             >
                                 <v-list three-line>
-                                <template v-for="tarea in area.items" >
-                                    <div :key="tarea">
+                                <template v-for="documento in fase.documentosAtrazados" >
+                                    <div :key="documento.tipo">
                                         <v-divider></v-divider>
                                         <v-list-item
                                         >
@@ -97,8 +107,8 @@
                                             <v-icon>mdi-folder-alert</v-icon>
                                         </v-list-item-avatar>
                                         <v-list-item-content>
-                                            <v-list-item-title >{{tarea}}</v-list-item-title>
-                                            <v-list-item-subtitle>Pendiente</v-list-item-subtitle>
+                                            <v-list-item-title >{{documento.tipo}}</v-list-item-title>
+                                            <v-list-item-subtitle>{{documento.cantidadpendientes}} Pendientes</v-list-item-subtitle>
                                         </v-list-item-content>
                                         </v-list-item>
                                     </div>
@@ -106,9 +116,42 @@
                             </v-list>
                             </v-card>
                         </v-tab-item>
+                        <v-tab-item>
+                            <v-card
+                            color="basil"
+                            flat>
+                                 <template v-for="(documentoPendienteHoy,i) in dashboard.documentosPendientesHoy"
+                                   >
+                                   <div :key="i">
+                                       <v-card style="margin:2%;color:white" color="#404040">
+                                           <v-card-title>Documentos de Fase {{documentoPendienteHoy._id}}</v-card-title>
+                                       </v-card>
+                                       <div  v-if="documentoPendienteHoy.documentospendientes.length != 0">
+                                           <v-list-item> 
+                                            v-for="(pendientes,k) in documentoPendienteHoy.documentospendientes"
+                                            :key="k">
+                                                <v-list-item-avatar>
+                                                    <v-icon>mdi-folder-alert</v-icon>
+                                                </v-list-item-avatar>
+                                                <v-list-item-content>
+                                                    <v-list-item-title >{{documento.tipo}}</v-list-item-title>
+                                                    <v-list-item-subtitle>{{documento.cantidadpendientes}} Pendientes</v-list-item-subtitle>
+                                                </v-list-item-content>
+                                                </v-list-item>
+                                       </div>
+                                       <div v-else style="background-color:#e6f7ff;text-align:center;margin:2%;border-radius:5px">
+                                           <v-card-subtitle>No Hay Documentos Pendientes</v-card-subtitle>
+                                       </div>
+                                       
+
+                                   </div>
+                                 </template>
+                            </v-card>
+                        </v-tab-item>
                         </v-tabs-items>
                 </v-card>
             </v-col>
+             </template>
             <v-col cols="7">
                         <v-card>
                             <v-card color="#262626" outlined>
@@ -121,18 +164,21 @@
                         </v-card>
             </v-col>
         </v-row>
+        
         <v-card class="contenedor-chart">
             <v-card color="#262626" outlined>
                         <v-card-title class="justify-center" style="color:#f2f2f2;">
-                        DOCUMENTOS ATRASADOS
+                        DOCUMENTOS PENDIENTES
                         </v-card-title>
             </v-card>
-            <div class="dashbord-chart" ref="chartdiv" style="width: 100%;height: 500px;">
+            <div class="dashbord-chart" ref="chartdiv" style="width: 100%;height: 800px;">
             </div>
         </v-card>
+        
     </div>
 </template>
 <script>
+import axios from 'axios';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_kelly from "@amcharts/amcharts4/themes/kelly";
@@ -141,9 +187,15 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 // Themes begin
 am4core.useTheme(am4themes_kelly);
 am4core.useTheme(am4themes_animated);
+
+import moment from "moment";
+moment.locale("es")
 export default {
     data(){
         return{
+            cargaDashboard:false,
+            totalresidentes:0,
+            dashboard:"",
             areas:[
                 {id:1,titulo: "Area Educativa",
                  items:[
@@ -162,56 +214,45 @@ export default {
                  ]}
             ],tab:null
         }
-    },mounted(){
-        
+    }, async mounted(){
+       
+       this.cargaDashboard= false
+        await this.obtenerDatos();
+        this.totalresidentes = 
+            this.dashboard.residentesFase[0]["fase1"] +
+            this.dashboard.residentesFase[0]["fase2"] +
+            this.dashboard.residentesFase[0]["fase3"];  
+            this.cargaDashboard = true; 
         this.generarLineChart();
         this.generarPieChart();
+    },async beforeMount() {
+        
     },beforeDestroy() {
     if (this.chart) {
       this.chart.dispose();
     }
+  },created(){
+      
   },methods:{
-      generarPieChart(){
+      async obtenerDatos(){
+             await axios.get("/documento/dashboard")
+                    .then(res => {
+                        console.log(res.data);
+                        this.dashboard = res.data;
+                    })
+                    .catch(err => console.log(err));
+      },generarPieChart(){
           let chart = am4core.create(this.$refs.chartdiv, am4charts.PieChart);
         chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-
-        chart.data = [
-             {
-            country: "Acta de Externamiento",
-            value: 128
-        },
-        {
-            country: "Ficha Educativa de Ingreso",
-            value: 401
-        },
-        {
-            country: "Ficha Social de Ingreso",
-            value: 300
-        },
-        {
-            country: "Ficha Psicologica de Ingreso",
-            value: 200
-        },
-        {
-            country: "Informe Psicologico Evolutivo",
-            value: 165
-        },{
-            country: "Informe de Seguimiento Educativo",
-            value: 215
-        },
-        {
-            country: "Informe Social Final",
-            value: 139
-        }
-        ];
+        chart.data  = this.dashboard.documentosPendientes;
         chart.radius = am4core.percent(70);
         chart.innerRadius = am4core.percent(40);
         chart.startAngle = 180;
         chart.endAngle = 360;  
 
         let series = chart.series.push(new am4charts.PieSeries());
-        series.dataFields.value = "value";
-        series.dataFields.category = "country";
+        series.dataFields.value = "atrazados";
+        series.dataFields.category = "_id";
 
         series.slices.template.cornerRadius = 10;
         series.slices.template.innerCornerRadius = 7;
@@ -225,44 +266,15 @@ export default {
         chart.legend = new am4charts.Legend();
       },generarLineChart(){
           let chart = am4core.create(this.$refs.chartdivline, am4charts.XYChart);
-        // Add data
-        chart.data = [{
-        "date": "2020-01-01",
-        "price": 20
-        }, {
-        "date": "2020-02-01",
-        "price": 75
-        }, {
-        "date": "2020-03-01",
-        "price": 15
-        }, {
-        "date": "2020-04-01",
-        "price": 75
-        }, {
-        "date": "2020-05-01",
-        "price": 158
-        }, {
-        "date": "2020-06-01",
-        "price": 57
-        }, {
-        "date": "2020-07-01",
-        "price": 107
-        }, {
-        "date": "2020-08-01",
-        "price": 75
-        }, {
-        "date": "2020-09-01",
-        "price": 132
-        }, {
-        "date": "2020-10-01",
-        "price": 380
-        }, {
-        "date": "2020-11-01",
-        "price": 56
-        }, {
-        "date": "2020-12-01",
-        "price": 169
-        }];
+          chart.data  = this.dashboard.residentesMesAño
+                            .map((x) =>{
+              return{
+                  residentes: x.residentes,
+                  fecha: `${x._id.año}-${x._id.mes}-01`
+              }
+          });
+
+      
 
         // Create axes
         let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
@@ -275,8 +287,8 @@ export default {
 
         // Create series
         let series = chart.series.push(new am4charts.LineSeries());
-        series.dataFields.valueY = "price";
-        series.dataFields.dateX = "date";
+        series.dataFields.valueY = "residentes";
+        series.dataFields.dateX = "fecha";
         series.tensionX = 0.8;
         series.strokeWidth = 3;
 
@@ -307,7 +319,14 @@ export default {
         range.label.fill = range.grid.stroke;
         range.label.verticalCenter = "bottom";
       }
-
+    },filters:{
+        obtenerPorcentaje: (valor) => {
+            return (valor/ this.totalresidentes) * 100;
+            },
+        fomatoFecha: (fecha) =>{
+            var formato = moment(fecha.split("T")[0]);
+            return formato.format("llll");
+            }
     },computed:{
 
     }
@@ -316,12 +335,12 @@ export default {
 <style>
 .dashbord-chart{
     width: 94%;
-    margin: 0px 3%;
+    /*margin: 0px 3%;*/
     height: 400px;
 }
 .dashbord-chart2{
-    width: 94%;
-    margin: 0px 3%;
+    width: 100%;
+    /*margin: 0px 3%;*/
     height: 510px;
 }
 .contenedor-chart{

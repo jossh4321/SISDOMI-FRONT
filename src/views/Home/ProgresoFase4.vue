@@ -41,9 +41,9 @@
             color="white"
             label
             text-color="primary"
-            @click="navegarto('/dashboard/Fase3')"
+            @click="navegarto('/dashboard/Fase4')"
           >
-            <v-icon left>mdi-check</v-icon>Fase 3
+            <v-icon left>mdi-check</v-icon>Fase 4
           </v-chip>>
           <v-chip class="ma-2" color="white" outlined pill>
             <v-icon left>mdi-account-circle</v-icon>
@@ -74,7 +74,7 @@
                         >
                           <v-col cols="12">
                             <div class="text--primary" style="font-size: 25px">
-                              Documentos necesarios para promover al residente
+                              Documentos necesarios para finalizar el tratamiento
                             </div>
                           </v-col>
                           <strong class="mx-4 success--text text--darken-2">
@@ -109,7 +109,7 @@
                       v-if="fase.educativa.estado != 'incompleto'"
                       @click="registrarDocumentoTransicionFase()"
                       >
-                      <span>Realizar promoción</span>
+                      <span>Finalizar Tratamiento</span>
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -117,7 +117,7 @@
             </v-card>
 
             <v-card class="card" style="margin: 20px">
-              <v-card-title class="justify-center">Progreso de Fase 3</v-card-title>
+              <v-card-title class="justify-center">Progreso de Fase 4</v-card-title>
               <v-timeline align-top :dense="$vuetify.breakpoint.smAndDown">
                 <v-timeline-item
                   v-for="(documento,i) in fase.educativa.documentos"
@@ -189,7 +189,7 @@
             <v-list-item>
               <v-list-item-content>
                 <v-list-item-title class="title">Lista de Residentes</v-list-item-title>
-                <v-list-item-subtitle>Actualmente en la fase 3</v-list-item-subtitle>
+                <v-list-item-subtitle>Actualmente en la fase 4</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
@@ -234,20 +234,18 @@
       </v-dialog>
       
       <v-dialog persistent v-model="dialogopromocion" max-width="1000px">
-        <RegistrarPromocionFase4
+        <RegistrarFinalizarTratamiento
           :residente="residenteProm"
           @close-dialog-promocion="cerrarDialogoPromocion"
-        ></RegistrarPromocionFase4>
+        ></RegistrarFinalizarTratamiento>
       </v-dialog>
     </template>
   </div>
 </template>
 <script>
 import VisualizadorResidente from "@/components/residentes/VisualizadorResidente.vue";
-import RegistrarInformeEducativoFinal from "@/components/DocumentosInterfazTratamiento/Fase 3/Educativa/RegistrarInformeEducativoFinal.vue";
-import ModificarInformeEducativoFinal from "@/components/DocumentosInterfazTratamiento/Fase 3/Educativa/ModificarInformeEducativoFinal.vue";
-import VisualizarInformeEducativoFinal from "@/components/DocumentosInterfazTratamiento/Fase 3/Educativa/VisualizarInformeEducativoFinal.vue";
-import RegistrarPromocionFase4 from "@/components/DocumentosInterfazTratamiento/Fase 3/RegistrarPromocionFase4.vue";
+import RegistrarAvanceSeguimiento from "@/components/DocumentosInterfazTratamiento/Fase 4/Educativa/RegistrarAvanceSeguimiento.vue";
+import RegistrarFinalizarTratamiento from "@/components/DocumentosInterfazTratamiento/Fase 4/RegistrarFinalizarTratamiento.vue";
 import {mapMutations, mapState} from "vuex";
 import moment from "moment";
 import axios from "axios";
@@ -255,10 +253,8 @@ export default {
   name: "ProgresoResidente",
   components: {
     VisualizadorResidente,
-    RegistrarInformeEducativoFinal,
-    ModificarInformeEducativoFinal,
-    VisualizarInformeEducativoFinal,
-    RegistrarPromocionFase4,
+    RegistrarAvanceSeguimiento,
+    RegistrarFinalizarTratamiento
   },
   data() {
     return {
@@ -275,11 +271,11 @@ export default {
       dialogoRegistroDocumentos: false,
       dialogopromocion: false,
       titulosDoc: {
-        InformeEducativoFinal: {
-          titulo: "Informe Educativo Final",
-          registrar: "RegistrarInformeEducativoFinal",
-          modificar: "ModificarInformeEducativoFinal",
-          visualizar: "VisualizarInformeEducativoFinal"
+        AvanceSeguimiento: {
+          titulo: "Avance en seguimiento",
+          registrar: "RegistrarAvanceSeguimiento",
+          modificar: "",
+          visualizar: ""
         },
       }
     };
@@ -287,7 +283,7 @@ export default {
   async created() {
     var miruta = "/residente/progreso/" + this.$route.params.id;
     await axios
-      .get("/residente/all/fase/3")
+      .get("/residente/all/fase/4")
       .then(res => {
         this.residentesFase = res.data;
       })
@@ -297,22 +293,17 @@ export default {
       .then(res => {
         this.residente = res.data;
         this.residente.id = this.$route.params.id;
-        console.log("Datos completos");
-        console.log(this.residente);
       })
       .catch(err => console.log(err));
-    this.setFase(this.obtenerSecuenciaDocumentos()[2]);
+    this.setFase(this.obtenerSecuenciaDocumentos()[3]);
     this.cargaProgreso = true;
-    console.log("LISTA FASES");
-    console.log(this.fase);
   },
   methods: {
     ...mapMutations(["setFase"]),
     obtenerSecuenciaDocumentos() {
       var residenteFaseDoc = this.residente;
       var listaFases = residenteFaseDoc.fases.progreso;
-      var faseResidenteActual =
-        residenteFaseDoc.progreso[residenteFaseDoc.progreso.length - 1];
+      var faseResidenteActual = residenteFaseDoc.progreso[residenteFaseDoc.progreso.length - 1];
       var flag = false;
       listaFases = listaFases.map(fase => {
         if (faseResidenteActual.fase == fase.fase) {
@@ -419,7 +410,7 @@ export default {
           this.residente.id = this.$route.params.id;
         })
         .catch(err => console.log(err));
-        this.setFase(this.obtenerSecuenciaDocumentos()[2]);
+        this.setFase(this.obtenerSecuenciaDocumentos()[3]);
     },
      abrirDialogoModificarDocumento(componente) {
       console.log(componente);
@@ -456,8 +447,8 @@ export default {
         var fechaActual = moment(new Date());
         var fechaEstimada = moment(fecha.split('T')[0]);
         return fechaActual.isBefore(fechaEstimada)?
-         `Quedan ${fechaEstimada.diff(fechaActual, 'days')} días restantes`:
-         `Se retrasó ${-fechaEstimada.diff(fechaActual, 'days')} días`
+         `Quedan ${fechaEstimada.diff(fechaActual, 'days')} dias restantes`:
+         `Se retraso ${-fechaEstimada.diff(fechaActual, 'days')} dias`
     }
   }
 };

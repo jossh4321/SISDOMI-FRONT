@@ -38,6 +38,7 @@ import ProgresoResidente from '@/views/Home/Progreso.vue'
 import ProgresoF2Residente from '@/views/Home/ProgresoFase2.vue'
 import ProgresoF1Residente from '@/views/Home/ProgresoFase1.vue'
 import ProgresoF3Residente from '@/views/Home/ProgresoFase3.vue'
+import ProgresoF4Residente from '@/views/Home/ProgresoFase4.vue'
 /* Importación del axios para la verificación del token */
 import axios from '../store/index.js';
 
@@ -264,6 +265,11 @@ const routes = [{
                 name: 'GestionarEntrevistasFamiliares',
                 component: GestionarEntrevistasFamiliares,
                 params: true
+            },{
+                path: 'ProgresoF4Residente/:id',
+                name: 'ProgresoF4Residente',
+                component: ProgresoF4Residente,
+                params: true
             },
         ],
 
@@ -278,7 +284,7 @@ const routes = [{
     },
     {
         path: '',
-        redirect: '/dashboard'
+        redirect: '/dashboard/Dashboard'
     },
 ]
 
