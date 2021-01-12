@@ -278,7 +278,7 @@ const routes = [{
     },
     {
         path: '',
-        redirect: '/dashboard'
+        redirect: '/dashboard/Dashboard'
     },
 ]
 
