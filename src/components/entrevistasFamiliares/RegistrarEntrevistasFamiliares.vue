@@ -190,14 +190,13 @@ export default {
         { value: "numeroDocumento", text: 'Numero Documento'},
       ],
       datemenu: false,
-      step: 1,
       menu: false,
       residenteArray:[],
       documento:{
         tipo:"EntrevistaFamiliar",
         historialcontenido:[],
         creadordocumento:"",
-        fechacreacion: "",
+        fechacreacion: null,
         area:"social",
         fase:"1",
         idresidente:"",
@@ -287,7 +286,7 @@ export default {
                 const ApoderadoCompleto = { nombrecompleto: nombreCompletoApoderado};
                 info[x].contenido = Object.assign(info[x].contenido, ApoderadoCompleto);
             }
-
+            
             this.addEntrevistaFamiliar(info);
             this.$v.contenidoEntrevistaFamiliar.$reset();
             this.cerrarDialogo();

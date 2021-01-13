@@ -63,7 +63,8 @@
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
         <ModificarEntrevistasFamiliares
           v-if="dialogoactualizacion"
-          :entrevistaFamiliar="objEntrevistaFamiliar"                   
+          documentoEntrevistaFamiliar="objEntrevistaFamiliar" 
+          :dialogoactualizacion="dialogoactualizacion"                
           @close-dialog-update="closeDialogModificar()"
         >
         </ModificarEntrevistasFamiliares>
@@ -72,7 +73,7 @@
       <v-dialog persistent v-model="dialogodetalle" max-width="880px">
         <ConsultarEntrevistasFamiliares
           v-if="dialogodetalle"
-          :entrevistaFamiliar="objEntrevistaFamiliar"         
+          :contenidoEntrevistaFamiliar="objEntrevistaFamiliar.contenido"         
           @close-dialog-detail="closeDialogDetalle()"
         >
         </ConsultarEntrevistasFamiliares>
@@ -161,10 +162,13 @@ export default {
     async loadsetEntrevistaFamiliarDetalle(idEntrevista) {
       var user = {};
       await axios
-        .get("/Documento/entrevistaFamiliar/id?id=" + idEntrevista)
+        .get(`/Documento/entrevistaFamiliar/iddoc/${idEntrevista}`)
         .then((res) => {
+          var nomCopleto = res.data.contenido.datosresidente.nombre + " " + res.data.contenido.datosresidente.apellido
+          const nc = {nombrecompleto:nomCopleto};
           console.log(res);
           user = res.data;
+          user.contenido.datosresidente = Object.assign(user.contenido.datosresidente, nc)
           user.contenido.fechaEntrevista = user.contenido.fechaEntrevista.split("T")[0];
         })
         .catch((err) => console.log(err));
@@ -189,6 +193,7 @@ export default {
           }
           
           this.setEntrevistasFamiliares(info);
+          console.log(info);
         })
         .catch((err) => console.log(err));
     },    
