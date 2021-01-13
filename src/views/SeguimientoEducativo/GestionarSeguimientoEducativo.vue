@@ -10,7 +10,9 @@
       >
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>Informes de Seguimiento Educativo actuales</v-toolbar-title>
+            <v-toolbar-title
+              >Informes de Seguimiento Educativo actuales</v-toolbar-title
+            >
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-text-field
@@ -31,17 +33,16 @@
                   v-on="on"
                 >
                   <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar Seguimiento  Educativo</span>
+                  <span>Registrar Seguimiento Educativo</span>
                 </v-btn>
               </template>
-             <RegistrarSeguimientoEducativo
-             
-             :listaresidentes ="listaresidentes"
-             :listaeducadores="listaeducadores"
-             @close-dialog-save="closeDialogRegistrar()"
-             @cargarSeguimiento="obtenerSeguimiento()"
-             >
-             </RegistrarSeguimientoEducativo>
+              <RegistrarSeguimientoEducativo
+                :listaresidentes="listaresidentes"
+                :listaeducadores="listaeducadores"
+                @close-dialog-save="closeDialogRegistrar()"
+                @cargarSeguimiento="obtenerSeguimiento()"
+              >
+              </RegistrarSeguimientoEducativo>
             </v-dialog>
           </v-toolbar>
         </template>
@@ -52,50 +53,47 @@
               <v-icon left> mdi-pencil </v-icon>
               <span>Actualizar</span>
             </v-btn>
-                 
-            <v-btn color="info" @click="abrirDialogoDetalle(item.id)" >
+
+            <v-btn color="info" @click="abrirDialogoDetalle(item.id)">
               <v-icon left> mdi-pencil </v-icon>
               <span>Visualizar</span>
-            </v-btn>  
-               
+            </v-btn>
           </v-row>
         </template>
       </v-data-table>
-       <!--Dialogo de Modificacion-->
+      <!--Dialogo de Modificacion-->
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
         <ModificarSeguimientoEducativo
           :seguimiento="seguimiento"
-          :residente ="residente"
-          :listaresidentes ="listaresidentes"
+          :residente="residente"
+          :listaresidentes="listaresidentes"
           :listaeducadores="listaeducadores"
-          :dialogodetalle ="dialogoactualizacion"
+          :dialogodetalle="dialogoactualizacion"
           @cargarSeguimiento="obtenerSeguimiento()"
-
           @close-dialog-edit="closeDialogModificar()"
         >
         </ModificarSeguimientoEducativo>
       </v-dialog>
-    <v-dialog persistent v-model="dialogodetalle" max-width="880px">
+      <v-dialog persistent v-model="dialogodetalle" max-width="880px">
         <DetalleSeguimientoEducativo
           :seguimiento="seguimiento"
-          :residente ="residente"
-          :listaresidentes ="listaresidentes"
+          :residente="residente"
+          :listaresidentes="listaresidentes"
           :listaeducadores="listaeducadores"
-          :dialogodetalle ="dialogodetalle"
+          :dialogodetalle="dialogodetalle"
           @close-dialog-detail="closeDialogDetalle()"
         >
         </DetalleSeguimientoEducativo>
-    </v-dialog>
-      
+      </v-dialog>
     </v-card>
   </div>
 </template>
 <script>
 import axios from "axios";
 
-import DetalleSeguimientoEducativo from '@/components/seguimientoEducativo/DetalleSeguimientoEducativo.vue'
-import RegistrarSeguimientoEducativo from '@/components/seguimientoEducativo/RegistrarSeguimientoEducativo.vue'
-import ModificarSeguimientoEducativo from '@/components/seguimientoEducativo/ActualizarSeguimientoEducativo.vue'
+import DetalleSeguimientoEducativo from "@/components/seguimientoEducativo/DetalleSeguimientoEducativo.vue";
+import RegistrarSeguimientoEducativo from "@/components/seguimientoEducativo/RegistrarSeguimientoEducativo.vue";
+import ModificarSeguimientoEducativo from "@/components/seguimientoEducativo/ActualizarSeguimientoEducativo.vue";
 import { mapMutations, mapState } from "vuex";
 
 export default {
@@ -103,16 +101,15 @@ export default {
   components: {
     DetalleSeguimientoEducativo,
     RegistrarSeguimientoEducativo,
-    ModificarSeguimientoEducativo
-    
+    ModificarSeguimientoEducativo,
   },
   data() {
     return {
       search: "",
       seguimiento: {},
-      residente:{},
+      residente: {},
       listaresidentes: [],
-      listaeducadores:[],
+      listaeducadores: [],
 
       headers: [
         {
@@ -126,32 +123,32 @@ export default {
         { text: "Estado", value: "estado" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-    
+
       dialogoregistro: false,
       dialogoactualizacion: false,
       dialogodetalle: false,
-      faseEducativaInicial: {            
-            fase: "1",
-  fasedocumentoanterior: "1",
-  area: "educativa",
-  documentoanterior: "PlanIntervencionIndividualEducativo",
-  documentoactual: "InformeSeguimientoEducativo",
-  estadodocumentoactual: "creado",
-  estadodocumentoanterior: "completo"
-        }
+      faseEducativaInicial: {
+        fase: "1",
+        fasedocumentoanterior: "1",
+        area: "educativa",
+        documentoanterior: "PlanIntervencionIndividualEducativo",
+        documentoactual: "InformeSeguimientoEducativo",
+        estadodocumentoactual: "creado",
+        estadodocumentoanterior: "completo",
+      },
+      fromDate: null,
+      toDate: null,
     };
   },
-  async created(){
- this.obtenerSeguimiento();
- this.obtenerResidentes();
- this.obtenerEducadores();
+  async created() {
+    this.obtenerSeguimiento();
+    this.obtenerResidentes();
+    this.obtenerEducadores();
   },
   methods: {
     ...mapMutations(["setSeguimiento"]),
-    editItem(item) {
-    },
-    detailItem(item) {
-    },
+    editItem(item) {},
+    detailItem(item) {},
     closeDialogDetalle() {
       this.dialogodetalle = false;
     },
@@ -162,35 +159,51 @@ export default {
       this.dialogoactualizacion = false;
     },
     ///abrir dialogo de detalle
-   async abrirDialogoDetalle(idseguimiento) {
+    async abrirDialogoDetalle(idseguimiento) {
       this.seguimiento = await this.loadSeguimientoDetalle(idseguimiento);
-      this.residente = await this.loadResidente(this.seguimiento.idresidente);// traelos datos del residnete
+      this.residente = await this.loadResidente(this.seguimiento.idresidente); // traelos datos del residnete
       this.dialogodetalle = !this.dialogodetalle;
-      },
-      ///abrir dialogo de modificacion
+    },
+    ///abrir dialogo de modificacion
     async abrirDialogoModificar(idseguimiento) {
       this.seguimiento = await this.loadSeguimientoDetalle(idseguimiento);
-      this.residente = await this.loadResidente(this.seguimiento.idresidente);// traelos datos del residnete
+      this.residente = await this.loadResidente(this.seguimiento.idresidente); // traelos datos del residnete
       this.dialogoactualizacion = !this.dialogoactualizacion;
     },
-  /////////////////Consumo de  apis 
+    /////////////////Consumo de  apis
     async obtenerSeguimiento() {
+      let listParams = [];
+
+      let fromDateParam =
+        this.fromDate == null ? "" : "FromDate=" + this.fromDate;
+      let toDateParam = this.toDate == null ? "" : "ToDate=" + this.toDate;
+
+      if (fromDateParam != "") {
+        listParams.push(fromDateParam);
+      }
+
+      if (toDateParam != "") {
+        listParams.push(toDateParam);
+      }
+
+      let params = listParams.join("&");
+
       await axios
-        .get("/SeguimientoEducativo/all")
+        .get("/SeguimientoEducativo/all" + params)
         .then((res) => {
           var info = {};
           info = res.data;
-          console.log(res.data)
-          for (var x=0;x<res.data.length;x++){
-              info[x].fechacreacion = res.data[x].fechacreacion.split("T")[0];
+          console.log(res.data);
+          for (var x = 0; x < res.data.length; x++) {
+            info[x].fechacreacion = res.data[x].fechacreacion.split("T")[0];
           }
-          
+
           this.setSeguimiento(info);
         })
         .catch((err) => console.log(err));
     },
     ///////////Obtener seguimiento con id
-     async loadSeguimientoDetalle(idseguimiento) {
+    async loadSeguimientoDetalle(idseguimiento) {
       var user = {};
       await axios
         .get("/SeguimientoEducativo/id?id=" + idseguimiento)
@@ -204,43 +217,44 @@ export default {
       return user;
     },
     /////Obtener residente
-     async loadResidente(idresidente) {
+    async loadResidente(idresidente) {
       var user = {};
       await axios
         .get("/Residente/id?id=" + idresidente)
         .then((res) => {
           console.log(res);
           user = res.data;
-         
         })
         .catch((err) => console.log(err));
       console.log(user);
       return user;
     },
     //obtener todos los residentes
-    async obtenerResidentes(){
-           await axios
+    async obtenerResidentes() {
+      await axios
         .post("/residente/all/estadofase", this.faseEducativaInicial)
-                  .then( x => {
-                            this.listaresidentes = x.data;
-                            console.log(this.listaresidentes);
-                  }).catch(err => console.log(err));
-        },
-        ////obtener todos los eduacatoderes
-         async obtenerEducadores(){
-          await axios.get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
-            .then(res => {
-                    this.listaeducadores = res.data;
-                    console.log(this.listaeducadores);
-            }).catch(err => console.log(err));
-    }
+        .then((x) => {
+          this.listaresidentes = x.data;
+          console.log(this.listaresidentes);
+        })
+        .catch((err) => console.log(err));
+    },
+    ////obtener todos los eduacatoderes
+    async obtenerEducadores() {
+      await axios
+        .get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
+        .then((res) => {
+          this.listaeducadores = res.data;
+          console.log(this.listaeducadores);
+        })
+        .catch((err) => console.log(err));
+    },
   },
-  
-   computed:{
- ...mapState(["seguimientoEducativo"])
-  }
-}
 
+  computed: {
+    ...mapState(["seguimientoEducativo"]),
+  },
+};
 </script>
 <style scoped>
 .card {

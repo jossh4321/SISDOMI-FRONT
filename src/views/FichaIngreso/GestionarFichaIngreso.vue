@@ -216,6 +216,8 @@ export default {
         documentoactual: "FichaPsicologicaIngreso",
         estadodocumentoanterior: "Pendiente",
       },
+      fromDate: null,
+      toDate: null
     };
   },
   async created() {
@@ -318,8 +320,28 @@ export default {
     },
     //Obtener Todas las Fcifas de Ingreso
     async obtenerfichasIngresos() {
+
+      let listParams = [];
+      
+      let fromDateParam = this.fromDate == null ? "": "FromDate=" + this.fromDate;
+      let toDateParam = this.toDate == null ? "": "ToDate=" + this.toDate;
+
+      if(fromDateParam != "") {
+
+        listParams.push(fromDateParam);
+
+      }
+      
+      if(toDateParam != "") {
+
+        listParams.push(toDateParam);
+
+      }
+
+      let params = listParams.join("&");
+      
       await axios
-        .get("/Documento/all/fichaingresoresidente")
+        .get("/Documento/all/fichaingresoresidente" + params)
         .then((res) => {
           this.setFichaIngreso(res.data);
         })

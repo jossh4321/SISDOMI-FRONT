@@ -252,7 +252,9 @@ export default {
         fase: "1",
         area: "educativa",
         documentos: ["FichaEducativaIngreso"]
-      }
+      },
+      fromDate: null,
+      toDate: null
     };
   },
   async created() {
@@ -284,8 +286,28 @@ export default {
       this.dialogoIPEdetalle = false;
     },
     async obtenerInformes() {
+
+      let listParams = [];
+      
+      let fromDateParam = this.fromDate == null ? "": "FromDate=" + this.fromDate;
+      let toDateParam = this.toDate == null ? "": "ToDate=" + this.toDate;
+
+      if(fromDateParam != "") {
+
+        listParams.push(fromDateParam);
+
+      }
+      
+      if(toDateParam != "") {
+
+        listParams.push(toDateParam);
+
+      }
+
+      let params = listParams.join("&");
+
       await axios
-        .get("/informe/all")
+        .get("/informe/all" + params)
         .then((res) => {
           this.loading = false;
           var info = {};

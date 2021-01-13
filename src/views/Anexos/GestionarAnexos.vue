@@ -158,6 +158,8 @@ export default {
         },
       ],
       anexos: [],
+      fromDate: null,
+      toDate: null,
     };
   },
   methods: {
@@ -176,13 +178,13 @@ export default {
     },
     closeDialogModify() {
       this.dialogModify = false;
-      this.ismodifier="";
+      this.ismodifier = "";
     },
     closeDialogDetail() {
       this.dialogDetail = false;
     },
     async updateAnexo(item) {
-      this.ismodifier="ModificarAnexo";
+      this.ismodifier = "ModificarAnexo";
       await axios
         .get("/Anexo/" + item.id)
         .then((res) => {
@@ -192,7 +194,7 @@ export default {
         .catch((err) => {
           console.error(err);
         });
-     
+
       this.dialogModify = true;
     },
     async detailAnexo(item) {
@@ -208,8 +210,25 @@ export default {
       this.dialogDetail = true;
     },
     listAnexos() {
+      
+      let listParams = [];
+
+      let fromDateParam =
+        this.fromDate == null ? "" : "FromDate=" + this.fromDate;
+      let toDateParam = this.toDate == null ? "" : "ToDate=" + this.toDate;
+
+      if (fromDateParam != "") {
+        listParams.push(fromDateParam);
+      }
+
+      if (toDateParam != "") {
+        listParams.push(toDateParam);
+      }
+
+      let params = listParams.join("&");
+
       axios
-        .get("/Anexo/all")
+        .get("/Anexo/all" + params)
         .then((res) => {
           this.loading = false;
           this.anexos = res.data;

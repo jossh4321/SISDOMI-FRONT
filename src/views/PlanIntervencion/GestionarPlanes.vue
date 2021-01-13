@@ -274,6 +274,8 @@ export default {
         action: "",
       },
       idPlanUpdatedState: "",
+      fromDate: null,
+      toDate: null
     };
   },
   methods: {
@@ -403,8 +405,30 @@ export default {
       });
     },
     listInterventionsPlan() {
+
+      let listParams = [];
+      
+      let fromDateParam = this.fromDate == null ? "": "FromDate=" + this.fromDate;
+      let toDateParam = this.toDate == null ? "": "ToDate=" + this.toDate;
+
+      if(fromDateParam != "") {
+
+        listParams.push(fromDateParam);
+
+      }
+      
+      if(toDateParam != "") {
+
+        listParams.push(toDateParam);
+
+      }
+
+      let params = listParams.join("&");
+ 
+      console.log(params);
+
       axios
-        .get("/PlanIntervencion/all")
+        .get("/PlanIntervencion/all?" + params)
         .then((res) => {
           this.loading = false;
           this.planesIntervencion = res.data;

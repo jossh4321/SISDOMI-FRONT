@@ -47,7 +47,8 @@
               <v-card>
                 <v-card-title>Selección del Taller</v-card-title>
                 <v-card-subtitle class="mt-1"
-                  >Seleccione el tipo del taller para el registro</v-card-subtitle
+                  >Seleccione el tipo del taller para el
+                  registro</v-card-subtitle
                 >
                 <v-card-text class="pr-2">
                   <v-combobox
@@ -92,14 +93,17 @@
             </v-dialog>
 
             <!--Visualizar Modal-->
-            <v-dialog v-model="dialogTallerVisualizar" persistent max-width="880">
+            <v-dialog
+              v-model="dialogTallerVisualizar"
+              persistent
+              max-width="880"
+            >
               <component
                 :is="typeTallerSelected"
                 :taller="taller"
                 @close-dialog="closeDialogVisualizar"
               ></component>
             </v-dialog>
-
           </v-toolbar>
         </template>
         <template v-slot:[`item.fechaCreacion`]="{ item }">
@@ -142,15 +146,15 @@ import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarTalleres",
   components: {
-     RegistrarTallerEscuelaPadres,
-     RegistrarTallerEducativo,
-     RegistrarTallerFormativoEgreso,
-     ActualizarTallerEscuelaPadres,
-     ActualizarTallerEducativo,
-     ActualizarTallerFormativoEgreso,
-     VisualizarTallerEscuelaPadres,
-     VisualizarTallerEducativo,
-     VisualizarTallerFormativoEgreso
+    RegistrarTallerEscuelaPadres,
+    RegistrarTallerEducativo,
+    RegistrarTallerFormativoEgreso,
+    ActualizarTallerEscuelaPadres,
+    ActualizarTallerEducativo,
+    ActualizarTallerFormativoEgreso,
+    VisualizarTallerEscuelaPadres,
+    VisualizarTallerEducativo,
+    VisualizarTallerFormativoEgreso,
   },
   data() {
     return {
@@ -196,6 +200,8 @@ export default {
       pageCount: 0,
       itemsPerPage: 5,
       loading: true,
+      fromDate: null,
+      toDate: null,
     };
   },
   methods: {
@@ -208,15 +214,22 @@ export default {
 
           if (res.data.tipo == "TallerEscuelaPadres") {
             this.typeTallerSelected = "ActualizarTallerEscuelaPadres";
-            this.taller.contenido.fechainicio = res.data.contenido.fechainicio.split("T")[0];
-            this.taller.contenido.fechafin = res.data.contenido.fechafin.split("T")[0];
+            this.taller.contenido.fechainicio = res.data.contenido.fechainicio.split(
+              "T"
+            )[0];
+            this.taller.contenido.fechafin = res.data.contenido.fechafin.split(
+              "T"
+            )[0];
           } else if (res.data.tipo == "TallerEducativo") {
             this.typeTallerSelected = "ActualizarTallerEducativo";
-            this.taller.contenido.fecharealizacion = res.data.contenido.fecharealizacion.split("T")[0];
-            
+            this.taller.contenido.fecharealizacion = res.data.contenido.fecharealizacion.split(
+              "T"
+            )[0];
           } else if (res.data.tipo == "TallerFormativoEgreso") {
             this.typeTallerSelected = "ActualizarTallerFormativoEgreso";
-            this.taller.contenido.fecharealizacion = res.data.contenido.fecharealizacion.split("T")[0];
+            this.taller.contenido.fecharealizacion = res.data.contenido.fecharealizacion.split(
+              "T"
+            )[0];
           }
 
           this.dialogTallerModify = true;
@@ -233,14 +246,22 @@ export default {
 
           if (res.data.tipo == "TallerEscuelaPadres") {
             this.typeTallerSelected = "VisualizarTallerEscuelaPadres";
-            this.taller.contenido.fechainicio = res.data.contenido.fechainicio.split("T")[0];
-            this.taller.contenido.fechafin = res.data.contenido.fechafin.split("T")[0];
+            this.taller.contenido.fechainicio = res.data.contenido.fechainicio.split(
+              "T"
+            )[0];
+            this.taller.contenido.fechafin = res.data.contenido.fechafin.split(
+              "T"
+            )[0];
           } else if (res.data.tipo == "TallerEducativo") {
             this.typeTallerSelected = "VisualizarTallerEducativo";
-            this.taller.contenido.fecharealizacion = res.data.contenido.fecharealizacion.split("T")[0];
+            this.taller.contenido.fecharealizacion = res.data.contenido.fecharealizacion.split(
+              "T"
+            )[0];
           } else if (res.data.tipo == "TallerFormativoEgreso") {
             this.typeTallerSelected = "VisualizarTallerFormativoEgreso";
-            this.taller.contenido.fecharealizacion = res.data.contenido.fecharealizacion.split("T")[0];
+            this.taller.contenido.fecharealizacion = res.data.contenido.fecharealizacion.split(
+              "T"
+            )[0];
           }
 
           this.dialogTallerVisualizar = true;
@@ -250,12 +271,27 @@ export default {
         });
     },
     listTalleres() {
+      let listParams = [];
+
+      let fromDateParam =
+        this.fromDate == null ? "" : "FromDate=" + this.fromDate;
+      let toDateParam = this.toDate == null ? "" : "ToDate=" + this.toDate;
+
+      if (fromDateParam != "") {
+        listParams.push(fromDateParam);
+      }
+
+      if (toDateParam != "") {
+        listParams.push(toDateParam);
+      }
+
+      let params = listParams.join("&");
+
       axios
-        .get("/Taller/all")
+        .get("/Taller/all" + params)
         .then((res) => {
           this.loading = false;
           this.setTalleres(res.data);
-          
         })
         .catch((err) => {
           console.error(err);
@@ -268,8 +304,8 @@ export default {
     closeDialog() {
       this.dialogTallerRegister = false;
       this.selectedTaller = {
-          text: "",
-          value: "",
+        text: "",
+        value: "",
       };
     },
     registerComplete() {
@@ -293,9 +329,10 @@ export default {
   },
   created() {
     this.listTalleres();
-  },computed:{
-        ...mapState(["talleres"]),
-    },
+  },
+  computed: {
+    ...mapState(["talleres"]),
+  },
 };
 </script>
 <style scoped>
