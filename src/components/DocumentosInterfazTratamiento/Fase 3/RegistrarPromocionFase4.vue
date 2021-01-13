@@ -142,7 +142,7 @@
             <v-text-field
               v-model="progresoFase.fase"
               style="margin-top:2%"
-              label="Observaciones"
+              label="Fase a promover"
               color="#009900"
               readonly
             ></v-text-field>
@@ -270,15 +270,15 @@ export default {
   data() {
     return {
       items1: [
-        { value: 2, text: "Fase 2" },
-        { value: 3, text: "Fase 3" },
+        { value: 4, text: "Fase 4" },
       ],
-      items2: [{ value: 3, text: "Fase 3" }],
       activado: false,
       switchPromocion: false,
       progresoFase: {
         educativa: {
-          documentos: [],
+          documentos: [
+
+          ],
           estado: "incompleto",
         },
         social: {
@@ -289,7 +289,7 @@ export default {
           documentos: [],
           estado: "incompleto",
         },
-        fase: 3,
+        fase: 4,
         documentotransicion: {
           fecha: moment().format("L"),
           idcreador: "",
@@ -367,13 +367,7 @@ export default {
       return date[2] + "-" + date[1] + "-" + date[0];
     },
     seleccionItems() {
-      var fase = this.residente.progreso[this.residente.progreso.length - 1]
-        .fase;
-      if (fase === 1) {
-        return this.items1;
-      } else {
-        return this.items2;
-      }
+      return this.items1;
     },
     verFirma() {
       this.imagen = this.progresoFase.documentotransicion.firma.urlfirma;
@@ -468,20 +462,15 @@ export default {
         this.cargaRegistro = true;
 
         this.progresoFase.documentotransicion.fecha = this.convertDateFormat(this.progresoFase.documentotransicion.fecha);
-
-        this.progresoFase.documentotransicion.firma.nombre =
-          this.user.datos.nombre + " " + this.user.datos.apellido;
+        this.progresoFase.documentotransicion.firma.nombre = this.user.datos.nombre + " " + this.user.datos.apellido;
         this.progresoFase.documentotransicion.firma.cargo = this.user.rol.nombre;
         this.progresoFase.documentotransicion.idcreador = this.user.id;
-        this.progresoResidente.fase = 3;
-        this.progresoResidente.nombre = "reinserción";
-        this.progresoFase.educativa.documentos = [ { tipo: "InformeEducativoFinal", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(0) }, ];
-        this.progresoFase.social.documentos = [
-          { tipo: "InformeSocialFinal", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(0) },
-          { tipo: "ActaExternamiento", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(0) },
-        ];
-        this.progresoFase.psicologica.documentos = [ { tipo: "InformePsicologicoFinal", estado: "Pendiente", fechaestimada: this.generarFechaDocumentos(0) }, ];
+        this.progresoFase.educativa.documentos = [{ tipo: "AvanceSeguimiento", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(0) },];
+        this.progresoFase.social.documentos = [];
+        this.progresoFase.psicologica.documentos = [];
 
+        this.progresoResidente.fase = 4;
+        this.progresoResidente.nombre = "seguimiento";
         this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z";
         this.progresoResidente.fechafinalizacion = this.calculoFin() + "T05:00:00Z";
         this.progresoResidente.estado = "inicio";
@@ -497,8 +486,6 @@ export default {
           promocion: true,
           faseAnterior,
         };
-
-        console.log(residenteFase);
 
         await axios
           .put("/Residente", residenteFase)
@@ -516,10 +503,14 @@ export default {
               "<strong>Se redirigira a la interfaz de Progreso en fase 3<strong>"
             );
 
-            this.abrirProgresoFase3(this.residente.id);
+        this.abrirProgresoFase4(this.residente.id);
 
         this.$v.progresoFase.$reset();
       }
+    },
+    abrirProgresoFase4(id) {
+      var rutacompleta = "/dashboard/ProgresoF4Residente/" + id;
+      this.$router.push(rutacompleta);
     },
   },
   computed: {

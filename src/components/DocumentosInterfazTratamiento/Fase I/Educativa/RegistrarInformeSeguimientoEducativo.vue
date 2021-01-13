@@ -658,7 +658,7 @@ export default {
           .catch((err) => console.log(err));
         await this.mensaje(
           "success",
-          "listo",
+          "Listo",
           "Informe Seguimiento educativo registrado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Progreso<strong>"
         );

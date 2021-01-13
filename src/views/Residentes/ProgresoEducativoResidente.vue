@@ -50,15 +50,15 @@
                 <v-stepper v-model="step" style="padding: 15px 20px; margin: 20px;">
                     <v-stepper-header>
                         <v-stepper-step editable step="1">
-                            Area Educativa
+                            Área Educativa
                         </v-stepper-step>
                         <v-divider></v-divider>
                         <v-stepper-step editable step="2">
-                            Area Social
+                            Área Social
                         </v-stepper-step>
                         <v-divider></v-divider>
                         <v-stepper-step editable step="3">
-                            Area Psicologica
+                            Área Psicológica
                         </v-stepper-step>
                     </v-stepper-header>
                     <v-stepper-items>
@@ -107,7 +107,7 @@
                                 <template v-else>
                                   <v-col cols="12">
                                     <div class="docs-siguiente">
-                                      <span>Proximo a Registrar</span>
+                                      <span>Próximo a Registrar</span>
                                     </div>
                                   </v-col>
                                 </template>
@@ -264,7 +264,7 @@ export default {
               visualizar: "VisualizarInformeEducativoInicial"
             },
             PlanIntervencionIndividualEducativo: {
-              titulo: "Plan de Intervencion Educativo Individual",
+              titulo: "Plan de Intervención Educativo Individual",
               visualizar: "VisualizarPlanIntervencionIndividualEducativo"
             },
             InformeSeguimientoEducativo: {

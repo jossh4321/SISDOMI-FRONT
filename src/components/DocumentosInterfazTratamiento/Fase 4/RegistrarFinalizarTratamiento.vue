@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="justify-center"
-      >Promover Residente:
+      >Finalizar Tratamiento:
       <span style="margin-left:5px;font-weight:bold">{{
         residente.nombre + " " + residente.apellido
       }}</span></v-card-title
@@ -139,13 +139,6 @@
               @blur="$v.progresoFase.documentotransicion.observaciones.$touch()"
               :error-messages="errorObservaciones"
             ></v-text-field>
-            <v-text-field
-              v-model="progresoFase.fase"
-              style="margin-top:2%"
-              label="Fase a promover"
-              color="#009900"
-              readonly
-            ></v-text-field>
             <v-card
               style="margin-top:10px;padding:5px 5px;background-color:#EAEAEA"
             >
@@ -269,11 +262,6 @@ export default {
   },
   data() {
     return {
-      items1: [
-        { value: 2, text: "Fase 2" },
-        { value: 3, text: "Fase 3" },
-      ],
-      items2: [{ value: 3, text: "Fase 3" }],
       activado: false,
       switchPromocion: false,
       progresoFase: {
@@ -289,7 +277,7 @@ export default {
           documentos: [],
           estado: "incompleto",
         },
-        fase: 3,
+        fase: 4,
         documentotransicion: {
           fecha: moment().format("L"),
           idcreador: "",
@@ -367,13 +355,7 @@ export default {
       return date[2] + "-" + date[1] + "-" + date[0];
     },
     seleccionItems() {
-      var fase = this.residente.progreso[this.residente.progreso.length - 1]
-        .fase;
-      if (fase === 1) {
-        return this.items1;
-      } else {
-        return this.items2;
-      }
+      return this.items1;
     },
     verFirma() {
       this.imagen = this.progresoFase.documentotransicion.firma.urlfirma;
@@ -468,34 +450,25 @@ export default {
         this.cargaRegistro = true;
 
         this.progresoFase.documentotransicion.fecha = this.convertDateFormat(this.progresoFase.documentotransicion.fecha);
-
-        this.progresoFase.documentotransicion.firma.nombre =
-          this.user.datos.nombre + " " + this.user.datos.apellido;
+        this.progresoFase.documentotransicion.firma.nombre = this.user.datos.nombre + " " + this.user.datos.apellido;
         this.progresoFase.documentotransicion.firma.cargo = this.user.rol.nombre;
         this.progresoFase.documentotransicion.idcreador = this.user.id;
-        this.progresoResidente.fase = 3;
-        this.progresoResidente.nombre = "reinserción";
-        this.progresoFase.educativa.documentos = [ { tipo: "InformeEducativoFinal", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(0) }, ];
-        this.progresoFase.social.documentos = [
-          { tipo: "InformeSocialFinal", estado: "Pendiente", fechaestimada: this.generarFechaDocumentos(0) },
-          { tipo: "ActaExternamiento", estado: "Pendiente", fechaestimada: this.generarFechaDocumentos(1) },
-        ];
-        this.progresoFase.psicologica.documentos = [ { tipo: "InformePsicologicoFinal", estado: "Pendiente",fechaestimada: this.generarFechaDocumentos(0) }, ];
 
-        this.progresoResidente.fechaingreso = this.convertDateFormat(this.progresoResidente.fechaingreso) + "T05:00:00Z";
-        this.progresoResidente.fechafinalizacion = this.calculoFin() + "T05:00:00Z";
-        this.progresoResidente.estado = "inicio";
+        //actualizando la fase 4 en residente.progreso
+        var fechaact = moment().format("L");
+        var midate = fechaact.split("/");
+        var fechafinal = midate[2].toString() + "-" + midate[1] + "-" + midate[0];
+        this.residente.progreso[ this.residente.progreso.length - 1 ].fechafinalizacion = fechafinal;
+        this.residente.progreso[ this.residente.progreso.length - 1 ].estado = "finalizado";
+        this.residente.estado = "egresado";
 
-        //Actualizando en Residente
-        this.residente.progreso[ this.residente.progreso.length - 1 ].fechafinalizacion = this.progresoResidente.fechaingreso;
         let faseAnterior = this.residente.progreso[ this.residente.progreso.length - 1 ].fase;
-        this.residente.progreso.push(this.progresoResidente);
         
         var residenteFase = {
           residente: this.residente,
           progresoFase: this.progresoFase,
           promocion: true,
-          faseAnterior,
+          faseAnterior
         };
 
         console.log(residenteFase);
@@ -510,16 +483,20 @@ export default {
           });
 
         await this.mensaje(
-              "success",
-              "Listo",
-              "Residente promovido satisfactoriamente",
-              "<strong>Se redirigirá a la interfaz de Progreso en fase 4<strong>"
-            );
+          "success",
+          "Listo",
+          "Tratamiento finalizado satisfactoriamente",
+          "<strong>Se redirigira a la interfaz de expediente<strong>"
+        );
 
-            this.abrirProgresoFase3(this.residente.id);
+        this.abrirExpediente(this.residente.id);
 
         this.$v.progresoFase.$reset();
       }
+    },
+    abrirExpediente(id) {
+      var rutacompleta = "/dashboard/progresoEducativo/" + id;
+      this.$router.push(rutacompleta);
     },
   },
   computed: {

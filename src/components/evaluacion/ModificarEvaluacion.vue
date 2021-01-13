@@ -265,7 +265,7 @@
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
-                                >Estudios |Nivel - Observaciones|</v-card-title
+                                >Estudios</v-card-title
                               >
                   <v-card
                     elevation="0"
@@ -317,7 +317,7 @@
                   <v-card
                     color="#FAFAFA"
                     style="margin-top:5px"
-                    height="60"
+                    height="100"
                     v-for="(item, index) in fichaEvaluacion.contenido.estudios"
                     :key="index"
                   >
@@ -330,7 +330,7 @@
                             alt="imagen usuario"
                           />
                           <span style="font-size:18px">
-                            {{ item.nivel }} -> {{ item.observaciones }}</span
+                            {{ item.nivel }} → {{ item.observaciones }}</span
                           >
                         </article>
                       </v-col>
@@ -362,7 +362,7 @@
                   style="margin-top:30px;padding:5px 5px;background-color:#EAEAEA"
                 >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
-                                >Aspectos |Tipo  - Descripcion|</v-card-title
+                                >Aspectos</v-card-title
                               >
                   <v-card
                     elevation="0"
@@ -388,7 +388,7 @@
                            @input="$v.aspectos.descripcion.$touch()"
                           @blur="$v.aspectos.descripcion.$touch()"
                           :error-messages="errorAspectoDescripcion"
-                          label="Observaciones"
+                          label="Descripción"
                           color="#009900"
                           
                         ></v-text-field>
@@ -415,7 +415,7 @@
                   <v-card
                     color="#FAFAFA"
                     style="margin-top:5px"
-                    height="60"
+                    height="100"
                     v-for="(item, index) in fichaEvaluacion.contenido.aspectos"
                     :key="index"
                   >
@@ -428,7 +428,7 @@
                             alt="imagen usuario"
                           />
                           <span style="font-size:18px">
-                            {{ item.tipo }} -> {{ item.descripcion }}</span
+                            {{ item.tipo }} → {{ item.descripcion }}</span
                           >
                         </article>
                       </v-col>
@@ -475,6 +475,21 @@
             </v-stepper-content>
         </v-stepper-items>
      </v-stepper>
+     <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center">Registrando el seguimiento educativo</v-card-title>
+          <div>
+              <v-progress-circular
+              style="display: block;margin:40px auto;"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+           <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+        </v-card>
+      </v-dialog>       
   </v-card>
 </template>
 
@@ -507,6 +522,7 @@ components:{
      step:1,
      dialog:false, // dialogo firma
      dialogVistaPreviaFirma: false,
+     cargaRegistro:false,
      dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
@@ -589,12 +605,15 @@ components:{
       });
     },
       async  ModificarFichaEvaluacion(){
+        this.cargaRegistro = true;
         this.fichaEvaluacion.creadordocumento = this.user.id;
         console.log(this.fichaEvaluacion)
        await axios
           .put("/EvaluacionDiagnosticoEducativo/fichaEvaluacionDE", this.fichaEvaluacion)
           .then((res) => {
             this.replaceEvaluacion(res.data);
+            this.cargaRegistro = false;
+            this.$emit("cargarSeguimiento");
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));
@@ -604,7 +623,7 @@ components:{
           "Ficha Diagnostico Evaluacion Educativa modificado Satisfactoriamente",
           "<strong>Se redirigira a la Interfaz de Gestion<strong>"
         );
-        this.$emit("cargarSeguimiento");
+        
       },
        ///metodo para agregar firma residente
     guardarFirma(){
@@ -755,7 +774,7 @@ components:{
       const errors = [];
       if (!this.$v.aspectos.descripcion.$dirty) return errors;
       !this.$v.aspectos.descripcion.required &&
-        errors.push("Debe ingresar una descripcion obligatoriamente");
+        errors.push("Debe ingresar una descripción obligatoriamente");
       !this.$v.aspectos.descripcion.esParrafo &&
         errors.push(
           "La descripcion no debe contener caracteres especiales"

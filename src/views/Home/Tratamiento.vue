@@ -130,7 +130,7 @@ export default {
         {
           id:1,
           titulo: "Fase I: Acogida",
-          descripcion:"Se raliza el registro de déficit y fortalezas del niño, niña y adolescente y la evaluación preliminar de sus necesidades de atención e incidendencia.",
+          descripcion:"Se realiza el registro de déficit y fortalezas del niño, niña y adolescente y la evaluación preliminar de sus necesidades de atención e incidendencia.",
           imagenUrl: "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/step_1.png",
           interfazUrl: "/dashboard/Fase1",
           boton: { texto: "Ir a la Fase I", icono: "mdi-cloud-upload" },

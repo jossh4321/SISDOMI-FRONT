@@ -79,7 +79,7 @@ const actions = {
 
                 dispatch('setLogoutTimer', expirationTime);
 
-                router.replace('/dashboard');
+                router.replace('/dashboard/Dashboard');
             })
             .catch(error => {
                 console.log(error);
@@ -87,8 +87,8 @@ const actions = {
                     icon: 'error',
                     title: 'Credenciales Incorrectas',
                     text: 'Verificar los campos ingresados'
-                  })
-                  commit('setLoading', false);
+                })
+                commit('setLoading', false);
             });
     },
     tryAutoLogin: ({
