@@ -513,7 +513,7 @@ export default {
               "success",
               "Listo",
               "Residente promovido satisfactoriamente",
-              "<strong>Se redirigira a la interfaz de Progreso en fase 3<strong>"
+              "<strong>Se redirigirá a la interfaz de Progreso en fase 4<strong>"
             );
 
             this.abrirProgresoFase3(this.residente.id);

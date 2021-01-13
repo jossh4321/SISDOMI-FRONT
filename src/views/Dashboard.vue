@@ -68,7 +68,7 @@
                 <v-card>
                     <v-card color="#262626" outlined>
                         <v-card-title class="justify-center" style="color:#f2f2f2;">
-                         Documentos Atrazados / Pendientes
+                         Documentos Atrasados / Pendientes
                         </v-card-title>
                     </v-card>
                     <v-tabs
