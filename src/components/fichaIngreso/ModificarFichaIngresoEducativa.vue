@@ -279,12 +279,12 @@
                     <span>Cerrar</span>
                   </v-btn>
                 </v-col>
-                <v-col>
+                <!-- <v-col>
                   <v-btn block color="yellow">
                     <v-icon left>mdi-page-next-outline</v-icon>
                     <span>Datos del Residente</span>
                   </v-btn>
-                </v-col>
+                </v-col> -->
                 <v-col>
                   <v-btn block @click="step = 2" color="success">
                     <v-icon left>mdi-page-next-outline</v-icon>
