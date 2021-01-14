@@ -118,6 +118,13 @@
                                     </v-row>
                                     </template>
                                 </template>
+                                <template v-else-if="documento.indice == 'omitido'">
+                                  <v-col cols="12">
+                                    <div class="docs-siguiente">
+                                      <span>Documento Omitido</span>
+                                    </div>
+                                  </v-col>
+                                </template>
                                 <template v-else>
                                   <v-col cols="12">
                                     <div class="docs-siguiente">
@@ -385,6 +392,8 @@ export default {
             flag = true;
           } else if (val.estado.toLowerCase() == "completo") {
             val["indice"] = "anterior";
+          } else if (val.estado.toLowerCase() == "omitido") {
+            val["indice"] = "omitido";
           } else {
             val["indice"] = "posterior";
          }
@@ -397,6 +406,8 @@ export default {
           ? "success"
           : documento.indice == "actual"
           ? "warning"
+          :documento.indice == "omitido"
+          ? "purple darken-2"
           : "info";
       },
       obtenerClaseTimeLineItem(documento) {
@@ -404,6 +415,8 @@ export default {
           ? "success"
           : documento.indice == "actual"
           ? "warning"
+          :documento.indice == "omitido"
+          ? "purple darken-2"
           : "info";
       },
       cerrarDialogoVisualizarDocF1() {
