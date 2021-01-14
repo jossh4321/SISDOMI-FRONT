@@ -167,6 +167,7 @@ export default {
       toDate: null,
       dates: [],
       modal: false,
+      campo: false
     };
   },
   async created() {
