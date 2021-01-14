@@ -37,6 +37,7 @@
               </template>
               <RegistrarEntrevistasFamiliares
                 :dialogoregistro="dialogoregistro"
+                @obtenerDatos="obtenerEntrevistas()"
                 @close-dialog-save="closeDialogRegistrar()"
               ></RegistrarEntrevistasFamiliares>
             </v-dialog>
@@ -63,8 +64,8 @@
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
         <ModificarEntrevistasFamiliares
           v-if="dialogoactualizacion"
-          documentoEntrevistaFamiliar="objEntrevistaFamiliar" 
-          :dialogoactualizacion="dialogoactualizacion"                
+          documentoEntrevistaFamiliar="objEntrevistaFamiliar.contenido" 
+          :dialogoactualizacion="dialogoactualizacion"  
           @close-dialog-update="closeDialogModificar()"
         >
         </ModificarEntrevistasFamiliares>
