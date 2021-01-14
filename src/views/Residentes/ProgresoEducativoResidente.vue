@@ -85,6 +85,7 @@
                                   style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
                                 >{{titulosDoc[documento.tipo].titulo}}</v-card-title>
                                 <template v-if="documento.indice == 'anterior'">
+                                  <template v-if="titulosDoc[documento.tipo].titulo !== 'Avance Seguimiento'">
                                   <v-row>
                                     <v-col cols="12" xs="12" sm="6" md="6">
                                       <div style="padding:5px" >
@@ -103,6 +104,19 @@
                                         </div>
                                     </v-col>
                                   </v-row>
+                                  </template>
+                                  <template v-else>
+                                    <v-row align="center" justify="center">
+                                      <v-col cols="12" xs="12" sm="6" md="6" align="center" justify="center">
+                                      <div style="padding:5px" >
+                                        <v-btn color="info" rounded block
+                                          @click="abrirDialogoVisualizarDocumento(titulosDoc[documento.tipo].visualizar)">
+                                          <v-icon left>mdi-information</v-icon>Ver Detalle
+                                        </v-btn>
+                                      </div>
+                                    </v-col>
+                                    </v-row>
+                                    </template>
                                 </template>
                                 <template v-else>
                                   <v-col cols="12">
@@ -232,8 +246,9 @@ import VisualizarPlanIntervencionIndividualEducativo from "@/components/Document
 import VisualizarInformeSeguimientoEducativo from "@/components/DocumentosInterfazTratamiento/Fase I/Educativa/VisualizarInformeSeguimientoEducativo.vue";
 import VisualizarInformeEducativoEvolutivo from "@/components/DocumentosInterfazTratamiento/Fase 2/Educativa/InformeEvolutivo/VisualizarInformeEducativoEvolutivo.vue";
 import VisualizarInformeEducativoFinal from "@/components/DocumentosInterfazTratamiento/Fase 3/Educativa/VisualizarInformeEducativoFinal.vue";
-import axios from "axios";
+import VisualizarAvanceSeguimiento from "@/components/DocumentosInterfazTratamiento/Fase 4/Educativa/VisualizarAvanceSeguimiento.vue";
 import VisualizadorResidente from "@/components/residentes/VisualizadorResidente.vue";
+import axios from "axios";
 export default {
     components: {
         VisualizadorResidente,
@@ -243,6 +258,7 @@ export default {
         VisualizarInformeSeguimientoEducativo,
         VisualizarInformeEducativoEvolutivo,
         VisualizarInformeEducativoFinal,
+        VisualizarAvanceSeguimiento,
     },
     data() {
         return {
@@ -278,6 +294,10 @@ export default {
             InformeEducativoFinal: {
               titulo: "Informe Educativo Final",
               visualizar: "VisualizarInformeEducativoFinal"
+            },
+            AvanceSeguimiento: {
+              titulo: "Avance Seguimiento",
+              visualizar: "VisualizarAvanceSeguimiento"
             },
           } 
         }
