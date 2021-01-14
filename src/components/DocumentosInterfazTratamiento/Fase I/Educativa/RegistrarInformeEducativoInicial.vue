@@ -537,7 +537,7 @@ export default {
       async obtenerExpediente(){
         var codigoExpediente = "";
         await axios
-          .get("/expediente/idresidente?idresidente="+this.residente.id, this.informe)
+          .get("/expediente/idresidente?idresidente="+this.residente.id)
           .then((res) => {
             codigoExpediente = res.data.numeroexpediente;
           })

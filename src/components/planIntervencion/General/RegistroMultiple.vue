@@ -21,7 +21,7 @@
               color="error"
               small
               elevation="3"
-              @click="removeItem(item)"
+              @click="removeItem(index)"
             >
               <v-icon>mdi-minus</v-icon>
             </v-btn>

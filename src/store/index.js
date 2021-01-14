@@ -28,7 +28,9 @@ export default new Vuex.Store({
         talleres:[],
         entrevistasFamiliares:[],
         nombreCar:'DOMI',
-        fase:""
+        fase:"",
+        visitaFamiliar:[]
+
     },
     getters :{
         nombreCar: (state) => {
@@ -151,6 +153,17 @@ export default new Vuex.Store({
         replaceEntrevistaFamiliar(state, value) {
             var index = state.entrevistasFamiliares.findIndex(x => x.id == value.id);
             state.entrevistasFamiliares.splice(index, 1, value);
+        },
+         //Visitas Familiares
+         setVisitaFamiliar(state, value) {
+            state.visitaFamiliar = value;
+        },
+        addVisitaFamiliar(state, value) {
+            state.visitaFamiliar.push(value);
+        },
+        replaceVisitaFamiliar(state, value) {
+            var index = state.visitaFamiliar.findIndex(x => x.id == value.id);
+            state.visitaFamiliar.splice(index, 1, value);
         }
     },
     modules: {
