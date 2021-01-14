@@ -427,6 +427,7 @@ export default {
       },
       firma:"",
       cargaRegistro: false,
+      usua:"",
     };
   },
   filters: {
@@ -609,6 +610,7 @@ export default {
         .get("/usuario/rol/permiso?id=" + this.planI.creador)
         .then((x) => {
           this.firma = x.data.datos.firma;
+          this.usua = x.data;
         })
         .catch((err) => console.log(err));
       },
@@ -643,10 +645,13 @@ export default {
               });
           }
         }*/
-
+        var urlPDF = this.generarPDF();
+        this.planI.historialcontenido.push({
+            url: urlPDF.substring(51),
+        });
         let planI = {
           id: this.planI.id,
-          historialcontenido: [],
+          historialcontenido: this.planI.historialcontenido,
           tipo: this.planI.tipo,
           contenido: this.planI.contenido,
           idresidente: this.residente.id,
@@ -730,6 +735,103 @@ export default {
     closeDialog() {
       this.$emit("cerrar-modal-docf1");
     },
+    generarPDF(){
+        var doc = new jsPDF('l');
+        var pageSize = doc.internal.pageSize;
+        var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+        var pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth();
+        doc.setFontSize(12);
+        doc.text(this.planI.contenido.titulo, pageWidth / 2, 20, 'center');
+        doc.setFontSize(10);
+        doc.text("CAR: DOMI", 25, 28);
+        doc.text("Apellidos y Nombres: " + this.residenteDocumento.apellido +" "+this.residenteDocumento.nombre+'          Edad: '+this.residenteEdad(), 25, 33);
+        doc.text("Trimestre: " + this.planI.contenido.trimestre, 25, 38);
+        doc.autoTable({
+          theme: 'grid',
+          margin: {
+            top: 45,
+            left: 25,
+            right: 25,
+          },
+          head: [
+           [{ content: 'Objetivo General: '+this.planI.contenido.objetivogeneral + "\n" + "Plan de seguimiento", colSpan: 5,styles: { fillColor: [231, 76, 60]}}]
+          ],
+          body:[
+            [{ content:"Objetivo específicos",styles: { halign: 'center'}}, 
+            { content:"Casos / Problemas" + "\n" +"(aspectos de intervención)",styles: { halign: 'center'}}, 
+            { content:"Actividades/ estrategias",styles: { halign: 'center'}},
+            { content:"Indicadores",styles: { halign: 'center'}},
+            { content:"Meta",styles: { halign: 'center'}},],
+            [this.objetivosEspecificosPdf(),this.aspectosInterventcionPdf(),this.actividadesPdf(),this.indicadoresPdf(),this.metasPdf()]
+          ]
+        });
+        /* No permite acceso F
+        var image = getBase64Image(document.getElementById("imageid"));
+        console.log(image);  */ 
+        if (doc.autoTableEndPosY() + 34 < pageHeight - 23) {
+          //doc.addImage(imgData, 'JPEG', (pageWidth / 2) - 27, doc.autoTableEndPosY() + 1, 55, 35);
+          doc.setFontSize(10);
+          doc.setFontType('bold');
+          doc.text("---------------------------------------", pageWidth / 2, doc.autoTableEndPosY() + 24, 'center');
+          doc.text(this.usua.datos.nombre + " " + this.usua.datos.apellido, pageWidth / 2, doc.autoTableEndPosY() + 29, 'center');
+          doc.text(this.usua.rol.nombre, pageWidth / 2, doc.autoTableEndPosY() + 34, 'center');
+        } else {
+          doc.addPage();
+          doc.setFontSize(10);
+          //doc.addImage(imgData, 'JPEG', (pageWidth / 2) - 27, 37, 55, 35);
+          doc.setFontSize(10);
+          doc.setFontType('bold');
+          doc.text("---------------------------------------", pageWidth / 2, 46, 'center');
+          doc.text(this.usua.datos.nombre + " " + this.usua.datos.apellido, pageWidth / 2, 51, 'center');
+          doc.text(this.usua.rol.nombre, pageWidth / 2, 56, 'center');
+        }
+        return doc.output('datauristring');
+      },
+      residenteEdad(){
+        var hoy = new Date();
+        var cumpleanos = new Date(this.residenteDocumento.fechanacimiento);
+        var edad = hoy.getFullYear() - cumpleanos.getFullYear();
+        var m = hoy.getMonth() - cumpleanos.getMonth();
+        if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
+          edad--;
+        }
+        return edad;
+      },
+      objetivosEspecificosPdf(){
+        var observaciones = "";
+        this.planI.contenido.objetivoespecificos.forEach(element => 
+          observaciones += "- "+ element + "\n"+ "\n"
+        );
+        return observaciones
+      },
+      aspectosInterventcionPdf(){
+        var observaciones = "";
+        this.planI.contenido.aspectosintervencion.forEach(element => 
+          observaciones += "- "+ element + "\n"+ "\n"
+        );
+        return observaciones
+      },
+      actividadesPdf(){
+        var observaciones = "";
+        this.planI.contenido.estrategias.forEach(element => 
+          observaciones += "- "+ element + "\n"+ "\n"
+        );
+        return observaciones
+      },
+      indicadoresPdf(){
+        var observaciones = "";
+        this.planI.contenido.indicadores.forEach(element => 
+          observaciones += "- "+ element + "\n"+ "\n"
+        );
+        return observaciones
+      },
+      metasPdf(){
+        var observaciones = "";
+        this.planI.contenido.metas.forEach(element => 
+          observaciones += "- "+ element + "\n"+ "\n"
+        );
+        return observaciones
+      } 
   },
   computed: {
     ...mapState(["residentes"]),
