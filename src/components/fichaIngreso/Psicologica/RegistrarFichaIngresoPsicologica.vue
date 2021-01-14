@@ -105,18 +105,17 @@
                             :error-messages="erroredadgradoescolaredad"
                           ></v-textarea>
                         </v-flex>
+                        
                         <v-flex xs5>
-                          <v-textarea
-                            v-model.trim="edadgradoescolar.gradoescolar"
+                          <v-select
+                            :items="itemGrado"
+                            v-model="edadgradoescolar.gradoescolar"
                             label="Grado escolar"
                             outlined
-                            auto-grow
-                            rows="1"
-                            color="#009900"
                             @input="$v.edadgradoescolar.gradoescolar.$touch()"
                             @blur="$v.edadgradoescolar.gradoescolar.$touch()"
                             :error-messages="errorgradoescolargradoescolar"
-                          ></v-textarea>
+                          ></v-select>
                         </v-flex>
                         <v-flex xs2>
                           <v-btn
@@ -995,11 +994,10 @@
                             color="#009900"
                             rows="1"
                             auto-grow
+                            @input="$v.fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio.$touch()"
+                            @blur="$v.fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio.$touch()"
+                            :error-messages="errorEdadObservacion"
                           ></v-textarea>
-                          <!-- :readonly="isDisabled"
-                                            @input="$v.familiar.edad.$touch()"
-                                            @blur="$v.familiar.edad.$touch()"
-                          :error-messages="errorEdadFamiliar"-->
                         </v-col>
                       </v-row>
 
@@ -1091,11 +1089,10 @@
                         color="#009900"
                         rows="1"
                         auto-grow
+                        @input="$v.fichaIngreso.contenido.explotacionsexual.edadinicio.$touch()"
+                        @blur="$v.fichaIngreso.contenido.explotacionsexual.edadinicio.$touch()"
+                        :error-messages="errorEdadexpsexual"
                       ></v-textarea>
-                      <!-- :readonly="isDisabled"
-                                        @input="$v.familiar.edad.$touch()"
-                                        @blur="$v.familiar.edad.$touch()"
-                      :error-messages="errorEdadFamiliar"-->
                     </v-col>
                     <v-col>
                       <v-switch
@@ -1542,6 +1539,21 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+      <v-card height="300px">
+        <v-card-title class="justify-center">Registrando la ficha de ingreso psicológica</v-card-title>
+        <div>
+            <v-progress-circular
+            style="display: block;margin:40px auto;"
+            :size="90"
+            :width="9"
+            color="red"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+         <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -1554,6 +1566,10 @@ import {required,minLength,email,helpers,between, numeric} from "vuelidate/lib/v
 import moment from "moment";
 
 import { mapGetters } from "vuex";
+
+function edadvalidaO(value) {
+  return (value == 0 || value > 0);
+}
 
 function edadvalida(value) {
   return (value > 3 & value < 21);
@@ -1574,6 +1590,7 @@ export default {
   },
   data() {
     return {
+      cargaRegistro: false,
       datemenu: false,
       step: 1,
       //modal padres
@@ -1617,6 +1634,13 @@ export default {
       },
       menu2: false,
       menu3: false,
+      itemGrado: [
+        { value: "1", text: "Primero" },
+        { value: "2", text: "Segundo" },
+        { value: "3", text: "Tercero" },
+        { value: "4", text: "Cuarto" },
+        { value: "5", text: "Quinto" },
+      ],
       //datos ficha ingreso psicologica
       fichaIngreso: {
         id: "",
@@ -1650,14 +1674,14 @@ export default {
           },
           adicciones: {
             consumo: false,
-            ultimodiaconsumo: new Date(),
+            ultimodiaconsumo: "",
             spa: []
           },
           conductasriesgo: [],
           conductasemocionales: [],
           desarrollosexual: {
             menstruacion: false,
-            menarquia: new Date(),
+            menarquia: "",
             relaciones: {
               iniciorelaciones: false,
               edadinicio: 0,
@@ -1916,6 +1940,7 @@ export default {
       this.$v.$reset();
     },
     async registrarFichaPsicologicaIngreso() {
+      
       this.$v.fichaIngreso.$touch();
       
       if (this.$v.fichaIngreso.$invalid) {
@@ -1926,6 +1951,7 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+        this.cargaRegistro = true;
         this.fichaIngreso.creadordocumento = this.user.id;
 
         let fichaI = this.fichaIngreso;
@@ -1934,6 +1960,7 @@ export default {
           .post("/Documento/fichaingresopsicologicacrear", fichaI)
           .then(res => {
             this.addFichaIngreso(res.data);
+            this.cargaRegistro = false;
             this.cerrarDialogo();
           })
           .catch(err => console.log(err));
@@ -2805,6 +2832,24 @@ export default {
 
       return errors;
     },
+    errorEdadObservacion() {
+      const errors = [];
+
+      if (!this.$v.fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio.$dirty) return errors;
+
+      !this.$v.fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio.edadvalidaO && errors.push("La edad debe positiva");
+
+      return errors;
+    },
+    errorEdadexpsexual() {
+      const errors = [];
+
+      if (!this.$v.fichaIngreso.contenido.explotacionsexual.edadinicio.$dirty) return errors;
+
+      !this.$v.fichaIngreso.contenido.explotacionsexual.edadinicio.edadvalidaO && errors.push("La edad debe positiva");
+
+      return errors;
+    },
   },
   validations: {
     conductasriesgo: {
@@ -2924,6 +2969,18 @@ export default {
           },
           sensorial: {
             required
+          }
+        },
+        explotacionsexual: {
+          edadinicio: {
+            edadvalidaO
+          }
+        },
+        desarrollosexual: {
+          relaciones: {
+            edadinicio: {
+              edadvalidaO
+            }
           }
         }
       }

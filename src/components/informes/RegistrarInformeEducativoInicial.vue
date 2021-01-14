@@ -433,6 +433,7 @@ export default {
               tipo: res.data.tipo.replace(/([a-z])([A-Z])/g, "$1 $2"),
               codigodocumento: res.data.contenido.codigodocumento,
               nombrecompleto: resi[0].nombre + " " + resi[0].apellido,
+              fechacreacion : res.data.fechacreacion.split("T")[0],
             };
             this.addInforme(info);
             this.cerrarDialogo();

@@ -85,7 +85,7 @@
                                   style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
                                 >{{titulosDoc[documento.tipo].titulo}}</v-card-title>
                                 <template v-if="documento.indice == 'anterior'">
-                                  <template v-if="titulosDoc[documento.tipo].titulo !== 'Avance Seguimiento'">
+                                  <template v-if="titulosDoc[documento.tipo].titulo !== 'Avance Seguimiento' && titulosDoc[documento.tipo].titulo !== 'Informe de Seguimiento Educativo'">
                                   <v-row>
                                     <v-col cols="12" xs="12" sm="6" md="6">
                                       <div style="padding:5px" >
@@ -117,6 +117,13 @@
                                     </v-col>
                                     </v-row>
                                     </template>
+                                </template>
+                                <template v-else-if="documento.indice == 'omitido'">
+                                  <v-col cols="12">
+                                    <div class="docs-siguiente">
+                                      <span>Documento Omitido</span>
+                                    </div>
+                                  </v-col>
                                 </template>
                                 <template v-else>
                                   <v-col cols="12">
@@ -321,6 +328,7 @@ export default {
       },
       async verPDF(documento, fase){
         console.log(fase);
+        this.pdf = "";
         var nombreDocumento = documento.substring(10);
         var stringFase = fase.toString();
         await axios
@@ -385,6 +393,8 @@ export default {
             flag = true;
           } else if (val.estado.toLowerCase() == "completo") {
             val["indice"] = "anterior";
+          } else if (val.estado.toLowerCase() == "omitido") {
+            val["indice"] = "omitido";
           } else {
             val["indice"] = "posterior";
          }
@@ -397,6 +407,8 @@ export default {
           ? "success"
           : documento.indice == "actual"
           ? "warning"
+          :documento.indice == "omitido"
+          ? "purple darken-2"
           : "info";
       },
       obtenerClaseTimeLineItem(documento) {
@@ -404,6 +416,8 @@ export default {
           ? "success"
           : documento.indice == "actual"
           ? "warning"
+          :documento.indice == "omitido"
+          ? "purple darken-2"
           : "info";
       },
       cerrarDialogoVisualizarDocF1() {
