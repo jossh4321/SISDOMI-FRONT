@@ -85,7 +85,7 @@
                                   style="font-size: 15px;text-align: center;word-break: normal; padding-bottom: 0;"
                                 >{{titulosDoc[documento.tipo].titulo}}</v-card-title>
                                 <template v-if="documento.indice == 'anterior'">
-                                  <template v-if="titulosDoc[documento.tipo].titulo !== 'Avance Seguimiento'">
+                                  <template v-if="titulosDoc[documento.tipo].titulo !== 'Avance Seguimiento' && titulosDoc[documento.tipo].titulo !== 'Informe de Seguimiento Educativo'">
                                   <v-row>
                                     <v-col cols="12" xs="12" sm="6" md="6">
                                       <div style="padding:5px" >
@@ -328,6 +328,7 @@ export default {
       },
       async verPDF(documento, fase){
         console.log(fase);
+        this.pdf = "";
         var nombreDocumento = documento.substring(10);
         var stringFase = fase.toString();
         await axios
