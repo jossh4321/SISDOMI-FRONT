@@ -51,7 +51,7 @@
                         :item-value="itemsNivel.value"
                         @input="$v.fichaIngreso.contenido.ieprocedencia.nivel.$touch()"
                         @blur="$v.fichaIngreso.contenido.ieprocedencia.nivel.$touch()"
-                        :error-messages="errorNivel"
+                        :error-messages="errorNivel"                        
                         outlined
                       ></v-select>
                     </v-col>
@@ -81,6 +81,7 @@
                       @input="$v.fichaIngreso.contenido.ieprocedencia.situacionEscolar.$touch()"
                       @blur="$v.fichaIngreso.contenido.ieprocedencia.situacionEscolar.$touch()"
                       :error-messages="errorSituacionEscolar"
+                      @keyup.enter="fichaIngreso.contenido.ieprocedencia.situacionEscolar='La residente cuenta con reinserción escolar en la modalidad EBA.'"
                       shaped
                     ></v-textarea>
                     <v-textarea
@@ -93,6 +94,7 @@
                       @input="$v.fichaIngreso.contenido.ieprocedencia.observacion.$touch()"
                       @blur="$v.fichaIngreso.contenido.ieprocedencia.observacion.$touch()"
                       :error-messages="errorObservacion"
+                      @keyup.enter="fichaIngreso.contenido.ieprocedencia.observacion='No tiene documentación escolar.'"
                       shaped
                     ></v-textarea>
 
@@ -229,6 +231,7 @@
                   @input="$v.fichaIngreso.contenido.ieprocedencia.nombre.$touch()"
                   @blur="$v.fichaIngreso.contenido.ieprocedencia.nombre.$touch()"
                   :error-messages="errorNombreIE"
+                  @keyup.enter="fichaIngreso.contenido.ieprocedencia.nombre='AGRO UNION N 33279'"
                 ></v-text-field> 
 
                <v-row>
@@ -272,6 +275,7 @@
                   :error-messages="errorDireccion"
                   @input="$v.fichaIngreso.contenido.ieprocedencia.direccion.$touch()"
                   @blur="$v.fichaIngreso.contenido.ieprocedencia.direccion.$touch()"
+                  @keyup.enter="fichaIngreso.contenido.ieprocedencia.direccion='Yayapichis – Huánuco'"
                 ></v-text-field> 
                  <v-row>
                     <v-col>
@@ -285,6 +289,7 @@
                         outlined        
                         color="#009900"
                         shaped
+                        @keyup.enter="fichaIngreso.contenido.ieprocedencia.telefono='985561258'"
                       ></v-text-field> 
                     </v-col>
                     <v-col>
@@ -298,6 +303,7 @@
                         outlined        
                         color="#009900"
                         shaped
+                        @keyup.enter="fichaIngreso.contenido.ieprocedencia.correo='agrounion@gmail.com'"
                       ></v-text-field> 
                     </v-col>
                 </v-row>
@@ -342,6 +348,7 @@
                             @blur="$v.observacionAux.$touch()"
                             :error-messages="errorObservacionAux"
                             shaped
+                            @keyup.enter="observacionAux='Realizó la primaria completa, la cual terminó cuando vino a Lima y se internó en el CAR DOMI'"
                           ></v-textarea>
                       </v-col>
                       <v-col :cols="2" align="right">
@@ -470,7 +477,6 @@
       </v-dialog>       
     </v-card>
 </template>
-
 <script> 
 
 import axios from 'axios';

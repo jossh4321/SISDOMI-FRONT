@@ -23,6 +23,7 @@
                   @input="$v.residente.nombre.$touch()"
                   @blur="$v.residente.nombre.$touch()"
                   :error-messages="errorNombre"
+                  @keyup.enter="residente.nombre='Juana Maria'"
                 ></v-text-field>
                 <v-text-field
                   v-model.trim="residente.apellido"
@@ -32,6 +33,7 @@
                   @input="$v.residente.apellido.$touch()"
                   @blur="$v.residente.apellido.$touch()"
                   :error-messages="errorApellido"
+                  @keyup.enter="residente.apellido='Martell Alva'"
                 ></v-text-field>
                 <v-row>
                   <!-- <v-col>                    
@@ -66,7 +68,7 @@
                           outlined
                           @input="$v.residente.fechaNacimiento.$touch()"
                           @blur="$v.residente.fechaNacimiento.$touch()"
-                          :error-messages="errorFechaNacimiento"
+                          :error-messages="errorFechaNacimiento"                          
                         ></v-text-field>
                       </template>
                       <v-date-picker
@@ -99,6 +101,7 @@
                       :error-messages="errorNumeroDocumento"
                       label="Ingrese el n°documento"
                       color="#009900"
+                      @keyup.enter="residente.numeroDocumento='78548587'"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -110,6 +113,7 @@
                   @input="$v.residente.lugarNacimiento.$touch()"
                   @blur="$v.residente.lugarNacimiento.$touch()"
                   :error-messages="errorLugarNacimiento"
+                  @keyup.enter="residente.lugarNacimiento='Yayapichis, Puerto Inca, Huanuco'"
                 ></v-text-field>
 
                 <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
@@ -231,6 +235,7 @@
                                 @input="$v.telefonos.numero.$touch()"
                                 @blur="$v.telefonos.numero.$touch()"
                                 :error-messages="errorTelefono"
+                                @keyup.enter="telefonos.numero='987458458'"
                               ></v-text-field>
                             </v-col>
                           </v-row>
@@ -328,6 +333,7 @@
                   :error-messages="errorJuzgadoProcedencia"
                   label="Ingrese el Juzgado de Procedencia"
                   color="#009900"
+                  @keyup.enter="residente.juzgadoProcedencia='Juzgado de Paz Yuyapichis'"
                 ></v-text-field>
 
                 <v-row>
@@ -393,6 +399,7 @@
                   @blur="$v.residente.motivoIngreso.$touch()"
                   label="Ingrese el Motivo de Ingreso"
                   color="#009900"
+                  @keyup.enter="residente.motivoIngreso='La residente sufría de maltrato psicológico y físico de parte de su principal circulo familiar, además, no se encontraban en condiciones de velar por ella. Pasaba dias sin comer ni ir a la escuela.'"
                 ></v-textarea>
 
                 <v-select
@@ -402,7 +409,6 @@
                   @change="RefrescarProgreso"
                   color="#009900" 
                 ></v-select>
-
                 <v-card style="margin-bottom: 20px;width:100%;padding:5px 5px;background-color:#EAEAEA">
                   <v-card-title
                     style="font-size:22px;padding: 10px 10px;"

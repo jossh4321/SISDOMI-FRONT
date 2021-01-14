@@ -211,6 +211,7 @@
                 label="Analisis Educativo"
                 outlined
                 color="#009900"
+                @keyup.enter="trimestre.analisiseducativo='Obtuvo una premiación'"
               ></v-text-field>
               <v-text-field
                 v-model="trimestre.recomendaciones"
@@ -220,6 +221,7 @@
                 label="Recomendaciones"
                 outlined
                 color="#009900"
+                @keyup.enter="trimestre.recomendaciones='Continua así'"
               ></v-text-field>
 
               <v-btn color="success" @click="guardarTrimestre">
@@ -341,6 +343,7 @@
                                 label="Nombre del Curso:"
                                 outlined
                                 color="#009900"
+                                @keyup.enter="puntajes.area='Matemática'"
                                 ></v-text-field>
                                 <v-text-field
                                 v-model="puntajes.promedio"

@@ -41,6 +41,7 @@
                   @input="$v.informe.contenido.lugarevaluacion.$touch()"
                   @blur="$v.informe.contenido.lugarevaluacion.$touch()"
                   :error-messages="errorLugarEvaluacion"
+                  @keyup.enter="informe.contenido.lugarevaluacion='CENTRO DE ATENCION RESIDENCIAL CAR DOMI'"
                 ></v-textarea>
 
                 <v-textarea
@@ -55,6 +56,7 @@
                   @input="$v.informe.contenido.situacionacademica.$touch()"
                   @blur="$v.informe.contenido.situacionacademica.$touch()"
                   :error-messages="errorSituacionAcademica"
+                  @keyup.enter="informe.contenido.situacionacademica='La residente se encuentra estudiando en el CEBA N 1230 Virgen De Fátima en el 3er de secundaria (2do avanzado), estudio en CENFOTUR, actualmente cursa el módulo II de Cosmetología en el CETPRO Reyna de la Paz con empeño y formalidad actual'"
                 ></v-textarea>
 
                 <v-textarea
@@ -69,6 +71,7 @@
                   @input="$v.informe.contenido.analisisacademico.$touch()"
                   @blur="$v.informe.contenido.analisisacademico.$touch()"
                   :error-messages="errorAnalisisAcademico"
+                  @keyup.enter="informe.contenido.analisisacademico='La madre adolescente, se encuentra asumiendo responsabilidades como el cuidado de su niña y sus actividades escolares y de sus estudios técnicos productivos a la residente le gusta mucho lo que hace, asiste a sus clases de cosmetología y disfruta de estas, es muy exigente con ella misma quiere aprender y avanzar en lo que se propone'"
                 ></v-textarea>
                 <v-row>
                   <v-col>
@@ -107,6 +110,7 @@
                           @input="$v.conclusion.$touch()"
                           @blur="$v.conclusion.$touch()"
                           :error-messages="errorConclusion"
+                          @keyup.enter="conclusion='Continuar con sus estudios para culminar satisfactoriamente la secundaria '"
                         ></v-text-field>
                       </v-col>
                       <v-col :cols="4" align="right">
