@@ -64,7 +64,7 @@
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
         <ModificarEntrevistasFamiliares
           v-if="dialogoactualizacion"
-          documentoEntrevistaFamiliar="objEntrevistaFamiliar.contenido" 
+          :documentoEntrevistaFamiliar="objEntrevistaFamiliar" 
           :dialogoactualizacion="dialogoactualizacion"  
           @close-dialog-update="closeDialogModificar()"
         >
