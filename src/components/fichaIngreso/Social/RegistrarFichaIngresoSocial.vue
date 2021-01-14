@@ -1091,6 +1091,21 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+      <v-card height="300px">
+        <v-card-title class="justify-center">Registrando la ficha de ingreso social</v-card-title>
+        <div>
+            <v-progress-circular
+            style="display: block;margin:40px auto;"
+            :size="90"
+            :width="9"
+            color="red"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+         <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -1118,6 +1133,7 @@ export default {
   },
   data() {
     return {
+      cargaRegistro: false,
       //modal composicion familiar
       accion: "registrar",
       dialogAgregarFamiliar: false,
@@ -1270,6 +1286,7 @@ export default {
       console.log(this.informe.contenido.anexos);
     },*/
     async registrarFichaIngresoSocial() {
+      
       //await this.sendPDFFiles();
       this.fichaIngreso.creadordocumento = this.user.id;
       /*this.fichaIngreso.contenido.firma = {
@@ -1287,12 +1304,14 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
+        this.cargaRegistro = true;
         let ficha = this.fichaIngreso;
 
         await axios
         .post("/documento/fichaingresosocialcrear", ficha)
         .then(res => {
           this.addFichaIngreso(res.data);
+          this.cargaRegistro = false;
           this.cerrarDialogo();
         })
         .catch(err => console.log(err));

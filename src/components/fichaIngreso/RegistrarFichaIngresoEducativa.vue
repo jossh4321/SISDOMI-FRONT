@@ -558,6 +558,21 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-dialog width="450px" v-model="cargaRegistro" persistent>
+      <v-card height="300px">
+        <v-card-title class="justify-center">Registrando la ficha de ingreso educativa</v-card-title>
+        <div>
+            <v-progress-circular
+            style="display: block;margin:40px auto;"
+            :size="90"
+            :width="9"
+            color="red"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+         <v-card-subtitle class="justify-center" style="font-weight:bold;text-align:center">En unos momentos finalizaremos...</v-card-subtitle>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -583,6 +598,7 @@ export default {
   },
   data() {
     return {
+      cargaRegistro: false,
       itemsModalidad: [
         { value: "EBA", text: "Educacion Basica Alternativa" },
         { value: "EBE", text: "Educacion Basica Especial" },
@@ -727,6 +743,7 @@ export default {
     },
     ///registrar ficha
     async registrarFicha() {
+      this.cargaRegistro = true;
       this.$v.fichaIngreso.$touch();
       if (this.$v.fichaIngreso.$invalid) {
         await this.mensaje(
@@ -742,6 +759,7 @@ export default {
               nombre: this.user.usuario,
               cargo: this.user.rol.nombre
             };*/
+        this.cargaRegistro = true;
         this.fichaIngreso.creadordocumento = this.user.id;
         this.fichaIngreso.contenido.ieprocedencia.documentosEscolares = await this.registrarDocumentosEscolares();
         //fichaeducativaingreso
@@ -749,6 +767,7 @@ export default {
           .post("/documento/fichaeducativaingreso", this.fichaIngreso)
           .then((res) => {
             this.addFichaIngreso(res.data);
+            this.cargaRegistro = false;
             this.cerrarDialogo();
           })
           .catch((err) => console.log(err));

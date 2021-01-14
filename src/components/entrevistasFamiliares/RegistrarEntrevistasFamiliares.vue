@@ -275,9 +275,8 @@ export default {
         await axios
           .post("/Documento/entrevistafamiliar", this.documento)
           .then((res)=> {
-            var info = {};
-            info = res.data;
-            for (var x=0;x<res.data.length;x++){
+            var info = res.data;
+            for (var x=0;x<info.length;x++){
                 info[x].contenido.fechaEntrevista = res.data[x].contenido.fechaEntrevista.split("T")[0];
                 var nombreCompletoResidente = info[x].contenido.datosresidente.nombre + " " + info[x].contenido.datosresidente.apellido
                 const ResidenteCompleto = { nombrecompleto: nombreCompletoResidente};
@@ -288,6 +287,7 @@ export default {
             }
             
             this.addEntrevistaFamiliar(info);
+            this.$emit("obtenerDatos");
             this.$v.contenidoEntrevistaFamiliar.$reset();
             this.cerrarDialogo();
           })

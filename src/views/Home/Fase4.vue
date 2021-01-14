@@ -1,10 +1,17 @@
 <template>
   <div>
     <template v-if="showInfo">
-      <v-card elevation="3" outlined class="card" style="text-align: center; height: 150px; padding-top: 30px;">
+      <v-card
+        elevation="3"
+        outlined
+        class="card"
+        height="700px"
+        style="text-align: center; height: 700px; padding-top: 30px;"
+      >
         <div class="progress">
           <v-progress-circular size="80" width="10" color="red" indeterminate></v-progress-circular>
         </div>
+        <v-card-title class="justify-center" style="margin-top:20px;color:red">Cargando Datos...</v-card-title>
       </v-card>
     </template>
     <template v-else>
