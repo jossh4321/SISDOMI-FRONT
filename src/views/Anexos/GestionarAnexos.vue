@@ -34,6 +34,31 @@
               class="mr-10"
             >
             </v-text-field>
+            <v-col cols="12" sm="6" md="4">
+              <v-dialog ref="dialog" v-model="modal" persistent width="290px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="dates"
+                    label="Rango de fechas"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    single-line
+                    v-bind="attrs"
+                    v-on="on"
+                    hide-details
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="dates" locale="es-es" range scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="modal = false">
+                    Cancel
+                  </v-btn>
+                  <v-btn text color="primary" @click="cargarDocumentosRango(dates)">
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-dialog>
+            </v-col>
             <v-btn
               class="mb-2"
               @click="dialogRegister = true"
@@ -160,6 +185,8 @@ export default {
       anexos: [],
       fromDate: null,
       toDate: null,
+      dates: [],
+      modal: false,
     };
   },
   methods: {
@@ -228,7 +255,7 @@ export default {
       let params = listParams.join("&");
 
       axios
-        .get("/Anexo/all" + params)
+        .get("/Anexo/all?" + params)
         .then((res) => {
           this.loading = false;
           this.anexos = res.data;
@@ -236,6 +263,18 @@ export default {
         .catch((err) => {
           console.error(err);
         });
+    },
+    cargarDocumentosRango(dates) {
+      this.dates = dates.sort();          
+      this.fromDate = this.formatDate(dates[0]);
+      this.toDate = this.formatDate(dates[1]);      
+      this.listAnexos();      
+      this.modal = false;
+    },
+    formatDate (date) {
+        if (!date) return null;
+        const [year, month, day] = date.split('-')
+        return `${month}-${day}-${year}`
     },
   },
   created() {

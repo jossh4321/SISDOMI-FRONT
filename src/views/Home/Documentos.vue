@@ -35,7 +35,7 @@
           >
           <v-container>
             <v-row>
-              <v-col
+              <v-col                
                 v-for="documento in documentos"
                 :key="documento.id"
                 xs="12"
@@ -129,45 +129,45 @@ export default {
           id: 1,
           ruta: "General",
           titulo: "Documentos generales",
-          descripcion: "Descripción sobre los documentos generales",
+          descripcion: "Gestión de los principales documentos del CAR.",
           imagenUrl:
             "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/note_taking_monochromatic.png",
           interfazUrl: "/dashboard/Fase1",
           boton: { texto: "Acceder", icono: "mdi-cloud-upload" },
         },
-        {
-          id: 2,
-          ruta: "Educativo",
-          titulo: "Documentos educativos",
-          descripcion:
-            "Descripción sobre los documentos educativos",
-          imagenUrl:
-            "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/teacher_monochromatic.png",
-          interfazUrl: "/dashboard/Fase1",
-          boton: { texto: "Acceder", icono: "mdi-cloud-upload" },
-        },
-        {
-          id: 3,
-          ruta: "Psicologico",
-          titulo: "Documentos psicológicos",
-          descripcion:
-            "Descripción sobre los documentos psicológicos",
-          imagenUrl:
-            "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/quality_check_monochromatic.png",
-          interfazUrl: "/dashboard/Fase1",
-          boton: { texto: "Acceder", icono: "mdi-cloud-upload" },
-        },
-        {
-          id: 4,
-          ruta: "Social",
-          titulo: "Documentos sociales",
-          descripcion:
-            "Descripción sobre los documentos sociales",
-          imagenUrl:
-            "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/brainstorming_session__monochromatic.png",
-          interfazUrl: "/dashboard/Fase1",
-          boton: { texto: "Acceder", icono: "mdi-cloud-upload" },
-        },
+        // {
+        //   id: 2,
+        //   ruta: "Educativo",
+        //   titulo: "Documentos educativos",
+        //   descripcion:
+        //     "Descripción sobre los documentos educativos",
+        //   imagenUrl:
+        //     "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/teacher_monochromatic.png",
+        //   interfazUrl: "/dashboard/Fase1",
+        //   boton: { texto: "Acceder", icono: "mdi-cloud-upload" },
+        // },
+        // {
+        //   id: 3,
+        //   ruta: "Psicologico",
+        //   titulo: "Documentos psicológicos",
+        //   descripcion:
+        //     "Descripción sobre los documentos psicológicos",
+        //   imagenUrl:
+        //     "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/quality_check_monochromatic.png",
+        //   interfazUrl: "/dashboard/Fase1",
+        //   boton: { texto: "Acceder", icono: "mdi-cloud-upload" },
+        // },
+        // {
+        //   id: 4,
+        //   ruta: "Social",
+        //   titulo: "Documentos sociales",
+        //   descripcion:
+        //     "Descripción sobre los documentos sociales",
+        //   imagenUrl:
+        //     "https://www.qullana.com/E_LOLFGRAPH/static/Resources/imagenes/brainstorming_session__monochromatic.png",
+        //   interfazUrl: "/dashboard/Fase1",
+        //   boton: { texto: "Acceder", icono: "mdi-cloud-upload" },
+        // },
       ],
     };
   },

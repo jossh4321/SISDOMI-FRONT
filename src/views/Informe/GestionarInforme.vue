@@ -22,6 +22,31 @@
               single-line
               hide-details
             ></v-text-field>
+             <v-col cols="12" sm="6" md="4">
+              <v-dialog ref="dialog" v-model="modal" persistent width="290px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="dates"
+                    label="Rango de fechas"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    single-line
+                    v-bind="attrs"
+                    v-on="on"
+                    hide-details
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="dates" locale="es-es" range scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="modal = false">
+                    Cancel
+                  </v-btn>
+                  <v-btn text color="primary" @click="cargarDocumentosRango(dates)">
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-dialog>
+            </v-col>
             <v-spacer></v-spacer>
             <!--Dialogo de Registro-->
             <v-dialog persistent v-model="dialogoregistro" max-width="880px">
@@ -254,7 +279,9 @@ export default {
         documentos: ["FichaEducativaIngreso"]
       },
       fromDate: null,
-      toDate: null
+      toDate: null,
+      dates: [],
+      modal: false,
     };
   },
   async created() {
@@ -307,7 +334,7 @@ export default {
       let params = listParams.join("&");
 
       await axios
-        .get("/informe/all" + params)
+        .get("/informe/all?" + params)
         .then((res) => {
           this.loading = false;
           var info = {};
@@ -423,34 +450,25 @@ export default {
           console.log(this.listaresidentes);
         })
         .catch((err) => console.log(err));
-    }, /*   
-    async obtenerEducadores() {
-      await axios
-        .get("/usuario/idrol?idrol=5f73b6440a37af031f716806")
-        .then((res) => {
-          this.listaeducadores = res.data;         
-        })
-        .catch((err) => console.log(err));
+    },   
+    cargarDocumentosRango(dates) {
+      this.dates = dates.sort();          
+      this.fromDate = this.formatDate(dates[0]);
+      this.toDate = this.formatDate(dates[1]);      
+      this.obtenerInformes();      
+      this.modal = false;
     },
-    async obtenerSociales() { 
-      await axios
-        .get("/usuario/idrol?idrol=5fc9f98b63388b53b8f4a709")
-        .then((res) => {
-          this.listasociales = res.data;          
-        })
-        .catch((err) => console.log(err));
+    formatDate (date) {
+        if (!date) return null;
+        const [year, month, day] = date.split('-')
+        return `${month}-${day}-${year}`
     },
-    async obtenerPsicologos() { 
-      await axios
-        .get("/usuario/idrol?idrol=5fc9f97c63388b53b8f4a708")
-        .then((res) => {
-          this.listapsicologos = res.data;          
-        })
-        .catch((err) => console.log(err));
-    },*/
   },
   computed: {
     ...mapState(["informes"]),
+    dateRangeText() {
+      return this.dates.join(" ~ ");
+    },
   },
 };
 </script>

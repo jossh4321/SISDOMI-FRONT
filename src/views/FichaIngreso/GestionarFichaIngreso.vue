@@ -12,7 +12,7 @@
           <v-toolbar flat>
             <v-toolbar-title>Fichas de Ingreso SISDOMI</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
-            <v-spacer></v-spacer>
+
             <v-text-field
               v-model="search"
               append-icon="mdi-magnify"
@@ -20,6 +20,33 @@
               single-line
               hide-details
             ></v-text-field>
+            <!-- :return-value.sync="dates" -->
+            <v-col cols="12" sm="6" md="4">
+              <v-dialog ref="dialog" v-model="modal" persistent width="290px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="dates"
+                    label="Rango de fechas"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    single-line
+                    v-bind="attrs"
+                    v-on="on"
+                    hide-details
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="dates" locale="es-es" range scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="modal = false">
+                    Cancel
+                  </v-btn>
+                  <v-btn text color="primary" @click="cargarDocumentosRango(dates)">
+                    OK
+                  </v-btn>
+                </v-date-picker>
+              </v-dialog>
+            </v-col>
+
             <v-spacer></v-spacer>
             <!-- Dialogo de Registro-->
             <v-dialog v-model="dialogDialogNuevaFichaIngreso" max-width="500px">
@@ -95,17 +122,27 @@
         </template>
       </v-data-table>
       <!--Dialogo de Registro de Fichas de Ingreso-->
-      <v-dialog v-model="dialogoRegistroFichaIngreso" persistent max-width="850px">
+      <v-dialog
+        v-model="dialogoRegistroFichaIngreso"
+        persistent
+        max-width="850px"
+      >
         <v-component
           :is="selectorFichaIngreso"
           :listaresidentes="listaresidentes"
           :listaeducadores="listaeducadores"
-          @cerrar-modal-registro-ficha-ingreso="cerrarDialogoRegistroFichaIngreso"
+          @cerrar-modal-registro-ficha-ingreso="
+            cerrarDialogoRegistroFichaIngreso
+          "
         >
         </v-component>
       </v-dialog>
       <!--Dialogo de Modificar-->
-      <v-dialog v-model="dialogoModificacionFichaIngreso" persistent max-width="850px">
+      <v-dialog
+        v-model="dialogoModificacionFichaIngreso"
+        persistent
+        max-width="850px"
+      >
         <v-component
           :is="selectorFichaIngreso"
           :listaresidentes="listaresidentes"
@@ -119,7 +156,11 @@
         </v-component>
       </v-dialog>
       <!--Dialogo de Consultar-->
-      <v-dialog v-model="dialogoConsultaFichaIngreso" persistent max-width="850px">
+      <v-dialog
+        v-model="dialogoConsultaFichaIngreso"
+        persistent
+        max-width="850px"
+      >
         <v-component
           :is="selectorFichaIngreso"
           ref="consultarFichaIngreso"
@@ -138,27 +179,33 @@
 <script>
 import axios from "axios";
 import SeleccionarFichaIngreso from "@/components/fichaIngreso/SeleccionarFichaIngreso.vue";
-import RegistrarFichaIngresoEducativa from '@/components/fichaIngreso/RegistrarFichaIngresoEducativa.vue'
-import RegistrarFichaIngresoPsicologica from '@/components/fichaIngreso/Psicologica/RegistrarFichaIngresoPsicologica.vue'
-import RegistrarFichaIngresoSocial from '@/components/fichaIngreso/Social/RegistrarFichaIngresoSocial.vue'
-import ModificarFichaIngresoEducativa from '@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue'
-import ModificarFichaIngresoSocial from '@/components/fichaIngreso/Social/ModificarFichaIngresoSocial.vue'
-import ModificarFichaIngresoPsicologica from '@/components/fichaIngreso/Psicologica/ModificarFichaIngresoPsicologica.vue'
-import ConsultarFichaIngresoEducativa from '@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue'
-import ConsultarFichaIngresoPsicologica from '@/components/fichaIngreso/Psicologica/ConsultarFichaIngresoPsicologica.vue'
-import ConsultarFichaIngresoSocial from '@/components/fichaIngreso/Social/ConsultarFichaIngresoSocial.vue'
+import RegistrarFichaIngresoEducativa from "@/components/fichaIngreso/RegistrarFichaIngresoEducativa.vue";
+import RegistrarFichaIngresoPsicologica from "@/components/fichaIngreso/Psicologica/RegistrarFichaIngresoPsicologica.vue";
+import RegistrarFichaIngresoSocial from "@/components/fichaIngreso/Social/RegistrarFichaIngresoSocial.vue";
+import ModificarFichaIngresoEducativa from "@/components/fichaIngreso/ModificarFichaIngresoEducativa.vue";
+import ModificarFichaIngresoSocial from "@/components/fichaIngreso/Social/ModificarFichaIngresoSocial.vue";
+import ModificarFichaIngresoPsicologica from "@/components/fichaIngreso/Psicologica/ModificarFichaIngresoPsicologica.vue";
+import ConsultarFichaIngresoEducativa from "@/components/fichaIngreso/ConsultarFichaIngresoEducativa.vue";
+import ConsultarFichaIngresoPsicologica from "@/components/fichaIngreso/Psicologica/ConsultarFichaIngresoPsicologica.vue";
+import ConsultarFichaIngresoSocial from "@/components/fichaIngreso/Social/ConsultarFichaIngresoSocial.vue";
 
 import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarFicha",
   components: {
-    RegistrarFichaIngresoEducativa,RegistrarFichaIngresoPsicologica,RegistrarFichaIngresoSocial,
-    ModificarFichaIngresoEducativa,ModificarFichaIngresoSocial,ModificarFichaIngresoPsicologica,
-    ConsultarFichaIngresoEducativa,ConsultarFichaIngresoSocial,ConsultarFichaIngresoPsicologica
+    RegistrarFichaIngresoEducativa,
+    RegistrarFichaIngresoPsicologica,
+    RegistrarFichaIngresoSocial,
+    ModificarFichaIngresoEducativa,
+    ModificarFichaIngresoSocial,
+    ModificarFichaIngresoPsicologica,
+    ConsultarFichaIngresoEducativa,
+    ConsultarFichaIngresoSocial,
+    ConsultarFichaIngresoPsicologica,
   },
   data() {
     return {
-      search: "",
+      search: "",            
       residente: {},
       selectorFichaIngreso: "",
       items: [
@@ -217,7 +264,9 @@ export default {
         estadodocumentoanterior: "Pendiente",
       },
       fromDate: null,
-      toDate: null
+      toDate: null,
+      dates: [],
+      modal: false,
     };
   },
   async created() {
@@ -232,28 +281,25 @@ export default {
       console.log(item);
       await this.obtenerResidentesModificacion();
       await this.obtenerfichaIngreso(item.id);
-       if(item.tipo == "FichaEducativaIngreso"){
-          this.selectorFichaIngreso = "ModificarFichaIngresoEducativa";
-       }
-       else if(item.tipo == "FichaSocialIngreso"){
-          this.selectorFichaIngreso = "ModificarFichaIngresoSocial";
-       }
-       else if(item.tipo == "FichaPsicologicaIngreso"){
-          this.selectorFichaIngreso = "ModificarFichaIngresoPsicologica";
-       }
-       this.dialogoModificacionFichaIngreso = true;
-    },async abrirDialogoConsultar(item){
-       await this.obtenerfichaIngresoDetalle(item.id)
-       if(item.tipo == "FichaEducativaIngreso"){
-         this.selectorFichaIngreso = "ConsultarFichaIngresoEducativa";
-       }
-       else if(item.tipo == "FichaSocialIngreso"){
-         this.selectorFichaIngreso = "ConsultarFichaIngresoSocial";
-       }
-       else if(item.tipo == "FichaPsicologicaIngreso"){
-         this.selectorFichaIngreso = "ConsultarFichaIngresoPsicologica";
-       }
-       this.dialogoConsultaFichaIngreso = true;
+      if (item.tipo == "FichaEducativaIngreso") {
+        this.selectorFichaIngreso = "ModificarFichaIngresoEducativa";
+      } else if (item.tipo == "FichaSocialIngreso") {
+        this.selectorFichaIngreso = "ModificarFichaIngresoSocial";
+      } else if (item.tipo == "FichaPsicologicaIngreso") {
+        this.selectorFichaIngreso = "ModificarFichaIngresoPsicologica";
+      }
+      this.dialogoModificacionFichaIngreso = true;
+    },
+    async abrirDialogoConsultar(item) {
+      await this.obtenerfichaIngresoDetalle(item.id);
+      if (item.tipo == "FichaEducativaIngreso") {
+        this.selectorFichaIngreso = "ConsultarFichaIngresoEducativa";
+      } else if (item.tipo == "FichaSocialIngreso") {
+        this.selectorFichaIngreso = "ConsultarFichaIngresoSocial";
+      } else if (item.tipo == "FichaPsicologicaIngreso") {
+        this.selectorFichaIngreso = "ConsultarFichaIngresoPsicologica";
+      }
+      this.dialogoConsultaFichaIngreso = true;
     },
     closeDialogDetalle() {
       this.dialogoFIEconsultar = false;
@@ -266,19 +312,19 @@ export default {
       this.dialogoaFIPctualizacion = false;
     },
     async abrirDialogoRegistroFichaIngreso() {
-      if(this.selectorFichaIngreso == "RegistrarFichaIngresoEducativa"){
-          await this.obtenerResidentes();
-       }
-       else if(this.selectorFichaIngreso == "RegistrarFichaIngresoSocial"){
-          await this.obtenerResidentesSocial();
-       }
-       else if(this.selectorFichaIngreso == "RegistrarFichaIngresoPsicologica"){
-          await this.obtenerResidentesPsico();
-       }
+      if (this.selectorFichaIngreso == "RegistrarFichaIngresoEducativa") {
+        await this.obtenerResidentes();
+      } else if (this.selectorFichaIngreso == "RegistrarFichaIngresoSocial") {
+        await this.obtenerResidentesSocial();
+      } else if (
+        this.selectorFichaIngreso == "RegistrarFichaIngresoPsicologica"
+      ) {
+        await this.obtenerResidentesPsico();
+      }
       await this.obtenerEducadores();
       this.dialogoRegistroFichaIngreso = true;
     },
-    cerrarDialogoSeleccion() {  
+    cerrarDialogoSeleccion() {
       this.dialogDialogNuevaFichaIngreso = false;
       this.selectorFichaIngreso = "";
     },
@@ -320,28 +366,24 @@ export default {
     },
     //Obtener Todas las Fcifas de Ingreso
     async obtenerfichasIngresos() {
-
       let listParams = [];
-      
-      let fromDateParam = this.fromDate == null ? "": "FromDate=" + this.fromDate;
-      let toDateParam = this.toDate == null ? "": "ToDate=" + this.toDate;
 
-      if(fromDateParam != "") {
+      let fromDateParam =
+        this.fromDate == null ? "" : "FromDate=" + this.fromDate;
+      let toDateParam = this.toDate == null ? "" : "ToDate=" + this.toDate;
 
+      if (fromDateParam != "") {
         listParams.push(fromDateParam);
-
       }
-      
-      if(toDateParam != "") {
 
+      if (toDateParam != "") {
         listParams.push(toDateParam);
-
       }
 
       let params = listParams.join("&");
-      
+
       await axios
-        .get("/Documento/all/fichaingresoresidente" + params)
+        .get("/Documento/all/fichaingresoresidente?" + params)
         .then((res) => {
           this.setFichaIngreso(res.data);
         })
@@ -401,9 +443,24 @@ export default {
         })
         .catch((err) => console.log(err));
     },
+    cargarDocumentosRango(dates) {
+      this.dates = dates.sort();          
+      this.fromDate = this.formatDate(dates[0]);
+      this.toDate = this.formatDate(dates[1]);      
+      this.obtenerfichasIngresos();      
+      this.modal = false;
+    },
+    formatDate (date) {
+        if (!date) return null;
+        const [year, month, day] = date.split('-')
+        return `${month}-${day}-${year}`
+    },
   },
   computed: {
     ...mapState(["fichaingreso"]),
+    dateRangeText() {
+      return this.dates.join(" ~ ");
+    },
   },
 };
 </script>
