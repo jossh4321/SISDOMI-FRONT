@@ -21,6 +21,8 @@ import GestionResidentes from '../views/Residentes/GestionResidentes.vue';
 import ProgresoEducativoResidente from '../views/Residentes/ProgresoEducativoResidente.vue';
 import GestionarActividades from '../views/Actividades/GestionarActividades.vue';
 import GestionarEntrevistasFamiliares from '../views/EntrevistasFamiliares/GestionarEntrevistasFamiliares.vue';
+import GestionarVisitaFamiliar from '../views/VisitaFamiliar/GestionarVisitaFamiliar.vue'
+
 
 //Prueba
 import PruebaActa from '../views/Acta/PruebaActa.vue';
@@ -269,6 +271,12 @@ const routes = [{
                 path: 'ProgresoF4Residente/:id',
                 name: 'ProgresoF4Residente',
                 component: ProgresoF4Residente,
+                params: true
+            },
+            {
+                path: 'gestionarVisitaFamiliar',
+                name: 'GestionarVisitaFamiliar',
+                component: GestionarVisitaFamiliar,
                 params: true
             },
         ],
