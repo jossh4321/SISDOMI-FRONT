@@ -583,45 +583,57 @@
               <v-card elevation="6" outlined style="margin-top: 20px">
                 <v-card-title>Sobre el abuso sexual</v-card-title>
                 <v-container grid-list-md text-xs-center>
-                  <v-row>
-                    <v-col>
-                      <v-textarea
-                        label="Edad cuando tuvo abuso sexual"
-                        v-model.number="fichaIngreso.contenido.abusosexual.edad"
-                        outlined
-                        color="#009900"
-                        rows="1"
-                        auto-grow
-                      ></v-textarea>
-                      <!-- :readonly="isDisabled"
-                                      @input="$v.familiar.parentesco.$touch()"
-                                      @blur="$v.familiar.parentesco.$touch()"
-                      :error-messages="errorParentescoFamiliar"-->
-                    </v-col>
-                    <v-col>
-                      <v-textarea
-                        label="Veces que tuvo abuso sexual"
-                        v-model.number="fichaIngreso.contenido.abusosexual.veces"
-                        outlined
-                        color="#009900"
-                        rows="1"
-                        auto-grow
-                      ></v-textarea>
-                      <!-- :readonly="isDisabled"
-                                      @input="$v.familiar.gradoinstruccion.$touch()"
-                                      @blur="$v.familiar.gradoinstruccion.$touch()"
-                      :error-messages="errorGradoInstruccionFamiliar"-->
-                    </v-col>
-                  </v-row>
-
                   <v-switch
-                    v-model="fichaIngreso.contenido.abusosexual.atencionpsicologica"
-                    :label="`¿Recibio atención psicológica? Respuesta: ${ fichaIngreso.contenido.abusosexual.atencionpsicologica ? 'SI' : 'NO'}`"
-                  ></v-switch>
-                  <!-- :readonly="isDisabled"
-                                      @input="$v.familiar.gradoinstruccion.$touch()"
-                                      @blur="$v.familiar.gradoinstruccion.$touch()"
-                  :error-messages="errorGradoInstruccionFamiliar"-->
+                      v-model="fichaIngreso.contenido.abusosexual.ES_abusosexual"
+                      @change="onES_abusosexual"
+                      :label="`¿Recibio abuso? Respuesta: ${ fichaIngreso.contenido.abusosexual.ES_abusosexual ? 'SI' : 'NO'}`"
+                    ></v-switch>
+                  
+                  <div v-if="fichaIngreso.contenido.abusosexual.ES_abusosexual">
+                    <v-row>
+                      <v-col>
+                        <v-textarea
+                          label="Edad cuando tuvo abuso sexual"
+                          v-model.number="fichaIngreso.contenido.abusosexual.edad"
+                          outlined
+                          color="#009900"
+                          rows="1"
+                          auto-grow
+                          @input="$v.fichaIngreso.contenido.abusosexual.edad.$touch()"
+                          @blur="$v.fichaIngreso.contenido.abusosexual.edad.$touch()"
+                          :error-messages="errorabusosexualedad"
+                        ></v-textarea>
+                        <!-- :readonly="isDisabled"
+                                        @input="$v.familiar.parentesco.$touch()"
+                                        @blur="$v.familiar.parentesco.$touch()"
+                        :error-messages="errorParentescoFamiliar"-->
+                      </v-col>
+                      <v-col>
+                        <v-textarea
+                          label="Veces que tuvo abuso sexual"
+                          v-model.number="fichaIngreso.contenido.abusosexual.veces"
+                          outlined
+                          color="#009900"
+                          rows="1"
+                          auto-grow
+                        ></v-textarea>
+                        <!-- :readonly="isDisabled"
+                                        @input="$v.familiar.gradoinstruccion.$touch()"
+                                        @blur="$v.familiar.gradoinstruccion.$touch()"
+                        :error-messages="errorGradoInstruccionFamiliar"-->
+                      </v-col>
+                    </v-row>
+
+                    <v-switch
+                      v-model="fichaIngreso.contenido.abusosexual.atencionpsicologica"
+                      :label="`¿Recibio atención psicológica? Respuesta: ${ fichaIngreso.contenido.abusosexual.atencionpsicologica ? 'SI' : 'NO'}`"
+                    ></v-switch>
+                    <!-- :readonly="isDisabled"
+                                        @input="$v.familiar.gradoinstruccion.$touch()"
+                                        @blur="$v.familiar.gradoinstruccion.$touch()"
+                    :error-messages="errorGradoInstruccionFamiliar"-->
+                  </div>
+
                 </v-container>
               </v-card>
 
@@ -696,9 +708,7 @@
               <v-card elevation="6" outlined>
                 <v-card-title>Otros indicadores</v-card-title>
                 <v-container grid-list-md text-xs-center>
-                  <v-row>
-                    <v-col>
-                      <v-switch
+                  <v-switch
                         v-model="fichaIngreso.contenido.adicciones.consumo"
                         :label="`¿Ha consumido spa alguna vez? Respuesta:${ fichaIngreso.contenido.adicciones.consumo ? 'SI' : 'NO'}`"
                       ></v-switch>
@@ -706,99 +716,102 @@
                                       @input="$v.familiar.numerodocumento.$touch()"
                                       @blur="$v.familiar.numerodocumento.$touch()"
                       :error-messages="errorNumeroDocumentoFamiliar"-->
-                    </v-col>
-                    <v-col>
-                      <v-menu
-                        v-model="menu2"
-                        :close-on-content-click="false"
-                        :nudge-right="40"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="290px"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                            v-model="fichaIngreso.contenido.adicciones.ultimodiaconsumo"
-                            label="Último dia de consumo"
-                            prepend-icon="mdi-calendar"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                            outlined
-                            clearable
-                          ></v-text-field>
-                        </template>
-                        <v-date-picker
-                          v-model="fichaIngreso.contenido.adicciones.ultimodiaconsumo"
-                          @input="menu2 = false"
-                        ></v-date-picker>
-                      </v-menu>
-                      <!-- :readonly="isDisabled"
-                                        @input="$v.familiar.edad.$touch()"
-                                        @blur="$v.familiar.edad.$touch()"
-                      :error-messages="errorEdadFamiliar"-->
-                    </v-col>
-                  </v-row>
 
-                  <v-card elevation="3" outlined>
-                    <v-card-title>Consumo de sustancias psicoadictivas - SPA (si consumiera)</v-card-title>
-                    <v-container grid-list-md text-xs-center>
-                      <v-layout row wrap>
-                        <v-flex xs3>
-                          <v-select
-                            :items="listaTipospa"
-                            v-model="spa.tipospa"
-                            label="SPA consumida"
-                            outlined
-                            @input="$v.spa.tipospa.$touch()"
-                            @blur="$v.spa.tipospa.$touch()"
-                            :error-messages="errorspatipospa"
-                          ></v-select>
-                        </v-flex>
-                        <v-flex xs4>
-                          <v-text-field
-                            v-model.trim="spa.tiempoconsumo"
-                            label="Tiempo de consumo"
-                            color="#009900"
-                            outlined
-                            @input="$v.spa.tiempoconsumo.$touch()"
-                            @blur="$v.spa.tiempoconsumo.$touch()"
-                            :error-messages="errorspatiempoconsumo"
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex xs3>
-                          <v-select
-                            :items="listaFrecuenciaconsumo"
-                            v-model="spa.frecuencia"
-                            label="Frecuencia de consumo"
-                            outlined
-                            @input="$v.spa.frecuencia.$touch()"
-                            @blur="$v.spa.frecuencia.$touch()"
-                            :error-messages="errorspafrecuencia"
-                          ></v-select>
-                        </v-flex>
-                        <v-flex xs2>
-                          <v-btn class="mx-2" fab dark color="success" @click="agregarspa">
-                            <v-icon dark>mdi-plus</v-icon>
-                          </v-btn>
-                        </v-flex>
-                      </v-layout>
-                    </v-container>
-                    <v-list flat>
-                      <v-list-item
-                        v-for="(item, i) in fichaIngreso.contenido.adicciones.spa"
-                        :key="i"
-                        class="item-list"
-                      >
-                        <v-list-item-icon>
-                          <v-icon @click="eliminarspa(i)" left color="red">mdi-minus-circle</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                          <v-list-item-title>Tipo: {{ item.tipospa }} - Tiempo: {{ item.tiempoconsumo }} - Frecuencia: {{ item.frecuencia }}</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list>
-                  </v-card>
+                  <div v-if="fichaIngreso.contenido.adicciones.consumo">
+                    <v-row>
+                      <v-col>
+                        <v-menu
+                          v-model="menu2"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          transition="scale-transition"
+                          offset-y
+                          min-width="290px"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="fichaIngreso.contenido.adicciones.ultimodiaconsumo"
+                              label="Último dia de consumo"
+                              prepend-icon="mdi-calendar"
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                              outlined
+                              clearable
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="fichaIngreso.contenido.adicciones.ultimodiaconsumo"
+                            @input="menu2 = false"
+                          ></v-date-picker>
+                        </v-menu>
+                        <!-- :readonly="isDisabled"
+                                          @input="$v.familiar.edad.$touch()"
+                                          @blur="$v.familiar.edad.$touch()"
+                        :error-messages="errorEdadFamiliar"-->
+                      </v-col>
+                    </v-row>
+
+                    <v-card elevation="3" outlined>
+                      <v-card-title>Consumo de sustancias psicoadictivas - SPA (si consumiera)</v-card-title>
+                      <v-container grid-list-md text-xs-center>
+                        <v-layout row wrap>
+                          <v-flex xs3>
+                            <v-select
+                              :items="listaTipospa"
+                              v-model="spa.tipospa"
+                              label="SPA consumida"
+                              outlined
+                              @input="$v.spa.tipospa.$touch()"
+                              @blur="$v.spa.tipospa.$touch()"
+                              :error-messages="errorspatipospa"
+                            ></v-select>
+                          </v-flex>
+                          <v-flex xs4>
+                            <v-text-field
+                              v-model.trim="spa.tiempoconsumo"
+                              label="Tiempo de consumo"
+                              color="#009900"
+                              outlined
+                              @input="$v.spa.tiempoconsumo.$touch()"
+                              @blur="$v.spa.tiempoconsumo.$touch()"
+                              :error-messages="errorspatiempoconsumo"
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs3>
+                            <v-select
+                              :items="listaFrecuenciaconsumo"
+                              v-model="spa.frecuencia"
+                              label="Frecuencia de consumo"
+                              outlined
+                              @input="$v.spa.frecuencia.$touch()"
+                              @blur="$v.spa.frecuencia.$touch()"
+                              :error-messages="errorspafrecuencia"
+                            ></v-select>
+                          </v-flex>
+                          <v-flex xs2>
+                            <v-btn class="mx-2" fab dark color="success" @click="agregarspa">
+                              <v-icon dark>mdi-plus</v-icon>
+                            </v-btn>
+                          </v-flex>
+                        </v-layout>
+                      </v-container>
+                      <v-list flat>
+                        <v-list-item
+                          v-for="(item, i) in fichaIngreso.contenido.adicciones.spa"
+                          :key="i"
+                          class="item-list"
+                        >
+                          <v-list-item-icon>
+                            <v-icon @click="eliminarspa(i)" left color="red">mdi-minus-circle</v-icon>
+                          </v-list-item-icon>
+                          <v-list-item-content>
+                            <v-list-item-title>Tipo: {{ item.tipospa }} - Tiempo: {{ item.tiempoconsumo }} - Frecuencia: {{ item.frecuencia }}</v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-list>
+                    </v-card>
+                  </div>
                 </v-container>
               </v-card>
 
@@ -938,7 +951,7 @@
                                       @blur="$v.familiar.numerodocumento.$touch()"
                       :error-messages="errorNumeroDocumentoFamiliar"-->
                     </v-col>
-                    <v-col>
+                    <v-col v-if="fichaIngreso.contenido.desarrollosexual.menstruacion">
                       <v-menu
                         v-model="menu3"
                         :close-on-content-click="false"
@@ -986,7 +999,7 @@
                                           @blur="$v.familiar.numerodocumento.$touch()"
                           :error-messages="errorNumeroDocumentoFamiliar"-->
                         </v-col>
-                        <v-col>
+                        <v-col v-if="fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones">
                           <v-textarea
                             label="Edad inicio de relaciones"
                             v-model.number="fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio"
@@ -1001,67 +1014,69 @@
                         </v-col>
                       </v-row>
 
-                      <v-row>
-                        <v-col>
-                          <v-select
-                            :items="listaMotivorelaciones"
-                            v-model="fichaIngreso.contenido.desarrollosexual.relaciones.motivo"
-                            label="Motivo de las relaciones"
-                            outlined
-                            clearable
-                          ></v-select>
-                          <!-- :readonly="isDisabled"
-                                          @input="$v.familiar.numerodocumento.$touch()"
-                                          @blur="$v.familiar.numerodocumento.$touch()"
-                          :error-messages="errorNumeroDocumentoFamiliar"-->
-                        </v-col>
-                        <v-col>
-                          <v-select
-                            :items="listaParejasexual"
-                            v-model="fichaIngreso.contenido.desarrollosexual.relaciones.generopareja"
-                            label="Genero de la pareja"
-                            outlined
-                            clearable
-                          ></v-select>
-                          <!-- :readonly="isDisabled"
-                                            @input="$v.familiar.edad.$touch()"
-                                            @blur="$v.familiar.edad.$touch()"
-                          :error-messages="errorEdadFamiliar"-->
-                        </v-col>
-                      </v-row>
+                      <div v-if="fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones">
+                        <v-row>
+                          <v-col>
+                            <v-select
+                              :items="listaMotivorelaciones"
+                              v-model="fichaIngreso.contenido.desarrollosexual.relaciones.motivo"
+                              label="Motivo de las relaciones"
+                              outlined
+                              clearable
+                            ></v-select>
+                            <!-- :readonly="isDisabled"
+                                            @input="$v.familiar.numerodocumento.$touch()"
+                                            @blur="$v.familiar.numerodocumento.$touch()"
+                            :error-messages="errorNumeroDocumentoFamiliar"-->
+                          </v-col>
+                          <v-col>
+                            <v-select
+                              :items="listaParejasexual"
+                              v-model="fichaIngreso.contenido.desarrollosexual.relaciones.generopareja"
+                              label="Genero de la pareja"
+                              outlined
+                              clearable
+                            ></v-select>
+                            <!-- :readonly="isDisabled"
+                                              @input="$v.familiar.edad.$touch()"
+                                              @blur="$v.familiar.edad.$touch()"
+                            :error-messages="errorEdadFamiliar"-->
+                          </v-col>
+                        </v-row>
 
-                      <v-row>
-                        <v-col>
-                          <v-switch
-                            v-model="fichaIngreso.contenido.desarrollosexual.relaciones.relacionconsentida"
-                            :label="`¿Fue relacion consentida? Respuesta:${ fichaIngreso.contenido.desarrollosexual.relaciones.relacionconsentida ? 'SI' : 'NO'}`"
-                          ></v-switch>
-                          <!-- :readonly="isDisabled"
-                                          @input="$v.familiar.numerodocumento.$touch()"
-                                          @blur="$v.familiar.numerodocumento.$touch()"
-                          :error-messages="errorNumeroDocumentoFamiliar"-->
-                        </v-col>
-                        <v-col>
-                          <v-switch
-                            v-model="fichaIngreso.contenido.desarrollosexual.relaciones.its"
-                            :label="`¿Tiene ITS? Respuesta:${ fichaIngreso.contenido.desarrollosexual.relaciones.its ? 'SI' : 'NO'}`"
-                          ></v-switch>
-                          <!-- :readonly="isDisabled"
-                                            @input="$v.familiar.edad.$touch()"
-                                            @blur="$v.familiar.edad.$touch()"
-                          :error-messages="errorEdadFamiliar"-->
-                        </v-col>
-                        <v-col>
-                          <v-switch
-                            v-model="fichaIngreso.contenido.desarrollosexual.relaciones.tratamientoits"
-                            :label="`¿Tuvo tratamiento de la ITS? Respuesta:${ fichaIngreso.contenido.desarrollosexual.relaciones.tratamientoits ? 'SI' : 'NO'}`"
-                          ></v-switch>
-                          <!-- :readonly="isDisabled"
-                                            @input="$v.familiar.edad.$touch()"
-                                            @blur="$v.familiar.edad.$touch()"
-                          :error-messages="errorEdadFamiliar"-->
-                        </v-col>
-                      </v-row>
+                        <v-row>
+                          <v-col>
+                            <v-switch
+                              v-model="fichaIngreso.contenido.desarrollosexual.relaciones.relacionconsentida"
+                              :label="`¿Fue relacion consentida? Respuesta:${ fichaIngreso.contenido.desarrollosexual.relaciones.relacionconsentida ? 'SI' : 'NO'}`"
+                            ></v-switch>
+                            <!-- :readonly="isDisabled"
+                                            @input="$v.familiar.numerodocumento.$touch()"
+                                            @blur="$v.familiar.numerodocumento.$touch()"
+                            :error-messages="errorNumeroDocumentoFamiliar"-->
+                          </v-col>
+                          <v-col>
+                            <v-switch
+                              v-model="fichaIngreso.contenido.desarrollosexual.relaciones.its"
+                              :label="`¿Tiene ITS? Respuesta:${ fichaIngreso.contenido.desarrollosexual.relaciones.its ? 'SI' : 'NO'}`"
+                            ></v-switch>
+                            <!-- :readonly="isDisabled"
+                                              @input="$v.familiar.edad.$touch()"
+                                              @blur="$v.familiar.edad.$touch()"
+                            :error-messages="errorEdadFamiliar"-->
+                          </v-col>
+                          <v-col>
+                            <v-switch
+                              v-model="fichaIngreso.contenido.desarrollosexual.relaciones.tratamientoits"
+                              :label="`¿Tuvo tratamiento de la ITS? Respuesta:${ fichaIngreso.contenido.desarrollosexual.relaciones.tratamientoits ? 'SI' : 'NO'}`"
+                            ></v-switch>
+                            <!-- :readonly="isDisabled"
+                                              @input="$v.familiar.edad.$touch()"
+                                              @blur="$v.familiar.edad.$touch()"
+                            :error-messages="errorEdadFamiliar"-->
+                          </v-col>
+                        </v-row>
+                      </div>
                     </v-container>
                   </v-card>
                 </v-container>
@@ -1081,7 +1096,7 @@
                                       @blur="$v.familiar.numerodocumento.$touch()"
                       :error-messages="errorNumeroDocumentoFamiliar"-->
                     </v-col>
-                    <v-col>
+                    <v-col v-if="fichaIngreso.contenido.explotacionsexual.victimaexplotacion">
                       <v-textarea
                         label="Edad inicio de explotación"
                         v-model.number="fichaIngreso.contenido.explotacionsexual.edadinicio"
@@ -1094,6 +1109,9 @@
                         :error-messages="errorEdadexpsexual"
                       ></v-textarea>
                     </v-col>
+                  </v-row>
+
+                  <v-row>
                     <v-col>
                       <v-switch
                         v-model="fichaIngreso.contenido.explotacionsexual.victimatrata"
@@ -1106,7 +1124,7 @@
                     </v-col>
                   </v-row>
 
-                  <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA">
+                  <v-card style="padding:5px;margin:40px 0 18px 0;background-color:#EAEAEA" v-if="fichaIngreso.contenido.explotacionsexual.victimatrata">
                     <v-card-title>
                       <v-row>
                         <v-col :cols="8">Trata sexual</v-col>
@@ -1668,6 +1686,7 @@ export default {
           },
           maltrato: [],
           abusosexual: {
+            ES_abusosexual: false,
             edad: 0,
             veces: 0,
             atencionpsicologica: false
@@ -1841,6 +1860,13 @@ export default {
   },
   methods: {
     ...mapMutations(["addFichaIngreso"]),
+    onES_abusosexual () {
+      if (!this.fichaIngreso.contenido.abusosexual.ES_abusosexual) {
+          this.fichaIngreso.contenido.abusosexual.edad = 0;
+          this.fichaIngreso.contenido.abusosexual.veces = 0;
+          this.fichaIngreso.contenido.abusosexual.atencionpsicologica = false;
+      }
+    },
     limpiarFichaIngreso() {
       this.fichaIngreso = {
         id: "",
@@ -1962,15 +1988,15 @@ export default {
             this.addFichaIngreso(res.data);
             this.cargaRegistro = false;
             this.cerrarDialogo();
+
+            this.mensaje(
+              "success",
+              "Listo",
+              "Ficha de ingreso psicológica registrado Satisfactoriamente",
+              "<strong>Se redirigira a la Interfaz de Gestión<strong>"
+            );
           })
           .catch(err => console.log(err));
-
-        this.mensaje(
-          "success",
-          "Listo",
-          "Ficha de ingreso psicológica registrado Satisfactoriamente",
-          "<strong>Se redirigira a la Interfaz de Gestión<strong>"
-        );
       }
     },
     //Metodos modal padres
@@ -2620,6 +2646,21 @@ export default {
 
       return errors;
     },
+    errorabusosexualedad() {
+      const errors = [];
+
+      if(this.fichaIngreso.contenido.abusosexual.ES_abusosexual) {
+
+        if (!this.$v.fichaIngreso.contenido.abusosexual.edad.$dirty)
+        return errors;
+
+        !this.$v.fichaIngreso.contenido.abusosexual.edad.required &&
+          errors.push("Debe ingresar la edad del abuso sexual");
+        
+      }
+
+      return errors;
+    },
     erroredadgradoescolaredad() {
       const errors = [];
 
@@ -2957,6 +2998,11 @@ export default {
             required
           },
           educacionespecial: {
+            required
+          }
+        },
+        abusosexual: {
+          edad: {
             required
           }
         },
