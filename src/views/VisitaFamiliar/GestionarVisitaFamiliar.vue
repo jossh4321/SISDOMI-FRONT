@@ -1,16 +1,16 @@
 <template>
   <div>
     <v-card class="card">
-      <v-card-title> Gestionar Entrevistas Familiares </v-card-title>
+      <v-card-title> Gestionar Visitas Familiares </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="entrevistasFamiliares"
+        :items="visitaFamiliar"
         :search="search"
         class="elevation-1"
       >
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>Lista de Entrevistas Familiares</v-toolbar-title>
+            <v-toolbar-title>Lista de Visitas Familiares</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
             <v-text-field
@@ -32,7 +32,7 @@
                   v-on="on"
                 >
                   <v-icon left>mdi-account-multiple-plus-outline</v-icon>
-                  <span>Registrar nueva Entrevista</span>
+                  <span>Registrar nueva Visita</span>
                 </v-btn>
               </template>
               <RegistrarEntrevistasFamiliares
@@ -64,7 +64,7 @@
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
         <ModificarEntrevistasFamiliares
           v-if="dialogoactualizacion"
-          :documentoEntrevistaFamiliar="objEntrevistaFamiliar" 
+          documentoEntrevistaFamiliar="objEntrevistaFamiliar.contenido" 
           :dialogoactualizacion="dialogoactualizacion"  
           @close-dialog-update="closeDialogModificar()"
         >
@@ -99,18 +99,18 @@ export default {
   data() {
     return {
       search: "",
-      objEntrevistaFamiliar: {},
+     
 
       headers: [
         {
-          text: "Nombre Completo del Residente ",
+          text: "Nombre Documento",
           align: "start",
           sortable: false,
-          value: "contenido.datosresidente.nombrecompleto",
+          value: "codigodocumento",
         },
-        { text: "N°documento del Residente", value: "contenido.datosresidente.numerodocumento" },
-        { text: "Nombre Completo del apoderado", value: "contenido.nombrecompleto" }, 
-        { text: "Fecha de Entrevista", value: "contenido.fechaEntrevista" },
+        { text: "Nombre del residente", value: "nombrecompleto" },
+        { text: "Fecha de creacion", value: "fechacreacion" },
+        { text: "Estado", value: "estado" },
         { text: "Actions", value: "actions", sortable: false },
       ],
       dialogoregistro: false,
@@ -127,10 +127,10 @@ export default {
     };
   },
   async created() {
-    this.obtenerEntrevistas();    
+    this.obtenerVisitas();    
   },
   methods: {
-    ...mapMutations(["setEntrevistasFamiliares"]),
+    ...mapMutations(["setVisitaFamiliar"]),
     editItem(item) {
       console.log(item);     
     },
@@ -177,32 +177,29 @@ export default {
       return user;
     },    
     ///////////////////Consumo de  apis
-    async obtenerEntrevistas() {
-      await axios
-        .get("/Documento/entrevistafamiliar/all")
+    async obtenerVisitas() {
+   await axios
+        .get("/VisitaFamiliar/all")
         .then((res) => {
           var info = {};
           info = res.data;
-          for (var x=0;x<res.data.length;x++){
-              info[x].contenido.fechaEntrevista = res.data[x].contenido.fechaEntrevista.split("T")[0];
-              var nombreCompletoResidente = info[x].contenido.datosresidente.nombre + " " + info[x].contenido.datosresidente.apellido
-              const ResidenteCompleto = { nombrecompleto: nombreCompletoResidente};
-              info[x].contenido.datosresidente = Object.assign(info[x].contenido.datosresidente, ResidenteCompleto);
-              var nombreCompletoApoderado = info[x].contenido.nombreApoderado + " " + info[x].contenido.apellidoApoderado;
-              const ApoderadoCompleto = { nombrecompleto: nombreCompletoApoderado};
-              info[x].contenido = Object.assign(info[x].contenido, ApoderadoCompleto);
+          console.log(res.data);
+          for (var x = 0; x < res.data.length; x++) {
+            info[x].fechacreacion = res.data[x].fechacreacion.split("T")[0];
           }
-          
-          this.setEntrevistasFamiliares(info);
-          console.log(info);
+
+          this.setVisitaFamiliar(info);
         })
         .catch((err) => console.log(err));
-    },    
+    
   },
-  computed: {
-    ...mapState(["entrevistasFamiliares"]),
   },
-};
+
+  computed:{
+   ...mapState(["visitaFamiliar"]),
+  },
+  
+}
 </script>
 <style scoped>
 .card {

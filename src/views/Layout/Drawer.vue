@@ -252,6 +252,13 @@ export default {
           icon: "dashboard",
           name: "GestionarEntrevistasFamiliares",
           href: "/dashboard/gestionarentrevistasfamiliares"
+        },
+        {
+          title: "Gestión de Visitas Familiares",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarVisitaFamiliar",
+          href: "/dashboard/gestionarVisitaFamiliar"
         }
       ],
       scrollSettings: {

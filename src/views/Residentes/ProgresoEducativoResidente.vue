@@ -331,11 +331,12 @@ export default {
         this.pdf = "";
         var nombreDocumento = documento.substring(10);
         var stringFase = fase.toString();
+        console.log(stringFase);
         await axios
         .get("/documento/"+nombreDocumento+"/residente/"+this.residente.id)
         .then((x) => {
           for(var i = 0; i < x.data.length; i++){
-            if(stringFase = x.data[i].fase){
+            if(stringFase == x.data[i].fase){
               this.pdf = x.data[i].historialcontenido[x.data[i].historialcontenido.length - 1].url;
             }
           }
