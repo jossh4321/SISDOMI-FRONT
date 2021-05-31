@@ -616,6 +616,9 @@
                           color="#009900"
                           rows="1"
                           auto-grow
+                          @input="$v.fichaIngreso.contenido.abusosexual.veces.$touch()"
+                          @blur="$v.fichaIngreso.contenido.abusosexual.veces.$touch()"
+                          :error-messages="errorabusosexualveces"
                         ></v-textarea>
                         <!-- :readonly="isDisabled"
                                         @input="$v.familiar.gradoinstruccion.$touch()"
@@ -710,6 +713,7 @@
                 <v-container grid-list-md text-xs-center>
                   <v-switch
                         v-model="fichaIngreso.contenido.adicciones.consumo"
+                        @change="onES_adiccionesconsumo"
                         :label="`¿Ha consumido spa alguna vez? Respuesta:${ fichaIngreso.contenido.adicciones.consumo ? 'SI' : 'NO'}`"
                       ></v-switch>
                       <!-- :readonly="isDisabled"
@@ -738,6 +742,9 @@
                               v-on="on"
                               outlined
                               clearable
+                              @input="$v.fichaIngreso.contenido.adicciones.ultimodiaconsumo.$touch()"
+                              @blur="$v.fichaIngreso.contenido.adicciones.ultimodiaconsumo.$touch()"
+                              :error-messages="erroradiccionUC"
                             ></v-text-field>
                           </template>
                           <v-date-picker
@@ -944,6 +951,7 @@
                     <v-col>
                       <v-switch
                         v-model="fichaIngreso.contenido.desarrollosexual.menstruacion"
+                        @change="onES_desasexM"
                         :label="`¿Tiene menstruación? Respuesta: ${ fichaIngreso.contenido.desarrollosexual.menstruacion ? 'SI' : 'NO'}`"
                       ></v-switch>
                       <!-- :readonly="isDisabled"
@@ -970,6 +978,9 @@
                             v-on="on"
                             outlined
                             clearable
+                            @input="$v.fichaIngreso.contenido.desarrollosexual.menarquia.$touch()"
+                            @blur="$v.fichaIngreso.contenido.desarrollosexual.menarquia.$touch()"
+                            :error-messages="errordesasexM"
                           ></v-text-field>
                         </template>
                         <v-date-picker
@@ -992,12 +1003,9 @@
                         <v-col>
                           <v-switch
                             v-model="fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones"
+                            @change="onES_desasexRI"
                             :label="`¿Tuvo relaciones sexuales? Respuesta:${ fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones ? 'SI' : 'NO'}`"
                           ></v-switch>
-                          <!-- :readonly="isDisabled"
-                                          @input="$v.familiar.numerodocumento.$touch()"
-                                          @blur="$v.familiar.numerodocumento.$touch()"
-                          :error-messages="errorNumeroDocumentoFamiliar"-->
                         </v-col>
                         <v-col v-if="fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones">
                           <v-textarea
@@ -1023,11 +1031,10 @@
                               label="Motivo de las relaciones"
                               outlined
                               clearable
+                              @input="$v.fichaIngreso.contenido.desarrollosexual.relaciones.motivo.$touch()"
+                              @blur="$v.fichaIngreso.contenido.desarrollosexual.relaciones.motivo.$touch()"
+                              :error-messages="errorMotivoRela"
                             ></v-select>
-                            <!-- :readonly="isDisabled"
-                                            @input="$v.familiar.numerodocumento.$touch()"
-                                            @blur="$v.familiar.numerodocumento.$touch()"
-                            :error-messages="errorNumeroDocumentoFamiliar"-->
                           </v-col>
                           <v-col>
                             <v-select
@@ -1036,11 +1043,10 @@
                               label="Genero de la pareja"
                               outlined
                               clearable
+                              @input="$v.fichaIngreso.contenido.desarrollosexual.relaciones.generopareja.$touch()"
+                              @blur="$v.fichaIngreso.contenido.desarrollosexual.relaciones.generopareja.$touch()"
+                              :error-messages="errorGeneroParejaRela"
                             ></v-select>
-                            <!-- :readonly="isDisabled"
-                                              @input="$v.familiar.edad.$touch()"
-                                              @blur="$v.familiar.edad.$touch()"
-                            :error-messages="errorEdadFamiliar"-->
                           </v-col>
                         </v-row>
 
@@ -1585,12 +1591,20 @@ import moment from "moment";
 
 import { mapGetters } from "vuex";
 
+function fechavalidaAdicUC(value) {
+  return ( new Date(value) <= new Date() );
+}
+
 function edadvalidaO(value) {
   return (value == 0 || value > 0);
 }
 
 function edadvalida(value) {
   return (value > 3 & value < 21);
+}
+
+function edadvalidaAbuso(value) {
+  return (value > 0 & value < 26);
 }
 
 function edadvalidapadre(value) {
@@ -1687,23 +1701,23 @@ export default {
           maltrato: [],
           abusosexual: {
             ES_abusosexual: false,
-            edad: 0,
-            veces: 0,
+            edad: 1,
+            veces: 1,
             atencionpsicologica: false
           },
           adicciones: {
             consumo: false,
-            ultimodiaconsumo: "",
+            ultimodiaconsumo: new Date().toISOString().substr(0, 10),
             spa: []
           },
           conductasriesgo: [],
           conductasemocionales: [],
           desarrollosexual: {
             menstruacion: false,
-            menarquia: "",
+            menarquia: new Date().toISOString().substr(0, 10),
             relaciones: {
               iniciorelaciones: false,
-              edadinicio: 0,
+              edadinicio: 1,
               motivo: "",
               generopareja: "",
               relacionconsentida: false,
@@ -1862,9 +1876,29 @@ export default {
     ...mapMutations(["addFichaIngreso"]),
     onES_abusosexual () {
       if (!this.fichaIngreso.contenido.abusosexual.ES_abusosexual) {
-          this.fichaIngreso.contenido.abusosexual.edad = 0;
-          this.fichaIngreso.contenido.abusosexual.veces = 0;
+          this.fichaIngreso.contenido.abusosexual.edad = 1;
+          this.fichaIngreso.contenido.abusosexual.veces = 1;
           this.fichaIngreso.contenido.abusosexual.atencionpsicologica = false;
+      }
+    },
+    onES_adiccionesconsumo () { 
+      if (!this.fichaIngreso.contenido.adicciones.consumo) {
+        this.fichaIngreso.contenido.adicciones.ultimodiaconsumo = new Date().toISOString().substr(0, 10);
+      }
+    },
+    onES_desasexM () {
+      if (!this.fichaIngreso.contenido.desarrollosexual.menstruacion) {
+          this.fichaIngreso.contenido.desarrollosexual.menarquia = new Date().toISOString().substr(0, 10);
+      }
+    },
+    onES_desasexRI () {
+      if (!this.fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones) {
+          this.fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio = 1;
+          this.fichaIngreso.contenido.desarrollosexual.relaciones.motivo = "";
+          this.fichaIngreso.contenido.desarrollosexual.relaciones.generopareja = "";
+          this.fichaIngreso.contenido.desarrollosexual.relaciones.relacionconsentida = false;
+          this.fichaIngreso.contenido.desarrollosexual.relaciones.its = false;
+          this.fichaIngreso.contenido.desarrollosexual.relaciones.tratamientoits = false;
       }
     },
     limpiarFichaIngreso() {
@@ -1894,8 +1928,8 @@ export default {
           },
           maltrato: [],
           abusosexual: {
-            edad: 0,
-            veces: 0,
+            edad: 1,
+            veces: 1,
             atencionpsicologica: false
           },
           adicciones: {
@@ -1910,7 +1944,7 @@ export default {
             menarquia: "",
             relaciones: {
               iniciorelaciones: false,
-              edadinicio: 0,
+              edadinicio: 1,
               motivo: "",
               generopareja: "",
               relacionconsentida: false,
@@ -1977,11 +2011,12 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        this.cargaRegistro = true;
+        //this.cargaRegistro = true;  //descomentar al estar al 100% controlando todo
         this.fichaIngreso.creadordocumento = this.user.id;
 
         let fichaI = this.fichaIngreso;
         console.log(fichaI);
+        /* //descomentar al estar al 100% controlando todo
         await axios
           .post("/Documento/fichaingresopsicologicacrear", fichaI)
           .then(res => {
@@ -1996,7 +2031,7 @@ export default {
               "<strong>Se redirigira a la Interfaz de Gestión<strong>"
             );
           })
-          .catch(err => console.log(err));
+          .catch(err => console.log(err));*/
       }
     },
     //Metodos modal padres
@@ -2656,7 +2691,58 @@ export default {
 
         !this.$v.fichaIngreso.contenido.abusosexual.edad.required &&
           errors.push("Debe ingresar la edad del abuso sexual");
+
+        !this.$v.fichaIngreso.contenido.abusosexual.edad.numeric && errors.push("Campo debe ser numérico");
+
+        !this.$v.fichaIngreso.contenido.abusosexual.edad.edadvalidaAbuso &&
+          errors.push("La edad debe estar entre 1 y 25");
         
+      }
+
+      return errors;
+    },
+    errorabusosexualveces() {
+      const errors = [];
+
+      if(this.fichaIngreso.contenido.abusosexual.ES_abusosexual) {
+
+        if (!this.$v.fichaIngreso.contenido.abusosexual.veces.$dirty)
+        return errors;
+
+        !this.$v.fichaIngreso.contenido.abusosexual.veces.required &&
+          errors.push("Debe ingresar las veces aprox. que ocurrio el abuso sexual");
+
+        !this.$v.fichaIngreso.contenido.abusosexual.veces.numeric && errors.push("Campo debe ser numérico");
+
+        !this.$v.fichaIngreso.contenido.abusosexual.veces.edadvalidanormal &&
+          errors.push("La edad debe estar entre 1 y 100");
+        
+      }
+
+      return errors;
+    },
+    erroradiccionUC() {
+      const errors = [];
+
+      if(this.fichaIngreso.contenido.adicciones.consumo) {
+        if (!this.$v.fichaIngreso.contenido.adicciones.ultimodiaconsumo.$dirty) return errors;
+
+        !this.$v.fichaIngreso.contenido.adicciones.ultimodiaconsumo.required && errors.push("Debe Ingresar la fecha obligatoriamente");
+
+        !this.$v.fichaIngreso.contenido.adicciones.ultimodiaconsumo.fechavalidaAdicUC && errors.push("La fecha de último día de consumo debe ser antes o el día de hoy");
+      }
+
+      return errors;
+    },
+    errordesasexM() {
+      const errors = [];
+
+      if(this.fichaIngreso.contenido.desarrollosexual.menstruacion) {
+        if (!this.$v.fichaIngreso.contenido.desarrollosexual.menarquia.$dirty) return errors;
+
+        !this.$v.fichaIngreso.contenido.desarrollosexual.menarquia.required && errors.push("Debe Ingresar la fecha obligatoriamente");
+
+        !this.$v.fichaIngreso.contenido.desarrollosexual.menarquia.fechavalidaAdicUC && errors.push("La fecha de menarquía debe ser antes o el día de hoy");
       }
 
       return errors;
@@ -2876,9 +2962,37 @@ export default {
     errorEdadObservacion() {
       const errors = [];
 
-      if (!this.$v.fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio.$dirty) return errors;
+      if(this.fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones) {
+        if (!this.$v.fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio.$dirty) return errors;
 
-      !this.$v.fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio.edadvalidaO && errors.push("La edad debe positiva");
+        !this.$v.fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio.required && errors.push("Debe ingresar la edad obligatoriamente");
+
+        !this.$v.fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio.numeric && errors.push("La edad debe ser numérica");
+
+        !this.$v.fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio.edadvalidanormal && errors.push("La edad debe ser entre 0 a 100 años");
+      }
+
+      return errors;
+    },
+    errorMotivoRela() {
+      const errors = [];
+
+      if(this.fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones) {
+        if (!this.$v.fichaIngreso.contenido.desarrollosexual.relaciones.motivo.$dirty) return errors;
+
+        !this.$v.fichaIngreso.contenido.desarrollosexual.relaciones.motivo.required && errors.push("Debe ingresar el motivo obligatoriamente");
+      }
+
+      return errors;
+    },
+    errorGeneroParejaRela() {
+      const errors = [];
+
+      if(this.fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones) {
+        if (!this.$v.fichaIngreso.contenido.desarrollosexual.relaciones.generopareja.$dirty) return errors;
+
+        !this.$v.fichaIngreso.contenido.desarrollosexual.relaciones.generopareja.required && errors.push("Debe ingresar el género de la pareja obligatoriamente");
+      }
 
       return errors;
     },
@@ -3003,7 +3117,20 @@ export default {
         },
         abusosexual: {
           edad: {
-            required
+            required,
+            numeric,
+            edadvalidaAbuso
+          },
+          veces: {
+            required,
+            numeric,
+            edadvalidanormal
+          }
+        },
+        adicciones: {
+          ultimodiaconsumo: {
+            required,
+            fechavalidaAdicUC
           }
         },
         discapacidad: {
@@ -3025,8 +3152,20 @@ export default {
         desarrollosexual: {
           relaciones: {
             edadinicio: {
-              edadvalidaO
+              required,
+              numeric,
+              edadvalidanormal
+            },
+            motivo: {
+              required,
+            },
+            generopareja: {
+              required,
             }
+          },
+          menarquia: {
+            required,
+            fechavalidaAdicUC
           }
         }
       }
