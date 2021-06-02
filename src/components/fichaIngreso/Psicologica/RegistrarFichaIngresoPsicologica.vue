@@ -1095,12 +1095,9 @@
                     <v-col>
                       <v-switch
                         v-model="fichaIngreso.contenido.explotacionsexual.victimaexplotacion"
+                        @change="onES_expvic"
                         :label="`¿Fue víctima de explotación? Respuesta:${ fichaIngreso.contenido.explotacionsexual.victimaexplotacion ? 'SI' : 'NO'}`"
                       ></v-switch>
-                      <!-- :readonly="isDisabled"
-                                      @input="$v.familiar.numerodocumento.$touch()"
-                                      @blur="$v.familiar.numerodocumento.$touch()"
-                      :error-messages="errorNumeroDocumentoFamiliar"-->
                     </v-col>
                     <v-col v-if="fichaIngreso.contenido.explotacionsexual.victimaexplotacion">
                       <v-textarea
@@ -1121,12 +1118,9 @@
                     <v-col>
                       <v-switch
                         v-model="fichaIngreso.contenido.explotacionsexual.victimatrata"
+                        @change="onES_expvicT"
                         :label="`¿Fue víctima de trata? Respuesta:${ fichaIngreso.contenido.explotacionsexual.victimatrata ? 'SI' : 'NO'}`"
                       ></v-switch>
-                      <!-- :readonly="isDisabled"
-                                        @input="$v.familiar.edad.$touch()"
-                                        @blur="$v.familiar.edad.$touch()"
-                      :error-messages="errorEdadFamiliar"-->
                     </v-col>
                   </v-row>
 
@@ -1354,12 +1348,9 @@
                       </div>
                     </v-card-text>
                   </v-card>
-                  <!-- <div>
-                    <h4
-                      v-if="$v.fichaIngreso.contenido.padres.$error"
-                      class="red--text"
-                    >Debe registrar como mínimo un padre y como máximo 2 padres</h4>
-                  </div>-->
+                  <div v-if="$v.fichaIngreso.contenido.explotacionsexual.tratasexual.$error">
+                    <h4 class="red--text">Debe registrar como mínimo un registro</h4>
+                  </div>
                 </v-container>
               </v-card>
 
@@ -1615,6 +1606,13 @@ function edadvalidanormal(value) {
   return (value > 0 & value < 101);
 }
 
+function validTrata(value) {
+  if(this.fichaIngreso.contenido.explotacionsexual.victimatrata) {
+    return value.length > 0;
+  }
+  return true;
+}
+
 export default {
   props: ["listaresidentes", "listaeducadores"],
   components: {
@@ -1718,8 +1716,8 @@ export default {
             relaciones: {
               iniciorelaciones: false,
               edadinicio: 1,
-              motivo: "",
-              generopareja: "",
+              motivo: "Propia voluntad",
+              generopareja: "Mujer",
               relacionconsentida: false,
               its: false,
               tratamientoits: false
@@ -1727,7 +1725,7 @@ export default {
           },
           explotacionsexual: {
             victimaexplotacion: false,
-            edadinicio: 0,
+            edadinicio: 1,
             victimatrata: false,
             tratasexual: []
           },
@@ -1894,11 +1892,21 @@ export default {
     onES_desasexRI () {
       if (!this.fichaIngreso.contenido.desarrollosexual.relaciones.iniciorelaciones) {
           this.fichaIngreso.contenido.desarrollosexual.relaciones.edadinicio = 1;
-          this.fichaIngreso.contenido.desarrollosexual.relaciones.motivo = "";
-          this.fichaIngreso.contenido.desarrollosexual.relaciones.generopareja = "";
+          this.fichaIngreso.contenido.desarrollosexual.relaciones.motivo = "Propia voluntad";
+          this.fichaIngreso.contenido.desarrollosexual.relaciones.generopareja = "Mujer";
           this.fichaIngreso.contenido.desarrollosexual.relaciones.relacionconsentida = false;
           this.fichaIngreso.contenido.desarrollosexual.relaciones.its = false;
           this.fichaIngreso.contenido.desarrollosexual.relaciones.tratamientoits = false;
+      }
+    },
+    onES_expvic () {
+      if (!this.fichaIngreso.contenido.explotacionsexual.victimaexplotacion) {
+          this.fichaIngreso.contenido.explotacionsexual.edadinicio = 1;
+      }
+    },
+    onES_expvicT () {
+      if (!this.fichaIngreso.contenido.explotacionsexual.victimatrata) {
+          this.fichaIngreso.contenido.explotacionsexual.tratasexual = [];
       }
     },
     limpiarFichaIngreso() {
@@ -1928,6 +1936,7 @@ export default {
           },
           maltrato: [],
           abusosexual: {
+            ES_abusosexual: false,
             edad: 1,
             veces: 1,
             atencionpsicologica: false
@@ -2002,6 +2011,10 @@ export default {
     async registrarFichaPsicologicaIngreso() {
       
       this.$v.fichaIngreso.$touch();
+
+      //quitando los validadores de la lista (opcional e innecesario)
+      //this.$v.enfermedad.$reset();
+      //fin val
       
       if (this.$v.fichaIngreso.$invalid) {
         this.mensaje(
@@ -2011,12 +2024,11 @@ export default {
           "<strong>Verifique los campos Ingresados<strong>"
         );
       } else {
-        //this.cargaRegistro = true;  //descomentar al estar al 100% controlando todo
+        this.cargaRegistro = true;
         this.fichaIngreso.creadordocumento = this.user.id;
 
         let fichaI = this.fichaIngreso;
-        console.log(fichaI);
-        /* //descomentar al estar al 100% controlando todo
+        
         await axios
           .post("/Documento/fichaingresopsicologicacrear", fichaI)
           .then(res => {
@@ -2031,7 +2043,7 @@ export default {
               "<strong>Se redirigira a la Interfaz de Gestión<strong>"
             );
           })
-          .catch(err => console.log(err));*/
+          .catch(err => console.log(err));
       }
     },
     //Metodos modal padres
@@ -2999,9 +3011,15 @@ export default {
     errorEdadexpsexual() {
       const errors = [];
 
-      if (!this.$v.fichaIngreso.contenido.explotacionsexual.edadinicio.$dirty) return errors;
+      if(this.fichaIngreso.contenido.explotacionsexual.victimaexplotacion) {
+        if (!this.$v.fichaIngreso.contenido.explotacionsexual.edadinicio.$dirty) return errors;
 
-      !this.$v.fichaIngreso.contenido.explotacionsexual.edadinicio.edadvalidaO && errors.push("La edad debe positiva");
+        !this.$v.fichaIngreso.contenido.explotacionsexual.edadinicio.required && errors.push("Debe ingresar la edad obligatoriamente");
+
+        !this.$v.fichaIngreso.contenido.explotacionsexual.edadinicio.numeric && errors.push("La edad debe ser numérica");
+
+        !this.$v.fichaIngreso.contenido.explotacionsexual.edadinicio.edadvalidanormal && errors.push("La edad debe ser entre 0 a 100 años");
+      }
 
       return errors;
     },
@@ -3146,7 +3164,12 @@ export default {
         },
         explotacionsexual: {
           edadinicio: {
-            edadvalidaO
+            required,
+            numeric,
+            edadvalidanormal
+          },
+          tratasexual: {
+            validTrata
           }
         },
         desarrollosexual: {
