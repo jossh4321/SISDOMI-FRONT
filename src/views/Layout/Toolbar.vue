@@ -22,18 +22,21 @@
       :nudge-right="140"
       :nudge-bottom="14"
       transition="scale-transition"
+      max-width="380px"
     >
       <template v-slot:activator="{ on }">
         <v-btn icon v-on="on">
-          <v-badge color="red" overlap>
-            <template v-slot:badge>
-              <span class="d-block span-alert">3</span>
-            </template>
-            <v-icon medium>notifications</v-icon>
-          </v-badge>
+          <div v-if="datosNotificacion!=null">
+            <v-badge color="red" overlap>
+              <template v-slot:badge>
+                <span v-if="datosNotificacion!=null" class="d-block span-alert">{{datosNotificacion.contadorNotificaciones}}</span>
+              </template>
+              <v-icon medium>notifications</v-icon>
+            </v-badge>
+          </div>
         </v-btn>
       </template>
-      <notification-list></notification-list>
+      <NotificationList v-if="datosNotificacion!=null" :datosNotificacion="datosNotificacion"></NotificationList>
     </v-menu>
     <v-menu
       offset-y
@@ -45,7 +48,7 @@
       <template v-slot:activator="{ on }">
         <v-btn icon large text v-on="on">
           <v-avatar size="30">
-            <img src="../../assets/static/man_4.jpg" alt="Josue Colombo" />
+            <img :src="User.imagen" :alt="User.nombre"  />
           </v-avatar>
         </v-btn>
       </template>
@@ -74,20 +77,26 @@
 </template>
 
 <script>
+import axios from "axios";
 import Util from "../../util/index";
 import NotificationList from "@/views/Notifications/NotificationList.vue";
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: "app-toolbar",
   data: function() {
     return {
+      datosNotificacion:null,
       items: [
         {
           icon: "account_circle",
           href: "#",
           title: "Perfil",
           click: (e) => {
-            console.log(e);
+           //
+           this.$router.push('/dashboard/ModificarPerfil')
+            
+           
           },
         },
         {
@@ -115,12 +124,41 @@ export default {
       Util.toggleFullScreen();
     },
     handleLogout() {
-      this.$router.push('/login');
+      this.logOut();
+    },
+    async obtenerNotificaciones() {
+      await axios
+        .get(`/Notificacion/${this.user.id}`)
+        .then((res) => {
+          for (let i = 0; i < res.data.listaNotificaciones.length; i++) {
+            res.data.listaNotificaciones[i].fechaemision = res.data.listaNotificaciones[i].fechaemision.split("T")[0];
+            
+          }
+          var info = res.data
+          
+          this.datosNotificacion = info
+        })
+        .catch((err) => console.log(err));
+    },
+    ...mapActions(['logOut'])
+  },
+  computed: {
+    ...mapGetters(['user']),
+    User() {
+      return this.user ? this.user.datos: { 
+         imagen: "",
+         nombre: ""
+       };
     }
   },
   components: {
     NotificationList,
   },
+  async created(){
+    console.log(this.user.id);
+    await this.obtenerNotificaciones();
+    console.log(this.datosNotificacion);
+  }
 };
 </script>
 

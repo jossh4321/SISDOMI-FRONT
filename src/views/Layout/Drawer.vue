@@ -117,14 +117,14 @@ export default {
           group: "apps",
           icon: "dashboard",
           name: "Dashboard",
-          href: "/dashboard",
+          href: "/dashboard/Dashboard",
         },
         {
-          title: "Widgets",
-          group: "widgets",
-          component: "widgets",
-          icon: "tune",
-          items: [{ name: "social", title: "Social", href: "/widgets/social" }],
+          title: "Home",
+          group: "apps",
+          icon: "home",
+          name: "Home",
+          href: "/dashboard/home",
         },
         { header: "UI Elements" },
         {
@@ -135,6 +135,13 @@ export default {
           items: [{ name: "alerts", title: "Alerts", href: "/general/alerts" }],
         },
         { header: "Admin" },
+        {
+          title: "Anexos",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarAnexos",
+          href: "/dashboard/anexos"
+        },
         {
           title: "Gestion de Usuarios",
           group: "admin",
@@ -150,32 +157,109 @@ export default {
           href: "/dashboard/residentes"
         },
         {
-          title: "Gestionar Plan de Intervención",
+          title: "Gestion Ficha Ingreso",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarFichaIngreso",
+          href: "/dashboard/fichaIngreso"
+        },        
+        {
+          title: "Gestionar Informes",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionInforme",
+          href: "/dashboard/informes"
+        },
+        {
+          title: "Planes",
           group: "admin",
           icon: "dashboard",
           name: "GestionPlanIntervencion",
           href: "/dashboard/planIntervencion"
         },
         {
+          title: "Gestionar Seguimiento Educativo",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarSeguimientoEducativo",
+          href: "/dashboard/seguimientoEducativo"
+        },        
+        {
           title: "Gestionar Talleres",
           group: "admin",
           icon: "dashboard",
           name: "GestionTalleres",
           href: "/dashboard/talleres"
+        },{
+          title: "Gestion Sesiones Educativas",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarSesionesEducativas",
+          href: "/dashboard/sesioneseducativas"
+        },      
+        {
+          title: "Gestionar Evaluacion",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarEvaluacion",
+          href: "/dashboard/evaluacioneducativa"
+        },          
+        {
+          title: "Expedientes Matriz",
+          group: "admin",
+          icon: "dashboard",
+          name: "ConsultaExpedienteMatriz",
+          href: "/dashboard/expedientes"
         },
         {
-          title: "Gestionar Informe",
+          title: "Gestion Acta de externamiento",
           group: "admin",
           icon: "dashboard",
-          name: "GestionInforme",
-          href: "/dashboard/informes"
-        },{
-          title: "Gestion Ficha Ingreso",
-          group: "admin",
-          icon: "dashboard",
-          name: "GestionarFichaIngreso",
-          href: "/dashboard/fichaIngreso"
+          name: "GestionarActaExternamiento",
+          href: "/dashboard/Actas"
         },
+        {
+          title: "Gestion de Incidencias",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarIncidencia",
+          href: "/dashboard/incidencias"
+        },
+        {
+          title: "Cambiar de Contrasena",
+          group: "admin",
+          icon: "dashboard",
+          name: "CambiarContrasena",
+          href: "/dashboard/CambiarContrasena"
+        },
+        {
+          title: "Estadísticas",
+          group: "admin",
+          icon: "dashboard",
+          name: "ConsultaEstadisticas",
+          href: "/dashboard/estadisticas"
+        },
+        {
+          title: "Gestión de Actividades",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarActividades",
+          href: "/dashboard/gestionaractividades"
+        },
+        {
+          title: "Gestión de Entrevistas Familiares",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarEntrevistasFamiliares",
+          href: "/dashboard/gestionarentrevistasfamiliares"
+        },
+        {
+          title: "Gestión de Visitas Familiares",
+          group: "admin",
+          icon: "dashboard",
+          name: "GestionarVisitaFamiliar",
+          href: "/dashboard/gestionarVisitaFamiliar"
+        }
       ],
       scrollSettings: {
         maxScrollbarLength: 160,

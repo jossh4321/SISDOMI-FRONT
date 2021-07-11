@@ -9,9 +9,11 @@
           <v-stepper-step editable step="1">
             Datos del Residente
           </v-stepper-step>
+          <v-divider></v-divider>
           <v-stepper-step editable step="2">
             Aspectos de Intervención
           </v-stepper-step>
+          <v-divider></v-divider>
           <v-stepper-step editable step="3">
             Datos del Psicólogo
           </v-stepper-step>
@@ -20,22 +22,6 @@
           <v-stepper-content step="1">
             <form>
               <v-row>
-                <v-col cols="12" sm="6" md="6">
-                  <v-text-field
-                    label="Título"
-                    outlined
-                    v-model="planResidentePsicologico.contenido.titulo"
-                    required
-                    :error-messages="planTituloErrors"
-                    @input="
-                      $v.planResidentePsicologico.contenido.titulo.$touch()
-                    "
-                    @blur="
-                      $v.planResidentePsicologico.contenido.titulo.$touch()
-                    "
-                    color="success"
-                  ></v-text-field>
-                </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-autocomplete
                     v-model="residente"
@@ -75,6 +61,23 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field
+                    label="Título"
+                    outlined
+                    v-model.trim="getTitleByFaseResident"
+                    required
+                    :error-messages="planTituloErrors"
+                    @input="
+                      $v.planResidentePsicologico.contenido.titulo.$touch()
+                    "
+                    @blur="
+                      $v.planResidentePsicologico.contenido.titulo.$touch()
+                    "
+                    readonly
+                    color="success"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field
                     label="DNI del Residente"
                     outlined
                     :value="residente != null ? residente.numeroDocumento : ''"
@@ -87,6 +90,7 @@
                     label="Fecha de Nacimiento"
                     :value="formatDateBorn"
                     outlined
+                    readonly
                   >
                   </v-text-field>
                 </v-col>
@@ -95,6 +99,7 @@
                     label="Sexo"
                     outlined
                     :value="residente != null ? residente.sexo : ''"
+                    readonly
                   >
                   </v-text-field>
                 </v-col>
@@ -103,6 +108,7 @@
                     label="Motivo de ingreso"
                     outlined
                     :value="residente != null ? residente.motivoIngreso : ''"
+                    readonly
                   >
                   </v-text-field
                 ></v-col>
@@ -111,6 +117,7 @@
                     label="Estado"
                     outlined
                     :value="residente != null ? residente.estado : ''"
+                    readonly
                   >
                   </v-text-field>
                 </v-col>
@@ -150,7 +157,9 @@
                     rows="3"
                     row-height="10"
                     outlined
-                    v-model="planResidentePsicologico.contenido.descripcion"
+                    v-model.trim="
+                      planResidentePsicologico.contenido.descripcion
+                    "
                     required
                     :error-messages="planDescripcionErrors"
                     @input="
@@ -169,7 +178,7 @@
                     rows="3"
                     row-height="10"
                     outlined
-                    v-model="
+                    v-model.trim="
                       planResidentePsicologico.contenido.frecuenciaSesion
                     "
                     required
@@ -208,7 +217,7 @@
                     <v-text-field
                       label="Objetivo específicos"
                       outlined
-                      v-model="objetivoEspecifico"
+                      v-model.trim="objetivoEspecifico"
                       :error-messages="objetivoEspecificoErrors"
                       @input="$v.objetivoEspecifico.$touch()"
                       @blur="$v.objetivoEspecifico.$touch()"
@@ -247,7 +256,7 @@
                     <v-text-field
                       label="Técnica"
                       outlined
-                      v-model="tecnica"
+                      v-model.trim="tecnica"
                       :error-messages="tecnicaErrors"
                       @input="$v.tecnica.$touch()"
                       @blur="$v.tecnica.$touch()"
@@ -261,8 +270,7 @@
                   <div>
                     <h4
                       v-if="
-                        $v.planResidentePsicologico.contenido
-                          .tecnicas.$error
+                        $v.planResidentePsicologico.contenido.tecnicas.$error
                       "
                       class="red--text"
                     >
@@ -279,7 +287,7 @@
                     <v-text-field
                       label="Meta"
                       outlined
-                      v-model="meta"
+                      v-model.trim="meta"
                       :error-messages="metaErrors"
                       @input="$v.meta.$touch()"
                       @blur="$v.meta.$touch()"
@@ -292,10 +300,7 @@
                   </div>
                   <div>
                     <h4
-                      v-if="
-                        $v.planResidentePsicologico.contenido
-                          .metas.$error
-                      "
+                      v-if="$v.planResidentePsicologico.contenido.metas.$error"
                       class="red--text"
                     >
                       Debe tener como mínimo una meta registrada
@@ -311,7 +316,7 @@
                     <v-text-field
                       label="Indicador"
                       outlined
-                      v-model="indicador"
+                      v-model.trim="indicador"
                       :error-messages="indicadorErrors"
                       @input="$v.indicador.$touch()"
                       @blur="$v.indicador.$touch()"
@@ -330,8 +335,7 @@
                   <div>
                     <h4
                       v-if="
-                        $v.planResidentePsicologico.contenido
-                          .indicadores.$error
+                        $v.planResidentePsicologico.contenido.indicadores.$error
                       "
                       class="red--text"
                     >
@@ -348,7 +352,7 @@
                     <v-text-field
                       label="Requerimiento"
                       outlined
-                      v-model="requerimiento"
+                      v-model.trim="requerimiento"
                       :error-messages="requerimientoErrors"
                       @input="$v.requerimiento.$touch()"
                       @blur="$v.requerimiento.$touch()"
@@ -367,8 +371,8 @@
                   <div>
                     <h4
                       v-if="
-                        $v.planResidentePsicologico.contenido
-                          .requerimientos.$error
+                        $v.planResidentePsicologico.contenido.requerimientos
+                          .$error
                       "
                       class="red--text"
                     >
@@ -409,7 +413,15 @@
             <form>
               <v-row>
                 <v-col cols="12" sm="12">
-                  <vue-dropzone
+                  <v-card-text>
+                    <img
+                      width="240"
+                      height="170"
+                      :src="this.user.datos.firma"
+                      alt=""
+                    />
+                  </v-card-text>
+                  <!-- <vue-dropzone
                     ref="myVueDropzone"
                     :options="dropzoneOptions"
                     id="dropzone"
@@ -422,7 +434,7 @@
                     class="mt-2"
                   >
                     Debe ingresar una firma para el registro
-                  </v-alert>
+                  </v-alert> -->
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-btn
@@ -451,6 +463,28 @@
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
+      <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center"
+            >Registrando el Plan de Intervención Individual
+            Psicológico</v-card-title
+          >
+          <div>
+            <v-progress-circular
+              style="display: block; margin: 40px auto"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
+          </div>
+          <v-card-subtitle
+            class="justify-center"
+            style="font-weight: bold; text-align: center"
+            >En unos momentos finalizaremos...</v-card-subtitle
+          >
+        </v-card>
+      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
@@ -458,7 +492,7 @@
 <script>
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import RegistroMultiple from "@/components/planIntervencion/Psicologico/RegistroMultiple.vue";
+import RegistroMultiple from "@/components/planIntervencion/General/RegistroMultiple.vue";
 import axios from "axios";
 
 import {
@@ -467,6 +501,8 @@ import {
   between,
   maxLength,
 } from "vuelidate/lib/validators";
+
+import { mapGetters } from "vuex";
 
 export default {
   name: "registrar-plan-intervencion-psicologico",
@@ -492,11 +528,11 @@ export default {
       },
       listImages: [],
       planResidentePsicologico: {
-        tipo: "PlanIntervencionIndividual",
+        tipo: "PlanIntervencionIndividualPsicologico",
         historialcontenido: [],
-        creadordocumento: "5f70b799c58b26540822c00f",
-        fechacreacion: new Date(),
-        area: "psicologico",
+        creadordocumento: "",
+        fechacreacion: null,
+        area: "psicologica",
         fase: "",
         estado: "creado",
         idresidente: "",
@@ -511,13 +547,13 @@ export default {
           requerimientos: [],
           codigoDocumento: "",
           titulo: "",
-          firmas: [
+          /*firmas: [
             {
               urlfirma: "",
               nombre: "",
               cargo: "",
             },
-          ],
+          ],*/
         },
       },
       residentes: [],
@@ -525,17 +561,44 @@ export default {
       residente: {
         residente: "",
         id: "",
+        numeroDocumento: "",
         fechaNacimiento: "",
         sexo: "",
         motivoIngreso: "",
         estado: "",
+        faseActual: "",
       },
+      fasesPlanIntervencion: {
+        fases: [1, 2],
+        area: "psicologica",
+        documentoEstadosAnteriores: [
+          {
+            tipo: "InformePsicologicoInicial",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualPsicologico",
+            estado: "Pendiente",
+          },
+        ],
+        documentoEstadosActuales: [
+          {
+            tipo: "PlanIntervencionIndividualPsicologico",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualPsicologico",
+            estado: "Completo",
+          },
+        ],
+      },
+      cargaRegistro: false
     };
   },
   validations: {
-    listImages: {
+    /*listImages: {
       required,
-    },
+    },*/
     objetivoEspecifico: {
       minLength: minLength(10),
     },
@@ -599,14 +662,16 @@ export default {
   },
   watch: {
     searchResidente(value) {
-      if (value == null) {
+      if (value == null || value == "") {
         this.residente = {
           residente: "",
           id: "",
+          numeroDocumento: "",
           fechaNacimiento: "",
           sexo: "",
           motivoIngreso: "",
           estado: "",
+          faseActual: "",
         };
       }
 
@@ -620,7 +685,7 @@ export default {
       this.loadingSearch = true;
 
       axios
-        .get("/Residente/all")
+        .post("/residente/all/fases/documentos", this.fasesPlanIntervencion)
         .then((res) => {
           let residentesMap = res.data.map(function (res) {
             return {
@@ -631,6 +696,7 @@ export default {
               sexo: res.sexo,
               motivoIngreso: res.motivoIngreso,
               estado: res.estado,
+              faseActual: res.progreso[res.progreso.length - 1].fase.toString(),
             };
           });
 
@@ -638,8 +704,8 @@ export default {
 
           this.loadingSearch = false;
         })
-        .catch((err) => {
-          console.error(err);
+        .catch((error) => {
+          console.error(error);
         });
     },
   },
@@ -688,10 +754,8 @@ export default {
         );
         this.requerimiento = "";
       }
-    },
+    } /*
     registerFile(file, response) {
-      
-      
       this.listImages.push(file);
     },
     removedFile(file, error, xhr) {
@@ -700,7 +764,7 @@ export default {
       if (indexFile != -1) {
         this.listImages.splice(indexFile, 1);
       }
-    },
+    },*/,
     async sendPlan() {
       this.$v.$touch();
 
@@ -712,20 +776,28 @@ export default {
           false
         );
       } else {
-        for (let index = 0; index < this.listImages.length; index++) {
+        /*for (let index = 0; index < this.listImages.length; index++) {
           let formData = new FormData();
-          formData.append("file", this.listImages[0]);
+          formData.append("file", this.listImages[index]);
           await axios
             .post("/Media", formData)
             .then((res) => {
-               this.planResidentePsicologico.contenido.firmas[index].urlfirma =
-                 res.data;
+              this.planResidentePsicologico.contenido.firmas[index].urlfirma =
+                res.data;
+              this.planResidentePsicologico.contenido.firmas[index].nombre = this.user.usuario;
+              this.planResidentePsicologico.contenido.firmas[index].cargo = this.user.rol.id;
+              
             })
             .catch((err) => {
               console.error(err);
             });
-        }
+        }*/
+
+        this.cargaRegistro = true;
+
+        this.planResidentePsicologico.creadordocumento = this.user.id;
         this.planResidentePsicologico.idresidente = this.residente.id;
+        this.planResidentePsicologico.fase = this.residente.faseActual;
         let planResidentePsicologico = {
           idresidente: this.residente.id,
           planIntervencionIndividualPsicologico: this.planResidentePsicologico,
@@ -733,10 +805,12 @@ export default {
         axios
           .post("/PlanIntervencion/psicologico", planResidentePsicologico)
           .then((res) => {
+            this.cargaRegistro = false;
+
             this.messageSweet(
               "success",
               "Registro del Plan de Intervencion",
-              "Se registro el plan de intervencion de manera satisfactoria",
+              "Se registró el plan de intervencion de manera satisfactoria",
               true
             );
           })
@@ -751,21 +825,39 @@ export default {
         title: title,
         text: text,
       }).then((res) => {
-        
-        if(valid) {
-          this.$emit('register-complete');
+        if (valid) {
+          this.$emit("register-complete");
         }
-
       });
     },
   },
   computed: {
+    ...mapGetters(["user"]),
     formatDateBorn() {
       return this.residente != null
         ? this.residente.fechaNacimiento == ""
           ? ""
           : this.$moment(this.residente.fechaNacimiento).format("DD/MM/YYYY")
         : "";
+    },
+    getTitleByFaseResident() {
+      if (this.residente != null) {
+        if (this.residente.faseActual != "") {
+          if (this.residente.faseActual == "1") {
+            this.planResidentePsicologico.contenido.titulo =
+              "Plan de Intervención Psicológica";
+          } else {
+            this.planResidentePsicologico.contenido.titulo =
+              "Plan de Intervención Individual " + this.residente.residente;
+          }
+
+          return this.planResidentePsicologico.contenido.titulo;
+        } else {
+          return "";
+        }
+      } else {
+        return "";
+      }
     },
     objetivoEspecificoErrors() {
       const errors = [];

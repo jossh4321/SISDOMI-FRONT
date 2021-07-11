@@ -144,7 +144,7 @@
                                       alt="imagen usuario"
                                     />
                                     <span style="font-size:18px">
-                                      {{ item.referentefamiliar }}</span
+                                      {{ item.referentefamiliar }} - {{ item.parentesco }} </span
                                     >
                                   </article>
                                 </v-col>
@@ -276,7 +276,7 @@
                          
         
             <v-card
-                style="margin-top:10%;width:100%;padding:5px 5px;background-color:#EAEAEA"
+                style="margin-top:30px;width:100%;padding:5px 5px;background-color:#EAEAEA"
               >
                 <v-card-title style="font-size:22px;padding: 10px 10px;"
                   >Lista de Progresos de Residente</v-card-title
@@ -331,12 +331,12 @@
                     </v-col>
                     <v-col :cols="3">
                       <article>
-                        <span style="font-size:16px">{{moment(item.fechaingreso).format('L')}}</span>
+                        <span style="font-size:16px">{{convertDateFormat(item.fechaingreso)}}</span>
                       </article>
                     </v-col>
                     <v-col :cols="3">
                       <article>
-                        <span style="font-size:16px">{{item.fechafinalizacion!=="" ? (moment(item.fechafinalizacion).format('L')): "No finalizado"}}</span>
+                        <span style="font-size:16px">{{convertDateFormat(item.fechafinalizacion)}} <span v-if="comprobarPrevicion(item.fechafinalizacion)" style="margin-left:5px">(previsto)</span></span>
                       </article>
                     </v-col>
                     <v-col :cols="2">
@@ -415,10 +415,12 @@
        
       </v-stepper-items>
     </v-stepper>
+    
   </v-card>
 </template>
 
 <script>
+import axios from "axios";
 const m = moment();
 import moment from "moment";
 export default {
@@ -436,6 +438,9 @@ export default {
       step: 1,
     };
   },
+  async created(){
+    await this.obtenerUbigeo();
+  },
   methods: {
     moment: function () {
     return moment();
@@ -443,7 +448,40 @@ export default {
     cerrarDialogo() {
       this.$emit("close-dialog-detail");
     },
+    convertDateFormat(string) {
+        var dateMongo = string.split('T');
+        var date = dateMongo[0].split('-');
+        return date[2] + '/' + date[1] + '/' + date[0];
+    },
+    comprobarPrevicion(string){
+      var fechafinalizacion = string.split('T');
+
+      var fechaActual = moment().format();    
+      fechaActual = fechaActual.split('T');
+
+      var booleano = moment(fechafinalizacion[0]).isAfter(fechaActual[0]);
+      // console.log("fechafinalizacion: "+ fechafinalizacion[0]);
+      // console.log("fechaActual: "+fechaActual[0]);
+      // console.log(booleano);
+      return booleano
+    },
+    async obtenerUbigeo() {
+      console.log("distrito");
+      console.log(this.residente.ubigeo);
+      await axios
+        .get(`/ubigeo/idDistrito?idDistrito=${this.residente.ubigeo}`)
+        .then((res) => {
+          var info = {};
+          info = res.data;
+          this.distrito = res.data;
+          console.log(this.distrito);
+          this.residente.ubigeo = res.data.nombreDistrito;
+        })
+        .catch((err) => console.log(err));
+      return true;
+    },
   },
+  
   computed: {},
 };
 </script>

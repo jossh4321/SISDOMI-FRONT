@@ -44,8 +44,6 @@
 
         <template v-slot:[`item.actions`]="{ item }"
           ><!--Abrir dialogo detalle -->
-
-
           <v-row align="center" justify="space-around">
             <!--BOTONES-->
             <v-btn color="warning" dark @click="abrirDialogoModificar(item.id)">
@@ -53,8 +51,16 @@
               <span>Actualizar</span>
             </v-btn>
             <v-btn color="info" dark @click="abrirDialogoDetalle(item.id)">
-              <v-icon left> mdi-pencil </v-icon>
+              <v-icon left> info </v-icon>
               <span>Visualizar</span>
+            </v-btn>
+            <v-btn v-if="faseActual(item.progreso)" color="grey" dark @click="abrirDialogoPromover(item.id)">
+              <v-icon left> mdi-page-next-outline </v-icon>
+              <span>Promover</span>
+            </v-btn>
+            <v-btn v-else color="grey" disabled>
+              <v-icon left> mdi-page-next-outline </v-icon>
+              <span>Promover</span>
             </v-btn>
           </v-row>
         </template>
@@ -63,18 +69,29 @@
       <!--Dialogo de Modificacion-->
       <v-dialog persistent v-model="dialogoactualizacion" max-width="880px">
         <ModificarResidente
-          :residente="residente"
-          @close-dialog-detail="closeDialogModificar()"
+          v-if="dialogoactualizacion"
+          :residente="residente"                   
+          @close-dialog-update="closeDialogModificar()"
         >
         </ModificarResidente>
       </v-dialog>
       <!--Dialogo de Detalle-->
       <v-dialog persistent v-model="dialogodetalle" max-width="880px">
         <ConsultarResidente
-          :residente="residente"
+          v-if="dialogodetalle"
+          :residente="residente"         
           @close-dialog-detail="closeDialogDetalle()"
         >
         </ConsultarResidente>
+      </v-dialog>
+      <!--Dialogo de Detalle-->
+      <v-dialog persistent v-model="dialogopromover" max-width="880px">
+        <PromoverResidente
+          :residente="residente"
+          :dialogopromover="dialogopromover"
+          @close-dialog-promover="closeDialogPromover()"
+        >
+        </PromoverResidente>
       </v-dialog>
     </v-card>
   </div>
@@ -85,6 +102,7 @@ import axios from "axios";
 import ModificarResidente from "@/components/residentes/ActualizarResidente.vue";
 import ConsultarResidente from "@/components/residentes/DetalleResidente.vue";
 import RegistrarResidente from "@/components/residentes/RegistrarResidente.vue";
+import PromoverResidente from "@/components/residentes/PromoverResidente.vue";
 import { mapMutations, mapState } from "vuex";
 export default {
   name: "GestionarResidentes",
@@ -92,6 +110,7 @@ export default {
     ConsultarResidente,
     ModificarResidente,
     RegistrarResidente,
+    PromoverResidente
   },
   data() {
     return {
@@ -111,41 +130,34 @@ export default {
         { text: "Fecha de Ingreso", value: "fechaIngreso" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-      /*planesI: [
-        {
-          nombre: "Manuel stafno",
-          apellido: "Paredes Guerra",
-          tipdocumento: "Dni",
-          numdocumento:"72498627",
-          fechingreso:"28/05/2019"
-        },
-        {
-          nombre: "PlanI_Psico_Xiomara_1",
-          apellido: "Xiomara Paredes Guerra",
-          tipdocumento: "Dni",
-          numdocumento:"72498627",
-          fechingreso:"28/05/2019"
-        },
-        {
-          nombre: "PlanI_Edu_Marlyn_1",
-          apellido: "Marlyn Candela Peña",
-          tipdocumento: "Dni",
-          numdocumento:"72498627",
-          fechingreso:"28/05/2019"
-        }
-      ],*/
       dialogoregistro: false,
       dialogoactualizacion: false,
       dialogodetalle: false,
+      dialogopromover:false,
+      departamentos: [],
+      provincias: [],
+      distritos: [],
+      idDepartamento: "",
+      idProvincia: "",
+      idDistrito: "",
+      ubigeo:"",
     };
   },
   async created() {
-    this.obtenerResidentes();
+    this.obtenerResidentes();    
   },
   methods: {
     ...mapMutations(["setResidentes"]),
     editItem(item) {
-      console.log(item);
+      console.log(item);     
+    },
+    faseActual(array){
+      var ultimoProgreso = array[array.length - 1].fase
+      if(ultimoProgreso === 3){
+        return false
+      }else{
+        return true
+      }
     },
     detailItem(item) {
       console.log(item);
@@ -159,6 +171,9 @@ export default {
     closeDialogModificar() {
       this.dialogoactualizacion = false;
     },
+    closeDialogPromover(){
+      this.dialogopromover = false;
+    },
     ///abrir dialogo de detalle
     async abrirDialogoDetalle(idresidente) {
       this.residente = await this.loadResidenteDetalle(idresidente);
@@ -169,6 +184,11 @@ export default {
       this.residente = await this.loadResidenteDetalle(idresidente);
       this.dialogoactualizacion = !this.dialogoactualizacion;
     },
+    ///abrir dialogo de promover
+    async abrirDialogoPromover(idresidente) {
+      this.residente = await this.loadResidenteDetalle(idresidente);
+      this.dialogopromover = !this.dialogopromover;
+    },
 
     async loadResidenteDetalle(idresidente) {
       var user = {};
@@ -177,21 +197,29 @@ export default {
         .then((res) => {
           console.log(res);
           user = res.data;
-          user.fechaNacimiento = res.data.fechaNacimiento.split("T")[0];
+          user.fechaNacimiento = user.fechaNacimiento.split("T")[0];
+          user.fechaIngreso = user.fechaIngreso.split("T")[0];
         })
         .catch((err) => console.log(err));
-      console.log(user);
+      console.log(user);     
       return user;
-    },
+    },    
     ///////////////////Consumo de  apis
     async obtenerResidentes() {
       await axios
         .get("/residente/all")
         .then((res) => {
-          this.setResidentes(res.data);
+          var info = {};
+          info = res.data;
+          console.log(res.data)
+          for (var x=0;x<res.data.length;x++){
+              info[x].fechaIngreso = res.data[x].fechaIngreso.split("T")[0];
+          }
+          
+          this.setResidentes(info);
         })
         .catch((err) => console.log(err));
-    },
+    },    
   },
   computed: {
     ...mapState(["residentes"]),

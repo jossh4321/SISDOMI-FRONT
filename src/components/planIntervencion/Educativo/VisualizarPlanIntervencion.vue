@@ -1,205 +1,218 @@
 <template>
     <v-card>
-    <v-card-title class="justify-center">Visualizar Plan de intervención</v-card-title>
+    <v-card-title class="justify-center"
+      >Detalle del plan de intervención educativo</v-card-title
+    >
+    <v-card-text>
+      <v-stepper v-model="step">
+        <v-stepper-header>
+          <v-stepper-step editable step="1"> Datos Generales </v-stepper-step>
 
-    <v-stepper v-model="step">
-    <v-stepper-header>
-      <v-stepper-step
-        editable
-        step="1"
-      >
-        Datos Generales
-      </v-stepper-step>
+          <v-divider></v-divider>
 
-      <v-divider></v-divider>
+          <v-stepper-step editable step="2">
+            Aspectos de intervención
+          </v-stepper-step>
+        </v-stepper-header>
 
-      <v-stepper-step
-        editable
-        step="2"
-      >
-        Aspectos de intervención
-      </v-stepper-step>
-    </v-stepper-header>
+        <v-stepper-items>
+          <v-stepper-content step="1">
+            <div class="container-planI">
+              <form>
+                <v-row>
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
+                    <v-text-field
+                      :value="planIntervencion.contenido.titulo"
+                      label="Nombre del Plan de Intervención"
+                      outlined
+                      color="success"
+                      readonly
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
+                    <v-text-field
+                      :value="planIntervencion.contenido.car"
+                      label="Nombre del CAR"
+                      outlined
+                      color="success"
+                      readonly
+                    >
+                    </v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
+                    <v-text-field
+                      :value="
+                        planIntervencion.residente.nombre +
+                        ' ' +
+                        planIntervencion.residente.apellido
+                      "
+                      label="Nombre del residente"
+                      outlined
+                      readonly
+                      color="success"
+                    >
+                    </v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
+                    <v-text-field
+                      :value="planIntervencion.contenido.edad"
+                      label="Edad del Residente"
+                      outlined
+                      readonly
+                      color="success"
+                    >
+                    </v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
+                    <v-text-field
+                      :value="planIntervencion.contenido.trimestre"
+                      label="Trimestre"
+                      outlined
+                      readonly
+                      color="success"
+                    >
+                    </v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" lg="6" xl="6">
+                    <v-text-field
+                      :value="planIntervencion.contenido.objetivogeneral"
+                      label="Objetivo General"
+                      outlined
+                      readonly
+                      color="success"
+                    >
+                    </v-text-field>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="12"
+                    md="12"
+                    lg="12"
+                    xl="12"
+                    class="mb-5 pt-0"
+                  >
+                    <visualizacion-multiple
+                      name="Objetivos específicos"
+                      :items="planIntervencion.contenido.objetivoespecificos"
+                    ></visualizacion-multiple>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" sm="12" md="6" lg="6">
+                    <v-btn block @click="step = 2" color="info">
+                      <v-icon left>mdi-page-next-outline</v-icon>
+                      <span>Continuar</span>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="6" lg="6">
+                    <v-btn block color="error" @click="cerrarDialogo">
+                      <v-icon left>mdi-close</v-icon>
+                      <span>Cerrar</span>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </form>
+            </div>
+          </v-stepper-content>
+          <v-stepper-content step="2">
+            <div class="container-user">
+              <v-row>
+                <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <visualizacion-multiple
+                    name="Aspectos de Intervención"
+                    :items="planIntervencion.contenido.aspectosintervencion"
+                  ></visualizacion-multiple>
+                </v-col>
+                <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <visualizacion-multiple
+                    name="Actividades/Estrategias"
+                    :items="planIntervencion.contenido.estrategias"
+                  ></visualizacion-multiple>
+                </v-col>
+                <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <visualizacion-multiple
+                    name="Indicadores"
+                    :items="planIntervencion.contenido.indicadores"
+                  ></visualizacion-multiple>
+                </v-col>
+                <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <visualizacion-multiple
+                    name="Metas"
+                    :items="planIntervencion.contenido.metas"
+                  ></visualizacion-multiple>
+                </v-col>
+                <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                  <v-text-field
+                    :value="this.usuario"
+                    label="Creador del plan"
+                    outlined
+                    readonly
+                    color="success"
+                  >
+                  </v-text-field>
+                      <img
+                        width="240"
+                        height="170"
+                        :src="this.firma"
+                        alt=""
+                      />
+                  <!-- <v-img
+                    :src="planIntervencion.contenido.firmas[0].urlfirma"
+                    max-width="200"
+                    max-height="200"
+                  >
+                  </v-img> -->
+                </v-col>
+              </v-row>
 
-    <v-stepper-items>
-      <v-stepper-content step="1">
-        <div class="container-planI">
-      <form>
-        <v-text-field
-          v-model="plan.tipo"
-          label="Ingrese el nombre del plan"
-          outlined
-          color="#009900"
-          disabled
-        ></v-text-field>
-
-        <v-text-field
-          v-model="plan.contenido.firmas.nombre"
-          label="Ingrese el nombre-dni de la usuaria"
-          outlined
-          color="#009900"
-          disabled
-        ></v-text-field>
-
-        <v-text-field
-          v-model="plan.contenido.objetivoGeneral"
-          label="Ingrese el objetivo general"
-          outlined
-          color="#009900"
-          disabled
-        ></v-text-field>
-
-        <v-textarea
-          v-model="plan.contenido.objetivoEspecificos"
-          label="Ingrese los objetivos específicos"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-          disabled
-        ></v-textarea>
-
-        <v-btn block @click="step = 2" color="primary">
-          <v-icon left>mdi-page-next-outline</v-icon>
-          <span>Continuar</span>
-        </v-btn>
-      </form>
-    </div>
-      </v-stepper-content>
-      <v-stepper-content step="2">
-        <div  class="container-user">
-      <form>
-        <br />
-        <v-textarea
-          v-model="plan.fase"
-          label="Casos/Problemas"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-          disabled
-        ></v-textarea>
-
-        <v-textarea
-         v-model="plan.contenido.estrategias"
-          label="Actividades/estrategias"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-          disabled
-        ></v-textarea>
-
-        <v-textarea
-          v-model="plan.contenido.indicadores"
-          label="Indicadores"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-          disabled
-        ></v-textarea>
-
-        <v-textarea
-         v-model="plan.contenido.metas"
-          label = "Meta"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="25"
-          color="#009900"
-          shaped
-          disabled
-        ></v-textarea>
-
-        <div>
-          <vue-dropzone ref="myVueDropzone"
-            
-            @vdropzone-success="afterSuccess"
-            @vdropzone-removed-file="afterRemoved"
-            id="dropzone" :options="dropzoneOptions" 
-            
-            >
-          </vue-dropzone>
-        </div>
-        <v-divider class="divider-custom"></v-divider>
-            <v-btn block @click="cerrarDialogo()" color="primary">
-              <v-icon left>mdi-close-outline</v-icon>
-              <span>Cerrar</span>
-            </v-btn>
-      </form>
-        </div>
-      </v-stepper-content>
-    </v-stepper-items>
-    </v-stepper>
-  </v-card>
+              <v-btn block @click="cerrarDialogo()" color="primary">
+                <v-icon left>mdi-close-outline</v-icon>
+                <span>Cerrar</span>
+              </v-btn>
+            </div>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
+    </v-card-text>
+    </v-card>
 </template>
 <script>
-import vue2Dropzone from "vue2-dropzone";
+import axios from "axios";
+import VisualizacionMultiple from "@/components/planIntervencion/General/VisualizacionMultiple.vue";
 
-import "vue2-dropzone/dist/vue2Dropzone.min.css";
 export default {
-  props:["plan"],
-   components: {
-     vueDropzone: vue2Dropzone
-  },
+   name: "visualizar-plan-intervencion",
   data() {
       return {
-       datemenu: false,
-     /* planI: {
-        nombreusuaria:"Xiomara Paredes Guerra",
-        nombreplan:"PlanI_Edu_Xiomara_1",
-        objetivogeneral:"Realizar un adecuado plan de intervención",
-        objetivoespecifico:"Responde a Plan de seguimiento",
-        casos_problemas:"1. Reinserción escolar.\n 2. No quiere participar en nivelación de matemática.\n 3. Retraso escolar.\n 4. Bajo rendimiento.\n 5. Problema de aprendizaje.",
-        actividades_estrategias:"1. Solicitar constancia de vacante.\n 2. Entrevista personal.",
-        indicadores:"1. Matricula en la I.E.\n 2.Participa en la nivelación escolar.",
-        meta:"Lograr nivelación en el grado correspondiente del área de matemática.",
-      },*/
-      datemenu: false,
       step:1,
-      dropzoneOptions: {
-        url: "",
-        thumbnailWidth: 250,
-        maxFilesize: 3.0,
-        maxFiles:1,
-        acceptedFiles:".jpg",
-        headers: { "My-Awesome-Header": "header value" },
-        addRemoveLinks: true,
-         dictDefaultMessage: "Seleccione la firma del responsable o Arrastrela Aqui"
-      },
+      usuario:"",
+      firma:"",
     };
-  },methods:{
-   cerrarDialogo(){
+  },
+  created() {
+    this.obtenerCreador();
+  },
+  methods:{
+    cerrarDialogo(){
       this.$emit("close-dialog-detail");
     },
-   
-   afterSuccess(file,response){
-       this.usuario.datos.imagen = file.dataURL;
-       this.$v.usuario.datos.imagen.$model = file.dataURL;
-    },afterRemoved(file, error, xhr){
-      this.usuario.datos.imagen = "";
-       this.$v.usuario.datos.imagen.$model = "";
-    }
-    ,mensaje(icono,titulo,texto,footer){
-      this.$swal({
-        icon: icono,
-        title: titulo,
-        text: texto,
-        footer:footer
-      });
+   async obtenerCreador() {
+        await axios
+        .get("/usuario/rol/permiso?id=" + this.planIntervencion.creador)
+        .then((x) => {
+          this.usuario = x.data.datos.nombre + " " + x.data.datos.apellido;
+          this.firma = x.data.datos.firma;
+        })
+        .catch((err) => console.log(err));
+      },
+  },
+  props: {
+    planIntervencion: {
+      type: Object
     }
   },
-  computed:{
-
+  components: {
+     VisualizacionMultiple,
   }
 
 }
@@ -207,30 +220,5 @@ export default {
 <style  scoped>
 .container-planI {
   margin: 15px;
-}
-
-.dropzone-custom-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-.dropzone-custom-title {
-  margin-top: 0;
-  color: #00b782;
-}
-
-.subtitle {
-  color: #314b5f;
-}
-.divider-custom{
-  margin-top:7px;
-  margin-bottom:7px
-}
-
-.inputTextField{
-  border-color: green;
 }
 </style>

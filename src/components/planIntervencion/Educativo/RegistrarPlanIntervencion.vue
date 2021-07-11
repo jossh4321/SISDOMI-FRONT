@@ -3,339 +3,417 @@
     <v-card-title class="justify-center"
       >Registrar Plan de Intervención</v-card-title
     >
+    <v-card-text>
+      <v-stepper v-model="step">
+        <v-stepper-header>
+          <v-stepper-step editable step="1"> Datos Generales </v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step editable step="2">
+            Aspectos de intervención
+          </v-stepper-step>
+        </v-stepper-header>
 
-    <v-stepper v-model="step">
-      <v-stepper-header>
-        <v-stepper-step editable step="1"> Datos Generales </v-stepper-step>
-
-        <v-divider></v-divider>
-
-        <v-stepper-step editable step="2">
-          Aspectos de intervención
-        </v-stepper-step>
-      </v-stepper-header>
-
-      <v-stepper-items>
-        <v-stepper-content step="1">
-          <div class="container-planI">
-            <form>
-              <v-text-field
-                v-model.trim="planI.contenido.titulo"
-                label="Ingrese el nombre del plan"
-                @input="$v.planI.contenido.titulo.$touch()"
-                @blur="$v.planI.contenido.titulo.$touch()"
-                :error-messages="errorTitulo"
-                outlined
-                color="#009900"
-              ></v-text-field>
-
-              <v-text-field
-                v-model.trim="planI.contenido.car"
-                label="Ingrese el nombre del CAR"
-                @input="$v.planI.contenido.car.$touch()"
-                @blur="$v.planI.contenido.car.$touch()"
-                :error-messages="errorCar"
-                outlined
-                color="#009900"
-              ></v-text-field>
-
-              <v-autocomplete
-                filled
-                label="Residente"
-                outlined
-                @input="$v.planI.idresidente.$touch()"
-                @blur="$v.planI.idresidente.$touch()"
-                :error-messages="errorResidente"
-                v-model.trim="planI.idresidente"
-                :items="listResidentes"
-                item-text="residente"
-                item-value="idresidente"
-                @change="setFase"
-              >
-              </v-autocomplete>
-
-              <v-text-field
-                type="number"
-                v-model.number="planI.contenido.edad"
-                label="Ingrese la edad del residente"
-                @input="$v.planI.contenido.edad.$touch()"
-                @blur="$v.planI.contenido.edad.$touch()"
-                :error-messages="errorEdad"
-                outlined
-                color="#009900"
-              ></v-text-field>
-
-              <v-text-field
-                type="number"
-                v-model.number="planI.contenido.trimestre"
-                label="Ingrese el trimestre"
-                @input="$v.planI.contenido.trimestre.$touch()"
-                @blur="$v.planI.contenido.trimestre.$touch()"
-                :error-messages="errorTrimestre"
-                outlined
-                color="#009900"
-              ></v-text-field>
-
-              <v-text-field
-                v-model.trim="planI.contenido.objetivoGeneral"
-                label="Ingrese el objetivo general"
-                @input="$v.planI.contenido.objetivoGeneral.$touch()"
-                @blur="$v.planI.contenido.objetivoGeneral.$touch()"
-                :error-messages="errorGeneral"
-                outlined
-                color="#009900"
-              ></v-text-field>
-
-              <v-container grid-list-md text-xs-center>
-                <v-layout row wrap>
-                  <v-flex xs10>
+        <v-stepper-items>
+          <v-stepper-content step="1">
+            <div class="container-planI">
+              <form>
+                <v-row>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-autocomplete
+                      label="Nombres y apellidos del residente"
+                      outlined
+                      v-model="residente"
+                      :loading="loadingSearch"
+                      :search-input.sync="searchResidente"
+                      :items="listResidentes"
+                      item-text="residente"
+                      item-value="id"
+                      hide-no-data
+                      hide-selected
+                      return-object
+                      @input="$v.residente.id.$touch()"
+                      @blur="$v.residente.id.$touch()"
+                      @change="calculateAge"
+                      :error-messages="errorResidente"
+                    >
+                      <template v-slot:item="item">
+                        <v-list-item-avatar
+                          color="primary"
+                          class="headline font-weight-light white--text"
+                        >
+                          {{ item.item.residente.charAt(0) }}
+                        </v-list-item-avatar>
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            {{ item.item.residente }}
+                          </v-list-item-title>
+                          <v-list-item-subtitle>
+                            DNI: {{ item.item.numeroDocumento }}
+                          </v-list-item-subtitle>
+                        </v-list-item-content>
+                      </template>
+                    </v-autocomplete>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
                     <v-text-field
-                      v-model.trim="objetivoespecificoAux"
-                      label="Ingrese los objetivos específicos"
-                      @blur="$v.planI.contenido.objetivoEspecificos.$touch()"
-                      :error-messages="errorEspecificos"
+                      v-model.trim="getTitleByFaseResident"
+                      label="Ingrese el nombre del plan"
+                      @input="$v.planI.contenido.titulo.$touch()"
+                      @blur="$v.planI.contenido.titulo.$touch()"
+                      :error-messages="errorTitulo"
+                      outlined
+                      readonly
+                      color="#009900"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-text-field
+                      v-model.trim="planI.contenido.car"
+                      label="Ingrese el nombre del CAR"
+                      @input="$v.planI.contenido.car.$touch()"
+                      @blur="$v.planI.contenido.car.$touch()"
+                      :error-messages="errorCar"
                       outlined
                       color="#009900"
                     ></v-text-field>
-                  </v-flex>
-                  <v-flex xs2>
-                    <v-btn @click="addObjEspecifico">Añadir</v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-
-              <v-list flat>
-                <v-list-item
-                  v-for="(item, i) in planI.contenido.objetivoEspecificos"
-                  :key="i"
-                >
-                  <v-list-item-icon>
-                    <v-icon
-                      @click="deleteItemObjEspecificios(i)"
-                      left
-                      color="red"
-                      >mdi-minus-circle</v-icon
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-text-field
+                      type="number"
+                      v-model.number="residente.edad"
+                      label="Edad del residente"
+                      @input="$v.planI.contenido.edad.$touch()"
+                      @blur="$v.planI.contenido.edad.$touch()"
+                      :error-messages="errorEdad"
+                      readonly
+                      outlined
+                      color="#009900"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-text-field
+                      type="number"
+                      v-model.number="planI.contenido.trimestre"
+                      label="Ingrese el trimestre"
+                      @input="$v.planI.contenido.trimestre.$touch()"
+                      @blur="$v.planI.contenido.trimestre.$touch()"
+                      :error-messages="errorTrimestre"
+                      outlined
+                      color="#009900"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-text-field
+                      v-model.trim="planI.contenido.objetivoGeneral"
+                      label="Ingrese el objetivo general"
+                      @input="$v.planI.contenido.objetivoGeneral.$touch()"
+                      @blur="$v.planI.contenido.objetivoGeneral.$touch()"
+                      :error-messages="errorGeneral"
+                      outlined
+                      color="#009900"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="12">
+                    <div class="w-100 d-flex">
+                      <v-text-field
+                        v-model.trim="objetivoespecificoAux"
+                        label="Objetivo específico"
+                        @input="$v.objetivoespecificoAux.$touch()"
+                        @blur="$v.objetivoespecificoAux.$touch()"
+                        :error-messages="errorObjetivoEspecifico"
+                        outlined
+                        color="#009900"
+                      ></v-text-field>
+                      <v-btn
+                        class="ml-2"
+                        fab
+                        color="success"
+                        @click="addObjEspecifico"
+                      >
+                        <v-icon>mdi-plus</v-icon>
+                      </v-btn>
+                    </div>
+                    <div>
+                      <h4
+                        v-if="$v.planI.contenido.objetivoEspecificos.$error"
+                        class="red--text"
+                      >
+                        Debe tener como mínimo un objetivo específico registrado
+                      </h4>
+                    </div>
+                    <registro-multiple
+                      name="Objetivos específicos"
+                      :items="planI.contenido.objetivoEspecificos"
+                    ></registro-multiple>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-btn
+                      color="success"
+                      elevation="2"
+                      @click="step = 2"
+                      block
                     >
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item"></v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDialog">
-                  Cerrar
-                </v-btn>
-                <v-btn block @click="step = 2" color="primary">
-                  <v-icon left>mdi-page-next-outline</v-icon>
-                  <span>Continuar</span>
-                </v-btn>
-              </v-card-actions>
-            </form>
+                      <v-icon left>mdi-page-next-outline</v-icon>
+                      <span>Continuar</span>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-btn
+                      color="error"
+                      elevation="2"
+                      block
+                      @click="closeDialog"
+                    >
+                      <v-icon left>mdi-close-outline</v-icon>
+                      Cerrar
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </form>
+            </div>
+          </v-stepper-content>
+          <v-stepper-content step="2">
+            <div class="container-user">
+              <form>
+                <v-row>
+                  <v-col cols="12" sm="12" md="12">
+                    <div class="w-100 d-flex">
+                      <v-text-field
+                        v-model.trim="aspectoAux"
+                        label="Aspectos de Intervención"
+                        @input="$v.aspectoAux.$touch()"
+                        @blur="$v.aspectoAux.$touch()"
+                        :error-messages="errorAspecto"
+                        outlined
+                        color="#009900"
+                      ></v-text-field>
+                      <v-btn
+                        class="ml-2"
+                        fab
+                        color="success"
+                        @click="addAspecto"
+                      >
+                        <v-icon>mdi-plus</v-icon>
+                      </v-btn>
+                    </div>
+                    <div>
+                      <h4
+                        class="red--text"
+                        v-if="$v.planI.contenido.aspectosIntervencion.$error"
+                      >
+                        Debe tener como mínimo un aspecto de intervención
+                        registrado
+                      </h4>
+                    </div>
+                    <registro-multiple
+                      name="Aspectos de Intervenciones"
+                      :items="planI.contenido.aspectosIntervencion"
+                    >
+                    </registro-multiple>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="12">
+                    <div class="w-100 d-flex">
+                      <v-text-field
+                        v-model.trim="actividadAux"
+                        label="Actividad/Estrategia"
+                        @input="$v.actividadAux.$touch()"
+                        @blur="$v.actividadAux.$touch()"
+                        :error-messages="errorActividad"
+                        outlined
+                        color="#009900"
+                      ></v-text-field>
+                      <v-btn
+                        class="ml-2"
+                        fab
+                        color="success"
+                        @click="addActividad"
+                      >
+                        <v-icon>mdi-plus</v-icon>
+                      </v-btn>
+                    </div>
+                    <div>
+                      <h4
+                        class="red--text"
+                        v-if="$v.planI.contenido.estrategias.$error"
+                      >
+                        Debe tener como mínimo una actividad/estrategia
+                        registrado
+                      </h4>
+                    </div>
+                    <registro-multiple
+                      name="Actividades/Estrategias"
+                      :items="planI.contenido.estrategias"
+                    >
+                    </registro-multiple>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="12">
+                    <div class="w-100 d-flex">
+                      <v-text-field
+                        v-model.trim="indicadorAux"
+                        label="Indicador"
+                        @input="$v.indicadorAux.$touch()"
+                        @blur="$v.indicadorAux.$touch()"
+                        :error-messages="errorIndicador"
+                        outlined
+                        color="#009900"
+                      ></v-text-field>
+                      <v-btn
+                        class="ml-2"
+                        fab
+                        color="success"
+                        @click="addIndicador"
+                      >
+                        <v-icon>mdi-plus</v-icon>
+                      </v-btn>
+                    </div>
+                    <div>
+                      <h4
+                        class="red--text"
+                        v-if="$v.planI.contenido.indicadores.$error"
+                      >
+                        Debe tener como mínimo un indicador registrado
+                      </h4>
+                    </div>
+                    <registro-multiple
+                      name="Indicadores"
+                      :items="planI.contenido.indicadores"
+                    ></registro-multiple>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="12">
+                    <div class="w-100 d-flex">
+                      <v-text-field
+                        v-model.trim="metaAux"
+                        label="Meta"
+                        @input="$v.metaAux.$touch()"
+                        @blur="$v.metaAux.$touch()"
+                        :error-messages="errorMeta"
+                        outlined
+                        color="#009900"
+                      ></v-text-field>
+                      <v-btn class="ml-2" fab color="success" @click="addMeta">
+                        <v-icon>mdi-plus</v-icon>
+                      </v-btn>
+                    </div>
+                    <div>
+                      <h4
+                        class="red--text"
+                        v-if="$v.planI.contenido.metas.$error"
+                      >
+                        Debe tener como mínimo una meta registrada
+                      </h4>
+                    </div>
+                    <registro-multiple
+                      name="Metas"
+                      :items="planI.contenido.metas"
+                    ></registro-multiple>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="12">
+                    <div>
+                      <v-card-text>
+                        <img
+                          width="240"
+                          height="170"
+                          :src="this.user.datos.firma"
+                          alt=""
+                        />
+                      </v-card-text>
+                      <!-- <vue-dropzone
+                        ref="myVueDropzone"
+                        @vdropzone-success="afterSuccess"
+                        @vdropzone-removed-file="afterRemoved"
+                        id="dropzone"
+                        :options="dropzoneOptions"
+                      >
+                      </vue-dropzone>
+                      <v-alert
+                        type="error"
+                        v-if="!$v.firmaAux.required"
+                        class="mt-2"
+                      >
+                        Debe ingresar una firma para el registro
+                      </v-alert> -->
+                    </div>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-btn
+                      block
+                      color="success"
+                      elevation="2"
+                      @click="registrarPlan"
+                    >
+                      <v-icon left>mdi-content-save-all-outline</v-icon>
+                      <span>Finalizar</span>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-btn
+                      color="error"
+                      elevation="2"
+                      block
+                      @click="closeDialog"
+                    >
+                      <v-icon left>mdi-close-outline</v-icon>
+                      Cerrar
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </form>
+            </div>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
+      <v-dialog width="450px" v-model="cargaRegistro" persistent>
+        <v-card height="300px">
+          <v-card-title class="justify-center"
+            >Registrando el Plan de Intervención Individual
+            Educativo</v-card-title
+          >
+          <div>
+            <v-progress-circular
+              style="display: block; margin: 40px auto"
+              :size="90"
+              :width="9"
+              color="purple"
+              indeterminate
+            ></v-progress-circular>
           </div>
-        </v-stepper-content>
-        <v-stepper-content step="2">
-          <div class="container-user">
-            <form>
-              <br />
-
-              <v-container grid-list-md text-xs-center>
-                <v-layout row wrap>
-                  <v-flex xs10>
-                    <v-text-field
-                      v-model.trim="aspectoAux"
-                      label="Aspectos de Intervención"
-                      @blur="$v.planI.contenido.aspectosIntervencion.$touch()"
-                      :error-messages="errorAspectos"
-                      outlined
-                      color="#009900"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs2>
-                    <v-btn @click="addAspecto">Añadir</v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-
-              <v-list flat>
-                <v-list-item
-                  v-for="(item, i) in planI.contenido.aspectosIntervencion"
-                  :key="i"
-                >
-                  <v-list-item-icon>
-                    <v-icon @click="deleteItemAspectos(i)" left color="red"
-                      >mdi-minus-circle</v-icon
-                    >
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item"></v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-
-              <v-container grid-list-md text-xs-center>
-                <v-layout row wrap>
-                  <v-flex xs10>
-                    <v-text-field
-                      v-model.trim="actividadAux"
-                      label="Actividades/Estrategias"
-                      @blur="$v.planI.contenido.estrategias.$touch()"
-                      :error-messages="errorEstrategias"
-                      outlined
-                      color="#009900"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs2>
-                    <v-btn @click="addActividad">Añadir</v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-
-              <v-list flat>
-                <v-list-item
-                  v-for="(item, i) in planI.contenido.estrategias"
-                  :key="i"
-                >
-                  <v-list-item-icon>
-                    <v-icon @click="deleteItemActividades(i)" left color="red"
-                      >mdi-minus-circle</v-icon
-                    >
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item"></v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-
-              <v-container grid-list-md text-xs-center>
-                <v-layout row wrap>
-                  <v-flex xs10>
-                    <v-text-field
-                      v-model.trim="indicadorAux"
-                      label="Indicadores"
-                      @blur="$v.planI.contenido.indicadores.$touch()"
-                      :error-messages="errorIndicadores"
-                      outlined
-                      color="#009900"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs2>
-                    <v-btn @click="addIndicador">Añadir</v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-
-              <v-list flat>
-                <v-list-item
-                  v-for="(item, i) in planI.contenido.indicadores"
-                  :key="i"
-                >
-                  <v-list-item-icon>
-                    <v-icon @click="deleteItemIndicadores(i)" left color="red"
-                      >mdi-minus-circle</v-icon
-                    >
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item"></v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-
-              <v-container grid-list-md text-xs-center>
-                <v-layout row wrap>
-                  <v-flex xs10>
-                    <v-text-field
-                      v-model.trim="metaAux"
-                      label="Metas"
-                      @blur="$v.planI.contenido.metas.$touch()"
-                      :error-messages="errorMetas"
-                      outlined
-                      color="#009900"
-                    ></v-text-field>
-                  </v-flex>
-                  <v-flex xs2>
-                    <v-btn @click="addMeta">Añadir</v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-
-              <v-list flat>
-                <v-list-item
-                  v-for="(item, i) in planI.contenido.metas"
-                  :key="i"
-                >
-                  <v-list-item-icon>
-                    <v-icon @click="deleteItemMetas(i)" left color="red"
-                      >mdi-minus-circle</v-icon
-                    >
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item"></v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-
-              <div>
-                <vue-dropzone
-                  ref="myVueDropzone"
-                  @vdropzone-success="afterSuccess"
-                  @vdropzone-removed-file="afterRemoved"
-                  id="dropzone"
-                  :options="dropzoneOptions"
-                >
-                </vue-dropzone>
-                <v-card v-if="errorImagen" color="red">
-                  <v-card-text class="text-center" style="color: white">
-                    Debe subir una firma obligatoriamente
-                  </v-card-text>
-                </v-card>
-              </div>
-              <v-divider class="divider-custom"></v-divider>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDialog">
-                  Cerrar
-                </v-btn>
-                <v-btn block color="accent" @click="registrarPlan">
-                  <v-icon left>mdi-mdi-content-save-all-outline</v-icon>
-                  <span>Registrar Plan</span>
-                </v-btn>
-              </v-card-actions>
-            </form>
-          </div>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
+          <v-card-subtitle
+            class="justify-center"
+            style="font-weight: bold; text-align: center"
+            >En unos momentos finalizaremos...</v-card-subtitle
+          >
+        </v-card>
+      </v-dialog>
+    </v-card-text>
   </v-card>
 </template>
 <script>
 import axios from "axios";
 import vue2Dropzone from "vue2-dropzone";
 import "vue2-dropzone/dist/vue2Dropzone.min.css";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapGetters } from "vuex";
 import { required, minLength, between } from "vuelidate/lib/validators";
+import RegistroMultiple from "@/components/planIntervencion/General/RegistroMultiple.vue";
 
 export default {
   components: {
     vueDropzone: vue2Dropzone,
+    RegistroMultiple,
   },
   data() {
     return {
-      planIntervencionIndividual: {
-        planintervencionindividual: {},
-        idresidente: "",
-      },
       planI: {
         id: "",
-        tipo: "PlanIntervencionIndividual",
+        tipo: "PlanIntervencionIndividualEducativo",
         historialcontenido: [],
-        fechacreacion: new Date(),
+        fechacreacion: null,
         area: "educativa",
         idresidente: "",
         fase: "",
         estado: "creado",
-        creadordocumento: "Piero Erickson Lavado Cervantes",
+        creadordocumento: "",
         contenido: {
           car: "",
           edad: 0,
@@ -346,13 +424,14 @@ export default {
           estrategias: [],
           indicadores: [],
           metas: [],
-          firmas: [
+          titulo: "",
+          /*firmas: [
             {
               urlfirma: "",
-              nombre: "Piero Erickson Lavado Cervantes",
-              cargo: "Educador",
+              nombre: "",
+              cargo: "",
             },
-          ],
+          ],*/
           codigoDocumento: "",
         },
       },
@@ -361,13 +440,13 @@ export default {
       dropzoneOptions: {
         url: "https://httpbin.org/post",
         thumbnailWidth: 250,
-        maxFilesize: 3.0,
         maxFiles: 1,
-        acceptedFiles: ".jpg",
+        acceptedFiles: "image/*",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
-        dictDefaultMessage:
-          "Seleccione la firma del responsable o Arrastrela Aqui",
+        dictDefaultMessage: "Ingrese su firma para el registro",
+        dictRemoveFile: "Remover firma",
+        dictMaxFilesExceeded: "Tamaño excedido",
       },
       objetivoespecificoAux: "",
       aspectoAux: "",
@@ -376,65 +455,218 @@ export default {
       metaAux: "",
       listResidentes: [],
       firmaAux: [],
+      residente: {
+        residente: "",
+        id: "",
+        faseActual: "",
+        numeroDocumento: "",
+        fechaNacimiento: null,
+        edad: 0,
+      },
+      searchResidente: null,
+      loadingSearch: false,
+      fasesPlanIntervencion: {
+        fases: [1, 2],
+        area: "educativa",
+        documentoEstadosAnteriores: [
+          {
+            tipo: "InformeEducativoInicial",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualEducativo",
+            estado: "Pendiente",
+          },
+        ],
+        documentoEstadosActuales: [
+          {
+            tipo: "PlanIntervencionIndividualEducativo",
+            estado: "Completo",
+          },
+          {
+            tipo: "PlanIntervencionIndividualEducativo",
+            estado: "Completo",
+          },
+        ],
+      },
+      cargaRegistro: false,
     };
+  },
+  validations() {
+    return {
+      objetivoespecificoAux: {
+        minLength: minLength(10),
+      },
+      aspectoAux: {
+        minLength: minLength(10),
+      },
+      actividadAux: {
+        minLength: minLength(10),
+      },
+      indicadorAux: {
+        minLength: minLength(10),
+      },
+      metaAux: {
+        minLength: minLength(10),
+      },
+      residente: {
+        id: {
+          required,
+        },
+      },
+      planI: {
+        contenido: {
+          car: {
+            required,
+            minLength: minLength(3),
+          },
+          edad: {
+            required,
+            between: between(12, 23),
+          },
+          trimestre: {
+            required,
+            between: between(1, 4),
+          },
+          objetivoGeneral: {
+            required,
+          },
+          objetivoEspecificos: {
+            required,
+            minLength: minLength(1),
+          },
+          aspectosIntervencion: {
+            required,
+            minLength: minLength(1),
+          },
+          estrategias: {
+            required,
+            minLength: minLength(1),
+          },
+          indicadores: {
+            required,
+            minLength: minLength(1),
+          },
+          metas: {
+            required,
+            minLength: minLength(1),
+          },
+          titulo: {
+            required,
+            minLength: minLength(4),
+          },
+        },
+      } /*
+      firmaAux: {
+        required,
+      },*/,
+    };
+  },
+  watch: {
+    searchResidente(value) {
+      console.log(value);
+      if (value == null || value == "") {
+        this.residente = {
+          residente: "",
+          id: "",
+          numeroDocumento: "",
+          faseActual: "",
+          fechaNacimiento: null,
+          edad: 0,
+        };
+      }
+
+      if (this.listResidentes.length > 0) {
+        return;
+      }
+      if (this.loadingSearch) {
+        return;
+      }
+
+      this.loadingSearch = true;
+
+      axios
+        .post("/residente/all/fases/documentos", this.fasesPlanIntervencion)
+        .then((res) => {
+          let residentesMap = res.data.map(function (res) {
+            return {
+              residente: res.nombre + " " + res.apellido,
+              id: res.id,
+              numeroDocumento: res.numeroDocumento,
+              faseActual: res.progreso[res.progreso.length - 1].fase.toString(),
+              fechaNacimiento: res.fechaNacimiento,
+              edad: 0,
+            };
+          });
+
+          this.listResidentes = residentesMap;
+
+          this.loadingSearch = false;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
   },
   methods: {
     ...mapMutations(["setResidentes"]),
     async registrarPlan() {
-      console.log(this.planI);
       this.$v.$touch();
       if (this.$v.$invalid) {
-        console.log("Hay errores");
         this.mensaje(
           "error",
           "..Oops",
           "Se encontraron errores en el formulario",
-          "<strong>Verifique los campos Ingresados<strong>"
+          "<strong>Verifique los campos Ingresados<strong>",
+          false
         );
       } else {
-        for (let index = 0; index < this.firmaAux.length; index++) {
+        /*for (let index = 0; index < this.firmaAux.length; index++) {
           let formData = new FormData();
 
-          formData.append("file", this.firmaAux[0]);
+          formData.append("file", this.firmaAux[index]);
 
           await axios
             .post("/Media", formData)
             .then((res) => {
-              this.planI.contenido.firmas[index].urlfirma =
-                res.data;
+              this.planI.contenido.firmas[index].urlfirma = res.data;
+              this.planI.contenido.firmas[index].nombre = this.user.usuario;
+              this.planI.contenido.firmas[index].cargo = this.user.rol.id;
             })
             .catch((err) => {
               console.error(err);
             });
-        }
+        }*/
+        this.cargaRegistro = true;
+        this.planI.creadordocumento = this.user.id;
 
-        this.planIntervencionIndividual.planIntervencionIndividual = this.planI;
-        this.planIntervencionIndividual.idresidente = this.planI.idresidente;
+        this.planI.idresidente = this.residente.id;
+        this.planI.fase = this.residente.faseActual;
+
+        let planIntervencionIndividual = {
+          idresidente: this.residente.id,
+          planintervencionindividual: this.planI,
+        };
 
         await axios
-          .post("/PlanIntervencion/educativo", this.planIntervencionIndividual)
+          .post("/PlanIntervencion/educativo", planIntervencionIndividual)
           .then((res) => {
             this.planI = res.data;
             if (this.planI.id !== "") {
-              this.resetPlanIValidationState();
-              this.limpiarPlanI();
+              this.cargaRegistro = false;
+
               this.mensaje(
                 "success",
                 "Listo",
                 "Plan registrado Satisfactoriamente",
-                "<strong>Se redirigira a la Interfaz de Gestion<strong>"
+                "<strong>Se redirigira a la Interfaz de Gestion<strong>",
+                true
               );
-              this.closeDialog();
             }
           })
           .catch((err) => console.log(err));
       }
-    },
-    resetPlanIValidationState() {
-      this.$refs.myVueDropzone.removeAllFiles();
-      this.$v.planI.$reset();
-      this.$v.firmaAux.$reset();
-    },
+    } /*
     afterSuccess(file, response) {
       this.firmaAux.push(file);
     },
@@ -444,32 +676,24 @@ export default {
       if (indexFile != -1) {
         this.firmaAux.splice(indexFile, 1);
       }
-    },
-    mensaje(icono, titulo, texto, footer) {
+    },*/,
+    mensaje(icono, titulo, texto, footer, valid) {
       this.$swal({
         icon: icono,
         title: titulo,
         text: texto,
         footer: footer,
+      }).then((res) => {
+        if (valid) {
+          this.$emit("register-complete");
+        }
       });
     },
-    deleteItemObjEspecificios(index) {
-      this.planI.contenido.objetivoEspecificos.splice(index, 1);
-    },
-    deleteItemAspectos(index) {
-      this.planI.contenido.aspectosIntervencion.splice(index, 1);
-    },
-    deleteItemActividades(index) {
-      this.planI.contenido.estrategias.splice(index, 1);
-    },
-    deleteItemIndicadores(index) {
-      this.planI.contenido.indicadores.splice(index, 1);
-    },
-    deleteItemMetas(index) {
-      this.planI.contenido.metas.splice(index, 1);
-    },
     addObjEspecifico() {
-      if (this.objetivoespecificoAux != "") {
+      if (
+        this.objetivoespecificoAux != "" &&
+        !this.$v.objetivoespecificoAux.$invalid
+      ) {
         this.planI.contenido.objetivoEspecificos.push(
           this.objetivoespecificoAux
         );
@@ -477,25 +701,25 @@ export default {
       }
     },
     addAspecto() {
-      if (this.aspectoAux != "") {
+      if (this.aspectoAux != "" && !this.$v.aspectoAux.$invalid) {
         this.planI.contenido.aspectosIntervencion.push(this.aspectoAux);
         this.aspectoAux = "";
       }
     },
     addActividad() {
-      if (this.actividadAux != "") {
+      if (this.actividadAux != "" && !this.$v.actividadAux.$invalid) {
         this.planI.contenido.estrategias.push(this.actividadAux);
         this.actividadAux = "";
       }
     },
     addIndicador() {
-      if (this.indicadorAux != "") {
+      if (this.indicadorAux != "" && !this.$v.indicadorAux.$invalid) {
         this.planI.contenido.indicadores.push(this.indicadorAux);
         this.indicadorAux = "";
       }
     },
     addMeta() {
-      if (this.metaAux != "") {
+      if (this.metaAux != "" && !this.$v.metaAux.$invalid) {
         this.planI.contenido.metas.push(this.metaAux);
         this.metaAux = "";
       }
@@ -503,67 +727,104 @@ export default {
     closeDialog() {
       this.$emit("close-dialog");
     },
-    setFase() {
-      let usuariacar = this.residentes.find(
-        (x) => x.id === this.planI.idresidente
-      );
-      this.planI.fase =
-        usuariacar.progreso[usuariacar.progreso.length - 1].nombre;
-    },
-    async mensaje(icono, titulo, texto, footer) {
-      await this.$swal({
-        icon: icono,
-        title: titulo,
-        text: texto,
-        footer: footer,
-      });
-    },
-    limpiarPlanI() {
-      return {
-        id: "",
-        tipo: "PlanIntervencionIndividual",
-        idresidente: "",
-        fase: "",
-        estado: "creado",
-        creadordocumento: "Piero Erickson Lavado Cervantes",
-        contenido: {
-          car: "",
-          edad: 0,
-          trimestre: 1,
-          objetivoGeneral: "",
-          objetivoEspecificos: [],
-          aspectosIntervencion: [],
-          estrategias: [],
-          indicadores: [],
-          metas: [],
-          firma: {
-            urlfirma: "",
-            nombre: "Piero Erickson Lavado Cervantes",
-            cargo: "Educador",
-          },
-        },
-      };
-    },
-    async obtenerResidentes() {
-      await axios
-        .get("/residente/all")
-        .then((res) => {
-          this.setResidentes(res.data);
-          res.data.forEach((element) => {
-            //this.listResidentes.splice(0,0,element.apellido)
-            this.listResidentes.push({
-              residente: element.apellido + " " + element.nombre,
-              idresidente: element.id,
-            });
-          });
-        })
-        .catch((err) => console.log(err));
+    calculateAge($event) {
+      if ($event != undefined) {
+          console.log($event);
+        let dateNow = new Date();
+        let dateBorn = new Date($event.fechaNacimiento);
+        this.residente.edad = dateNow.getFullYear() - dateBorn.getFullYear();
+        this.planI.contenido.edad = this.residente.edad;
+      }
     },
   },
   computed: {
     ...mapState(["residentes"]),
+    ...mapGetters(["user"]),
     verifyColor() {
       return "red";
+    },
+    getTitleByFaseResident() {
+      if (this.residente != null) {
+        if (this.residente.faseActual != "") {
+          if (this.residente.faseActual == "1") {
+            this.planI.contenido.titulo = "Plan de Intervención Educativa";
+          } else {
+            this.planI.contenido.titulo =
+              "Plan de Intervención Individual " + this.residente.residente;
+          }
+
+          return this.planI.contenido.titulo;
+        } else {
+          return "";
+        }
+      } else {
+        return "";
+      }
+    },
+    errorObjetivoEspecifico() {
+      const errors = [];
+
+      if (!this.$v.objetivoespecificoAux.$dirty) {
+        return errors;
+      }
+
+      if (!this.$v.objetivoespecificoAux.minLength) {
+        errors.push("Debe ingresar como mínimo 10 caracteres");
+      }
+
+      return errors;
+    },
+    errorAspecto() {
+      const errors = [];
+
+      if (!this.$v.aspectoAux.$dirty) {
+        return errors;
+      }
+
+      if (!this.$v.aspectoAux.minLength) {
+        errors.push("Debe ingresar como mínimo 10 caracteres");
+      }
+
+      return errors;
+    },
+    errorActividad() {
+      const errors = [];
+
+      if (!this.$v.actividadAux.$dirty) {
+        return errors;
+      }
+
+      if (!this.$v.actividadAux.minLength) {
+        errors.push("Debe ingresar como mínimo 10 caracteres");
+      }
+
+      return errors;
+    },
+    errorIndicador() {
+      const errors = [];
+
+      if (!this.$v.indicadorAux.$dirty) {
+        return errors;
+      }
+
+      if (!this.$v.indicadorAux.minLength) {
+        errors.push("Debe ingresar como mínimo 10 caracteres");
+      }
+
+      return errors;
+    },
+    errorMeta() {
+      const errors = [];
+
+      if (!this.$v.metaAux.$dirty) {
+        return errors;
+      }
+
+      if (!this.$v.metaAux.minLength) {
+        errors.push("Debe ingresar como mínimo 10 caracteres");
+      }
+
+      return errors;
     },
     errorTitulo() {
       const errors = [];
@@ -576,11 +837,9 @@ export default {
     },
     errorResidente() {
       const errors = [];
-      if (!this.$v.planI.idresidente.$dirty) return errors;
-      !this.$v.planI.idresidente.required &&
+      if (!this.$v.residente.id.$dirty) return errors;
+      !this.$v.residente.id.required &&
         errors.push("Debe ingresar un residente obligatoriamente");
-      !this.$v.planI.idresidente != "" &&
-        errors.push("Debe seleccionar el residente inicialmente");
       return errors;
     },
     errorCar() {
@@ -619,102 +878,73 @@ export default {
     },
     errorEspecificos() {
       const errors = [];
-      if (!this.$v.planI.contenido.objetivoEspecificos.$dirty) return errors;
-      !this.$v.planI.contenido.objetivoEspecificos.required &&
-        errors.push(
-          "Debe ingresar al menos un objetivo específico obligatoriamente"
-        );
+      if (!this.$v.planI.contenido.objetivoEspecificos.$dirty) {
+        return errors;
+      }
+      if (!this.$v.planI.contenido.objetivoEspecificos.required) {
+        errors.push("Los objetivos específicos son requeridos");
+      }
+
+      if (!this.$v.planI.contenido.objetivoEspecificos.minLength) {
+        errors.push("Se debe registrar un objetivo específico como mínimo");
+      }
+
       return errors;
     },
     errorAspectos() {
       const errors = [];
-      if (!this.$v.planI.contenido.aspectosIntervencion.$dirty) return errors;
-      !this.$v.planI.contenido.aspectosIntervencion.required &&
-        errors.push(
-          "Debe ingresar al menos un aspecto de intervención obligatoriamente"
-        );
+      if (!this.$v.planI.contenido.aspectosIntervencion.$dirty) {
+        return errors;
+      }
+      if (!this.$v.planI.contenido.aspectosIntervencion.required) {
+        errors.push("Los aspectos de intervención son requeridos");
+      }
+      if (!this.$v.planI.contenido.aspectosIntervencion.minLength) {
+        errors.push("Se debe registrar un aspecto de intervención como mínimo");
+      }
+
       return errors;
     },
     errorEstrategias() {
       const errors = [];
-      if (!this.$v.planI.contenido.estrategias.$dirty) return errors;
-      !this.$v.planI.contenido.estrategias.required &&
-        errors.push("Debe ingresar al menos una estrategia obligatoriamente");
+      if (!this.$v.planI.contenido.estrategias.$dirty) {
+        return errors;
+      }
+      if (!this.$v.planI.contenido.estrategias.required) {
+        errors.push("Las estrategias son requeridas");
+      }
+      if (!this.$v.planI.contenido.estrategias.minLength) {
+        errors.push("Se debe registrar una estrategia como mínimo");
+      }
       return errors;
     },
     errorIndicadores() {
       const errors = [];
-      if (!this.$v.planI.contenido.indicadores.$dirty) return errors;
-      !this.$v.planI.contenido.indicadores.required &&
-        errors.push("Debe ingresar al menos un indicador obligatoriamente");
+      if (!this.$v.planI.contenido.indicadores.$dirty) {
+        return errors;
+      }
+      if (!this.$v.planI.contenido.indicadores.required) {
+        errors.push("Los indicadores son requeridos");
+      }
+      if (!this.$v.planI.contenido.indicadores.minLength) {
+        errors.push("Se debe registrar un indicador como mínimo");
+      }
       return errors;
     },
     errorMetas() {
       const errors = [];
-      if (!this.$v.planI.contenido.metas.$dirty) return errors;
-      !this.$v.planI.contenido.metas.required &&
-        errors.push("Debe ingresar al menos una meta obligatoriamente");
+      if (!this.$v.planI.contenido.metas.$dirty) {
+        return errors;
+      }
+      if (!this.$v.planI.contenido.metas.required) {
+        errors.push("Las metas son requeridas");
+      }
+      if (!this.$v.planI.contenido.metas.minLength) {
+        errors.push("Se debe registrar una meta como mínimo");
+      }
+
       return errors;
     },
-    errorImagen() {
-      return this.$v.firmaAux.required == false &&
-        this.$v.firmaAux.$dirty == true
-        ? true
-        : false;
-    },
-  },
-  async created() {
-    this.obtenerResidentes();
-  },
-  validations() {
-    return {
-      planI: {
-        idresidente: {
-          required,
-        },
-        contenido: {
-          car: {
-            required,
-          },
-          edad: {
-            required,
-            between: between(12, 23),
-          },
-          trimestre: {
-            required,
-            between: between(1, 4),
-          },
-          objetivoGeneral: {
-            required,
-          },
-          objetivoEspecificos: {
-            required,
-          },
-          aspectosIntervencion: {
-            required,
-          },
-          estrategias: {
-            required,
-          },
-          indicadores: {
-            required,
-          },
-          metas: {
-            required,
-          },
-          titulo: {
-            required,
-            minLength: minLength(4),
-          },
-          /*  firma: {
-            urlfirma: ""
-          }, */
-        },
-      },
-      firmaAux: {
-        required,
-      },
-    };
   },
 };
 </script>
@@ -746,5 +976,8 @@ export default {
 
 .inputTextField {
   border-color: green;
+}
+.w-100 {
+  width: 100% !important;
 }
 </style>

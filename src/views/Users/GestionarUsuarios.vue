@@ -86,7 +86,8 @@
                 max-width="880px">
         <ActualizarUsuario
         v-if="dialogoactualizacion" 
-        :usuario="usuario" :listaroles="listaroles" @close-dialog-update="closeDialogActualizar()">
+        :usuario="usuario" :listaroles="listaroles" 
+        @close-dialog-update="closeDialogActualizar()">
         </ActualizarUsuario>
 
       </v-dialog>
@@ -99,7 +100,6 @@
           </ConsultarUsuario>
       </v-dialog>
       <!----->
-        <v-btn @click="testing2()">TEST</v-btn>
     </v-card>
   </div>
 </template>
