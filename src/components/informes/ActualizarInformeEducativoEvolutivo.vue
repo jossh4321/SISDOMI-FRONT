@@ -348,7 +348,7 @@
                             >
                               <img
                                 style="width:25% "
-                                src="https://www.flaticon.es/svg/static/icons/svg/709/709612.svg"
+                                src="https://cdn-icons-png.flaticon.com/512/709/709612.png"
                                 alt="visualizar"
                               />
                             </v-btn>

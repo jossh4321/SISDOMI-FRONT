@@ -13,7 +13,7 @@
                     width="120"
                     height="120"
                   />
-                  <h1 class="flex my-4 text--primary">SISDOMI</h1>
+                  <h1 class="flex my-4 text--primary">Movilet</h1>
                 </div>
                 <v-form>
                   <v-text-field

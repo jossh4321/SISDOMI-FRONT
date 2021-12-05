@@ -342,7 +342,7 @@
                 <v-card
                   tile
                   elevation="0"
-                  color="#FAFAFA"
+                  color="#5dc1b9"
                   style="margin-top:5px"
                   height="80"
                   v-for="(item, index) in seguimiento.contenido.trimestre"

@@ -271,7 +271,7 @@ export default {
         thumbnailWidth: 250,
         maxFilesize: 3.0,
         maxFiles: 1,
-        acceptedFiles: ".jpg, .png, jpeg",
+        acceptedFiles: ".jpg, .png, jpeg , .PNG",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
         dictDefaultMessage:
@@ -282,7 +282,7 @@ export default {
         thumbnailWidth: 250,
         maxFilesize: 3.0,
         maxFiles: 1,
-        acceptedFiles: ".jpg, .png, jpeg",
+        acceptedFiles: ".jpg, .png, jpeg , .pngfile",
         headers: { "My-Awesome-Header": "header value" },
         addRemoveLinks: true,
         dictDefaultMessage:
